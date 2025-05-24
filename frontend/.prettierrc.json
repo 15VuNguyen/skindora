@@ -2,12 +2,15 @@
   "singleQuote": false,
   "tabWidth": 2,
   "trailingComma": "es5",
-  "importOrder": ["^@/(.*)$", "^[./]"],
+  "importOrder": [
+    "^@/(.*)$",
+    "^[./]"
+  ],
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
-
   "plugins": [
     "@trivago/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss"
-  ]
+  ],
+  "printWidth": 120
 }
