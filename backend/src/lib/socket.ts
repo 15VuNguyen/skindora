@@ -13,9 +13,9 @@ const io = new Server(server, {
   }
 })
 
-interface UserSocketMap {
-  [userId: string]: string
-}
+// interface UserSocketMap {
+//   [userId: string]: string
+// }
 
 const userSocketMap: UserSocketMap = {}
 
