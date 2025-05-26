@@ -44,5 +44,5 @@ jobs:
       - name: Upload frontend build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-build-output-${{ github.sha }}
+          name: frontend-build-output-${{ matrix.node-version }}
           path: frontend/dist/
