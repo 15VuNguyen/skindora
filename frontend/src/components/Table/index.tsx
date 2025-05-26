@@ -26,18 +26,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
+import { Badge } from "../ui/badge";
+
 export type Order = {
   id: string;
   customer: string;
   date: string;
   amount: string;
+  status?: "completed" | "pending" | "cancelled";
 };
 
 const data: Order[] = [
-  { id: "INV001", customer: "Nguyễn Văn A", date: "2024-05-01", amount: "250" },
-  { id: "INV002", customer: "Trần Thị B", date: "2024-05-02", amount: "180" },
-  { id: "INV003", customer: "Lê Thị C", date: "2024-05-03", amount: "350" },
-  { id: "INV004", customer: "Phạm Văn D", date: "2024-05-04", amount: "420" },
+  { id: "INV001", customer: "Nguyễn Tuấn Cặc", date: "11-8-2003", amount: "250", status: "completed" },
+  { id: "INV002", customer: "Trần Thị B", date: "2024-05-02", amount: "180", status: "pending" },
+  { id: "INV003", customer: "Lê Thị C", date: "2024-05-03", amount: "350", status: "cancelled" },
+  { id: "INV004", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "completed" },
 ];
 
 export const columns: ColumnDef<Order>[] = [
@@ -73,7 +76,7 @@ export const columns: ColumnDef<Order>[] = [
     ),
     cell: ({ row }) => {
       const customer = String(row.getValue("customer"));
-      return <div className="ml-3 font-medium">{customer}</div>;
+      return <div className="ml-3 py-4 font-medium">{customer}</div>;
     },
   },
   {
@@ -85,7 +88,7 @@ export const columns: ColumnDef<Order>[] = [
     ),
     cell: ({ row }) => {
       const date = String(row.getValue("date"));
-      return <div className="ml-3 font-medium">{date}</div>;
+      return <div className="ml-3 py-4 font-medium">{date}</div>;
     },
   },
   // {
@@ -118,27 +121,49 @@ export const columns: ColumnDef<Order>[] = [
       return <div className="text-right font-medium">{formatted}</div>;
     },
   },
+
+  {
+    accessorKey: "status",
+    header: () => <div className="text-right">Trạng thái</div>,
+    cell: ({ row }) => {
+      const status = String(row.getValue("status"));
+      return (
+        <div className="text-right">
+          <Badge
+            variant={status === "completed" ? "default" : status === "pending" ? "pending" : "danger"}
+            className="w-2/5 capitalize"
+          >
+            {status}
+          </Badge>
+        </div>
+      );
+    },
+  },
   {
     id: "actions",
     enableHiding: false,
+    enableSorting: false,
+    header: () => <div className="text-right">Actions</div>,
     cell: ({ row }) => {
       const order = row.original;
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => navigator.clipboard.writeText(order.id)}>Copy Order ID</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
-            <DropdownMenuItem>Xóa đơn</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="text-right font-medium">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {/* <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => navigator.clipboard.writeText(order.id)}>Copy Order ID</DropdownMenuItem>
+              <DropdownMenuSeparator /> */}
+              <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
+              <DropdownMenuItem>Hạn chế</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       );
     },
   },
@@ -178,7 +203,7 @@ export function AppTable() {
           onChange={(event) => table.getColumn("customer")?.setFilterValue(event.target.value)}
           className="max-w-sm"
         />
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
               Cột <ChevronDown className="ml-2 h-4 w-4" />
@@ -190,7 +215,9 @@ export function AppTable() {
               .filter((column) => column.getCanHide())
               .map((column) => (
                 <DropdownMenuCheckboxItem
-                  key={column.id}
+                 
+                
+                key={column.id}
                   className="capitalize"
                   checked={column.getIsVisible()}
                   onCheckedChange={(value) => column.toggleVisibility(!!value)}
@@ -199,10 +226,42 @@ export function AppTable() {
                 </DropdownMenuCheckboxItem>
               ))}
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </div>
 
       <div className="rounded-md border">
+        {/* <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} className="">
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id} className="px-2">
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}{" "}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-24 text-center">
+                  Không có kết quả.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table> */}
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -227,7 +286,7 @@ export function AppTable() {
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  Không có kết quả.
+                  No results.
                 </TableCell>
               </TableRow>
             )}
