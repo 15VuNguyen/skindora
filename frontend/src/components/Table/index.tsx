@@ -9,18 +9,15 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import type { ColumnDef, ColumnFiltersState, SortingState, VisibilityState } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -144,8 +141,7 @@ export const columns: ColumnDef<Order>[] = [
     enableHiding: false,
     enableSorting: false,
     header: () => <div className="text-right">Actions</div>,
-    cell: ({ row }) => {
-      const order = row.original;
+    cell: () => {
       return (
         <div className="text-right font-medium">
           <DropdownMenu>
