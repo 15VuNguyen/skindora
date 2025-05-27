@@ -30,14 +30,17 @@ export type Order = {
   customer: string;
   date: string;
   amount: string;
-  status?: "completed" | "pending" | "cancelled";
+  status?: "ĐÃ GIAO" | "CHỜ XỬ LÝ" | "HỦY" | "ĐANG XỬ LÝ";
 };
 
 const data: Order[] = [
-  { id: "INV001", customer: "Nguyễn Tuấn Cặc", date: "11-8-2003", amount: "250", status: "completed" },
-  { id: "INV002", customer: "Trần Thị B", date: "2024-05-02", amount: "180", status: "pending" },
-  { id: "INV003", customer: "Lê Thị C", date: "2024-05-03", amount: "350", status: "cancelled" },
-  { id: "INV004", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "completed" },
+  { id: "INV001", customer: "Nguyễn Tuấn Cặc", date: "11-8-2003", amount: "250", status: "ĐÃ GIAO" },
+  { id: "INV002", customer: "Trần Thị B", date: "2024-05-02", amount: "180", status: "ĐANG XỬ LÝ" },
+  { id: "INV003", customer: "Lê Thị C", date: "2024-05-03", amount: "350", status: "HỦY" },
+  { id: "INV004", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "ĐÃ GIAO" },
+  { id: "INV005", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "ĐÃ GIAO" },
+  { id: "INV006", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "ĐÃ GIAO" },
+  { id: "INV007", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "CHỜ XỬ LÝ" },
 ];
 
 export const columns: ColumnDef<Order>[] = [
@@ -105,7 +108,11 @@ export const columns: ColumnDef<Order>[] = [
   // },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    header: ({ column }) => (
+      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        Amount <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"));
 
@@ -115,20 +122,34 @@ export const columns: ColumnDef<Order>[] = [
         currency: "USD",
       }).format(amount);
 
-      return <div className="text-right font-medium">{formatted}</div>;
+      return <div className="ml-3 py-4 font-medium">{formatted}</div>;
     },
   },
 
   {
     accessorKey: "status",
-    header: () => <div className="text-right">Trạng thái</div>,
+    header: ({ column }) => (
+      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        Trạng thái <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
       const status = String(row.getValue("status"));
       return (
-        <div className="text-right">
+        <div className="ml-3 py-4 font-medium">
           <Badge
-            variant={status === "completed" ? "default" : status === "pending" ? "pending" : "danger"}
-            className="w-2/5 capitalize"
+            variant={
+              status === "ĐÃ GIAO"
+                ? "complete"
+                : status === "ĐANG XỬ LÝ"
+                  ? "pending"
+                  : status === "CHỜ XỬ LÝ"
+                    ? "waiting"
+                    : status === "HỦY"
+                      ? "danger"
+                      : "default"
+            }
+            className="w-2/5 px-3 capitalize"
           >
             {status}
           </Badge>
@@ -140,7 +161,7 @@ export const columns: ColumnDef<Order>[] = [
     id: "actions",
     enableHiding: false,
     enableSorting: false,
-    header: () => <div className="text-right">Actions</div>,
+
     cell: () => {
       return (
         <div className="text-right font-medium">
