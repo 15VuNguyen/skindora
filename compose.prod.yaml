@@ -1,12 +1,13 @@
-
 networks:
   traefik-public:
     driver: bridge
   portainer-network:
     driver: bridge
+  redis-network:
+    driver: bridge
 volumes:
   portainer_data:
-    
+  redis_data:
 services:
   traefik:
     image: traefik:v3.4
@@ -25,16 +26,16 @@ services:
       - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN}
       - TRAEFIK_DASHBOARD_USERS=${TRAEFIK_DASHBOARD_USERS}
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro 
-      - ./letsencrypt:/etc/traefik 
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/etc/traefik
       - ./traefik/config.yaml:/etc/traefik/traefik.yaml:ro #
-      - ./traefik/logs:/var/log/traefik 
+      - ./traefik/logs:/var/log/traefik
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.skindora.site`)"
       - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
-      - "traefik.http.routers.traefik-dashboard.tls.certresolver=default" 
+      - "traefik.http.routers.traefik-dashboard.tls.certresolver=default"
       - "traefik.http.routers.traefik-dashboard.middlewares=dashboard-auth"
       - "traefik.http.middlewares.dashboard-auth.basicauth.users=${TRAEFIK_DASHBOARD_USERS}"
   frontend:
@@ -66,3 +67,15 @@ services:
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.tls.certresolver=default"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+  redis:
+    image: redis:8.0-alpine
+    container_name: my-redis-container
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./redis-logs/redis-server.log:/var/log/redis/redis-server.log 
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD} --logfile /var/log/redis/redis-server.log 
+    networks:
+      - redis-network
