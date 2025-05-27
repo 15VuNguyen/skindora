@@ -136,7 +136,7 @@ export const columns: ColumnDef<Order>[] = [
     cell: ({ row }) => {
       const status = String(row.getValue("status"));
       return (
-        <div className="ml-3 py-4 font-medium">
+        <div className="px-2 py-4 font-medium">
           <Badge
             variant={
               status === "ĐÃ GIAO"
@@ -149,7 +149,7 @@ export const columns: ColumnDef<Order>[] = [
                       ? "danger"
                       : "default"
             }
-            className="w-2/5 px-3 capitalize"
+            className="w-2/5 px-3 text-sm font-medium capitalize"
           >
             {status}
           </Badge>
