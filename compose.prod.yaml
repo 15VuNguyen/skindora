@@ -70,12 +70,33 @@ services:
   redis:
     image: redis:8.0-alpine
     container_name: my-redis-container
-    restart: always
-    ports:
-      - "0.0.0.0:6379:6379"
     volumes:
       - redis_data:/data
-      - ./redis-logs/redis-server.log:/var/log/redis/redis-server.log 
-    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD} --logfile /var/log/redis/redis-server.log 
+      - ./redis-logs:/var/log/redis
+      - ./certs/redis.crt:/etc/redis/tls/redis.crt:ro 
+      - ./certs/redis.key:/etc/redis/tls/redis.key:ro 
+      - ./certs/ca.crt:/etc/redis/tls/ca.crt:ro      
+      - ./certs/redis.dh:/etc/redis/tls/redis.dh:ro  
+    command: >
+      redis-server
+      --appendonly yes
+      --requirepass ${REDIS_PASSWORD}
+      --logfile /var/log/redis/redis-server.log
+      --tls-port 6379            
+      --port 0                   
+      --tls-cert-file /etc/redis/tls/redis.crt
+      --tls-key-file /etc/redis/tls/redis.key
+      --tls-ca-cert-file /etc/redis/tls/ca.crt
+      --tls-auth-clients no      
+      --tls-dh-params-file /etc/redis/tls/redis.dh
     networks:
       - redis-network
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.tcp.routers.redis-tcp.rule=HostSNI(`${REDIS_SNI}`)"
+      - "traefik.tcp.routers.redis-tcp.entrypoints=websecure"
+      - "traefik.tcp.routers.redis-tcp.tls=true"
+      - "traefik.tcp.routers.redis-tcp.tls.passthrough=true"
+      - "traefik.tcp.routers.redis-tcp.tls.certresolver=default"
+      - "traefik.tcp.services.redis-tcp.loadbalancer.server.port=6379"

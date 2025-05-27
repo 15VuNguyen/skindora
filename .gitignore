@@ -1,0 +1,5 @@
+.env
+redis-logs
+certs
+letsencrypt
+*.log
