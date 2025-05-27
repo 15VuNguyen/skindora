@@ -3,8 +3,10 @@ import { ChevronRight } from "lucide-react";
 import { LoaderCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import { Card, CardFooter, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+
+import HighlightCatagories from "./HighlightCatagories";
 
 type products = {
   name: string;
@@ -30,19 +32,25 @@ export default function HighlightProducts(): React.JSX.Element {
         {mockProducts.length > 0 ? (
           <Carousel
             className="mb-12"
-            plugins={[Autoplay({ delay: 4000, stopOnMouseEnter: true, stopOnInteraction: false })]}
+            plugins={[Autoplay({ delay: 10000, stopOnMouseEnter: true, stopOnInteraction: false })]}
           >
             <CarouselContent>
               {mockProducts.map((product, index) => (
-                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-                  <Card className="hover:shadow-primary/50 overflow-hidden transition-shadow hover:shadow-lg">
+                <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
+                  <Card className="hover:shadow-primary/50 h-full overflow-hidden transition-shadow hover:shadow-lg">
                     <CardHeader className="p-2">
                       <div className="relative">
-                        <img src={product.image} alt={product.name} className="h-64 w-full object-contain" />
+                        <img
+                          src={product.image}
+                          alt={product.name}
+                          className="h-56 w-full object-contain transition-transform duration-400 hover:scale-125"
+                        />
                       </div>
                     </CardHeader>
-                    <CardFooter className="flex flex-col items-start p-4">
+                    <CardContent>
                       <h3 className="line-clamp-2 text-sm font-medium">{product.name}</h3>
+                    </CardContent>
+                    <CardFooter className="flex flex-col items-start px-6">
                       <p className="text-primary mt-2 text-lg font-bold">{product.price.toLocaleString()}đ</p>
                     </CardFooter>
                   </Card>
@@ -55,6 +63,7 @@ export default function HighlightProducts(): React.JSX.Element {
         ) : (
           <LoaderCircle className="mx-auto h-8 w-8 animate-spin text-gray-500" />
         )}
+        <HighlightCatagories />
       </div>
     </section>
   );
