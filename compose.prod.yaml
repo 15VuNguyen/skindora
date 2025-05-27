@@ -72,7 +72,7 @@ services:
     container_name: my-redis-container
     restart: always
     ports:
-      - "6379:6379"
+      - "0.0.0.0:6379:6379"
     volumes:
       - redis_data:/data
       - ./redis-logs/redis-server.log:/var/log/redis/redis-server.log 
