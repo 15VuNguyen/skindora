@@ -7,7 +7,7 @@ accessLog:
 log:
   level: DEBUG
   format: common
-  # filePath: /var/log/traefik/traefik.log
+  filePath: /var/log/traefik/traefik.log
 api:
   dashboard: true
 entryPoints:

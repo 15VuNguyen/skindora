@@ -70,6 +70,8 @@ services:
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.tls.certresolver=default"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+      - "traefik.docker.network=traefik-public"
+
   redis:
     image: redis:8.0-alpine
     container_name: my-redis-container
