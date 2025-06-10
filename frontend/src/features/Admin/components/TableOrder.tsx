@@ -9,20 +9,21 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import type { ColumnDef, ColumnFiltersState, SortingState, VisibilityState } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, ChevronDown, Funnel, MoreHorizontal, Search } from "lucide-react";
 import * as React from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-
-import { Badge } from "../ui/badge";
 
 export type Order = {
   id: string;
@@ -37,6 +38,9 @@ const data: Order[] = [
   { id: "INV002", customer: "Trần Thị B", date: "2024-05-02", amount: "180", status: "ĐANG XỬ LÝ" },
   { id: "INV003", customer: "Lê Thị C", date: "2024-05-03", amount: "350", status: "HỦY" },
   { id: "INV004", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "ĐÃ GIAO" },
+  { id: "INV005", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "ĐÃ GIAO" },
+  { id: "INV006", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "ĐÃ GIAO" },
+  { id: "INV007", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "CHỜ XỬ LÝ" },
 ];
 
 export const columns: ColumnDef<Order>[] = [
@@ -145,7 +149,7 @@ export const columns: ColumnDef<Order>[] = [
                       ? "danger"
                       : "default"
             }
-            className="capitalize"
+            className="w-2/5 px-3 text-sm font-medium capitalize"
           >
             {status}
           </Badge>
@@ -182,7 +186,7 @@ export const columns: ColumnDef<Order>[] = [
   },
 ];
 
-export function AppTable() {
+export function TableOrder() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
@@ -209,40 +213,34 @@ export function AppTable() {
 
   return (
     <div className="w-full">
-      {/* <div className="flex items-center py-4">
-        <Input
-          placeholder="Tìm khách hàng..."
-          value={(table.getColumn("customer")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => table.getColumn("customer")?.setFilterValue(event.target.value)}
-          className="max-w-sm"
-        />
-        {/* <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Cột <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                 
-                
-                key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu> */}
-      {/* </div> */}
+      <div className="bg-card text-card-foreground flex items-center gap-2 rounded-lg border p-4">
+        <div className="flex-grow">
+          <div className="relative flex items-center">
+            <Search className="text-muted-foreground absolute left-3 h-4 w-4" />
 
-      <div className="rounded-md border">
+            <Input
+              placeholder="Tìm sản phẩm..."
+              value={(table.getColumn("customer")?.getFilterValue() as string) ?? ""}
+              onChange={(event) => table.getColumn("customer")?.setFilterValue(event.target.value)}
+              className="p-6 pl-10" // Giữ padding gốc của bạn và thêm pl-10
+            />
+          </div>
+        </div>
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto p-6">
+                <span className="text-sm">
+                  <Funnel className="" />
+                </span>
+                <span className="text-sm">Bộ Lộc</span>
+              </Button>
+            </DropdownMenuTrigger>
+          </DropdownMenu>
+        </div>
+      </div>
+
+      <div className="mt-5 rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -255,7 +253,7 @@ export function AppTable() {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody className="bg-white">
+          <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
@@ -277,7 +275,7 @@ export function AppTable() {
         </Table>
       </div>
 
-      {/* <div className="flex items-center justify-end space-x-2 py-4">
+      <div className="flex items-center justify-end space-x-2 py-4">
         <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length} / {table.getFilteredRowModel().rows.length} đơn được chọn.
         </div>
@@ -294,8 +292,8 @@ export function AppTable() {
             Tiếp
           </Button>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 }
-export default AppTable;
+export default TableOrder;

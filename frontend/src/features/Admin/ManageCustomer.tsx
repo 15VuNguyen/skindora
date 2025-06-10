@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 
-import AppTable from "@/components/Table";
 import { useHeader } from "@/contexts/header.context";
+import AppTable from "@/features/Admin/components/Table";
+
+import TableCustomer from "./components/TableCustomer";
 
 const ManageCustomer: React.FC = () => {
   const { setHeaderName } = useHeader();
@@ -16,7 +18,7 @@ const ManageCustomer: React.FC = () => {
             <Typography className="text-2xl font-bold">Quản lý khách hàng</Typography>
           </div> */}
           <div className="mt-8">
-            <AppTable />
+            <TableCustomer />
           </div>
         </div>
       </div>

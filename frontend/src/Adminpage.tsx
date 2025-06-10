@@ -1,7 +1,7 @@
 import AppSidebar from "@/components/Sidebar";
-import AppTable from "@/components/Table";
 import Typography from "@/components/Typography";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import AppTable from "@/features/Admin/components/Table";
 
 const ManageCustomer = () => {
   return (

@@ -3,10 +3,10 @@ import { Package, Plus, ShoppingCart, User2 } from "lucide-react";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
-import AppTable from "@/components/Table";
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
 import { useHeader } from "@/contexts/header.context";
+import AppTable from "@/features/Admin/components/Table";
 
 import { CardDemo } from "./components/Card";
 import { CardIcon } from "./components/CardIcon";
