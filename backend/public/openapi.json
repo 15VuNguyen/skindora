@@ -15,7 +15,7 @@
   },
   "servers": [
     {
-      "url": "https://api.skindora.site",
+      "url": "https://api.skindora.site/api-docs",
       "description": "Server development"
     }
   ],
@@ -28,7 +28,9 @@
   "paths": {
     "/users/register": {
       "post": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Register a new user",
         "description": "Creates a new user account and returns access and refresh tokens.",
         "requestBody": {
@@ -77,7 +79,9 @@
     },
     "/users/login": {
       "post": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Log in an existing user",
         "description": "Authenticates a user and returns access and refresh tokens.",
         "requestBody": {
@@ -126,7 +130,9 @@
     },
     "/users/forgot-password": {
       "post": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Request a password reset token",
         "description": "Sends a password reset token to the user's email.",
         "requestBody": {
@@ -185,7 +191,9 @@
     },
     "/users/verify-forgot-password": {
       "post": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Verify the forgot password token",
         "description": "Checks if the provided forgot password token is valid.",
         "requestBody": {
@@ -244,7 +252,9 @@
     },
     "/users/reset-password": {
       "post": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Reset the user's password",
         "description": "Sets a new password for the user using a valid forgot password token.",
         "requestBody": {
@@ -313,7 +323,9 @@
     },
     "/users/verify-email": {
       "post": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Verify user's email address",
         "description": "Verifies the user's email using the provided email verification token and returns new tokens.",
         "requestBody": {
@@ -379,7 +391,9 @@
     },
     "/users/resend-verify-email": {
       "post": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Resend email verification token",
         "description": "Resends a new email verification token to the authenticated user's email address. Requires Bearer token authentication.",
         "security": [
@@ -443,7 +457,9 @@
     },
     "/users/change-password": {
       "put": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Change password",
         "description": "Allows an authenticated and verified user to change their password.",
         "security": [
@@ -518,7 +534,9 @@
     },
     "/users/logout": {
       "post": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Logout a user",
         "description": "Logs out an authenticated user by invalidating their refresh token. Requires both a valid Access Token in the Authorization header and the Refresh Token in the body.\n",
         "security": [
@@ -583,7 +601,9 @@
     },
     "/users/me": {
       "get": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Get current user's profile",
         "description": "Retrieves the profile information of the currently authenticated user based on the provided Access Token. The returned user object will not contain sensitive fields like 'password' or 'tokens'.\n",
         "security": [
@@ -625,7 +645,9 @@
         }
       },
       "patch": {
-        "tags": ["Users"],
+        "tags": [
+          "Users"
+        ],
         "summary": "Update current user's profile",
         "description": "Partially updates the profile information of the currently authenticated user. Only include the fields you want to change in the request body.\n",
         "security": [
@@ -687,13 +709,81 @@
           }
         }
       }
+    },
+    "/users/refresh-token": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Refresh user's access token",
+        "description": "Provides a new access token and a new refresh token in exchange for a valid, unexpired refresh token. This endpoint does not require Bearer authentication via an access token.\n",
+        "requestBody": {
+          "description": "A valid refresh token.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens refreshed successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenSuccessResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. The provided refresh token is invalid, expired, or was not found in the database.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorStatusResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable Entity. The request body is missing the required `refresh_token` field.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorValidationResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
       "RegisterReqBody": {
         "type": "object",
-        "required": ["first_name", "last_name", "email", "password", "confirm_password"],
+        "required": [
+          "first_name",
+          "last_name",
+          "email",
+          "password",
+          "confirm_password"
+        ],
         "properties": {
           "first_name": {
             "type": "string",
@@ -730,7 +820,10 @@
       },
       "LoginReqBody": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": [
+          "email",
+          "password"
+        ],
         "properties": {
           "email": {
             "type": "string",
@@ -755,11 +848,15 @@
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjZhMTIzNDU2Nzg5MGFiY2RlZjEyMzQ1IiwidG9rZW5fdHlwZSI6InJlZnJlc2hfdG9rZW4iLCJpYXQiOjE3MTg1MjAxMDAsImV4cCI6MTcxOTEyNDkwMH0.abcdefg123456"
           }
         },
-        "required": ["refresh_token"]
+        "required": [
+          "refresh_token"
+        ]
       },
       "ForgotPasswordReqBody": {
         "type": "object",
-        "required": ["email"],
+        "required": [
+          "email"
+        ],
         "properties": {
           "email": {
             "type": "string",
@@ -770,7 +867,9 @@
       },
       "VerifyForgotPasswordTokenReqBody": {
         "type": "object",
-        "required": ["forgot_password_token"],
+        "required": [
+          "forgot_password_token"
+        ],
         "properties": {
           "forgot_password_token": {
             "type": "string",
@@ -781,7 +880,11 @@
       "ResetPasswordReqBody": {
         "type": "object",
         "description": "Requires forgot_password_token alongside new password details.",
-        "required": ["forgot_password_token", "password", "confirm_password"],
+        "required": [
+          "forgot_password_token",
+          "password",
+          "confirm_password"
+        ],
         "properties": {
           "forgot_password_token": {
             "type": "string",
@@ -805,7 +908,9 @@
       },
       "VerifyEmailReqBody": {
         "type": "object",
-        "required": ["email_verify_token"],
+        "required": [
+          "email_verify_token"
+        ],
         "properties": {
           "email_verify_token": {
             "type": "string",
@@ -815,7 +920,11 @@
       },
       "ChangePasswordReqBody": {
         "type": "object",
-        "required": ["old_password", "password", "confirm_password"],
+        "required": [
+          "old_password",
+          "password",
+          "confirm_password"
+        ],
         "properties": {
           "old_password": {
             "type": "string",
@@ -865,6 +974,19 @@
             "example": "https://example.com/avatars/new_avatar.png"
           }
         }
+      },
+      "RefreshTokenReqBody": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string",
+            "description": "The valid refresh token that was provided upon login.",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjY2NTZkYmRjYj..."
+          }
+        },
+        "required": [
+          "refresh_token"
+        ]
       },
       "AuthSuccessResponse": {
         "type": "object",
@@ -953,6 +1075,18 @@
           }
         }
       },
+      "RefreshTokenSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Refresh token successful"
+          },
+          "result": {
+            "$ref": "#/components/schemas/AuthSuccessResponse"
+          }
+        }
+      },
       "User": {
         "type": "object",
         "properties": {
@@ -989,7 +1123,11 @@
             "type": "integer",
             "format": "int32",
             "description": "User verification status. 0: Unverified, 1: Verified, 2: Banned",
-            "enum": [0, 1, 2],
+            "enum": [
+              0,
+              1,
+              2
+            ],
             "example": 0
           },
           "location": {
@@ -1016,7 +1154,11 @@
             "type": "integer",
             "format": "int32",
             "description": "User role. 0: User, 1: Staff, 2: Admin",
-            "enum": [0, 1, 2],
+            "enum": [
+              0,
+              1,
+              2
+            ],
             "example": 0
           }
         }

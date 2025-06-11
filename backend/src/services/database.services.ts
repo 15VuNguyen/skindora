@@ -2,10 +2,10 @@ import { MongoClient, Db, Collection } from 'mongodb'
 import { config } from 'dotenv'
 import User from '~/models/schemas/User.schema'
 import RefreshToken from '~/models/schemas/RefreshToken.schemas'
-import Product from '~/models/schemas/Products/Product.schema'
 import Order from '~/models/schemas/Orders/Order.schema'
 import OrderDetail from '~/models/schemas/Orders/OrderDetail.schema'
 import FeedBack from '~/models/schemas/Reviewschema'
+import Product from '~/models/schemas/Product.schema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@skindora.rbbhqia.mongodb.net/?retryWrites=true&w=majority&appName=skindora`

@@ -47,7 +47,8 @@ export const USERS_MESSAGES = {
   REFRESH_TOKEN_SUCCESS: 'Refresh token successful',
   EMAIL_NOT_VERIFIED: 'Email is not verified',
   IMAGE_URL_MUST_BE_VALID: 'Image URL must be a valid URL',
-  USER_ID_IS_REQUIRED: 'User ID is required'
+  USER_ID_IS_REQUIRED: 'User ID is required',
+  ACCESS_DENIED_ADMIN_ONLY: 'Access denied. Admins only'
 } as const
 
 export const PRODUCTS_MESSAGES = {
@@ -59,7 +60,8 @@ export const PRODUCTS_MESSAGES = {
   WISHLIST_FETCHED_SUCCESSFULLY: 'Wishlist fetched successfully',
   PRODUCT_ID_IS_REQUIRED: 'Product ID is required',
   PRODUCT_ID_NOT_ARRAY: 'Product ID must be an array',
-  PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list'
+  PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list',
+  GET_ALL_PRODUCT_SUCCESS: 'Get all products successfully'
 } as const
 
 export const REVIEW_MESSAGES = {
@@ -77,4 +79,8 @@ export const REVIEW_MESSAGES = {
   COMMENT_MUST_A_STRING: 'Comment must be a string',
   COMMENT_IS_REQUIRED: 'Comment is required',
   REVIEW_EXISTED: 'This product has already been reviewed.'
+} as const
+
+export const ADMIN_MESSAGES = {
+  GET_ALL_USERS_SUCCESS: 'Get all users successfully'
 } as const

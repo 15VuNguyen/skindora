@@ -2,20 +2,18 @@ import { ObjectId } from 'mongodb'
 
 interface FilterHskProductTypeType {
   _id?: ObjectId
-  name?: string
+  option_name?: string
   description?: string
-  is_active?: boolean
-  created_at?: Date
-  updated_at?: Date
+  category_name?: string
+  category_param?: string
 }
 
 export default class FilterHskProductType {
   _id?: ObjectId
-  name?: string
+  option_name?: string
   description?: string
-  is_active?: boolean
-  created_at?: Date
-  updated_at?: Date
+  category_name?: string
+  category_param?: string
 
   constructor(filterHskProductType: FilterHskProductTypeType) {
     const currentDate = new Date()
@@ -23,10 +21,9 @@ export default class FilterHskProductType {
     const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
 
     this._id = filterHskProductType._id || new ObjectId()
-    this.name = filterHskProductType.name || ''
+    this.option_name = filterHskProductType.option_name || ''
     this.description = filterHskProductType.description || ''
-    this.is_active = filterHskProductType.is_active !== undefined ? filterHskProductType.is_active : true
-    this.created_at = localTime || filterHskProductType.created_at
-    this.updated_at = localTime || filterHskProductType.updated_at
+    this.category_name = filterHskProductType.category_name || ''
+    this.category_param = filterHskProductType.category_param || ''
   }
 }

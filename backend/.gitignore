@@ -144,5 +144,8 @@ dist
 # Ignore all files in certs directory
 certs/
 
+# Allow email templates
+!backend/src/utils/templates/*.html
+
 
 # End of https://www.toptal.com/developers/gitignore/api/node

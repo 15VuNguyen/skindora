@@ -10,6 +10,8 @@ import { USERS_MESSAGES } from '~/constants/messages'
 import axios from 'axios'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
+import nodemailer from 'nodemailer'
+import { readEmailTemplate } from '~/utils/email-templates'
 
 class UsersService {
   private async getOAuthGoogleToken(code: string) {
@@ -61,7 +63,7 @@ class UsersService {
   private signEmailVerifyToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
       payload: { user_id, token_type: TokenType.EmailVerificationToken, verify },
-      options: { expiresIn: '3d' },
+      options: { expiresIn: '1d' },
       privateKey: process.env.JWT_SECRET_EMAIL_VERIFY_TOKEN as string
     })
   }
@@ -137,8 +139,33 @@ class UsersService {
         iat
       })
     )
-    //gửi mail chỗ này làm sau
-    console.log(email_verify_token)
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_APP,
+          pass: process.env.EMAIL_PASSWORD_APP
+        }
+      })
+      const verifyURL = `http://localhost:${process.env.PORT}/users/verify-email?email_verify_token=${email_verify_token}` // Đường dẫn xác nhận email
+
+      const htmlContent = readEmailTemplate('verify-email.html', {
+        first_name: payload.first_name,
+        verifyURL: verifyURL
+      })
+
+      const mailOptions = {
+        from: `"SKINDORA" <${process.env.EMAIL_APP}>`,
+        to: payload.email,
+        subject: 'Xác nhận đăng ký tài khoản SKINDORA',
+        html: htmlContent //truyền nội dung html vào
+      }
+
+      transporter.sendMail(mailOptions)
+      console.log('Email verification sent successfully to:', payload.email)
+    } catch (error) {
+      console.error('Error sending email:', error)
+    }
     return { access_token, refresh_token }
   }
 
@@ -356,6 +383,16 @@ class UsersService {
         new_user: 1,
         verify: UserVerifyStatus.Unverified
       }
+    }
+  }
+
+  async getAllUser() {
+    try {
+      const users = await databaseService.users.find({}).toArray()
+      return users
+    } catch (error) {
+      console.error('Error fetching users:', error)
+      throw error
     }
   }
 }

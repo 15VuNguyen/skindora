@@ -11,10 +11,13 @@ import paymentsRouter from './routes/payments.routes'
 import cors from 'cors'
 import reviewRouters from './routes/reviews.routes'
 import swaggerDocument from '../public/openapi.json'
+import productRouter from './routes/products.routes'
+import { dailyReport } from './utils/cron/email.services'
+import adminRouter from './routes/admin.routes'
 config()
 // const swaggerDocument = YAML.load(path.join(__dirname, './openapi.yml'))
 // const swaggerDocument = require(path.join(__dirname, '../public/openapi.json'));
-
+dailyReport.start()
 const port = process.env.PORT
 app.use(
   cors({
@@ -35,6 +38,8 @@ app.get('/', (req, res) => {
 app.use('/users', usersRouter)
 app.use('/payment', paymentsRouter)
 app.use('/review', reviewRouters)
+app.use('/products', productRouter)
+app.use('/admin', adminRouter)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(defaultErrorHandler)

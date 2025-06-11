@@ -69,7 +69,7 @@ class ReviewService {
 
     const result = await databaseService.reviews
       .aggregate([
-        { $match: { productID: new ObjectId(productId) } },
+        { $match: { productID: new ObjectId(productId), isDeleted: false } },
         {
           $facet: {
             data: [{ $sort: { rating: 1 } }, { $skip: skip }, { $limit: limit }],

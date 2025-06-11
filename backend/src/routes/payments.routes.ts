@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { wrapAsync } from '~/utils/handler'
 import createOrder from '~/services/Payments/zalopay.service'
-import { createPaymentUrlController, paymentReturn } from '~/controllers/payments.controller'
+import { createPaymentUrlController, paymentReturn } from '~/controllers/payments.controllers'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 
 const paymentsRouter = Router()
