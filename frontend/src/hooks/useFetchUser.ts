@@ -13,8 +13,9 @@ export const useFetchUser = () => {
   const [data, setData] = useState<User[]>([]);
   const fetchUser = async () => {
     const response = await fetchListUser(params.limit);
-    console.log(response);
+    console.log(response.data);
     setData(response.data);
+
     setParams({
       limit: response.pagination.limit,
       page: response.pagination.currentPage,
@@ -24,6 +25,9 @@ export const useFetchUser = () => {
   };
   useEffect(() => {
     fetchUser();
-  });
+  }, []);
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
   return { fetchUser, data, params, setParams };
 };

@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useHeader } from "@/contexts/header.context";
 import AppTable from "@/features/Admin/components/Table";
 
-import TableOrder from "./components/TableOrder";
+import TableOrder from "./components/TableCustom";
 
 const ManageOrders: React.FC = () => {
   const { setHeaderName } = useHeader();
