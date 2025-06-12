@@ -55,7 +55,7 @@ const Staff: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="w-full gap-4 py-6">
+      {/* <div className="w-full gap-4 py-6">
         <div className="mb-4">
           <Typography className="text-lg font-medium">Truy cập nhanh</Typography>
         </div>
@@ -74,7 +74,7 @@ const Staff: React.FC = () => {
             <CardIcon icon="📊" title="Báo cáo" />
           </Link>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -7,13 +7,14 @@ import ManageStatics from "@/features/Admin/ManageStatics";
 import ProfileAdmin from "@/features/Admin/ProfileAdmin";
 import Staff from "@/features/Staff";
 import AdminLayout from "@/layouts/adminLayout";
+import StaffLayout from "@/layouts/staffLayout";
 
 const staffRoutes: RouteObject[] = [
   {
     path: "/staff",
-    element: <AdminLayout />,
+    element: <StaffLayout />,
     children: [
-      { index: true, element: <Staff /> },
+      { index: true, element: <ProfileAdmin /> },
       {
         path: "customers",
         element: <ManageUsers />,
