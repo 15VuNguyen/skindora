@@ -1,16 +1,13 @@
-import { lazy } from "react";
 import type { RouteObject } from "react-router-dom";
 
 import Admin from "@/features/Admin";
+import ManageUsers from "@/features/Admin/ManageCustomer";
+import ManageOrders from "@/features/Admin/ManageOrders";
+import ManageProducts from "@/features/Admin/ManageProduct";
+import ManageStatics from "@/features/Admin/ManageStatics";
+import ProfileAdmin from "@/features/Admin/ProfileAdmin";
+import AdminLayout from "@/layouts/adminLayout";
 
-// import ManageCustomer from "@/features/Admin/ManageCustomer";
-const AdminLayout = lazy(() => import("@/layouts/adminLayout"));
-const ManageProducts = lazy(() => import("@/features/Admin/ManageProduct"));
-const ManageUsers = lazy(() => import("@/features/Admin/ManageCustomer"));
-const ManageOrders = lazy(() => import("@/features/Admin/ManageOrders"));
-const ManageStatics = lazy(() => import("@/features/Admin/ManageStatics"));
-const ProfileAdmin = lazy(() => import("@/features/Admin/ProfileAdmin"));
-// const Admin = lazy(() => import("@/features/Admin"));
 const adminRoutes: RouteObject[] = [
   {
     path: "/admin",
@@ -40,4 +37,5 @@ const adminRoutes: RouteObject[] = [
     ],
   },
 ];
+
 export default adminRoutes;

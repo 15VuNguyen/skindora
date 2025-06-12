@@ -7,6 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/auth.context";
 import { HeaderProvider, useHeader } from "@/contexts/header.context";
 import HeaderAdmin from "@/features/Admin/components/Header";
+import { Loader } from "@/features/Admin/components/Loader";
 import NotFoundPage from "@/features/ErrorPage/404";
 
 const LayoutContent = () => {
@@ -28,12 +29,6 @@ const LayoutContent = () => {
 };
 
 const AdminLayout: React.FC = () => {
-  const { user } = useAuth();
-
-  if (!user || user.role !== "ADMIN") {
-    return <NotFoundPage />;
-  }
-
   return (
     <HeaderProvider>
       <LayoutContent />

@@ -62,16 +62,16 @@ export function TopbarActions() {
   const { user, logout, isLoading } = useAuth();
   return (
     <div className="flex items-center space-x-4">
-      {user ? (
-        <div className="flex items-center gap-4">
-          <NotificationButton />
-          <ProfileDropdown logout={logout} isLoading={isLoading} />
-        </div>
-      ) : (
-        <Link to="/auth/login">
-          <Button variant="outline">Đăng nhập</Button>
-        </Link>
-      )}
+      {/* {user ? ( */}
+      <div className="flex items-center gap-4">
+        <NotificationButton />
+        <ProfileDropdown logout={logout} isLoading={isLoading} />
+      </div>
+      {/* // ) : (
+      //   <Link to="/auth/login">
+      //     <Button variant="outline">Đăng nhập</Button>
+      //   </Link>
+      // )} */}
     </div>
   );
 }

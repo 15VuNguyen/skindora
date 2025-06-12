@@ -3,8 +3,6 @@ import React, { useEffect } from "react";
 import { useHeader } from "@/contexts/header.context";
 import AppTable from "@/features/Admin/components/Table";
 
-import TableOrder from "./components/TableCustom";
-
 const ManageOrders: React.FC = () => {
   const { setHeaderName } = useHeader();
   useEffect(() => {
@@ -17,9 +15,9 @@ const ManageOrders: React.FC = () => {
           {/* <div>
             <Typography className="text-2xl font-bold">Quản lý khách hàng</Typography>
           </div> */}
-          <div className="mt-8">
+          {/* <div className="mt-8">
             <TableOrder />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

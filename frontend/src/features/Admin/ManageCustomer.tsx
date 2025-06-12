@@ -1,36 +1,162 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import Typography from "@/components/Typography";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchUser } from "@/hooks/useFetchUser";
 
 import { userColumn } from "./columns/usersColums";
+import { CardDemo } from "./components/Card";
+import { Loader } from "./components/Loader";
+import { PaginationDemo } from "./components/Pagination";
+// Component đã được cập nhật
 import { DataTable } from "./components/TableCustom";
+import { UserChart } from "./components/UserChart";
+
+interface User {
+  id: string;
+  username: string;
+  createdAt: string;
+  // ... các trường khác
+}
 
 const ManageCustomer: React.FC = () => {
   const { setHeaderName } = useHeader();
+  // Giả sử `useFetchUser` có kiểu dữ liệu cho `data` là User[]
+  const { fetchUser, data, params, setParams, allUser, fetchAllUser, loading } = useFetchUser();
 
-  const { fetchUser, data, params, setParams } = useFetchUser();
   useEffect(() => {
     setHeaderName("Quản Lý Khách Hàng");
-  }, []);
-  // useEffect(() => {
-  //   fetchUser();
-  //   console.log("Data is " + data);
-  // }, []);
+  }, [setHeaderName]); // Chỉ gọi lại khi setHeaderName thay đổi
+
+  // useEffect này sẽ gọi API khi trang thay đổi
+  useEffect(() => {
+    fetchUser();
+    fetchAllUser();
+    console.log(data);
+    console.log(params.page);
+  }, [params.page]); // Phụ thuộc vào params.page, sẽ fetch lại dữ liệu khi trang thay đổi
+
+  // Hàm xử lý khi người dùng click vào một trang mới
+  const handlePageChange = (page: number) => {
+    // Cập nhật lại state `params` để trigger useEffect ở trên
+    setParams((prevParams) => ({
+      ...prevParams,
+      page: page,
+    }));
+  };
+
+  const monthlyUserData = useMemo(() => {
+    if (!allUser || allUser.length === 0) {
+      return [];
+    }
+    const monthlyCounts = allUser.reduce((acc: { [key: string]: number }, user) => {
+      const date = new Date(user.created_at); // Sửa 'created_at' thành 'createdAt' cho khớp với interface User
+      const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
+      if (!acc[monthKey]) {
+        acc[monthKey] = 0;
+      }
+      acc[monthKey]++;
+      return acc;
+    }, {});
+
+    const chartData = Object.entries(monthlyCounts)
+      // Sắp xếp theo key "YYYY-MM" trước khi chuyển đổi định dạng tên
+      .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
+      .map(([monthKey, count]) => {
+        const [year, month] = monthKey.split("-");
+        const date = new Date(parseInt(year), parseInt(month) - 1);
+        const monthName = `Thg ${date.getMonth() + 1}, ${date.getFullYear()}`;
+        return {
+          name: monthName,
+          total: count,
+        };
+      });
+    return chartData;
+  }, [allUser]);
 
   return (
     <div className="flex min-h-screen bg-white">
-      <div className="flex-1">
-        <div className="mx-auto bg-white px-8 py-15 pt-4">
-          <div>
-            <Typography className="text-2xl font-bold">Danh sách khách hàng</Typography>
-          </div>
-          <div className="mt-8">
-            <DataTable columns={userColumn} data={data} filterColumnId="username" filterPlaceholder="Tìm khách hàng" />
-          </div>
+      {loading || !data || !allUser || monthlyUserData.length === 0 ? (
+        <div className="flex h-[300px] w-full items-center justify-center">
+          <Loader size="lg" />
         </div>
-      </div>
+      ) : (
+        <>
+          <div className="flex-1">
+            <div className="mx-auto bg-white px-8 py-15 pt-4">
+              <div>
+                <Typography className="text-2xl font-bold">Danh sách khách hàng</Typography>
+              </div>
+              <div className="mt-2 mb-4 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <CardDemo
+                  title="Tổng số người dùng"
+                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  change="+20.1% so với tháng trước"
+                />
+                <CardDemo
+                  title="Tổng lượt đăng ký"
+                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  change="+20.1% so với tháng trước"
+                />
+                <CardDemo
+                  title="Tổng tài khoản đã được verify"
+                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  change="+20.1% so với tháng trước"
+                />
+                <CardDemo
+                  title="Tổng số người có đơn hàng"
+                  amount={`${params.totalRecords ?? 0}`} // Sử dụng `totalRecords` từ params
+                  change="+20.1% so với tháng trước"
+                />
+                {/* Các CardDemo khác */}
+              </div>
+
+              <div className="mb-8">
+                <UserChart data={monthlyUserData} />
+              </div>
+
+              <div className="mt-8">
+                <DataTable
+                  columns={userColumn}
+                  data={data}
+                  filterColumnId="username"
+                  filterPlaceholder="Tìm khách hàng"
+                />
+                <div className="mt-4">
+                  <PaginationDemo
+                    totalPages={params.totalPages ?? 1}
+                    currentPage={params.page ?? 1}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              </div>
+              {/* <div className="mt-8">
+            {loading ? (
+              <div className="flex h-[300px] w-full items-center justify-center">
+                <Loader size="lg" />
+              </div>
+            ) : (
+              <>
+                <DataTable
+                  columns={userColumn}
+                  data={data}
+                  filterColumnId="username"
+                  filterPlaceholder="Tìm khách hàng"
+                />
+                <div className="mt-4">
+                  <PaginationDemo
+                    totalPages={params.totalPages ?? 1}
+                    currentPage={params.page ?? 1}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              </>
+            )}
+          </div> */}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

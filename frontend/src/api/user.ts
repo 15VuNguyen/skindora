@@ -1,10 +1,11 @@
 import httpClient from "@/lib/axios";
 import type { User } from "@/types/user";
 
-export const fetchListUser = async (limit: number) => {
+export const fetchListUser = async (limit?: number, page?: number) => {
   return await httpClient
     .get<API.IResponseSearch<User>>(`/admin/manage-users/get-all`, {
       limit: limit,
+      page: page,
     })
     .then((res) => res.data);
 };
