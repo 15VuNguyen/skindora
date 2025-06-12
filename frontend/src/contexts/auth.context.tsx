@@ -110,7 +110,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             successDescription: "Welcome back!",
             profileFetchErrorDefault: "Could not retrieve user details.",
           },
-          (role) => (role === "ADMIN" ? "/admin" : "/profile")
+          (role) => (role === "ADMIN" ? "/admin" : role === "STAFF" ? "/staff" : "/profile")
         );
       } else {
         return handleInitialAuthFailure(loginResponse.error, {
