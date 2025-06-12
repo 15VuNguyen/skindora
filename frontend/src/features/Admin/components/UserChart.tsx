@@ -22,7 +22,7 @@ export const UserChart: React.FC<UserChartProps> = ({ data }) => {
         <CardDescription>Số lượng người dùng mới mỗi tháng</CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={610}>
           <BarChart data={data}>
             <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
             <YAxis
