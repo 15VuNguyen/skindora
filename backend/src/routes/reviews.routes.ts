@@ -6,7 +6,7 @@ import {
   updateReviewController,
   removeReviewController,
   getReviewController
-} from '~/controllers/products.controller'
+} from '~/controllers/products.controllers'
 import { addNewReviewValidator, updateReviewValidator, removeReviewValidator } from '~/middlewares/reviews.middlewares'
 
 const reviewRouters = Router()

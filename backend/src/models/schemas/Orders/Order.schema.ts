@@ -9,6 +9,8 @@ interface OrderType {
   RequireDate?: string
   ShippedDate?: string
   Status?: OrderStatus
+  Discount?: string
+  TotalPrice?: string
   created_at?: Date
   updated_at?: Date
   modified_by?: ObjectId
@@ -22,6 +24,8 @@ export default class Order {
   RequireDate?: string
   ShippedDate?: string
   Status?: OrderStatus
+  Discount?: string
+  TotalPrice?: string
   created_at?: Date
   updated_at?: Date
   modified_by?: ObjectId
@@ -38,6 +42,8 @@ export default class Order {
     this.RequireDate = order.RequireDate || ''
     this.ShippedDate = order.ShippedDate || ''
     this.Status = order.Status || OrderStatus.PENDING
+    this.Discount = order.Discount || ''
+    this.TotalPrice = order.TotalPrice || ''
     this.created_at = localTime || order.created_at
     this.updated_at = localTime || order.updated_at
     this.modified_by = order.modified_by

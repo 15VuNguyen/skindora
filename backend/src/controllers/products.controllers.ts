@@ -1,11 +1,12 @@
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 import { ObjectId } from 'mongodb'
 import { PRODUCTS_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import databaseService from '~/services/database.services'
-import productService from '~/services/Products/product.services'
+import productService from '~/services/product.services'
 import feedBackService from '~/services/review.services'
+import { sendPaginatedResponse } from '~/utils/pagination.helper'
 
 export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
   const { productId } = req.body
@@ -118,9 +119,42 @@ export const getReviewController = async (req: Request, res: Response) => {
   try {
     const response = await feedBackService.getReview(productId, currentPage, limit)
     const { data, ...info } = response
-    res.status(200).json({ status: 200, data, ...info })
+    res.status(200).json({ status: 200, data, pagination: { ...info } })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
     res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+  }
+}
+
+// export const getAllProductController = async (req: Request, res: Response) => {
+//   try {
+//     const products = await productService.getAllProducts()
+//     res.json({
+//       message: PRODUCTS_MESSAGES.GET_ALL_PRODUCT_SUCCESS,
+//       products
+//     })
+//   } catch (error) {
+//     const errorMessage = error instanceof Error ? error.message : 'Internal Server Error'
+//     res.status(500).json({ error: errorMessage })
+//   }
+// }
+// export const getAllProductController = async (req: Request, res: Response, next: NextFunction) => {
+//   // Lấy collection từ database service và truyền vào helper
+//   await sendPaginatedResponse(res, next, databaseService.products, req.query)
+// }
+export const getAllProductController = async (req: Request, res: Response, next: NextFunction) => {
+  // Lấy collection từ database service và truyền vào helper
+  // Helper sẽ làm tất cả phần việc còn lại
+  await sendPaginatedResponse(res, next, databaseService.products, req.query)
+}
+
+// Các controller khác (tạo, sửa, xóa) sẽ tự xử lý response của chúng
+export const getProductDetailsController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    // ... logic lấy sản phẩm theo id
+    // const product = await productService.getById(req.params.id);
+    // return res.status(200).json({ message: 'Thành công', data: product });
+  } catch (error) {
+    next(error)
   }
 }

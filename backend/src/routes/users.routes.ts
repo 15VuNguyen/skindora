@@ -34,7 +34,7 @@ import {
   addToWishListController,
   getWishListController,
   removeFromWishListController
-} from '~/controllers/products.controller'
+} from '~/controllers/products.controllers'
 import { UpdateMeReqBody } from '~/models/requests/Users.requests'
 import { wrapAsync } from '~/utils/handler'
 
