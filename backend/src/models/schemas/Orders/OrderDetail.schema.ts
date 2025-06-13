@@ -5,9 +5,8 @@ interface OrderDetailType {
   ProductID?: ObjectId
   OrderID?: ObjectId
   Quantity?: string
-  Discount?: string
   OrderDate?: Date
-  TotalPrice?: string
+  UnitPrice?: string
 }
 
 export default class OrderDetail {
@@ -15,9 +14,8 @@ export default class OrderDetail {
   ProductID?: ObjectId
   OrderID?: ObjectId
   Quantity?: string
-  Discount?: string
   OrderDate?: Date
-  TotalPrice?: string
+  UnitPrice?: string
 
   constructor(orderDetail: OrderDetailType) {
     const currentDate = new Date()
@@ -28,8 +26,7 @@ export default class OrderDetail {
     this.ProductID = orderDetail.ProductID
     this.OrderID = orderDetail.OrderID
     this.Quantity = orderDetail.Quantity || ''
-    this.Discount = orderDetail.Discount || ''
     this.OrderDate = localTime || orderDetail.OrderDate
-    this.TotalPrice = orderDetail.TotalPrice || ''
+    this.UnitPrice = orderDetail.UnitPrice || ''
   }
 }

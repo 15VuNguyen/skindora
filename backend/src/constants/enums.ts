@@ -28,6 +28,11 @@ export enum OrderStatus {
   FAILED = 'FAILED' // Giao hàng thất bại (shipper không giao được)
 }
 
+export enum OrderType {
+  CART = 'cart',
+  BUY_NOW = 'buy-now'
+}
+
 export enum ProductState {
   INACTIVE = 'INACTIVE', //Sản phẩm không hoạt động
   ACTIVE = 'ACTIVE', //Sản phẩm đang hoạt động

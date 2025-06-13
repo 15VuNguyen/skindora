@@ -48,12 +48,16 @@ export const USERS_MESSAGES = {
   EMAIL_NOT_VERIFIED: 'Email is not verified',
   IMAGE_URL_MUST_BE_VALID: 'Image URL must be a valid URL',
   USER_ID_IS_REQUIRED: 'User ID is required',
-  ACCESS_DENIED_ADMIN_ONLY: 'Access denied. Admins only'
+  ACCESS_DENIED_ADMIN_ONLY: 'Access denied. Admins only',
+  ACCESS_DENIED_ADMIN_OR_STAFF_ONLY: 'Access denied. Admins or staffs only',
+  INVALID_USER_ID: 'UserId is invalid',
+  ACCESS_DENIED: 'Access denied',
+  ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only'  
 } as const
 
 export const PRODUCTS_MESSAGES = {
   EMPTY_PRODUCT_LIST: 'Product list is empty. Please add at least one product.',
-  PRODUCT_NOT_FOUND: 'Product not found',
+  PRODUCT_NOT_FOUND: 'Product not found with id %s',
   PRODUCT_ADDED_TO_WISHLIST: 'Product added to wishlist successfully',
   PRODUCT_REMOVED_FROM_WISHLIST: 'Product removed from wishlist successfully',
   WISHLIST_EMPTY: 'Wishlist is empty',
@@ -61,7 +65,11 @@ export const PRODUCTS_MESSAGES = {
   PRODUCT_ID_IS_REQUIRED: 'Product ID is required',
   PRODUCT_ID_NOT_ARRAY: 'Product ID must be an array',
   PRODUCT_NOT_IN_WISH_LIST: 'Product not in wish list',
-  GET_ALL_PRODUCT_SUCCESS: 'Get all products successfully'
+  GET_ALL_PRODUCT_SUCCESS: 'Get all products successfully',
+  OUT_OF_STOCK: 'Product is out of stock',
+  NOT_ENOUGHT: 'Only %s available in stock',
+  PRODUCT_IDS_MUST_BE_ARRAY: 'ProductIds must be an array',
+  INVALID_PRODUCT_ID: 'ProductId is invalid'
 } as const
 
 export const REVIEW_MESSAGES = {
@@ -84,3 +92,58 @@ export const REVIEW_MESSAGES = {
 export const ADMIN_MESSAGES = {
   GET_ALL_USERS_SUCCESS: 'Get all users successfully'
 } as const
+
+export const CART_MESSAGES = {
+  NOT_FOUND: 'Cart not found',
+  EMPTY_OR_EXPIRED: 'Cart is empty or expired',
+  ADDED_SUCCESS: 'Product added to cart successfully',
+  ADDED_FAILED: 'Fail to add product to cart',
+  FETCHED_SUCCESS: 'Cart fetched successfully',
+  FETCHED_FAILED: 'Fail to fetch cart',
+  UPDATED_SUCCESS: 'Cart updated successfully',
+  UPDATED_FAILED: 'Fail to update cart',
+  REMOVED_SUCCESS: 'Product removed from cart successfully',
+  REMOVED_FAILED: 'Fail to remove product from cart',
+  CLEAR_SUCCESS: 'Clear cart successfully',
+  CLEAR_FAILED: 'Fail to clear cart',
+  PRODUCT_NOT_FOUND: 'Product not found in cart',
+  PRODUCT_ID_IS_REQUIRED: 'ProductID is required',
+  INVALID_PRODUCT_ID: 'ProductID is invalid',
+  NOT_IN_CART: 'Some selected product are not in cart',
+  NOT_SELECTED: 'No valid products selected',
+  QUANTITY_IS_REQUIRED: 'Quantity is required',
+  POSITIVE_INTEGER_QUANTITY: 'Quantity must be a positive integer',
+  NON_NEGATIVE_INTEGER_QUANTITY: 'Quantity must be a non-negative integer'
+} as const
+
+export const ORDER_MESSAGES = {
+  CREATED_SUCCESS: 'Order created successfully',
+  PREPARED_SUCCESS: 'Order prepared successfully, expires in 10 minutes',
+  PREPARED_FAILED: 'Fail to prepare order',
+  CREATED_FAILED: 'Fail to create order',
+  GET_CURRENT_SUCCESS: 'Get current order successfully',
+  GET_CURRENT_FAIL: 'Fail to get current order',
+  GET_ALL_SUCCESS: 'Get all orders successfully',
+  GET_ALL_FAIL: 'Fail to get all orders',
+  GET_ORDER_BY_USER_SUCCESS: 'Get all your orders successfully',
+  GET_ORDER_BY_USER_FAIL: 'Fail to get all your orders',
+  GET_ORDER_BY_ID_SUCCESS: 'Get order by id successfully',
+  GET_ORDER_BY_ID_FAIL: 'Fail to get order by id',
+  EMPTY_OR_EXPIRED: 'Order is empty or expired',
+  NOT_FOUND: 'Order not found with id %s',
+  SHIP_ADDRESS_REQUIRED: 'ShipAddress is required',
+  SHIP_ADDRESS_MUST_BE_STRING: 'ShipAddress must be a string',
+  REQUIRE_DATE_REQUIRED: 'RequireDate is required',
+  INVALID_REQUIRE_DATE: 'RequireDate must be a valid ISO8601 date',
+  PRESENT_REQUIRE_DATE: 'RequireDate cannot be in the past',
+  INVALID_CHECKOUT_TYPE: 'Invalid check-out type',
+  REQUIRE_USER_ID: 'UserId is required',
+  REQUIRE_ORDER_ID: 'OrderId is required',
+  INVALID_ORDER_ID: 'OrderId is invalid',
+  INVALID_ORDER_STATUS: 'OrderStatus is invalid',
+  CANNOT_UPDATE_STATUS: 'Cannot update from status %s',
+  UPDATE_TO_NEXT_STATUS_FAIL: 'Cannot update from %s to %s ',
+  UPDATE_TO_NEXT_STATUS_SUCCESS: 'Update to next status successfully'
+} as const
+
+export const ORDER_DETAIL_MESSAGES = {} as const
