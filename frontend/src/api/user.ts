@@ -8,7 +8,8 @@ export interface FetchListUserProps {
 export const fetchListUser = async (params: FetchListUserProps) => {
   return await httpClient
     .get<API.IResponseSearch<User>>(`/admin/manage-users/get-all`, {
-      params: params,
+      limit: params.limit,
+      page: params.page,
     })
     .then((res) => res.data);
 };

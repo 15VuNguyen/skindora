@@ -28,13 +28,19 @@ export const useFetchOrder = () => {
   //       setTimeout(() => setLoading(false), 10000);
   //     }
   //   }, []);
+  // Tách riêng hàm setParams để an toàn hơn khi gọi từ component
+  const changePage = useCallback((page: number) => {
+    setParams((prev) => ({ ...prev, page }));
+  }, []);
+
+  const changeLimit = useCallback((limit: number) => {
+    setParams((prev) => ({ ...prev, page: 1, limit })); // Reset về trang 1 khi thay đổi limit
+  }, []);
 
   // 3. Cập nhật hàm fetchUser với quản lý loading
   const fetchOrder = useCallback(async () => {
     setLoading(true); // Bắt đầu loading
     try {
-      // Sử dụng page từ params state, nhưng cần truyền vào hàm
-      // vì state có thể chưa cập nhật ngay lập tức
       const response = await fetchListOrder({ limit: params.limit, page: params.page });
       setData(response.data);
       setParams((prevParams) => ({
@@ -69,5 +75,6 @@ export const useFetchOrder = () => {
     data,
     params,
     setParams,
+    changePage,
   };
 };

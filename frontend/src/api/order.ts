@@ -8,7 +8,8 @@ export interface FetchListOrderProps {
 export const fetchListOrder = async (params: FetchListOrderProps) => {
   return await httpClient
     .get<API.IResponseSearch<Order>>(`/orders`, {
-      params: params,
+      limit: params.limit,
+      page: params.page,
     })
     .then((response) => response.data);
 };
