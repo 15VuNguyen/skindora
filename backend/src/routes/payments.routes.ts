@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { wrapAsync } from '~/utils/handler'
-import createOrder from '~/services/Payments/zalopay.service'
+import createOrder from '~/services/Payments/zalopay.services'
 import { createPaymentUrlController, paymentReturn } from '~/controllers/payments.controllers'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 

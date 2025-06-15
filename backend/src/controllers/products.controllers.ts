@@ -36,7 +36,7 @@ export const addToWishListController = async (req: Request, res: Response): Prom
     res.status(200).json({ status: 200, message: PRODUCTS_MESSAGES.PRODUCT_ADDED_TO_WISHLIST })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -53,7 +53,7 @@ export const getWishListController = async (req: Request, res: Response): Promis
     res.status(200).json({ status: 200, data: wishList })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -71,7 +71,7 @@ export const removeFromWishListController = async (req: Request, res: Response):
     res.status(200).json({ status: 200, data: wishList })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -84,7 +84,7 @@ export const addNewReviewController = async (req: Request, res: Response) => {
     res.status(200).json({ status: 200, data: response })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -97,7 +97,7 @@ export const updateReviewController = async (req: Request, res: Response) => {
     res.status(200).json({ status: 200, data: response })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -110,7 +110,7 @@ export const removeReviewController = async (req: Request, res: Response) => {
     res.status(200).json({ status: 200, data: response })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 
@@ -125,7 +125,7 @@ export const getReviewController = async (req: Request, res: Response) => {
     res.status(200).json({ status: 200, data, pagination: { ...info } })
   } catch (error: any) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
-    res.status(statusCode).json({ status: statusCode, message: error.message || 'Internal Server Error' })
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
 

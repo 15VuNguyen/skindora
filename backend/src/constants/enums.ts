@@ -57,3 +57,8 @@ export enum FilterBrandState {
   SUSPENDED = 'SUSPENDED', //Tạm ngưng hoạt động do vi phạm policy hoặc vấn đề tạm thờiTạm ngưng hoạt động
   DISCONTINUED = 'DISCONTINUED' //Ngừng hợp tác/kinh doanh vĩnh viễn
 }
+
+export enum DiscountType {
+  Percentage = 'PERCENTAGE', // giảm giá theo %
+  Fixed = 'FIXED' // giảm giá số tiền ví dụ giảm thẳng 50k
+}

@@ -232,6 +232,7 @@ export const updateReviewValidator = validate(
     },
     rating: {
       in: 'body',
+      optional: true,
       notEmpty: {
         errorMessage: REVIEW_MESSAGES.RATING_IS_REQUIRED
       },
@@ -243,6 +244,7 @@ export const updateReviewValidator = validate(
     },
     comment: {
       in: 'body',
+      optional: true,
       notEmpty: {
         errorMessage: REVIEW_MESSAGES.COMMENT_IS_REQUIRED
       },

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { createPaymentUrl, callBackUrl } from '~/services/Payments/vnpay.service'
+import { createPaymentUrl, callBackUrl } from '~/services/Payments/vnpay.services'
 
 export const createPaymentUrlController = (req: Request, res: Response): void => {
   const clientIp =

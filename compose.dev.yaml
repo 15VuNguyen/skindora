@@ -5,8 +5,12 @@ networks:
     driver: bridge
   backend_network:
     driver: bridge
+  kafka_network:
+    driver: bridge
 volumes:
   redis_data:
+  kafka_data:
+  zookeeper_data:
 
 services:
   frontend:
@@ -49,3 +53,33 @@ services:
       - ./backend/.env
     ports:
       - ${PORT:-4000}:4000
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    networks:
+      - kafka_network
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    depends_on:
+      - zookeeper
+    networks:
+      - kafka_network
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: "3"
+    volumes:
+      - kafka_data:/var/lib/kafka

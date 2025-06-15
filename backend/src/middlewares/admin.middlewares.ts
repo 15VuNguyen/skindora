@@ -17,6 +17,7 @@ import filterHskSkinTypeService from '~/services/filterHskSkinType.services'
 import filterHskUsesService from '~/services/filterHskUses.services'
 import filterOriginService from '~/services/filterOrigin.services'
 import PRODUCT from '~/constants/product'
+import { VoucherType } from '~/models/schemas/Voucher.schema'
 
 export const isAdminValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -512,3 +513,28 @@ export const createNewProductValidator = validate(
     ['body']
   )
 )
+
+export const isValidToActiveValidator = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const voucher = req.voucher as VoucherType
+
+    const now = new Date()
+    const endDate = new Date(voucher.endDate)
+
+    if (endDate <= now) {
+      res.status(400).json({ message: ADMIN_MESSAGES.VOUCHER_EXPIRED })
+    }
+    next()
+  } catch (error) {
+    let status: number = HTTP_STATUS.INTERNAL_SERVER_ERROR
+    let message = 'Internal Server Error'
+
+    if (error instanceof ErrorWithStatus) {
+      status = error.status
+      message = error.message
+    } else if (error instanceof Error) {
+      message = error.message
+    }
+    res.status(status).json({ message })
+  }
+}
