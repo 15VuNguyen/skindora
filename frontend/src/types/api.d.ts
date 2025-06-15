@@ -53,4 +53,8 @@ declare namespace API {
       totalRecords: number;
     };
   }
+  export interface IUpdateStatusOrder<T = any> {
+    result: T[];
+    message: string;
+  }
 }

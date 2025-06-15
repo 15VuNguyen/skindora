@@ -13,6 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUpdateStatus } from "@/hooks/useUpdateStatus";
 import type { Order } from "@/types/order";
 
 // 1. Định nghĩa interface cho Order dựa trên dữ liệu bạn cung cấp
@@ -165,6 +166,7 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
     id: "actions",
     cell: ({ row }) => {
       const order = row.original;
+      const { loading, updateStatus } = useUpdateStatus();
       return (
         <div className="text-right">
           <DropdownMenu>
@@ -179,6 +181,14 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
               <DropdownMenuItem onClick={() => navigator.clipboard.writeText(order._id)}>
                 Copy Mã đơn hàng
               </DropdownMenuItem>
+              <DropdownMenu>
+                <DropdownMenuItem
+                  onClick={() => updateStatus({ orderID: order._id })} // ✅ Gọi hàm xử lý sự kiện
+                  disabled={loading} // Tùy chọn: vô hiệu hóa nút khi đang xử lý
+                >
+                  {loading ? "Đang cập nhật..." : "Cập nhật trạng thái đơn hàng"}
+                </DropdownMenuItem>
+              </DropdownMenu>
               <DropdownMenuItem>Xem chi tiết</DropdownMenuItem>
               <DropdownMenuItem className="text-red-600">Hủy đơn hàng</DropdownMenuItem>
             </DropdownMenuContent>
