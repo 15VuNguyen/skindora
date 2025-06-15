@@ -25,6 +25,16 @@ import {
 
 // src/app/users/columns.tsx
 
+// src/app/users/columns.tsx
+
+// src/app/users/columns.tsx
+
+// src/app/users/columns.tsx
+
+// src/app/users/columns.tsx
+
+// src/app/users/columns.tsx
+
 // 1. Định nghĩa interface User bạn đã cung cấp
 export interface User {
   _id: string;
@@ -112,8 +122,8 @@ export const userColumn: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const roleid = row.getValue("roleid");
       // Chuyển đổi roleid số thành chuỗi có ý nghĩa
-      const roleText = roleid === 1 ? "Admin" : roleid === 2 ? "Moderator" : "User";
-      const variant = roleid === 1 ? "destructive" : roleid === 2 ? "secondary" : "default";
+      const roleText = roleid === 1 ? "Admin" : roleid === 2 ? "Staff" : "User";
+      const variant = roleid === 1 ? "complete" : roleid === 2 ? "default" : "secondary";
 
       return <Badge variant={variant}>{roleText}</Badge>;
     },

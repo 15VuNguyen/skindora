@@ -1,12 +1,9 @@
 import { useCallback, useState } from "react";
 
-// Cập nhật: Thêm useCallback
+import { fetchListOrder } from "@/api/order";
+import type { Order } from "@/types/order";
 
-import { fetchListUser } from "@/api/user";
-import type { User } from "@/types/user";
-
-export const useFetchUser = () => {
-  // 1. Thêm state loading
+export const useFetchOrder = () => {
   const [loading, setLoading] = useState(false);
 
   const [params, setParams] = useState({
@@ -15,30 +12,30 @@ export const useFetchUser = () => {
     totalPages: 1,
     totalRecords: 1,
   });
-  const [data, setData] = useState<User[]>([]);
-  const [allUser, setAllUser] = useState<User[]>([]);
+  const [data, setData] = useState<Order[]>([]);
+  //   const [allUser, setAllUser] = useState<Order[]>([]);
 
   // 2. Cập nhật hàm fetchAllUser với quản lý loading
-  const fetchAllUser = useCallback(async () => {
-    setLoading(true); // Bắt đầu loading
-    try {
-      const response = await fetchListUser({ limit: 1000, page: params.page });
-      setAllUser(response.data);
-    } catch (error) {
-      console.error("Failed to fetch all users:", error);
-      setAllUser([]); // Xử lý lỗi, trả về mảng rỗng
-    } finally {
-      setTimeout(() => setLoading(false), 10000); // Luôn tắt loading khi kết thúc (kể cả khi lỗi)
-    }
-  }, []); // useCallback với dependency rỗng vì nó không phụ thuộc vào state nào
+  //   const fetchAllUser = useCallback(async () => {
+  //     setLoading(true); // Bắt đầu loading
+  //     try {
+  //       const response = await fetchListOrder({ limit: params.limit, page: params.page });
+  //       setAllUser(response.data);
+  //     } catch (error) {
+  //       console.error("Failed to fetch all users:", error);
+  //       setAllUser([]);
+  //     } finally {
+  //       setTimeout(() => setLoading(false), 10000);
+  //     }
+  //   }, []);
 
   // 3. Cập nhật hàm fetchUser với quản lý loading
-  const fetchUser = useCallback(async () => {
+  const fetchOrder = useCallback(async () => {
     setLoading(true); // Bắt đầu loading
     try {
       // Sử dụng page từ params state, nhưng cần truyền vào hàm
       // vì state có thể chưa cập nhật ngay lập tức
-      const response = await fetchListUser({ limit: params.limit, page: params.page });
+      const response = await fetchListOrder({ limit: params.limit, page: params.page });
       setData(response.data);
       setParams((prevParams) => ({
         ...prevParams,
@@ -68,11 +65,9 @@ export const useFetchUser = () => {
   // 5. Trả về `loading` state
   return {
     loading, // Thêm vào
-    fetchUser,
+    fetchOrder,
     data,
     params,
     setParams,
-    allUser,
-    fetchAllUser,
   };
 };
