@@ -1,10 +1,11 @@
 import axios from "axios";
 
+import { config } from "@/config/config";
 import { HttpClient } from "@/utils/axios/HttpClient";
 import type { HttpClientConfig } from "@/utils/axios/types";
 import { clearTokens, getAccessToken, getRefreshToken, setTokens } from "@/utils/tokenManager";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+const API_BASE_URL = config.apiBaseUrl || "http://localhost:4000";
 
 const refreshTokenFn = async (): Promise<string | null> => {
   const currentRefreshToken = getRefreshToken();
@@ -54,10 +55,6 @@ const apiClientConfig: HttpClientConfig = {
   },
   timeout: 60000,
   DEBUG: import.meta.env.DEV,
-  defaultRetry: {
-    maxRetries: 5,
-    delayMs: 2000,
-  },
 };
 
 export const apiClient = new HttpClient(apiClientConfig);

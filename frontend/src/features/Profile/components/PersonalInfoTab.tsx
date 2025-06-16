@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { type ProfileUpdateFormData } from "@/schemas/authSchemas";
-import type { User } from "@/types/auth";
+import type { User } from "@/types/Auth";
 
 interface PersonalInfoTabProps {
   form: UseFormReturn<ProfileUpdateFormData>;

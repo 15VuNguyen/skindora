@@ -52,7 +52,7 @@ export const USERS_MESSAGES = {
   ACCESS_DENIED_ADMIN_OR_STAFF_ONLY: 'Access denied. Admins or staffs only',
   INVALID_USER_ID: 'UserId is invalid',
   ACCESS_DENIED: 'Access denied',
-  ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only'  
+  ACCESS_DENIED_STAFF_ONLY: 'Access denied. Staffs only'
 } as const
 
 export const PRODUCTS_MESSAGES = {

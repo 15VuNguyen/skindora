@@ -34,7 +34,7 @@ function NavigationItems({ navItems }: { navItems: TopbarProps["navItems"] }) {
           <Link
             key={index}
             to={path}
-            className={`p prose-a ${isActive ? "text-primary" : "hover:text-primary text-gray-600"}`}
+            className={`prose-a ${isActive ? "text-primary font-semibold" : "text-gray-600 hover:text-gray-700"}`}
           >
             {item.displayText}
           </Link>
@@ -85,7 +85,7 @@ function NotificationButton() {
 }
 
 function TopbarActions() {
-  const { user, logout, isLoading } = useAuth();
+  const { user, actions } = useAuth();
   return (
     <div className="flex items-center space-x-4">
       <Link to="/store">
@@ -96,7 +96,7 @@ function TopbarActions() {
       {user ? (
         <div className="flex items-center gap-4">
           <NotificationButton />
-          <ProfileDropdown logout={logout} isLoading={isLoading} />
+          <ProfileDropdown logout={actions.logout} isLoading={actions.isLoggingOut} />
         </div>
       ) : (
         <Link to="/auth/login">

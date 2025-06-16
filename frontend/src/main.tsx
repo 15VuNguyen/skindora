@@ -5,7 +5,9 @@ import { Provider as ReduxProvider } from "react-redux";
 
 import App from "./App.tsx";
 import "./index.css";
+import { ReactQueryProvider } from "./lib/reactQuery.tsx";
 import { store } from "./redux/index.ts";
+import { logger } from "./utils/logger.ts";
 
 if (import.meta.env.VITE_SENTRY_DSN_FRONTEND) {
   Sentry.init({
@@ -25,18 +27,19 @@ if (import.meta.env.VITE_SENTRY_DSN_FRONTEND) {
     environment: import.meta.env.MODE || "development",
   });
 } else {
-  console.warn("Sentry DSN for Frontend is not configured. Sentry will not be initialized.");
+  logger.warn("Sentry DSN for Frontend is not configured. Sentry will not be initialized.");
 }
-
 const rootElement = document.getElementById("root")!;
 const root = createRoot(rootElement);
 
 root.render(
   <StrictMode>
     <Sentry.ErrorBoundary fallback={<p>An error has occurred (Sentry Fallback)</p>}>
-      <ReduxProvider store={store}>
-        <App />
-      </ReduxProvider>
+      <ReactQueryProvider>
+        <ReduxProvider store={store}>
+          <App />
+        </ReduxProvider>
+      </ReactQueryProvider>
     </Sentry.ErrorBoundary>
   </StrictMode>
 );

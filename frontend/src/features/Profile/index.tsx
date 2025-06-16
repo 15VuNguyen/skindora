@@ -1,6 +1,5 @@
 import { ArrowLeft, CheckCircle, Loader2, Mail, XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -16,7 +15,6 @@ import { useProfilePageLogic } from "./hooks/useProfilePageLogic";
 const ProfilePage = () => {
   const {
     user,
-    isAuthLoadingGlobal,
     isEditing,
     isSubmittingActions,
     form,
@@ -28,28 +26,22 @@ const ProfilePage = () => {
     avatarFallbackChar,
     watchedAvatar,
     toggleEditMode,
-
     isFormDirty,
     isSubmitting,
   } = useProfilePageLogic();
-  const navigate = useNavigate();
-  if (isAuthLoadingGlobal || !user) {
-    if (!user) {
-      navigate("/auth/login", { replace: true });
-    }
+  if (!user) {
     return (
-      <div className="flex min-h-[calc(100vh-var(--topbar-height,64px))] items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <Loader2 className="text-primary h-12 w-12 animate-spin" />
       </div>
     );
   }
-
   return (
     <div className="container mx-auto p-4 py-6 sm:py-8">
       <div className="mx-auto max-w-4xl">
         <div className="mb-6">
           <Link to="/">
-            <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
+            <Button variant="ghost" className="text-muted-foreground">
               <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
             </Button>
           </Link>

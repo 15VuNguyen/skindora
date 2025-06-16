@@ -14,7 +14,7 @@ import GoogleButton from "../GoogleButton";
 import Splitter from "../Splitter";
 
 export function RegisterForm() {
-  const { handleGoogleLogin, register, isLoading: isAuthLoading } = useAuth();
+  const { handleGoogleLogin, actions } = useAuth();
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -28,7 +28,7 @@ export function RegisterForm() {
   });
 
   async function onSubmit(values: RegisterFormData) {
-    await register(values);
+    await actions.register(values);
   }
 
   return (
@@ -54,7 +54,7 @@ export function RegisterForm() {
                           placeholder="John"
                           className="pl-9 placeholder:text-gray-500"
                           {...field}
-                          disabled={isAuthLoading}
+                          disabled={actions.isRegistering}
                         />
                       </div>
                     </FormControl>
@@ -75,7 +75,7 @@ export function RegisterForm() {
                           placeholder="Doe"
                           className="pl-9 placeholder:text-gray-500"
                           {...field}
-                          disabled={isAuthLoading}
+                          disabled={actions.isRegistering}
                         />
                       </div>
                     </FormControl>
@@ -97,7 +97,7 @@ export function RegisterForm() {
                         placeholder="you@example.com"
                         className="pl-9 placeholder:text-gray-500"
                         {...field}
-                        disabled={isAuthLoading}
+                        disabled={actions.isRegistering}
                       />
                     </div>
                   </FormControl>
@@ -119,7 +119,7 @@ export function RegisterForm() {
                         placeholder="••••••••"
                         className="pl-9 placeholder:text-gray-500"
                         {...field}
-                        disabled={isAuthLoading}
+                        disabled={actions.isRegistering}
                       />
                     </div>
                   </FormControl>
@@ -141,7 +141,7 @@ export function RegisterForm() {
                         placeholder="••••••••"
                         className="pl-9 placeholder:text-gray-500"
                         {...field}
-                        disabled={isAuthLoading}
+                        disabled={actions.isRegistering}
                       />
                     </div>
                   </FormControl>
@@ -149,8 +149,8 @@ export function RegisterForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isAuthLoading}>
-              {isAuthLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Button type="submit" className="w-full" disabled={actions.isRegistering}>
+              {actions.isRegistering && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Create Account
             </Button>
           </form>
@@ -158,7 +158,7 @@ export function RegisterForm() {
       </CardContent>
       <CardFooter className="flex flex-col items-center space-y-4">
         <Splitter />
-        <GoogleButton handleGoogleLogin={handleGoogleLogin} isAuthLoading={isAuthLoading} />
+        <GoogleButton handleGoogleLogin={handleGoogleLogin} isAuthLoading={actions.isRegistering} />
         <p className="text-muted-foreground text-sm">
           Already have an account?{" "}
           <Link to="/auth/login" className="text-primary font-medium hover:underline">

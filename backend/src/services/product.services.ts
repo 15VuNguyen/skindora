@@ -72,7 +72,7 @@ class ProductsService {
     await redisClient.expire(key, 60 * 60 * 24)
   }
 
-  getProductInfoKey(productId: string){
+  getProductInfoKey(productId: string) {
     return `${process.env.PRODUCT_INFO_KEY}${productId}`
   }
   // lấy key trong redis

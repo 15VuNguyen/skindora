@@ -12,7 +12,6 @@ const redisClient = createClient({
   socket: {
     host,
     port,
-
     servername: host
   },
   password: process.env.HOST_PASSWORD

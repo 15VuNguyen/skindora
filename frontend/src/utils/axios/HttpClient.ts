@@ -4,6 +4,7 @@ import { Result, err, ok } from "neverthrow";
 
 import { ApiError } from "./error";
 import type { ApiResponse, ExtendedAxiosRequestConfig, HttpClientConfig, HttpClientService, RequestOptions } from "./types";
+import { logger } from "../logger";
 
 export class HttpClient implements HttpClientService {
   private client: AxiosInstance;
@@ -43,7 +44,7 @@ export class HttpClient implements HttpClientService {
     this.client.interceptors.response.use(
       (response: AxiosResponse) => {
         if (this.config.DEBUG) {
-          console.table(response);
+          logger.debug(response);
         }
         return response;
       },
@@ -53,7 +54,7 @@ export class HttpClient implements HttpClientService {
           originalRequest._retry = -1;
 
           if (this.config.DEBUG) {
-            console.error(" Encountered 401 error, attempting token refresh...", error);
+            logger.debug(" Encountered 401 error, attempting token refresh...", error);
           }
           if (this.isRefreshing) {
             try {
@@ -72,7 +73,7 @@ export class HttpClient implements HttpClientService {
                 });
               });
             } catch (e) {
-              console.error("Error while waiting for token refresh:", e);
+              logger.debug("Error while waiting for token refresh:", e);
               return Promise.reject(new ApiError(error));
             }
           } else {
@@ -102,7 +103,7 @@ export class HttpClient implements HttpClientService {
                 this.config.auth.onRefreshFailure();
               }
               if (this.config.DEBUG) {
-                console.error(" Token refresh failed catastrophically:", refreshError);
+                logger.error(" Token refresh failed catastrophically:", refreshError);
               }
               return Promise.reject(new ApiError(error));
             }
@@ -116,7 +117,7 @@ export class HttpClient implements HttpClientService {
             const delayMultiplier = originalRequest._delayMs || this.config.defaultRetry?.delayMs || 1000;
             const delay = delayMultiplier * Math.pow(2, originalRequest._retry - 1);
             if (this.config.DEBUG) {
-              console.warn(`Retrying request, attempt ${originalRequest._retry}/${maxRetries} after ${delay}ms...`, originalRequest.url);
+              logger.warn(`Retrying request, attempt ${originalRequest._retry}/${maxRetries} after ${delay}ms...`, originalRequest.url);
             }
             await this.sleep(delay);
             return this.client(originalRequest);
@@ -164,7 +165,7 @@ export class HttpClient implements HttpClientService {
 
     const retryConfig = options?.retry || this.config.defaultRetry;
     if (retryConfig) {
-      console.log(`Retry configuration: maxRetries=${retryConfig.maxRetries}, delayMs=${retryConfig.delayMs}`);
+      logger.info(`Retry configuration: maxRetries=${retryConfig.maxRetries}, delayMs=${retryConfig.delayMs}`);
       extendedConfig._retry = 0;
       extendedConfig._maxRetries = retryConfig.maxRetries;
       extendedConfig._delayMs = retryConfig.delayMs;

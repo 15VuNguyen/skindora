@@ -93,4 +93,11 @@ export const authService = {
   getMe: async () => {
     return apiClient.get<UserProfileResponse>("/users/me");
   },
+  verifyEmail: async (token: string) => {
+    return apiClient.post<AuthResponse>(
+      "/users/verify-email", 
+      { email_verify_token: token }, 
+      { skipAuth: true } 
+    );
+  },
 };

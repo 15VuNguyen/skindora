@@ -13,7 +13,8 @@ info:
 servers:
   - url: https://api.skindora.site/api-docs
     description: Server development
-
+  - url: http://localhost:4000/
+    description: Server development
 tags:
   - name: Users
     description: User authentication and management operations

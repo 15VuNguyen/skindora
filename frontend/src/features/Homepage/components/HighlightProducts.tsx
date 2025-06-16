@@ -1,7 +1,9 @@
 import Autoplay from "embla-carousel-autoplay";
 import { ChevronRight, LoaderCircle } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 
@@ -29,8 +31,12 @@ function HighlightProductCard({ product }: { product: products }) {
       <CardContent>
         <h3 className="line-clamp-2 text-sm font-medium">{product.name}</h3>
       </CardContent>
-      <CardFooter className="flex flex-col items-start px-6">
-        <p className="text-primary mt-2 text-lg font-bold">{product.price.toLocaleString()}đ</p>
+      <CardFooter className="flex items-center justify-between px-6 py-4">
+        <p className="text-primary text-lg font-bold">{product.price.toLocaleString()}đ</p>
+        <Button size="sm">
+          <ShoppingCart className="mr-2 h-4 w-4" />
+          Thêm vào giỏ
+        </Button>
       </CardFooter>
     </Card>
   );

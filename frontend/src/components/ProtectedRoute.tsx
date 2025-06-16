@@ -1,19 +1,29 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-type roles = "user" | "admin" | "guest";
-function ProtectedRoute({ allowedRoles = undefined }: { allowedRoles?: roles[] }): React.JSX.Element {
-  const isAuthenticated = true;
-  const userRoles: roles[] = ["user"];
+import { useAuth } from "@/contexts/auth.context";
+import { logger } from "@/utils/logger";
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+const ProtectedRoute = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen w-full items-center justify-center">
+        <Loader2 className="text-primary h-12 w-12 animate-spin" />
+      </div>
+    );
   }
 
-  if (allowedRoles && !allowedRoles.some((role: roles) => userRoles.includes(role))) {
-    return <Navigate to="/unauthorized" replace />;
+  if (!isAuthenticated) {
+    logger.info("Unauthorized access attempt to protected route", {
+      location: location.pathname,
+    });
+    return <Navigate to="/auth/login" replace state={{ from: location, reason: "unauthorized" }} />;
   }
 
   return <Outlet />;
-}
+};
 
 export default ProtectedRoute;

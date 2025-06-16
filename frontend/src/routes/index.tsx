@@ -1,5 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
+import ProtectedRoute from "@/components/ProtectedRoute";
 import NotFoundPage from "@/features/ErrorPage/404";
 import RootLayout from "@/layouts/RootLayout";
 
@@ -13,7 +14,17 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
-    children: [...publicRoutes, ...privateRoutes, ...protectedRoutes, ...adminRoutes, ...staffRoutes],
+    children: [
+      ...publicRoutes,
+      ...privateRoutes,
+      ...adminRoutes,
+      ...staffRoutes,
+      {
+        element: <ProtectedRoute />,
+        children: [...protectedRoutes],
+      },
+    ],
+
     errorElement: <NotFoundPage />,
   },
 ]);

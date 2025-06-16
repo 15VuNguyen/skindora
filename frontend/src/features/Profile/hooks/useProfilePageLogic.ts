@@ -4,14 +4,17 @@ import { useForm } from "react-hook-form";
 import { toast as sonnerToast } from "sonner";
 
 import { useAuth } from "@/contexts/auth.context";
+import { useUpdateProfileMutation } from "@/hooks/mutations/useUpdateProfileMutation";
 import { type ProfileUpdateFormData, profileUpdateSchema } from "@/schemas/authSchemas";
 import { type UpdateMePayload, authService } from "@/services/authService";
 
 export function useProfilePageLogic() {
-  const { user, fetchUserProfile, isLoading: isAuthLoadingGlobal } = useAuth();
+  const { user, isLoading: isAuthLoadingGlobal } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmittingActions, setIsSubmittingActions] = useState(false);
-//TODO: doi sang vietnamese 
+  const updateProfileMutation = useUpdateProfileMutation();
+
+  //TODO: doi sang vietnamese
   const form = useForm<ProfileUpdateFormData>({
     resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
@@ -69,16 +72,21 @@ export function useProfilePageLogic() {
         return;
       }
 
-      const result = await authService.updateMe(payload);
-      if (result.isOk()) {
-        sonnerToast.success("Profile Updated", { description: "Your profile has been updated successfully." });
-        await fetchUserProfile();
-        setIsEditing(false);
-      } else {
-        sonnerToast.error("Update Failed", { description: result.error.message || "Could not update profile." });
-      }
+      updateProfileMutation.mutate(payload, {
+        onSuccess: () => {
+          sonnerToast.success("Profile Updated", {
+            description: "Your profile has been updated successfully.",
+          });
+          setIsEditing(false);
+        },
+        onError: (error) => {
+          sonnerToast.error("Update Failed", {
+            description: error.message || "Could not update profile.",
+          });
+        },
+      });
     },
-    [user, fetchUserProfile, setIsEditing]
+    [user, updateProfileMutation]
   );
 
   const handleVerifyEmail = useCallback(async () => {

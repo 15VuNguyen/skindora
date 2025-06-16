@@ -13,7 +13,7 @@ function HeroTitleAndSubtitle({ title, subtitle, paragraph }: { title: string; s
   return (
     <>
       <h1 className="prose-h1 mb-6 text-4xl font-bold md:text-5xl">
-        <span className="mb-4 block text-gray-800">{title}</span>
+        <span className="mb-2 block text-gray-800 md:mb-4">{title}</span>
         <span className="from-primary to-accent bg-gradient-to-r bg-clip-text text-transparent">{subtitle}</span>
       </h1>
       <p className="prose-p mb-8 text-lg text-gray-600">{paragraph}</p>
@@ -25,7 +25,7 @@ function HeroCallToAction() {
   return (
     <div className="flex flex-col gap-4 sm:flex-row">
       <Link to="/store">
-        <Button size="lg" className="px-6">
+        <Button size="lg" className="px-6 font-semibold">
           Khám phá sản phẩm
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
@@ -33,7 +33,7 @@ function HeroCallToAction() {
       <a href="#ai-section">
         {/* TODO: THAY THE bang cai lnik component sau do tam thoi dang thieu tran*/}
 
-        <Button variant="outline" size="lg" className="px-6">
+        <Button variant="outline" size="lg" className="px-6 font-semibold">
           Phân tích da miễn phí
         </Button>
       </a>

@@ -121,7 +121,7 @@ class CartService {
   }
 
   async saveCart(cartKey: string, cartData: Cart) {
-    await redisClient.set(cartKey, JSON.stringify(cartData), {EX: 60 * 60 * 24})
+    await redisClient.set(cartKey, JSON.stringify(cartData), { EX: 60 * 60 * 24 })
   }
 
   getCartKey(userId: ObjectId | string) {
@@ -196,7 +196,7 @@ class CartService {
   async clearCart(userId: string) {
     const cartKey = this.getCartKey(userId)
     const cart = await this.getCart(cartKey)
-    if(!cart || cart.Products && cart.Products.length <= 0){
+    if (!cart || (cart.Products && cart.Products.length <= 0)) {
       throw new ErrorWithStatus({
         message: CART_MESSAGES.EMPTY_OR_EXPIRED,
         status: HTTP_STATUS.NOT_FOUND
