@@ -2,14 +2,10 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-import AppSidebar from "@/components/Sidebar";
 import StaffSidebar from "@/components/StaffSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { useAuth } from "@/contexts/auth.context";
 import { HeaderProvider, useHeader } from "@/contexts/header.context";
 import HeaderAdmin from "@/features/Admin/components/Header";
-import { Loader } from "@/features/Admin/components/Loader";
-import NotFoundPage from "@/features/ErrorPage/404";
 
 const LayoutContent = () => {
   const { headerName } = useHeader();

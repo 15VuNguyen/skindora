@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 
-import Typography from "@/components/Typography";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchOrder } from "@/hooks/useFetchOrders";
 
@@ -13,28 +12,45 @@ const ManageOrdersStaff: React.FC = () => {
   useEffect(() => {
     setHeaderName("Quản Lý Khách Hàng");
   }, []);
-  const { loading, fetchOrder, data, params, setParams, changePage } = useFetchOrder();
+  const { fetchOrder, data, params, changePage, changeStatus } = useFetchOrder();
   useEffect(() => {
     fetchOrder();
     console.log(data);
     console.log(params.page);
     console.log(params.limit);
-  }, [params.page]);
+  }, [params.page, params.status]);
   const handlePageChange = (page: number) => {
     changePage(page);
   };
+
+  const filterOptions = [
+    { value: "failed", label: "FAILED" as const },
+    { value: "shipping", label: "SHIPPING" as const },
+    { value: "delivered", label: "DELIVERED" as const },
+    { value: "cancelled", label: "CANCELLED" as const },
+    { value: "returned", label: "RETURNED" as const },
+    { value: "processing", label: "PROCESSING" as const },
+  ];
 
   return (
     <div className="flex min-h-screen bg-white">
       <div className="flex-1">
         <div className="mx-auto bg-white px-8 py-15 pt-4">
           <div>
-            <DataTable columns={orderColumn} data={data} filterColumnId="_id" filterPlaceholder="Tìm khách hàng" />
+            <DataTable
+              columns={orderColumn}
+              data={data}
+              filterColumnId="_id"
+              filterPlaceholder="Tìm khách hàng"
+              isHaveFilter={true}
+              filterOptions={filterOptions}
+              callBackFunction={changeStatus}
+            />
           </div>
           <div className="mt-4">
             <PaginationDemo
-              totalPages={params.totalPages ?? 1}
-              currentPage={params.page ?? 1}
+              totalPages={Number(params.totalPages) ?? 1}
+              currentPage={Number(params.page) ?? 1}
               onPageChange={handlePageChange}
             />
           </div>

@@ -1,7 +1,6 @@
 import { TrendingDown, TrendingUp } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 
-import Typography from "@/components/Typography";
 import { Card } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchUser } from "@/hooks/useFetchUser";
@@ -14,13 +13,6 @@ import { ChartRadialText } from "./components/RadialChart";
 // Component đã được cập nhật
 import { DataTable } from "./components/TableCustom";
 import { UserChart } from "./components/UserChart";
-
-interface User {
-  id: string;
-  username: string;
-  createdAt: string;
-  // ... các trường khác
-}
 
 const ManageCustomer: React.FC = () => {
   const { setHeaderName } = useHeader();

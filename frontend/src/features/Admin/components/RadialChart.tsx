@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import React from "react";
 // Import React
 import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts";
@@ -8,7 +7,6 @@ import { Label, PolarGrid, PolarRadiusAxis, RadialBar, RadialBarChart } from "re
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 
-// Định nghĩa kiểu dữ liệu cho props của component
 interface ChartRadialTextProps {
   title: string;
   description: string;

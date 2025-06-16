@@ -59,7 +59,7 @@ function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
   );
 }
 export function TopbarActions() {
-  const { user, logout, isLoading } = useAuth();
+  const { logout, isLoading } = useAuth();
   return (
     <div className="flex items-center space-x-4">
       {/* {user ? ( */}

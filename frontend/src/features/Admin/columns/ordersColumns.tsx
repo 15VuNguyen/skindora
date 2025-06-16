@@ -3,6 +3,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 
+import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,60 +17,31 @@ import {
 import { useUpdateStatus } from "@/hooks/useUpdateStatus";
 import type { Order } from "@/types/order";
 
-// 1. Định nghĩa interface cho Order dựa trên dữ liệu bạn cung cấp
-
-// Helper để định dạng Status cho đẹp hơn
-const getStatusVariant = (status: Order["Status"]) => {
-  switch (status) {
-    case "DELIVERED":
-      return "success"; // Giả sử bạn có variant 'success' màu xanh lá
-    case "SHIPPING":
-      return "secondary";
-    case "CANCELLED":
-      return "destructive";
-    case "PENDING":
-    default:
-      return "outline";
-  }
-};
-
-// 2. Định nghĩa các cột cho bảng Order
 export const orderColumn: ColumnDef<Order, unknown>[] = [
-  // Cột Checkbox (giống hệt ví dụ user)
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
+      <>
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </>
     ),
     cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
+      <>
+        <Checkbox
+          className="ml-0"
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </>
     ),
     enableSorting: false,
     enableHiding: false,
   },
-  {
-    id: "stt", // Đặt một ID duy nhất cho cột vì không dùng accessorKey
-    header: () => <div className="text-center">STT</div>, // Header là text tĩnh, căn giữa
-    cell: ({ row, table }) => {
-      // Lấy thông tin về phân trang từ table instance
-      const { pageIndex, pageSize } = table.getState().pagination;
-      // Tính số thứ tự dựa trên trang hiện tại
-      const index = pageIndex * pageSize + row.index + 1;
-      return <div className="text-center font-medium">{index}</div>;
-    },
-    enableSorting: false, // Không cho phép sort cột này
-    enableHiding: false, // Không cho phép ẩn cột này
-  },
-
-  // Cột Mã đơn hàng (_id)
 
   {
     accessorKey: "_id",
@@ -81,14 +53,14 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
     cell: ({ row }) => {
       // Có thể cắt ngắn ID nếu quá dài
       const id = row.getValue("_id") as string;
-      return <div className="font-mono">{id.substring(0, 10)}...</div>;
+      return <div className="ml-3 py-3 font-mono">{id.substring(0, 10)}...</div>;
     },
   },
 
   // Cột Địa chỉ giao hàng
   {
     accessorKey: "ShipAddress",
-    // Thường không sort theo địa chỉ, nên để header tĩnh
+
     header: "Địa chỉ giao hàng",
     cell: ({ row }) => {
       const address = row.getValue("ShipAddress") as string;
@@ -123,7 +95,7 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
   // Cột Trạng thái
   {
     accessorKey: "Status",
-    header: "Trạng thái",
+    header: "Trạng thái đơn hàng",
     cell: ({ row }) => {
       const status = row.getValue("Status") as Order["Status"];
 
@@ -151,13 +123,14 @@ export const orderColumn: ColumnDef<Order, unknown>[] = [
     accessorKey: "updatedAt",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Cập nhật <ArrowUpDown className="ml-2 h-4 w-4" />
+        <Typography>Cập nhật</Typography>
+        <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
       const dateString = row.getValue("updatedAt") as string;
       // Định dạng lại ngày tháng cho dễ đọc
-      return new Date(dateString).toLocaleString("vi-VN");
+      return <Typography className="ml-3">{new Date(dateString).toLocaleString("vi-VN")}</Typography>;
     },
   },
 

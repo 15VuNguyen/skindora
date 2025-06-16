@@ -1,7 +1,6 @@
 import type { RouteObject } from "react-router-dom";
 
 import ManageUsers from "@/features/Admin/ManageCustomer";
-import ManageOrders from "@/features/Admin/ManageOrders";
 import ManageProducts from "@/features/Admin/ManageProduct";
 import ManageStatics from "@/features/Admin/ManageStatics";
 import ProfileAdmin from "@/features/Admin/ProfileAdmin";

@@ -1,23 +1,29 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import { fetchListOrder } from "@/api/order";
+import { type FetchListOrderProps, fetchListOrder } from "@/api/order";
 import type { Order } from "@/types/order";
 
 export const useFetchOrder = () => {
   const [loading, setLoading] = useState(false);
 
-  const [params, setParams] = useState({
+  const [params, setParams] = useState<FetchListOrderProps>({
     limit: 10,
     page: 1,
     totalPages: 1,
     totalRecords: 1,
+    status: "ALL",
   });
   const [data, setData] = useState<Order[]>([]);
 
   const changePage = useCallback((page: number) => {
     setParams((prev) => ({ ...prev, page }));
   }, []);
-
+  const changeStatus = useCallback((status: FetchListOrderProps["status"]) => {
+    setParams((prev) => ({ ...prev, status }));
+  }, []);
+  useEffect(() => {
+    console.log(params.status);
+  }, [params.status]);
   const changeLimit = useCallback((limit: number) => {
     setParams((prev) => ({ ...prev, page: 1, limit }));
   }, []);
@@ -26,8 +32,13 @@ export const useFetchOrder = () => {
   const fetchOrder = useCallback(async () => {
     setLoading(true); // Bắt đầu loading
     try {
-      const response = await fetchListOrder({ limit: params.limit, page: params.page });
+      const response = await fetchListOrder({
+        limit: params.limit,
+        page: params.page,
+        ...(params.status !== "ALL" && { status: params.status }),
+      });
       setData(response.data);
+      console.log(params);
       setParams((prevParams) => ({
         ...prevParams,
         totalPages: response.pagination.totalPages,
@@ -39,14 +50,16 @@ export const useFetchOrder = () => {
     } finally {
       setLoading(false);
     }
-  }, [params.page, params.limit]);
+  }, [params.page, params.limit, params.status]);
 
   return {
-    loading, // Thêm vào
+    loading,
     fetchOrder,
     data,
     params,
     setParams,
+    changeLimit,
+    changeStatus,
     changePage,
   };
 };

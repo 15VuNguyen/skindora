@@ -1,7 +1,6 @@
 // src/pages/Admin/Admin.tsx
 import { Package, Plus, ShoppingCart, User2 } from "lucide-react";
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,6 @@ import { useHeader } from "@/contexts/header.context";
 import AppTable from "@/features/Admin/components/Table";
 
 import { CardDemo } from "../Admin/components/Card";
-import { CardIcon } from "../Admin/components/CardIcon";
 
 const Staff: React.FC = () => {
   const { setHeaderName } = useHeader();
