@@ -1,7 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, LockKeyhole, Mail } from "lucide-react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,15 +12,36 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth.context";
 import { type LoginFormData, loginSchema } from "@/schemas/authSchemas";
+import { logger } from "@/utils";
 
 import { useHandleOAuthCallback } from "../../hooks/useHandleOAuthCallback";
 import GoogleButton from "../GoogleButton";
 import Splitter from "../Splitter";
 
 export function LoginForm() {
-  const { actions, handleGoogleLogin } = useAuth();
+  const { actions, handleGoogleLogin, user } = useAuth();
   const { isProcessingOAuth } = useHandleOAuthCallback();
-
+  const navigate = useNavigate();
+  useEffect(() => {
+    logger.info(user?.role);
+    if (user?.role === "ADMIN") {
+      navigate("/admin");
+    }
+    switch (user?.role) {
+      case "ADMIN":
+        navigate("/admin");
+        break;
+      case "STAFF":
+        navigate("/staff");
+        break;
+      case "USER":
+        navigate("/");
+        break;
+      default:
+        navigate("/auth/login");
+        break;
+    }
+  }, [user]);
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
