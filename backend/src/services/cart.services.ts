@@ -132,9 +132,9 @@ class CartService {
     return cart.Products.findIndex((p: ProductInCart) => p.ProductID === productId)
   }
 
-  private async formatCart(cart: Cart | null): Promise<{ Products: any[]; totalPrice: number }> {
+  private async formatCart(cart: Cart | null): Promise<{ Products: any[]}> {
     if (!cart || !cart.Products || cart.Products.length === 0) {
-      return { Products: [], totalPrice: 0 }
+      return { Products: []}
     }
 
     const productKeys = cart.Products.map((p: ProductInCart) => productService.getProductInfoKey(p.ProductID))
@@ -185,11 +185,8 @@ class CartService {
       }
     })
 
-    const totalPrice = detailedCart.reduce((sum, item) => sum + item.totalPrice, 0)
-
     return {
-      Products: detailedCart,
-      totalPrice
+      Products: detailedCart
     }
   }
 

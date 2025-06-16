@@ -42,6 +42,20 @@ export const checkOutValidator = validate(
           }
         }
       },
+      Discount:{
+        optional: true,
+        custom:{
+          options: (value)=>{
+            if(Number(value) < 0 || Number(value) > 100){
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.INVALID_DISCOUNT_VALUE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            return true
+          }
+        }
+      },
       type: {
         optional: true,
         isIn: {

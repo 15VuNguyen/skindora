@@ -118,7 +118,7 @@ export const CART_MESSAGES = {
 
 export const ORDER_MESSAGES = {
   CREATED_SUCCESS: 'Order created successfully',
-  PREPARED_SUCCESS: 'Order prepared successfully, expires in 10 minutes',
+  PREPARED_SUCCESS: 'Order prepared successfully, expires in 30 minutes',
   PREPARED_FAILED: 'Fail to prepare order',
   CREATED_FAILED: 'Fail to create order',
   GET_CURRENT_SUCCESS: 'Get current order successfully',
@@ -143,7 +143,7 @@ export const ORDER_MESSAGES = {
   INVALID_ORDER_STATUS: 'OrderStatus is invalid',
   CANNOT_UPDATE_STATUS: 'Cannot update from status %s',
   UPDATE_TO_NEXT_STATUS_FAIL: 'Cannot update from %s to %s ',
-  UPDATE_TO_NEXT_STATUS_SUCCESS: 'Update to next status successfully'
+  UPDATE_TO_NEXT_STATUS_SUCCESS: 'Update to next status successfully',
+  INVALID_DISCOUNT_VALUE: 'Invalid discount value, must be a non-negative number and not exceed 100'
 } as const
 
-export const ORDER_DETAIL_MESSAGES = {} as const

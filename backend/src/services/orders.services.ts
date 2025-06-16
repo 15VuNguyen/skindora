@@ -98,30 +98,35 @@ class OrdersService {
   }
 
   async checkOut(payload: OrderReqBody, userId: string) {
-    //Kiểm tra thông tin đơn hàng(thêm sau)
-    if (!payload.ShipAddress || !payload.RequireDate) {
-      throw new Error('ShipAddress and RequireDate are required')
-    }
-
     const tempOrderKey = this.getTempOrderKey(userId)
     const tempOrder: TempOrder = await this.getTempOrder(tempOrderKey)
 
     if (!tempOrder) {
-      throw new Error('No order found or it has expired')
+      throw new ErrorWithStatus({
+        message: ORDER_MESSAGES.EMPTY_OR_EXPIRED,
+        status: HTTP_STATUS.NOT_FOUND
+      })
     }
 
     const status = OrderStatus.PENDING
+    //cal totalPrice
+    const discount = isNaN(Number(payload?.Discount)) ? 0 : Number(payload?.Discount)
+    const totalPrice = (1 - discount / 100) * tempOrder.TotalPrice
+
     //insert order into db
-    const order = await databaseService.orders.insertOne({
+    const order = {
       UserID: new ObjectId(userId),
       ShipAddress: payload.ShipAddress,
       Description: payload.Description ?? '',
       RequireDate: payload.RequireDate || new Date().toISOString(),
       // ShippedDate?: string
+      Discount: discount.toString(),
+      TotalPrice: totalPrice.toString(),
       Status: status
-    })
-    const orderId = order.insertedId
+    }
 
+    const insertedOrder = await databaseService.orders.insertOne(order)
+    const orderId = insertedOrder.insertedId
     //insert order details into db
     const orderDetail = tempOrder.Products.map((p: ProductInOrder) => {
       return {
@@ -129,7 +134,7 @@ class OrdersService {
         OrderID: orderId,
         Quantity: p.Quantity.toString(),
         OrderDate: tempOrder.CreatedAt || new Date(),
-        TotalPrice: p.TotalPrice.toString()
+        UnitPrice: p.PricePerUnit.toString()
       }
     })
 
@@ -154,9 +159,8 @@ class OrdersService {
     await redisClient.del(tempOrderKey)
     //Trả thông tin đơn hàng đã tạo
     return {
-      orderId: orderId.toString(),
-      orderDetails: orderDetail,
-      status: status
+      ...order,
+      orderDetails: orderDetail
     }
   }
 
@@ -193,11 +197,11 @@ class OrdersService {
     const enrichedDetails = await this.enrichOrderDetailsWithProducts(orderDetails)
 
     const detailMap = new Map<string, any[]>()
-    
+
     enrichedDetails.forEach((detail) => {
       const orderId = detail.OrderID?.toString() || ''
 
-      const {ProductID, OrderID, ...restDetail} = detail
+      const { ProductID, OrderID, ...restDetail } = detail
 
       if (!detailMap.has(orderId)) detailMap.set(orderId, [])
 
@@ -216,7 +220,7 @@ class OrdersService {
 
     return {
       ...order,
-      orderDetail: enrichedDetails.map(({ProductID, OrderID, ...rest}) => ({
+      orderDetail: enrichedDetails.map(({ ProductID, OrderID, ...rest }) => ({
         ...rest
       }))
     }

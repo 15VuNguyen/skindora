@@ -8,6 +8,7 @@ export interface OrderReqBody {
   Description?: string
   RequireDate: string
   ShippedDate: string
+  Discount?: string
   Status: OrderStatus
   type?: OrderType 
 }
@@ -30,7 +31,6 @@ export interface ProductInOrder{
 export interface TempOrder{
   UserID: ObjectId | string,
   Products: Array<ProductInOrder>,
-  Discount?: number,
   TotalPrice: number,
   CreatedAt: Date
 }
