@@ -19,29 +19,27 @@ import GoogleButton from "../GoogleButton";
 import Splitter from "../Splitter";
 
 export function LoginForm() {
-  const { actions, handleGoogleLogin, user } = useAuth();
-  const { isProcessingOAuth } = useHandleOAuthCallback();
   const navigate = useNavigate();
+  const { actions, handleGoogleLogin, isAuthenticated, user } = useAuth();
+  const { isProcessingOAuth } = useHandleOAuthCallback();
   useEffect(() => {
-    logger.info(user?.role);
-    if (user?.role === "ADMIN") {
-      navigate("/admin");
+    if (isAuthenticated && user) {
+      logger.info("User redirecting la role:", user.role);
+
+      switch (user.role) {
+        case "ADMIN":
+          navigate("/admin", { replace: true });
+          break;
+        case "STAFF":
+          navigate("/staff", { replace: true });
+          break;
+        case "USER":
+        default:
+          navigate("/", { replace: true });
+          break;
+      }
     }
-    switch (user?.role) {
-      case "ADMIN":
-        navigate("/admin");
-        break;
-      case "STAFF":
-        navigate("/staff");
-        break;
-      case "USER":
-        navigate("/");
-        break;
-      default:
-        navigate("/auth/login");
-        break;
-    }
-  }, [user]);
+  }, [isAuthenticated, user, navigate]);
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {

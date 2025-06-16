@@ -4,13 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import type { LoginFormData, RegisterFormData } from "@/schemas/authSchemas";
+import { logger } from "@/utils";
 import { clearTokens, setTokens } from "@/utils/tokenManager";
 
 import { useLoginMutation } from "./mutations/useLoginMutation";
 import { useLogoutMutation } from "./mutations/useLogoutMutation";
 import { useRegisterMutation } from "./mutations/useRegisterMutation";
 import { useVerifyEmailMutation } from "./mutations/useVerifyEmailMutation";
-import { logger } from "@/utils";
 
 export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<boolean>>) => {
   const navigate = useNavigate();
@@ -25,13 +25,12 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
       loginMutation.mutate(credentials, {
         onSuccess: (result) => {
           if (result.isOk()) {
-            const { access_token, refresh_token, user: role } = result.value.data.result;
+            const { access_token, refresh_token } = result.value.data.result;
+
             setTokens(access_token, refresh_token);
             setHasToken(true);
             queryClient.invalidateQueries({ queryKey: ["user", "me"] });
             toast.success("Login Successful", { description: "Welcome back!" });
-            const navigationPath = role === "admin" ? "/admin" : "/";
-            navigate(navigationPath);
           } else {
             toast.error("Login Failed", { description: result.error.message });
           }
@@ -41,7 +40,7 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
         },
       });
     },
-    [loginMutation, queryClient, navigate, setHasToken]
+    [loginMutation, queryClient, setHasToken]
   );
 
   const register = useCallback(
@@ -54,7 +53,6 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
             setHasToken(true);
             queryClient.invalidateQueries({ queryKey: ["user", "me"] });
             toast.success("Registration Successful", { description: "Your account has been created." });
-            navigate("/");
           } else {
             toast.error("Registration Failed", { description: result.error.message });
           }
@@ -65,7 +63,7 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
         },
       });
     },
-    [registerMutation, queryClient, navigate, setHasToken]
+    [registerMutation, queryClient, setHasToken]
   );
 
   const verifyEmail = useCallback(
@@ -88,7 +86,7 @@ export const useAuthActions = (setHasToken: React.Dispatch<React.SetStateAction<
         },
         onError: (error) => {
           toast.error("Verification Failed", { description: error.message });
-          navigate("/auth/login"); 
+          navigate("/auth/login");
         },
       });
     },
