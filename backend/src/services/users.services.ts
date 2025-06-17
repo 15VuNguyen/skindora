@@ -147,7 +147,7 @@ class UsersService {
           pass: process.env.EMAIL_PASSWORD_APP
         }
       })
-      const verifyURL = `http://localhost:${process.env.PORT}/users/verify-email?email_verify_token=${email_verify_token}` // Đường dẫn xác nhận email
+      const verifyURL = `http://localhost:5173/auth/verify-email?email_verify_token=${email_verify_token}` // Đường dẫn xác nhận email
 
       const htmlContent = readEmailTemplate('verify-email.html', {
         first_name: payload.first_name,

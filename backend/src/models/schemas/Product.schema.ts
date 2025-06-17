@@ -18,17 +18,16 @@ interface ProductType {
   sub_images_detail?: string[]
   filter_brand?: ObjectId
   filter_dac_tinh?: ObjectId
-  filter_ingredients?: ObjectId
-  filter_product_type?: ObjectId
-  filter_size?: ObjectId
-  filter_skin_type?: ObjectId
-  filter_uses?: ObjectId
+  filter_hsk_ingredients?: ObjectId
+  filter_hsk_product_type?: ObjectId
+  filter_hsk_size?: ObjectId
+  filter_hsk_skin_type?: ObjectId
+  filter_hsk_uses?: ObjectId
   filter_origin?: ObjectId
   quantity?: number
   state?: ProductState
   created_at?: Date
   updated_at?: Date
-  modified_by?: ObjectId
 }
 
 export default class Product {
@@ -48,17 +47,17 @@ export default class Product {
   sub_images_detail?: string[]
   filter_brand?: ObjectId
   filter_dac_tinh?: ObjectId
-  filter_ingredients?: ObjectId
-  filter_product_type?: ObjectId
-  filter_size?: ObjectId
-  filter_skin_type?: ObjectId
-  filter_uses?: ObjectId
+  filter_hsk_ingredients?: ObjectId
+  filter_hsk_product_type?: ObjectId
+  filter_hsk_size?: ObjectId
+  filter_hsk_skin_type?: ObjectId
+  filter_hsk_uses?: ObjectId
   filter_origin?: ObjectId
   quantity?: number
   state?: ProductState
   created_at?: Date
   updated_at?: Date
-  modified_by?: ObjectId
+  
 
   constructor(product: ProductType) {
     const currentDate = new Date()
@@ -79,18 +78,33 @@ export default class Product {
     this.specification_detail = product.specification_detail || ''
     this.main_images_detail = product.main_images_detail || []
     this.sub_images_detail = product.sub_images_detail || []
-    this.filter_brand = product.filter_brand || new ObjectId()
-    this.filter_dac_tinh = product.filter_dac_tinh || new ObjectId()
-    this.filter_ingredients = product.filter_ingredients || new ObjectId()
-    this.filter_product_type = product.filter_product_type || new ObjectId()
-    this.filter_size = product.filter_size || new ObjectId()
-    this.filter_skin_type = product.filter_skin_type || new ObjectId()
-    this.filter_uses = product.filter_uses || new ObjectId()
-    this.filter_origin = product.filter_origin || new ObjectId()
+    if (product.filter_brand) {
+      this.filter_brand = product.filter_brand
+    }
+    if (product.filter_dac_tinh) {
+      this.filter_dac_tinh = product.filter_dac_tinh
+    }
+    if (product.filter_hsk_ingredients) {
+      this.filter_hsk_ingredients = product.filter_hsk_ingredients
+    }
+    if (product.filter_hsk_product_type) {
+      this.filter_hsk_product_type = product.filter_hsk_product_type
+    }
+    if (product.filter_hsk_size) {
+      this.filter_hsk_size = product.filter_hsk_size
+    }
+    if (product.filter_hsk_skin_type) {
+      this.filter_hsk_skin_type = product.filter_hsk_skin_type
+    }
+    if (product.filter_hsk_uses) {
+      this.filter_hsk_uses = product.filter_hsk_uses
+    }
+    if (product.filter_origin) {
+      this.filter_origin = product.filter_origin
+    }
     this.quantity = product.quantity || 0
     this.state = product.state || ProductState.ACTIVE
-    this.created_at = localTime || product.created_at
-    this.updated_at = localTime || product.updated_at
-    this.modified_by = product.modified_by
+    this.created_at = product.created_at || localTime
+    this.updated_at = product.updated_at || localTime
   }
 }

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { Collection, Document, Filter } from 'mongodb'
+import { Collection, Document, Filter, Document as Projection } from 'mongodb'
 
 export interface IResponseSearch<T> {
   data: T[]
@@ -16,7 +16,8 @@ export const sendPaginatedResponse = async <T extends Document>(
   next: NextFunction,
   collection: Collection<T>,
   query: Request['query'],
-  filter: Filter<T> = {}
+  filter: Filter<T> = {},
+  projection: Projection = {}
 ) => {
   try {
     const page = parseInt(query.page as string) || 1
@@ -25,7 +26,7 @@ export const sendPaginatedResponse = async <T extends Document>(
 
     const [totalRecords, data] = await Promise.all([
       collection.countDocuments(filter),
-      collection.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).toArray()
+      collection.find(filter, { projection }).sort({ createdAt: -1 }).skip(skip).limit(limit).toArray()
     ])
 
     const totalPages = Math.ceil(totalRecords / limit)
