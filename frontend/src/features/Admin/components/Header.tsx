@@ -1,8 +1,6 @@
-import { link } from "fs";
 import { Bell, UserIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Button } from "@/components/ui/button";
@@ -61,7 +59,7 @@ function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
   );
 }
 export function TopbarActions() {
-  const { actions, user } = useAuth();
+  const { actions } = useAuth();
   // const navigate = useNavigate();
   // if (!user) {
   //   navigate("/auth/login");
