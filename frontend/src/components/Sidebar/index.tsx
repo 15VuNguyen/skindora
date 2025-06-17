@@ -11,7 +11,9 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
+  SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
 
 import { Button } from "../ui/button";
@@ -30,7 +32,7 @@ const AppSidebar: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel className="py-10">
@@ -38,9 +40,6 @@ const AppSidebar: React.FC = () => {
               <Link to="/" aria-label="Go to homepage">
                 <img src={logo} alt="Skindora - Premium Skincare Products" title={"Skindora"} loading="eager" />
               </Link>
-              {/* <h2 className="from-primary to-accent bg-gradient-to-r bg-clip-text text-2xl font-bold text-transparent">
-                Skin Dora
-              </h2> */}
               <p className="mt-1 text-sm">Quản lý Dược Mỹ Phẩm</p>
             </div>
           </SidebarGroupLabel>
@@ -50,17 +49,13 @@ const AppSidebar: React.FC = () => {
                 const isActive = location.pathname === item.url;
                 return (
                   <SidebarMenuItem key={item.title}>
-                    <Button
+                    <SidebarMenuButton
                       onClick={() => navigate(item.url)}
-                      variant="outline"
-                      size="lg"
-                      className={`ml-2 flex w-52 justify-start border-0 bg-transparent ${
-                        isActive ? "bg-primary/20 text-primary" : ""
-                      }`}
+                      className={`justify-start gap-3 border-0 bg-transparent ${isActive ? "bg-primary/20 text-primary" : ""} `}
                     >
-                      <item.icon className="mr-2 h-5 w-5" />
+                      <item.icon className="h-5 w-8" />
                       <span>{item.title}</span>
-                    </Button>
+                    </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
               })}

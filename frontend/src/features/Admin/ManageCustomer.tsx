@@ -136,12 +136,12 @@ const ManageCustomer: React.FC = () => {
                   />
                 </div>
               </div>
-              <div className="mb-8 flex gap-2">
-                <div className="w-3/5">
+              <div className="mb-8 gap-2">
+                <div className="w-5/5">
                   <UserChart data={monthlyUserData} />
                 </div>
-                <div className="w-5/5">
-                  <Card>
+                <div className="mt-3 w-5/5">
+                  <Card className="w-5/5">
                     <div className="p-3">
                       <DataTable
                         columns={userColumn}
