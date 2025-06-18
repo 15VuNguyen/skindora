@@ -83,7 +83,7 @@ interface HeaderAdminProps {
   name: string;
 }
 
-const HeaderAdmin: React.FC<HeaderAdminProps> = ({ name }) => {
+const HeaderAdmin: React.FC<HeaderAdminProps> = () => {
   return (
     <>
       <div className="top-0 left-0 box-border w-full border-b bg-white px-6 py-5">
