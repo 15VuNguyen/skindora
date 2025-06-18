@@ -13,10 +13,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSubButton,
 } from "@/components/ui/sidebar";
-
-import { Button } from "../ui/button";
 
 const items = [
   { title: "Tổng quan", url: "/admin", icon: Home },
