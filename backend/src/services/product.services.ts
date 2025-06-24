@@ -6,7 +6,7 @@ import { ADMIN_MESSAGES, PRODUCTS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ProductInCache } from '~/models/requests/Cart.requests'
 import { CreateNewProductReqBody, updateProductReqBody } from '~/models/requests/Product.requests'
-import Product from '~/models/schemas/Product.schema'
+import Product, { ProductType } from '~/models/schemas/Product.schema'
 import { ProductState } from '~/constants/enums'
 
 class ProductsService {
@@ -119,15 +119,26 @@ class ProductsService {
     const vietnamTimezoneOffset = 7 * 60
     const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
 
-    const result = await databaseService.products.insertOne(
-      new Product({
-        ...payload,
-        _id: productID,
-        state: payload.state || ProductState.ACTIVE,
-        created_at: localTime,
-        updated_at: localTime
-      })
-    )
+    const productData: ProductType = {
+      ...payload,
+      _id: productID,
+      state: payload.state || ProductState.ACTIVE,
+      created_at: localTime,
+      updated_at: localTime
+    }
+
+    if (payload.filter_brand) productData.filter_brand = new ObjectId(payload.filter_brand)
+    if (payload.filter_dac_tinh) productData.filter_dac_tinh = new ObjectId(payload.filter_dac_tinh)
+    if (payload.filter_hsk_ingredients)
+      productData.filter_hsk_ingredients = new ObjectId(payload.filter_hsk_ingredients)
+    if (payload.filter_hsk_product_type)
+      productData.filter_hsk_product_type = new ObjectId(payload.filter_hsk_product_type)
+    if (payload.filter_hsk_size) productData.filter_hsk_size = new ObjectId(payload.filter_hsk_size)
+    if (payload.filter_hsk_skin_type) productData.filter_hsk_skin_type = new ObjectId(payload.filter_hsk_skin_type)
+    if (payload.filter_hsk_uses) productData.filter_hsk_uses = new ObjectId(payload.filter_hsk_uses)
+    if (payload.filter_origin) productData.filter_origin = new ObjectId(payload.filter_origin)
+
+    const result = await databaseService.products.insertOne(new Product(productData))
     console.log(payload)
     console.log(result)
     return result
@@ -149,6 +160,25 @@ class ProductsService {
   async updateProduct(_id: string, payload: updateProductReqBody) {
     try {
       const updatedPayload = { ...payload }
+
+      const filterFields = [
+        'filter_brand',
+        'filter_dac_tinh',
+        'filter_hsk_ingredients',
+        'filter_hsk_product_type',
+        'filter_hsk_size',
+        'filter_hsk_skin_type',
+        'filter_hsk_uses',
+        'filter_origin'
+      ] as const
+
+      for (const key of filterFields) {
+        const value = payload[key]
+        if (value) {
+          updatedPayload[key] = new ObjectId(value)
+        }
+      }
+
       const currentDate = new Date()
       const vietnamTimezoneOffset = 7 * 60
       const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
@@ -182,7 +212,7 @@ class ProductsService {
       {
         $set: {
           state: newState, //Cập nhật trạng thái mới
-          updated_at: localTime,
+          updated_at: localTime
         }
       },
       {
@@ -193,8 +223,8 @@ class ProductsService {
           updated_at: 1
         }
       }
-    );
-    return result;
+    )
+    return result
   }
 }
 

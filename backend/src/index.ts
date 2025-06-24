@@ -36,6 +36,7 @@ app.use(express.urlencoded({ extended: true }))
 databaseService.connect().then(async () => {
   databaseService.indexUsers()
   databaseService.indexVouchers()
+  // databaseService.indexProducts()
 
   await waitForKafkaReady()
   await connectProducer()

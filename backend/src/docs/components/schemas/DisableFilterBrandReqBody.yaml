@@ -1,0 +1,9 @@
+type: object
+required:
+  - state
+properties:
+  state:
+    type: string
+    description: The new state for the filter brand.
+    enum: [INACTIVE, ACTIVE, COLLABORATION, PARTNERSHIP, EXCLUSIVE, LIMITED_EDITION, SUSPENDED, DISCONTINUED]
+    example: "INACTIVE"

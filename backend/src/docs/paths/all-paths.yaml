@@ -15,7 +15,7 @@
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/LoginSuccessResponse.yaml'
+              $ref: '../components/schemas/RegisterSuccessResponse.yaml'
       '422':
         description: Validation error (e.g., email exists, password mismatch).
         content:
@@ -797,14 +797,14 @@
                   example: 1
                 return_message:
                   type: string
-                  example: "Success"
+                  example: 'Success'
                 order_url:
                   type: string
                   format: uri
-                  example: "https://sbgateway.zalopay.vn/openinapp?order=..."
+                  example: 'https://sbgateway.zalopay.vn/openinapp?order=...'
                 zp_trans_token:
                   type: string
-                  example: "240624000000123_1a2b3c4d"
+                  example: '240624000000123_1a2b3c4d'
       '400':
         description: Bad Request (e.g., missing orderDetails).
         content:
@@ -849,14 +849,14 @@
               properties:
                 message:
                   type: string
-                  example: "Success"
+                  example: 'Success'
                 data:
                   type: object
                   properties:
                     paymentUrl:
                       type: string
                       format: uri
-                      example: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=..."
+                      example: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=...'
       '401':
         description: Unauthorized. Access token is missing or invalid.
         content:
@@ -990,7 +990,7 @@
               properties:
                 message:
                   type: string
-                  example: "Get all your orders successfully"
+                  example: 'Get all your orders successfully'
                 result:
                   type: array
                   items:
@@ -1768,7 +1768,7 @@
 # ======================= FILTER MANAGEMENT =======================
 /admin/manage-filters/create-new-filter-brand:
   post:
-    tags: [Admin]
+    tags: [Admin - Filter Management]
     summary: (Admin) Create a New Filter Brand
     security:
       - BearerAuth: []
@@ -1823,7 +1823,7 @@
               properties:
                 message:
                   type: string
-                  example: "Update user state successfully"
+                  example: 'Update user state successfully'
                 data:
                   $ref: '../components/schemas/User.yaml'
       '400':
@@ -1876,7 +1876,7 @@
               properties:
                 message:
                   type: string
-                  example: "Update product state successfully"
+                  example: 'Update product state successfully'
                 data:
                   $ref: '../components/schemas/Product.yaml'
       '401':
@@ -1903,3 +1903,128 @@
           application/json:
             schema:
               $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/get-all-filter-brands:
+  get:
+    tags: [Admin - Filter Management]
+    summary: (Admin) Get All Filter Brands
+    description: Retrieves a paginated list of all filterable brands.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of filter brands.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterBrandResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/get-filter-brand-detail/{_id}:
+  get:
+    tags: [Admin - Filter Management]
+    summary: (Admin) Get Filter Brand by ID
+    description: Retrieves the details of a specific filter brand by its ID.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the filter brand to retrieve.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Filter brand details retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterBrand.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/update-filter-brand/{_id}:
+  put:
+    tags: [Admin - Filter Management]
+    summary: (Admin) Update a Filter Brand
+    description: Updates the details of an existing filter brand.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the filter brand to update.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterBrandReqBody.yaml'
+    responses:
+      '200':
+        description: Filter brand updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterBrand.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/update-filter-brand-state/{_id}:
+  put:
+    tags: [Admin - Filter Management]
+    summary: (Admin) Update Filter Brand State
+    description: Updates the state of a filter brand (e.g., from ACTIVE to INACTIVE).
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the filter brand to update the state for.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterBrandReqBody.yaml'
+    responses:
+      '200':
+        description: Filter brand state updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterBrand.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'

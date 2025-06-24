@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { ProductState } from '~/constants/enums'
 
-interface ProductType {
+export interface ProductType {
   _id?: ObjectId
   name_on_list?: string
   engName_on_list?: string

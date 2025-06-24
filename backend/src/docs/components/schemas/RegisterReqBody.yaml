@@ -19,16 +19,21 @@ properties:
   email:
     type: string
     format: email
-    example: 'john.doe@example.com'
+    example: 'user@example.com'
   password:
     type: string
     format: password
+    example: 'password123'
     minLength: 8
     maxLength: 30
-    example: 'Str0ngP@sswOrd'
   confirm_password:
     type: string
     format: password
+    example: 'password123'
     minLength: 8
     maxLength: 30
-    example: 'Str0ngP@sswOrd'
+  avatar:
+    type: string
+    format: uri
+    description: 'Optional avatar URL.'
+    example: 'https://example.com/avatar.jpg'

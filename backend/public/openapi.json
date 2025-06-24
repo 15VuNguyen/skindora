@@ -55,6 +55,10 @@
     {
       "name": "Admin",
       "description": "Operations for managing the system."
+    },
+    {
+      "name": "Admin - Filter Management",
+      "description": "Operations for managing product filters, such as brands."
     }
   ],
   "paths": {
@@ -81,7 +85,26 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LoginSuccessResponse"
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Register successful"
+                    },
+                    "result": {
+                      "type": "object",
+                      "properties": {
+                        "access_token": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjA5..."
+                        },
+                        "refresh_token": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjA5..."
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -2992,7 +3015,7 @@
     "/admin/manage-filters/create-new-filter-brand": {
       "post": {
         "tags": [
-          "Admin"
+          "Admin - Filter Management"
         ],
         "summary": "(Admin) Create a New Filter Brand",
         "security": [
@@ -3215,6 +3238,213 @@
           }
         }
       }
+    },
+    "/admin/manage-filters/get-all-filter-brands": {
+      "get": {
+        "tags": [
+          "Admin - Filter Management"
+        ],
+        "summary": "(Admin) Get All Filter Brands",
+        "description": "Retrieves a paginated list of all filterable brands.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of filter brands.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFilterBrandResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/get-filter-brand-detail/{_id}": {
+      "get": {
+        "tags": [
+          "Admin - Filter Management"
+        ],
+        "summary": "(Admin) Get Filter Brand by ID",
+        "description": "Retrieves the details of a specific filter brand by its ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the filter brand to retrieve.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Filter brand details retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterBrand"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-brand/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Management"
+        ],
+        "summary": "(Admin) Update a Filter Brand",
+        "description": "Updates the details of an existing filter brand.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the filter brand to update.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateFilterBrandReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter brand updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterBrand"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
+    },
+    "/admin/manage-filters/update-filter-brand-state/{_id}": {
+      "put": {
+        "tags": [
+          "Admin - Filter Management"
+        ],
+        "summary": "(Admin) Update Filter Brand State",
+        "description": "Updates the state of a filter brand (e.g., from ACTIVE to INACTIVE).",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the filter brand to update the state for.",
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisableFilterBrandReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Filter brand state updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FilterBrand"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "422": {
+            "$ref": "#/components/schemas/ErrorValidationResponse"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -3244,21 +3474,27 @@
           "email": {
             "type": "string",
             "format": "email",
-            "example": "john.doe@example.com"
+            "example": "user@example.com"
           },
           "password": {
             "type": "string",
             "format": "password",
+            "example": "password123",
             "minLength": 8,
-            "maxLength": 30,
-            "example": "Str0ngP@sswOrd"
+            "maxLength": 30
           },
           "confirm_password": {
             "type": "string",
             "format": "password",
+            "example": "password123",
             "minLength": 8,
-            "maxLength": 30,
-            "example": "Str0ngP@sswOrd"
+            "maxLength": 30
+          },
+          "avatar": {
+            "type": "string",
+            "format": "uri",
+            "description": "Optional avatar URL.",
+            "example": "https://example.com/avatar.jpg"
           }
         }
       },
@@ -4836,6 +5072,108 @@
               "INACTIVE",
               "ACTIVE",
               "OUT_OF_STOCK",
+              "DISCONTINUED"
+            ],
+            "example": "INACTIVE"
+          }
+        }
+      },
+      "FilterBrand": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "mongoId",
+            "description": "The unique identifier for the filter brand."
+          },
+          "option_name": {
+            "type": "string",
+            "description": "The display name of the brand.",
+            "example": "La Roche-Posay"
+          },
+          "category_name": {
+            "type": "string",
+            "description": "The category this filter belongs to.",
+            "example": "Thương hiệu"
+          },
+          "category_param": {
+            "type": "string",
+            "description": "A URL-friendly version of the brand name.",
+            "example": "la-roche-posay"
+          },
+          "state": {
+            "type": "string",
+            "description": "The current state of the brand.",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE",
+              "COLLABORATION",
+              "PARTNERSHIP",
+              "EXCLUSIVE",
+              "LIMITED_EDITION",
+              "SUSPENDED",
+              "DISCONTINUED"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "PaginatedFilterBrandResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterBrand"
+            }
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/PaginatedUserResponse/properties/pagination"
+          }
+        }
+      },
+      "UpdateFilterBrandReqBody": {
+        "type": "object",
+        "description": "Only include the fields that need to be updated.",
+        "properties": {
+          "option_name": {
+            "type": "string",
+            "example": "La Roche-Posay (Official)"
+          },
+          "category_name": {
+            "type": "string",
+            "example": "Thương Hiệu Nổi Bật"
+          },
+          "category_param": {
+            "type": "string",
+            "example": "la-roche-posay-official"
+          }
+        }
+      },
+      "DisableFilterBrandReqBody": {
+        "type": "object",
+        "required": [
+          "state"
+        ],
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "The new state for the filter brand.",
+            "enum": [
+              "INACTIVE",
+              "ACTIVE",
+              "COLLABORATION",
+              "PARTNERSHIP",
+              "EXCLUSIVE",
+              "LIMITED_EDITION",
+              "SUSPENDED",
               "DISCONTINUED"
             ],
             "example": "INACTIVE"

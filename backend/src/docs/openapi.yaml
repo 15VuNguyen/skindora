@@ -33,6 +33,8 @@ tags:
     description: Operations for managing the user's shopping cart.
   - name: Admin
     description: Operations for managing the system.
+  - name: Admin - Filter Management
+    description: Operations for managing product filters, such as brands.
 paths:
   $ref: './paths/all-paths.yaml'
 
@@ -135,6 +137,16 @@ components:
       $ref: './components/schemas/UpdateUserStateReqBody.yaml'
     UpdateProductStateReqBody:
       $ref: './components/schemas/UpdateProductStateReqBody.yaml'
+    #Filter management
+    #FilterBrand
+    FilterBrand:
+      $ref: './components/schemas/FilterBrand.yaml'
+    PaginatedFilterBrandResponse:
+      $ref: './components/schemas/PaginatedFilterBrandResponse.yaml'
+    UpdateFilterBrandReqBody:
+      $ref: './components/schemas/UpdateFilterBrandReqBody.yaml'
+    DisableFilterBrandReqBody:
+      $ref: './components/schemas/DisableFilterBrandReqBody.yaml'
 
     # --- Response Schemas ---
     AuthSuccessResponse:

@@ -96,6 +96,18 @@ class DatabaseService {
     await this.vouchers.createIndex({ code: 1 }, { unique: true })
   }
 
+  async indexProducts() {
+    //Index để tối ưu tìm kiếm theo tên sản phẩm `text` index cho phép dùng toán tử $text và $search
+    //await this.products.createIndex({ name_on_list: 'text', engName_on_list: 'text' });
+    
+    //Index để tối ưu sắp xếp cho việc phân trang -1 là sắp xếp giảm dần (mới nhất trước)
+    // await this.products.createIndex({ created_at: -1 });
+
+    //Index cho các trường filter phổ biến
+    //await this.products.createIndex({ filter_brand: 1 });
+    //await this.products.createIndex({ state: 1 });
+  }
+
   get refreshTokens(): Collection<RefreshToken> {
     return this.db.collection(process.env.DB_REFRESH_TOKENS_COLLECTION as string)
   }
