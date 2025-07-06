@@ -1,33 +1,43 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useAuth } from "../hooks/useAuth";
 import { ActivityIndicator, View } from "react-native";
 
-import LoginScreen from "../screens/Auth/LoginScreen";
-import RegisterScreen from "../screens/Auth/RegisterScreen";
-import HomeScreen from "../screens/Main/HomeScreen";
+import {
+  TabParamList,
+} from "../types/navigation";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import HomeNavigator from "./HomeNavigator";
+import NotificationNavigator from "./NotificationNavigator";
+import ProfileNavigator from "./ProfileNavigator";
+import SearchNavigator from "./SearchNavigator";
+import AuthNavigator from "./AuthNavigator";
 
-import { AuthStackParamList, MainStackParamList } from "../types/navigation";
+const Tab = createBottomTabNavigator<TabParamList>();
 
-const AuthStack = createNativeStackNavigator<AuthStackParamList>();
-const MainStack = createNativeStackNavigator<MainStackParamList>();
-
-const AuthNavigator = () => (
-  <AuthStack.Navigator screenOptions={{ headerShown: false }}>
-    <AuthStack.Screen name="Login" component={LoginScreen} />
-    <AuthStack.Screen name="Register" component={RegisterScreen} />
-  </AuthStack.Navigator>
-);
-
-const MainNavigator = () => (
-  <MainStack.Navigator>
-    <MainStack.Screen
-      name="Home"
-      component={HomeScreen}
+const BottomTab = () => (
+  <Tab.Navigator screenOptions={{headerShown: false}}>
+    <Tab.Screen
+      name="HomeTab"
+      component={HomeNavigator}
       options={{ title: "Trang chủ" }}
     />
-  </MainStack.Navigator>
+    <Tab.Screen
+      name="SearchTab"
+      component={SearchNavigator}
+      options={{ title: "Tìm kiếm" }}
+    />
+    <Tab.Screen
+      name="NotificationTab"
+      component={NotificationNavigator}
+      options={{ title: "Thông báo" }}
+    />
+    <Tab.Screen
+      name="ProfileTab"
+      component={ProfileNavigator}
+      options={{ title: "Tài khoản" }}
+    />
+  </Tab.Navigator>
 );
 
 export const AppNavigator = () => {
@@ -43,7 +53,8 @@ export const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      {accessToken ? <MainNavigator /> : <AuthNavigator />}
+      {/* {accessToken ? <BottomTab /> : <AuthNavigator />} */}
+      {<BottomTab />}
     </NavigationContainer>
   );
 };
