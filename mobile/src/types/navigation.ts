@@ -29,9 +29,9 @@ export type SearchStackParamList = {
 };
 
 export type TabParamList = {
-  Home: undefined;
-  Profile: undefined;
-  Notification: undefined;
-  Search: undefined;
-  Cart: undefined;
+  HomeTab: undefined;
+  ProfileTab: undefined;
+  NotificationTab: undefined;
+  SearchTab: undefined;
+  CartTab: undefined;
 };
