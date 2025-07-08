@@ -2,11 +2,14 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  TextInput,
-  Button,
   StyleSheet,
   Alert,
   Platform,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Keyboard,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -18,6 +21,8 @@ import {
 } from "@env";
 import { useAuth } from "../../hooks/useAuth";
 import { AuthStackParamList } from "../../types/navigation";
+import FloatingLabelInput from "../../components/FloatingLabelInput";
+import { Ionicons } from "@expo/vector-icons";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -33,8 +38,12 @@ export default function LoginScreen() {
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS,
-    androidClientId: EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID,
+    iosClientId:
+      Platform.OS === "ios" ? EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS : undefined,
+    androidClientId:
+      Platform.OS === "android"
+        ? EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID
+        : undefined,
   });
 
   useEffect(() => {
@@ -69,63 +78,138 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Đăng nhập Skindora</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Mật khẩu"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <Button title="Đăng nhập" onPress={handleLogin} />
-      <View style={styles.separator} />
-      <Button
-        title="Đăng nhập với Google"
-        onPress={() => {
-          promptAsync();
-        }}
-        color="#DB4437"
-        disabled={!request}
-      />
-      <View style={styles.footer}>
-        <Text>Chưa có tài khoản?</Text>
-        <Text
-          style={styles.link}
-          onPress={() => navigation.navigate("Register")}
-        >
-          Đăng ký ngay
-        </Text>
-      </View>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <Text style={styles.title}>Skindora Welcome</Text>
+              <Ionicons name="leaf-outline" size={36} color="#10b981" />
+            </View>
+
+            <FloatingLabelInput
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <FloatingLabelInput
+              label="Mật khẩu"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+              <Text style={styles.loginButtonText}>Đăng nhập</Text>
+            </TouchableOpacity>
+
+            <View style={styles.separator}>
+              <View style={styles.line} />
+              <Text style={styles.separatorText}>hoặc</Text>
+              <View style={styles.line} />
+            </View>
+
+            <TouchableOpacity
+              style={styles.googleButton}
+              onPress={() => promptAsync()}
+              disabled={!request}
+            >
+              <Text style={styles.googleButtonText}>Đăng nhập với Google</Text>
+            </TouchableOpacity>
+
+            <View style={styles.footer}>
+              <Text>Chưa có tài khoản?</Text>
+              <Text
+                style={styles.link}
+                onPress={() => navigation.navigate("Register")}
+              >
+                {" "}
+                Đăng ký ngay
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 //styles
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    backgroundColor: "#fdfdfd",
+  },
+  container: {
+    padding: 24,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 30,
+    gap: 8,
+  },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
+    color: "#1e293b",
   },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+
+  loginButton: {
+    backgroundColor: "#10b981",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 10,
   },
-  separator: { marginVertical: 10 },
-  footer: { flexDirection: "row", justifyContent: "center", marginTop: 20 },
-  link: { color: "blue", marginLeft: 5 },
+  loginButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+
+  googleButton: {
+    backgroundColor: "#DB4437",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 10,
+  },
+  googleButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+
+  separator: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  line: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#ccc",
+  },
+  separatorText: {
+    marginHorizontal: 8,
+    color: "#6b7280",
+    fontSize: 14,
+  },
+
+  footer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 24,
+  },
+  link: {
+    color: "#10b981",
+    fontWeight: "600",
+  },
 });

@@ -1,7 +1,20 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import FloatingLabelInput from "../../components/FloatingLabelInput";
 import { useAuth } from "../../hooks/useAuth";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function RegisterScreen() {
   const [firstName, setFirstName] = useState("");
@@ -9,14 +22,16 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const { register } = useAuth();
+
   const navigation = useNavigation();
+  const { register } = useAuth();
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
       Alert.alert("Lỗi", "Mật khẩu không khớp.");
       return;
     }
+
     try {
       await register({
         first_name: firstName,
@@ -34,69 +49,98 @@ export default function RegisterScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tạo tài khoản</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Họ"
-        value={lastName}
-        onChangeText={setLastName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Tên"
-        value={firstName}
-        onChangeText={setFirstName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
-        autoCapitalize="none"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Mật khẩu"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Xác nhận mật khẩu"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-        secureTextEntry
-      />
-      <Button title="Đăng ký" onPress={handleRegister} />
-      <View style={styles.footer}>
-        <Text>Đã có tài khoản?</Text>
-        <Text style={styles.link} onPress={() => navigation.goBack()}>
-          Đăng nhập
-        </Text>
-      </View>
-    </View>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.container}>
+            <View style={styles.header}>
+              <Text style={styles.title}>Skindora</Text>
+              <Ionicons name="person-add-outline" size={30} color="#10b981" />
+            </View>
+
+            <FloatingLabelInput label="Họ" value={lastName} onChangeText={setLastName} />
+            <FloatingLabelInput label="Tên" value={firstName} onChangeText={setFirstName} />
+            <FloatingLabelInput
+              label="Email"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+            <FloatingLabelInput
+              label="Mật khẩu"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
+            <FloatingLabelInput
+              label="Xác nhận mật khẩu"
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              secureTextEntry
+            />
+
+            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+              <Text style={styles.registerButtonText}>Đăng ký</Text>
+            </TouchableOpacity>
+
+            <View style={styles.footer}>
+              <Text>Đã có tài khoản?</Text>
+              <Text style={styles.link} onPress={() => navigation.goBack()}>
+                {" "}
+                Đăng nhập
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
-//styles giống LoginScreen
+
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", padding: 20 },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    backgroundColor: "#fdfdfd",
+  },
+  container: {
+    padding: 24,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 30,
+    gap: 8,
+  },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 20,
+    color: "#1e293b",
   },
-  input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 10,
-    borderRadius: 5,
+  registerButton: {
+    backgroundColor: "#10b981",
+    paddingVertical: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 16,
   },
-  footer: { flexDirection: "row", justifyContent: "center", marginTop: 20 },
-  link: { color: "blue", marginLeft: 5 },
+  registerButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 24,
+  },
+  link: {
+    color: "#10b981",
+    fontWeight: "600",
+  },
 });
