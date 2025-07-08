@@ -35,6 +35,7 @@ export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, googleLogin } = useAuth();
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const [request, response, promptAsync] = Google.useAuthRequest({
@@ -68,12 +69,22 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
+      setErrors({});
       await login({ email, password });
     } catch (error: any) {
-      Alert.alert(
-        "Đăng nhập thất bại",
-        error.response?.data?.message || "Email hoặc mật khẩu không đúng."
-      );
+      const serverErrors = error.response?.data?.errors;
+      if (serverErrors) {
+        const extractedErrors: Record<string, string> = {};
+        for (const key in serverErrors) {
+          extractedErrors[key] = serverErrors[key].msg;
+        }
+        setErrors(extractedErrors);
+      } else {
+        Alert.alert(
+          "Đăng ký thất bại",
+          error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
+        );
+      }
     }
   };
 
@@ -96,12 +107,14 @@ export default function LoginScreen() {
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
+              error={errors.email}
             />
             <FloatingLabelInput
               label="Mật khẩu"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
+              error={errors.password}
             />
 
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
