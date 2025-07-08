@@ -9,12 +9,20 @@ export type MainStackParamList = {
 
 export type HomeStackParamList = {
   Home: undefined;
-  Detail: undefined
+  Detail: undefined;
+};
+
+export type CartStackParamList = {
+  Cart: undefined;
+  Detail: undefined;
+  Checkout: undefined;
+  VoucherApplication: undefined;
+  PaymentMethod: undefined;
 };
 
 export type ProfileStackParamList = {
   Profile: undefined;
-  Settings: undefined
+  Settings: undefined;
 };
 
 export type NotificationStackParamList = {

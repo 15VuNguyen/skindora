@@ -12,6 +12,7 @@ import NotificationNavigator from "./NotificationNavigator";
 import ProfileNavigator from "./ProfileNavigator";
 import SearchNavigator from "./SearchNavigator";
 import AuthNavigator from "./AuthNavigator";
+import CartNavigator from "./CartNavigator";
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
@@ -26,6 +27,11 @@ const BottomTab = () => (
       name="SearchTab"
       component={SearchNavigator}
       options={{ title: "Tìm kiếm" }}
+    />
+    <Tab.Screen
+      name="CartTab"
+      component={CartNavigator}
+      options={{ title: "Giỏ hàng" }}
     />
     <Tab.Screen
       name="NotificationTab"
