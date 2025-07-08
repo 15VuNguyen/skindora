@@ -3,13 +3,13 @@ import {
   View,
   Text,
   StyleSheet,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
   TouchableOpacity,
-  Alert,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import FloatingLabelInput from "../../components/FloatingLabelInput";
@@ -23,16 +23,18 @@ export default function RegisterScreen() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const navigation = useNavigation();
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const { register } = useAuth();
+  const navigation = useNavigation();
 
   const handleRegister = async () => {
     if (password !== confirmPassword) {
-      Alert.alert("Lỗi", "Mật khẩu không khớp.");
+      setErrors({ confirm_password: "Mật khẩu xác nhận không khớp." });
       return;
     }
 
     try {
+      setErrors({}); 
       await register({
         first_name: firstName,
         last_name: lastName,
@@ -41,10 +43,19 @@ export default function RegisterScreen() {
         confirm_password: confirmPassword,
       });
     } catch (error: any) {
-      Alert.alert(
-        "Đăng ký thất bại",
-        error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
-      );
+      const serverErrors = error.response?.data?.errors;
+      if (serverErrors) {
+        const extractedErrors: Record<string, string> = {};
+        for (const key in serverErrors) {
+          extractedErrors[key] = serverErrors[key].msg;
+        }
+        setErrors(extractedErrors);
+      } else {
+        Alert.alert(
+          "Đăng ký thất bại",
+          error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
+        );
+      }
     }
   };
 
@@ -57,30 +68,43 @@ export default function RegisterScreen() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <View style={styles.container}>
             <View style={styles.header}>
-              <Text style={styles.title}>Skindora</Text>
-              <Ionicons name="person-add-outline" size={30} color="#10b981" />
+              <Text style={styles.title}>Tạo tài khoản</Text>
+              <Ionicons name="person-add-outline" size={32} color="#10b981" />
             </View>
 
-            <FloatingLabelInput label="Họ" value={lastName} onChangeText={setLastName} />
-            <FloatingLabelInput label="Tên" value={firstName} onChangeText={setFirstName} />
+            <FloatingLabelInput
+              label="Họ"
+              value={lastName}
+              onChangeText={setLastName}
+              error={errors.last_name}
+            />
+            <FloatingLabelInput
+              label="Tên"
+              value={firstName}
+              onChangeText={setFirstName}
+              error={errors.first_name}
+            />
             <FloatingLabelInput
               label="Email"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
               autoCapitalize="none"
+              error={errors.email}
             />
             <FloatingLabelInput
               label="Mật khẩu"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
+              error={errors.password}
             />
             <FloatingLabelInput
               label="Xác nhận mật khẩu"
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry
+              error={errors.confirm_password}
             />
 
             <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
@@ -90,8 +114,7 @@ export default function RegisterScreen() {
             <View style={styles.footer}>
               <Text>Đã có tài khoản?</Text>
               <Text style={styles.link} onPress={() => navigation.goBack()}>
-                {" "}
-                Đăng nhập
+                {" "}Đăng nhập
               </Text>
             </View>
           </View>
@@ -100,6 +123,7 @@ export default function RegisterScreen() {
     </KeyboardAvoidingView>
   );
 }
+
 
 const styles = StyleSheet.create({
   scrollContainer: {
