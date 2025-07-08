@@ -1,3 +1,6 @@
+import { PaymentMethod } from "./payment";
+import { Voucher } from "./voucher";
+
 export type AuthStackParamList = {
   Login: undefined;
   Register: undefined;
@@ -13,11 +16,20 @@ export type HomeStackParamList = {
 };
 
 export type CartStackParamList = {
-  Cart: undefined;
-  Detail: undefined;
+  Cart: {
+    selectedVoucher?: Voucher | undefined;
+    selectedPaymentMethod?: string | undefined;
+  };
+  Detail: {id: string | undefined};
   Checkout: undefined;
-  VoucherApplication: undefined;
-  PaymentMethod: undefined;
+  VoucherApplication: {
+    selectedVoucher?: Voucher | undefined;
+    selectedPaymentMethod?: string | undefined;
+  };
+  PaymentMethod: {
+    selectedVoucher?: Voucher | undefined;
+    selectedPaymentMethod?: string | undefined;
+  };
 };
 
 export type ProfileStackParamList = {
