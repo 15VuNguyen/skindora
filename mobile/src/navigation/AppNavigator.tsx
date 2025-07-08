@@ -53,8 +53,8 @@ export const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      {/* {accessToken ? <BottomTab /> : <AuthNavigator />} */}
-      {<BottomTab />}
+      {accessToken ? <BottomTab /> : <AuthNavigator />}
+      {/* {<BottomTab />} */}
     </NavigationContainer>
   );
 };
