@@ -81,7 +81,7 @@ export default function LoginScreen() {
         setErrors(extractedErrors);
       } else {
         Alert.alert(
-          "Đăng ký thất bại",
+          "Đăng nhập thất bại",
           error.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại."
         );
       }
