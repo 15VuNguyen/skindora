@@ -2,7 +2,7 @@ import axios from 'axios'
 import CryptoJS from 'crypto-js'
 import { v1 as uuidv1 } from 'uuid'
 import moment from 'moment'
-import cartService from '../cart.services'
+import redisClient from '../redis.services'
 
 interface Item {
   _id: string
@@ -33,8 +33,7 @@ const config = {
 }
 
 const createOrder = async (req: any, res: any): Promise<void> => {
-  const cartKey = cartService.getCartKey(req.decoded_authorization)
-  const cart = cartService.getCart(cartKey)
+  const orderid = req.redis_order_id
 
   const embeddata = {
     redirecturl: process.env.VNP_RETURNURL,
@@ -54,9 +53,11 @@ const createOrder = async (req: any, res: any): Promise<void> => {
     discount: item.Discount
   }))
 
+  const apptransid = `${moment().format('YYMMDD')}_${uuidv1()}`
+
   const order: Order = {
     appid: config.app_id,
-    apptransid: `${moment().format('YYMMDD')}_${uuidv1()}`,
+    apptransid: apptransid,
     appuser: 'Skin Dora Shop',
     apptime: Date.now(),
     item: JSON.stringify(items),
@@ -64,8 +65,10 @@ const createOrder = async (req: any, res: any): Promise<void> => {
     amount: req.body.total,
     description: 'Skin Dora Shop',
     bankcode: '',
-    callback_url: process.env.VNP_IPNURL
+    callback_url: process.env.ZALO_PAY_CALLBACK
   }
+
+  await redisClient.set(apptransid, orderid, { EX: 900 })
 
   const data = [
     order.appid,
