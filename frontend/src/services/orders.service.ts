@@ -105,7 +105,7 @@ export interface ProductInOrder {
   Quantity: number;
   PricePerUnit: number;
   TotalPrice: number;
-  name: string;
+  Name: string;
   image: string;
 }
 
