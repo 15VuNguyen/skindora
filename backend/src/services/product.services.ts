@@ -68,6 +68,7 @@ class ProductsService {
   async cacheProductInfo(product: ProductInCache) {
     const key = this.getProductInfoKey(product._id)
     await redisClient.hSet(key, {
+      quantity: product.quantity,
       price: product.price.toString(),
       name: product.name,
       image: product.image

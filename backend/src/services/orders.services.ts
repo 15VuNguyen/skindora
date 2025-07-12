@@ -69,11 +69,11 @@ class OrdersService {
 
         return {
           ProductID: p.ProductID,
+          Name: product.name_on_list,
+          Image: product.image_on_list,
           Quantity: p.Quantity,
           PricePerUnit: unitPrice,
-          TotalPrice: totalPrice,
-          name: product.name_on_list,
-          image: product.image_on_list
+          TotalPrice: totalPrice
         }
       }),
       TotalPrice: finalPrice,
@@ -157,8 +157,11 @@ class OrdersService {
     const status = OrderStatus.PENDING
     const paymentStatus = payload.PaymentStatus ?? PaymentStatus.UNPAID
 
+    console.log(payload)
     const order: Partial<Order> = {
       UserID: new ObjectId(userId),
+      RecipientName: payload.RecipientName || "",
+      PhoneNumber: payload.PhoneNumber || "",
       ShipAddress: payload.ShipAddress,
       Description: payload.Description || '',
       RequireDate: payload.RequireDate,
@@ -192,6 +195,7 @@ class OrdersService {
 
     let orderDetails: any[] = []
     try {
+      let orderId = null as ObjectId | null
       await session.withTransaction(async () => {
         const insertedOrder = await databaseService.orders.insertOne(
           {
@@ -201,7 +205,7 @@ class OrdersService {
           },
           { session }
         )
-        const orderId = insertedOrder.insertedId
+        orderId = insertedOrder.insertedId
 
         orderDetails = tempOrder.Products.map((p: ProductInOrder) => {
           return {
@@ -233,24 +237,23 @@ class OrdersService {
         }
       })
 
-      if (payload.type === OrderType.CART) {
-        const cartKey = cartService.getCartKey(userId)
-        const cart = await cartService.getCart(cartKey)
-        const remainingProducts = cart.Products.filter((p: ProductInCart) => {
-          const orderedProductIds = tempOrder.Products.map((p: ProductInOrder) => p.ProductID)
-          return !orderedProductIds.includes(p.ProductID)
-        })
+      const cartKey = cartService.getCartKey(userId)
+      const cart = await cartService.getCart(cartKey)
+      const remainingProducts = cart.Products.filter((p: ProductInCart) => {
+        const orderedProductIds = tempOrder.Products.map((p: ProductInOrder) => p.ProductID)
+        return !orderedProductIds.includes(p.ProductID)
+      })
 
-        if (remainingProducts.length <= 0) {
-          await redisClient.del(cartKey)
-        } else {
-          await cartService.saveCart(cartKey, { Products: remainingProducts })
-        }
+      if (remainingProducts.length <= 0) {
+        await redisClient.del(cartKey)
+      } else {
+        await cartService.saveCart(cartKey, { Products: remainingProducts })
       }
 
       await redisClient.del(tempOrderKey)
 
       return {
+        orderId,
         ...order,
         ...(discount > 0 && { PriceBeforeDiscount: priceBeforeDiscount.toString() }),
         orderDetails: orderDetails.map(({ OrderID, ...rest }) => rest)
