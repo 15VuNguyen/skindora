@@ -421,7 +421,8 @@ export const ORDER_MESSAGES = {
   INVALID_CANCELLED_STATUS: 'Trạng thái hủy không hợp lệ',
   CANCEL_REQUESTING: 'Đơn hàng này đang được yêu cầu hủy, không thể cập nhật sang trạng thái tiếp theo',
   COUNT_SUCCESS: 'Lấy số lượng đơn hàng thành công',
-  COUNT_FAIL: 'Lấy số lượng đơn hàng thất bại'
+  COUNT_FAIL: 'Lấy số lượng đơn hàng thất bại',
+  INVALID_PHONE_NUMBER: "Số điện thoại không hợp lệ"
 } as const
 
 export const VOUCHER_MESSAGES = {

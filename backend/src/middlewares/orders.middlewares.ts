@@ -37,6 +37,17 @@ import { getBaseRequiredDate } from '~/utils/date'
 export const checkOutValidator = validate(
   checkSchema(
     {
+      RecipientName:{
+        optional: true,
+        trim: true
+      },
+      PhoneNumber:{
+        optional: true,
+        isMobilePhone:{
+          options: ["vi-VN"],
+          errorMessage: ORDER_MESSAGES.INVALID_PHONE_NUMBER,
+        }
+      },
       ShipAddress: {
         notEmpty: {
           errorMessage: ORDER_MESSAGES.SHIP_ADDRESS_REQUIRED
