@@ -45,7 +45,7 @@ export function transformMongoToAISchema(mongoProduct: MongoProduct, contextSkin
     price: mongoProduct.price_on_list,
     brand: brandName,
     name: mongoProduct.name_on_list,
-    urlDetail: mongoProduct.product_detail_url,
+    urlDetail: `/product/${mongoProduct._id.toString()}`,
     filter_path_tags: reconstructedFilterPathTags.length > 0 ? reconstructedFilterPathTags : undefined,
     Detail: {
       MainImage: mongoProduct.main_images_detail || [],
