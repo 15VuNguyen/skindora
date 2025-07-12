@@ -32,7 +32,6 @@ export const useCartPageLogic = () => {
   const [isVoucherDialogOpen, setIsVoucherDialogOpen] = useState(false);
   const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
 
-  // --- MUTATIONS (Defined locally to access component state) ---
  const updateCartMutation = useUpdateCartMutation(setMutatingItemId);
   const removeFromCartMutation = useRemoveFromCartMutation(setMutatingItemId);
 
