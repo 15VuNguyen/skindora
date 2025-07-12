@@ -26,10 +26,10 @@ function sortObject(obj: VnpParams): VnpParams {
   return sorted
 }
 
-export const createVnpayUrl = async (data: PaymentData, clientIp: string, redisOrderId: string): Promise<string> => {
+export const createPaymentUrl = async (data: PaymentData, clientIp: string, redisOrderId: string): Promise<string> => {
   const date = new Date()
   const createDate = moment(date).format('YYYYMMDDHHmmss')
-  const orderId = moment(date).format('HHmmss') // dùng làm vnp_TxnRef
+  const orderId = moment(date).format('HHmmss')
 
   const tmnCode = process.env.VNPAY_TMN_CODE!
   const secretKey = process.env.VNPAY_HASHSECRET!

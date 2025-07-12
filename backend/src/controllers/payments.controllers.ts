@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { createPaymentUrl, callBackUrl } from '~/services/Payments/vnpay.services'
+import { createPaymentUrl } from '~/services/Payments/vnpay.services'
 
 export const createPaymentUrlController = (req: Request, res: Response): void => {
   const clientIp =
@@ -10,7 +10,7 @@ export const createPaymentUrlController = (req: Request, res: Response): void =>
     '127.0.0.1'
 
   try {
-    const paymentUrl = createPaymentUrl(req.body, clientIp || '')
+    const paymentUrl = createPaymentUrl(req.body, clientIp || '', req.redis_order_id?.toString() || '')
     res.status(200).json({ message: 'uccess', data: { paymentUrl } })
   } catch (error) {
     console.error('Error creating payment URL:', error)

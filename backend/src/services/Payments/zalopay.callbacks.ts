@@ -16,6 +16,8 @@ export const zaloPayCallback = async (req: Request, res: Response) => {
 
     const redisOrderId = await redisClient.get(apptransid)
 
+    console.log(redisOrderId)
+
     if (!redisOrderId) {
       res.status(404).json({ return_code: -1, return_message: 'OrderId not found in Redis' })
       return

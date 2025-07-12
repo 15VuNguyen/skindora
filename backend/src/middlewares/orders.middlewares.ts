@@ -291,7 +291,6 @@ export const getAllCancelledOrdersValidator = validate(
   })
 )
 
-
 export const getNextOrderStatusValidator = validate(
   checkSchema({
     orderId: {
@@ -320,7 +319,7 @@ export const getNextOrderStatusValidator = validate(
             })
           }
 
-          if(order.CancelRequest && order.CancelRequest.status === CancelRequestStatus.REQUESTED){
+          if (order.CancelRequest && order.CancelRequest.status === CancelRequestStatus.REQUESTED) {
             throw new ErrorWithStatus({
               message: ORDER_MESSAGES.CANCEL_REQUESTING,
               status: HTTP_STATUS.BAD_REQUEST
@@ -424,7 +423,7 @@ export const cancelledOrderRequestedValidator = validate(
             })
           }
 
-          if(order.Status === OrderStatus.CANCELLED){
+          if (order.Status === OrderStatus.CANCELLED) {
             throw new ErrorWithStatus({
               message: ORDER_MESSAGES.ORDER_CANCELLED,
               status: HTTP_STATUS.BAD_REQUEST
@@ -687,7 +686,7 @@ export const savePendingOrderToRedis = async (req: Request, res: Response, next:
     const cart = req.cart as Cart
     const products = req.products as Array<Product>
     const voucher = req.voucher as VoucherType
-    const { ShipAddress, Description, RequireDate, PaymentMethod: method} = req.body as OrderReqBody
+    const { ShipAddress, Description, RequireDate, PaymentMethod: method } = req.body as OrderReqBody
     let finalPrice = 0
     const pendingOrderId = new ObjectId()
 

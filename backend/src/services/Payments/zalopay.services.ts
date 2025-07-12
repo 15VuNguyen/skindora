@@ -3,7 +3,9 @@ import CryptoJS from 'crypto-js'
 import { v1 as uuidv1 } from 'uuid'
 import moment from 'moment'
 import redisClient from '../redis.services'
+import dotenv from 'dotenv'
 
+dotenv.config()
 interface Item {
   _id: string
   productID: string
@@ -32,8 +34,12 @@ const config = {
   endpoint: process.env.ZALO_PAY_ENDPOINT_SANDBOX || ''
 }
 
+console.log(config)
+
 const createOrder = async (req: any, res: any): Promise<void> => {
   const orderid = req.redis_order_id
+
+  console.log(orderid)
 
   const embeddata = {
     redirecturl: process.env.VNP_RETURNURL,
@@ -53,11 +59,9 @@ const createOrder = async (req: any, res: any): Promise<void> => {
     discount: item.Discount
   }))
 
-  const apptransid = `${moment().format('YYMMDD')}_${uuidv1()}`
-
   const order: Order = {
     appid: config.app_id,
-    apptransid: apptransid,
+    apptransid: `${moment().format('YYMMDD')}_${uuidv1()}`,
     appuser: 'Skin Dora Shop',
     apptime: Date.now(),
     item: JSON.stringify(items),
@@ -68,7 +72,7 @@ const createOrder = async (req: any, res: any): Promise<void> => {
     callback_url: process.env.ZALO_PAY_CALLBACK
   }
 
-  await redisClient.set(apptransid, orderid, { EX: 900 })
+  await redisClient.set(order.apptransid, orderid, { EX: 900 })
 
   const data = [
     order.appid,
