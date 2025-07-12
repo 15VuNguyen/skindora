@@ -1,4 +1,5 @@
 import { Loader2 } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -6,35 +7,26 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-// Adjust path if necessary
-
-// --- Import your Origin fetch hook ---
 import { useFetchOriginByID } from "@/hooks/Origin/useFetchOriginByID";
-// --- Import your Origin interface ---
 import type { Origin } from "@/types/Filter/origin";
-
-// Adjust path if necessary
 
 const OriginDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Use the Origin-specific hook
   const { data: originData, fetchOriginByID, loading } = useFetchOriginByID(String(id));
 
   useEffect(() => {
-    // Only fetch if ID exists.
     if (id) {
       fetchOriginByID();
     }
-  }, [id, fetchOriginByID]); // Depend on ID to re-fetch if ID changes
-
+  }, [id, fetchOriginByID]);
   useEffect(() => {
     console.log("Origin Data:", originData);
   }, [originData]);
 
   const handleGoBack = () => {
-    navigate(-1); // Navigate back to the previous page in history
+    navigate(-1);
   };
 
   if (loading) {
@@ -48,7 +40,6 @@ const OriginDetail = () => {
     );
   }
 
-  // Use 'origin' for clarity, assuming originData will be a single object or undefined
   const origin: Origin | undefined = originData;
 
   if (!origin) {
@@ -66,19 +57,31 @@ const OriginDetail = () => {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Chi tiết Xuất xứ</h1> {/* Updated title */}
-        <Button onClick={handleGoBack} variant="outline">
-          Quay lại
-        </Button>
+        <h1 className="text-3xl font-bold">Chi tiết Xuất xứ</h1>
+        <div className="flex gap-2">
+          <div>
+            <Button onClick={handleGoBack} variant="outline">
+              Quay lại
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="default"
+              onClick={() => {
+                navigate(`/admin/${id}/update-origin`);
+              }}
+            >
+              <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
+            </Button>
+          </div>
+        </div>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl font-bold">{origin.option_name}</CardTitle> {/* Display Origin name */}
+          <CardTitle className="text-3xl font-bold">{origin.option_name}</CardTitle>
           <CardDescription className="text-lg text-gray-600">Chi tiết Xuất xứ ID: {origin._id}</CardDescription>{" "}
-          {/* Display Origin ID */}
         </CardHeader>
         <CardContent className="grid gap-6">
-          {/* Category Information */}
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
               Danh mục
@@ -96,7 +99,7 @@ const OriginDetail = () => {
             <Badge
               id="state"
               className={`mt-1 text-sm font-medium ${
-                origin.state === "ACTIVE" // Use 'ACTIVE' (uppercase) as per your schema
+                origin.state === "ACTIVE"
                   ? "bg-green-100 text-green-800 hover:bg-green-200"
                   : "bg-red-100 text-red-800 hover:bg-red-200"
               }`}

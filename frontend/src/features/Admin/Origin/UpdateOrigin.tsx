@@ -13,13 +13,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// Import your Origin fetch hook
 import { useFetchOriginByID } from "@/hooks/Origin/useFetchOriginByID";
 import httpClient from "@/lib/axios";
-// Import your Origin schema and type
 import type { CreateOriginFormValue } from "@/lib/originSchema";
 import { createOriginSchema } from "@/lib/originSchema";
-// Import your Origin interface
 import type { Origin } from "@/types/Filter/origin";
 
 const UpdateOrigin: React.FC = () => {
@@ -27,16 +24,15 @@ const UpdateOrigin: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  // Fetch Origin data using the hook
   const { data: fetchedOriginData, fetchOriginByID, loading } = useFetchOriginByID(String(id));
 
   const form = useForm<CreateOriginFormValue>({
-    resolver: zodResolver(createOriginSchema), // Using the create schema for update validation
+    resolver: zodResolver(createOriginSchema),
     defaultValues: {
       option_name: "",
       category_name: "",
       category_param: "",
-      state: "ACTIVE", // Default to ACTIVE
+      state: "ACTIVE",
     },
   });
 
@@ -52,7 +48,6 @@ const UpdateOrigin: React.FC = () => {
 
   useEffect(() => {
     if (fetchedOriginData) {
-      // Ensure fetchedOriginData is treated as Origin
       const originToEdit = fetchedOriginData as Origin;
       form.reset({
         option_name: originToEdit.option_name,
@@ -71,7 +66,6 @@ const UpdateOrigin: React.FC = () => {
     console.log("FINAL ORIGIN UPDATE PAYLOAD TO SERVER:", payload);
 
     try {
-      // Adjust the API endpoint for updating an origin
       const response = await httpClient.put(`/admin/manage-filters/update-filter-hsk-origin/${id}`, payload);
 
       console.log(response);
@@ -102,12 +96,12 @@ const UpdateOrigin: React.FC = () => {
           errorMessage = responseData?.message || errorMessage;
         }
       }
-      console.error("Error updating origin:", (error as AxiosError)?.response?.data); // Error log for Origin
+      console.error("Error updating origin:", (error as AxiosError)?.response?.data);
       toast.error("Thất bại!", {
         description: errorMessage,
       });
     } finally {
-      console.log("Submit finished, isSubmitting set to false."); // <-- Thêm dòng này
+      console.log("Submit finished, isSubmitting set to false.");
       setIsSubmitting(false);
     }
   };
@@ -141,7 +135,7 @@ const UpdateOrigin: React.FC = () => {
           className="hover:bg-transparent hover:text-green-600"
           variant="ghost"
           onClick={() => {
-            navigate("/admin/origin"); // Navigate back to Origin list
+            navigate("/admin/origin");
           }}
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -153,8 +147,8 @@ const UpdateOrigin: React.FC = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Card>
               <CardHeader>
-                <CardTitle>Cập nhật Xuất xứ</CardTitle> {/* Title for Origin */}
-                <Typography>Chỉnh sửa các thông tin chi tiết cho Xuất xứ.</Typography> {/* Description for Origin */}
+                <CardTitle>Cập nhật Xuất xứ</CardTitle>
+                <Typography>Chỉnh sửa các thông tin chi tiết cho Xuất xứ.</Typography>
               </CardHeader>
               <CardContent className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 {/* Origin Information Section */}
@@ -166,11 +160,10 @@ const UpdateOrigin: React.FC = () => {
                       name="option_name"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên Xuất xứ</FormLabel> {/* Label for Origin name */}
+                          <FormLabel>Tên Xuất xứ</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tên Xuất xứ (ví dụ: Việt Nam, Hàn Quốc)" // Placeholder for Origin name
-                              {...field}
+                              placeholder="Nhập tên Xuất xứ (ví dụ: Việt Nam, Hàn Quốc)"
                               value={field.value || ""}
                             />
                           </FormControl>
@@ -178,7 +171,7 @@ const UpdateOrigin: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    {/* Removed FormField for description as it's not in Origin schema */}
+
                     <FormField
                       control={form.control}
                       name="category_name"
@@ -187,7 +180,7 @@ const UpdateOrigin: React.FC = () => {
                           <FormLabel>Tên danh mục</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tên danh mục (ví dụ: Quốc gia, Châu lục)" // Placeholder for category
+                              placeholder="Nhập tên danh mục (ví dụ: Quốc gia, Châu lục)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -204,7 +197,7 @@ const UpdateOrigin: React.FC = () => {
                           <FormLabel>Tham số danh mục</FormLabel>
                           <FormControl>
                             <Input
-                              placeholder="Nhập tham số danh mục (ví dụ: viet-nam, han-quoc)" // Placeholder for category param
+                              placeholder="Nhập tham số danh mục (ví dụ: viet-nam, han-quoc)"
                               {...field}
                               value={field.value || ""}
                             />
@@ -213,18 +206,14 @@ const UpdateOrigin: React.FC = () => {
                         </FormItem>
                       )}
                     />
-                    {/* FormField for state */}
+
                     <FormField
                       control={form.control}
                       name="state"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Trạng thái</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value} // Shows the fetched value
-                            disabled={isSubmitting} // Disable while submitting, not based on state value
-                          >
+                          <Select onValueChange={field.onChange} value={field.value} disabled={isSubmitting}>
                             <FormControl>
                               <SelectTrigger disabled>
                                 <SelectValue placeholder="Chọn trạng thái" />
@@ -244,7 +233,7 @@ const UpdateOrigin: React.FC = () => {
               </CardContent>
             </Card>
             <Button type="submit" disabled={isSubmitting} size="lg" className="w-full">
-              {isSubmitting ? "Đang cập nhật..." : "Cập nhật Xuất xứ"} {/* Button text for Origin */}
+              {isSubmitting ? "Đang cập nhật..." : "Cập nhật Xuất xứ"}
             </Button>
           </form>
         </Form>

@@ -43,7 +43,14 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Origin }; r
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(_id)}>Copy mã voucher</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/origin-detail`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-origin`)}>Chỉnh sửa</DropdownMenuItem>
+          {state === "ACTIVE" && (
+            <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-origin`)}>Chỉnh sửa</DropdownMenuItem>
+          )}
+          {state === "INACTIVE" && (
+            <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-origin`)} disabled>
+              Chỉnh sửa
+            </DropdownMenuItem>
+          )}
 
           {state === "ACTIVE" ? (
             <DropdownMenuItem
