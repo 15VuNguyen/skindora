@@ -14,8 +14,8 @@ export function ProductList({ products, onAddToCart, onCardClick, clearFilters, 
   return (
     <>
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-bold">All Products</h2>
-        <p className="text-sm text-gray-500">{products.length} products found</p>
+        <h2 className="text-xl font-bold">Tất cả sản phẩm</h2>
+        <p className="text-sm text-gray-500">Đã tìm thấy {products.length} sản phẩm</p>
       </div>
 
       {products.length > 0 ? (
@@ -33,9 +33,9 @@ export function ProductList({ products, onAddToCart, onCardClick, clearFilters, 
         </div>
       ) : (
         <div className="py-12 text-center">
-          <p className="text-lg text-gray-500">No products found for the selected filters.</p>
+          <p className="text-lg text-gray-500">Không tìm thấy sản phẩm nào với bộ lọc đã chọn.</p>
           <Button variant="outline" className="mt-4" onClick={clearFilters}>
-            Clear Filters
+            Xóa bộ lọc
           </Button>
         </div>
       )}

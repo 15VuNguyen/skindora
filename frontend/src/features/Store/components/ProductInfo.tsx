@@ -43,11 +43,11 @@ export function ProductInfo({
               />
             ))}
             <span className="ml-2 text-sm text-gray-600">
-              {product.rating} ({product.reviews} reviews)
+              {product.rating} ({product.reviews} đánh giá)
             </span>
           </div>
         </div>
-        <p className="text-primary mb-4 text-2xl font-bold">${product.price.toFixed(2)}</p>
+        <p className="text-primary mb-4 text-2xl font-bold">{product.price.toLocaleString("vi-VN")}₫</p>
         <div className="mb-6">
           <p className="text-gray-700">{product.description}</p>
         </div>
@@ -55,7 +55,7 @@ export function ProductInfo({
 
       <div className="space-y-4">
         <div>
-          <p className="mb-2 text-sm font-medium">Quantity</p>
+          <p className="mb-2 text-sm font-medium">Số lượng</p>
           <QuantitySelector
             quantity={quantity}
             handleDecrement={handleDecrement}
@@ -66,7 +66,7 @@ export function ProductInfo({
 
         <div className="flex space-x-4">
           <Button className="flex-1" onClick={addToCart}>
-            Add to Cart
+            Thêm vào giỏ hàng
           </Button>
           <Button variant="outline" size="icon" onClick={addToWishlist}>
             <Heart className="h-5 w-5" />
@@ -97,7 +97,7 @@ function QuantitySelector({ quantity, handleDecrement, handleIncrement, stock }:
       <Button variant="outline" size="icon" onClick={handleIncrement} disabled={quantity >= stock}>
         <Plus className="h-4 w-4" />
       </Button>
-      <span className="ml-4 text-sm text-gray-500">{stock} units available</span>
+      <span className="ml-4 text-sm text-gray-500">Còn {stock} sản phẩm</span>
     </div>
   );
 }

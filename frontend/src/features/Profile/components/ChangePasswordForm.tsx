@@ -10,12 +10,12 @@ import { Input } from "@/components/ui/input";
 
 const changePasswordSchema = z
   .object({
-    oldPassword: z.string().min(8, "Old password must be at least 8 characters."),
-    newPassword: z.string().min(8, "New password must be at least 8 characters."),
+    oldPassword: z.string().min(8, "Mật khẩu cũ phải có ít nhất 8 ký tự."),
+    newPassword: z.string().min(8, "Mật khẩu mới phải có ít nhất 8 ký tự."),
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "New passwords don't match.",
+    message: "Mật khẩu mới không khớp.",
     path: ["confirmPassword"],
   });
 
@@ -41,7 +41,7 @@ export const ChangePasswordForm = ({ onSubmit, isSubmitting }: ChangePasswordFor
       <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
         <Card>
           <CardHeader>
-            <CardTitle>Change Your Password</CardTitle>
+            <CardTitle>Đổi mật khẩu</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <FormField
@@ -49,7 +49,7 @@ export const ChangePasswordForm = ({ onSubmit, isSubmitting }: ChangePasswordFor
               name="oldPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Current Password</FormLabel>
+                  <FormLabel>Mật khẩu hiện tại</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <LockKeyhole className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -71,7 +71,7 @@ export const ChangePasswordForm = ({ onSubmit, isSubmitting }: ChangePasswordFor
               name="newPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>New Password</FormLabel>
+                  <FormLabel>Mật khẩu mới</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <LockKeyhole className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -93,7 +93,7 @@ export const ChangePasswordForm = ({ onSubmit, isSubmitting }: ChangePasswordFor
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm New Password</FormLabel>
+                  <FormLabel>Xác nhận mật khẩu mới</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <LockKeyhole className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -113,7 +113,7 @@ export const ChangePasswordForm = ({ onSubmit, isSubmitting }: ChangePasswordFor
             <div className="flex justify-end pt-4">
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Update Password
+                Cập nhật mật khẩu
               </Button>
             </div>
           </CardContent>

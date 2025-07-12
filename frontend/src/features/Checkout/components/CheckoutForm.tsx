@@ -27,12 +27,12 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5" /> Shipping Information
+              <MapPin className="h-5 w-5" /> Thông tin giao hàng
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-5">
-              <Label htmlFor="shipAddress">Shipping Address *</Label>
+              <Label htmlFor="shipAddress">Địa chỉ giao hàng *</Label>
               <Controller
                 name="ShipAddress"
                 control={form.control}
@@ -40,7 +40,7 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
                   <>
                     <Textarea
                       id="shipAddress"
-                      placeholder="Enter your full address (house number, street, city)"
+                      placeholder="Nhập địa chỉ đầy đủ (số nhà, đường, thành phố)"
                       {...field}
                       className="min-h-[80px]"
                     />
@@ -50,14 +50,14 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
               />
             </div>
             <div className="space-y-5">
-              <Label htmlFor="description">Delivery Notes</Label>
+              <Label htmlFor="description">Ghi chú giao hàng</Label>
               <Controller
                 name="Description"
                 control={form.control}
                 render={({ field }) => (
                   <Textarea
                     id="description"
-                    placeholder="e.g., Call before delivery, leave with guard..."
+                    placeholder="VD: Gọi trước khi giao, gửi cho bảo vệ..."
                     {...field}
                     className="min-h-[60px]"
                   />
@@ -65,7 +65,7 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
               />
             </div>
             <div className="space-y-5">
-              <Label>Requested Delivery Date</Label>
+              <Label>Ngày giao hàng mong muốn</Label>
               <Controller
                 name="RequireDate"
                 control={form.control}
@@ -81,7 +81,7 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
-                          {field.value ? format(field.value, "PPP", { locale: vi }) : "Select a delivery date"}
+                          {field.value ? format(field.value, "PPP", { locale: vi }) : "Chọn ngày giao hàng"}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
@@ -104,7 +104,7 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CreditCard className="h-5 w-5" /> Payment Method
+              <CreditCard className="h-5 w-5" /> Phương thức thanh toán
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -121,8 +121,8 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
                     <div className="flex flex-1 items-center gap-3">
                       <Truck className="h-5 w-5" />
                       <div>
-                        <p className="font-medium">Cash on Delivery (COD)</p>
-                        <p className="text-sm text-gray-500">Pay with cash upon receiving your order</p>
+                        <p className="font-medium">Thanh toán khi nhận hàng (COD)</p>
+                        <p className="text-sm text-gray-500">Thanh toán tiền mặt khi nhận hàng</p>
                       </div>
                     </div>
                   </Label>
@@ -157,7 +157,7 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
                       </svg>
                       <div>
                         <p className="font-medium">ZaloPay</p>
-                        <p className="text-sm text-gray-500">Pay with your ZaloPay e-wallet</p>
+                        <p className="text-sm text-gray-500">Thanh toán bằng ví ZaloPay</p>
                       </div>
                     </div>
                   </Label>
@@ -198,7 +198,7 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
                       </svg>
                       <div>
                         <p className="font-medium">VNPay</p>
-                        <p className="text-sm text-gray-500">Pay via banking app using VNPay QR code</p>
+                        <p className="text-sm text-gray-500">Thanh toán qua ứng dụng ngân hàng bằng mã QR VNPay</p>
                       </div>
                     </div>
                   </Label>
@@ -209,7 +209,7 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
         </Card>
         <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
           {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-          {isSubmitting ? "Placing Order..." : "Place Order"}
+          {isSubmitting ? "Đang đặt hàng..." : "Đặt hàng"}
         </Button>
       </form>
     </FormProvider>

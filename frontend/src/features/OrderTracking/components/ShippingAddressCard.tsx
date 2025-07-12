@@ -10,7 +10,7 @@ export const ShippingAddressCard = ({ address }: ShippingAddressCardProps) => (
   <Card>
     <CardHeader>
       <CardTitle className="flex items-center gap-2">
-        <MapPin className="h-5 w-5" /> Shipping Address
+        <MapPin className="h-5 w-5" /> Địa chỉ giao hàng
       </CardTitle>
     </CardHeader>
     <CardContent>

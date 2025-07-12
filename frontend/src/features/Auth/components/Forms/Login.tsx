@@ -62,8 +62,8 @@ export function LoginForm() {
   return (
     <Card className="w-full max-w-md border-0 shadow-none sm:shadow-lg">
       <CardHeader className="space-y-1 text-center">
-        <CardTitle className="text-2xl font-bold tracking-tight sm:text-3xl">Sign in</CardTitle>
-        <CardDescription>Enter your credentials to access your account</CardDescription>
+        <CardTitle className="text-2xl font-bold tracking-tight sm:text-3xl">Đăng nhập</CardTitle>
+        <CardDescription>Nhập thông tin để truy cập tài khoản của bạn</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -96,7 +96,7 @@ export function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <LockKeyhole className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -125,19 +125,19 @@ export function LoginForm() {
                     </FormControl>
                     <div className="grid gap-1.5 leading-none">
                       <FormLabel className="cursor-pointer text-sm leading-none font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Remember me
+                        Ghi nhớ đăng nhập
                       </FormLabel>
                     </div>
                   </FormItem>
                 )}
               />
               <Link to="/auth/forgot-password" className="text-primary text-sm hover:underline">
-                Forgot password?
+                Quên mật khẩu?
               </Link>
             </div>
             <Button type="submit" className="w-full" disabled={actions.isLoggingIn}>
               {actions.isLoggingIn && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign in
+              Đăng nhập
             </Button>
           </form>
         </Form>
@@ -146,9 +146,9 @@ export function LoginForm() {
         <Splitter />
         <GoogleButton handleGoogleLogin={handleGoogleLogin} isAuthLoading={actions.isLoggingIn} />
         <p className="text-muted-foreground text-sm">
-          Don't have an account?{" "}
+          Bạn chưa có tài khoản?{" "}
           <Link to="/auth/register" className="text-primary font-medium hover:underline">
-            Sign up
+            Đăng ký
           </Link>
         </p>
       </CardFooter>

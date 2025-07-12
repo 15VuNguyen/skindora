@@ -1,4 +1,3 @@
-
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -17,19 +16,19 @@ export function ProductTabs({ details, ingredients, usage }: ProductTabsProps) {
             value="details"
             className="data-[state=active]:border-primary rounded-none data-[state=active]:border-b-2"
           >
-            Details
+            Chi tiết
           </TabsTrigger>
           <TabsTrigger
             value="ingredients"
             className="data-[state=active]:border-primary rounded-none data-[state=active]:border-b-2"
           >
-            Ingredients
+            Thành phần
           </TabsTrigger>
           <TabsTrigger
             value="usage"
             className="data-[state=active]:border-primary rounded-none data-[state=active]:border-b-2"
           >
-            How to Use
+            Hướng dẫn sử dụng
           </TabsTrigger>
         </TabsList>
         <CardContent className="pt-6">

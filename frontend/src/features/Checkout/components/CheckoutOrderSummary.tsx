@@ -10,7 +10,7 @@ interface CheckoutOrderSummaryProps {
   discount: number;
   total: number;
   items: ProductInOrder[];
-  voucherCode?: string; 
+  voucherCode?: string;
 }
 
 export function CheckoutOrderSummary({
@@ -25,27 +25,26 @@ export function CheckoutOrderSummary({
     <div className="sticky top-24 space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Order Summary</CardTitle>
+          <CardTitle>Tóm tắt đơn hàng</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between text-sm font-medium">
-            <span>Subtotal:</span>
+            <span>Tạm tính:</span>
             <span>{subtotal.toLocaleString("vi-VN")}₫</span>
           </div>
           <div className="flex items-center justify-between text-sm font-medium">
-            <span>Shipping:</span>
+            <span>Phí vận chuyển:</span>
             <span>{shipping.toLocaleString("vi-VN")}₫</span>
           </div>
-          
           {discount > 0 && (
             <div className="flex items-center justify-between text-sm font-medium text-green-600">
-              <span>Discount {voucherCode && `(${voucherCode})`}:</span>
+              <span>Giảm giá {voucherCode && `(${voucherCode})`}:</span>
               <span>-{discount.toLocaleString("vi-VN")}₫</span>
             </div>
           )}
           <Separator />
           <div className="flex justify-between text-lg font-bold">
-            <span>Total:</span>
+            <span>Tổng cộng:</span>
             <span>{total.toLocaleString("vi-VN")}₫</span>
           </div>
         </CardContent>
@@ -53,7 +52,7 @@ export function CheckoutOrderSummary({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <Package className="h-5 w-5" /> Items in Your Order
+            <Package className="h-5 w-5" /> Sản phẩm trong đơn hàng
           </CardTitle>
         </CardHeader>
         <CardContent className="max-h-60 space-y-3 overflow-y-auto">

@@ -70,7 +70,6 @@ const CheckoutPage = () => {
         createOrderWithCOD(payload, {
           onSuccess: (result) => {
             if (result.isOk()) {
-             
               toast.success("Order Placed Successfully!", {
                 description: "Thank you for your purchase. We will process it shortly.",
               });
@@ -158,16 +157,15 @@ const CheckoutPage = () => {
     items: orderDetails.Products,
     voucherCode: appliedVoucher?.code,
   };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="mx-auto max-w-6xl p-4 md:p-8">
         <div className="mb-6 flex items-center">
           <Button variant="ghost" onClick={() => navigate("/cart")} className="mr-4">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Cart
+            Quay lại giỏ hàng
           </Button>
-          <h1 className="text-2xl font-bold">Checkout</h1>
+          <h1 className="text-2xl font-bold">Thanh toán</h1>
         </div>
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">

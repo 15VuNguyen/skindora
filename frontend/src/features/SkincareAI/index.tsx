@@ -47,7 +47,7 @@ const SkincareAI = () => {
   } = useSkincareAI();
 
   if (filterOptionsError) {
-    toast.error(filterOptionsError.message || "Could not load filter options.");
+    toast.error(filterOptionsError.message || "Không thể tải các tùy chọn bộ lọc.");
   }
 
   return (
@@ -56,10 +56,10 @@ const SkincareAI = () => {
         <div className="mx-auto max-w-7xl">
           <div className="animate-fade-in mb-12 text-center">
             <h2 className="mb-3 bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 bg-clip-text text-4xl font-extrabold text-transparent sm:text-5xl">
-              Skin Solution AI
+              AI Giải Pháp Làn Da
             </h2>
             <p className="mx-auto max-w-xl text-lg text-gray-600">
-              Upload your photo & preferences to unveil a skincare routine crafted just for you!
+              Tải lên ảnh của bạn và các sở thích để khám phá quy trình chăm sóc da được tạo riêng cho bạn!
             </p>
           </div>
 
@@ -69,7 +69,7 @@ const SkincareAI = () => {
               <div className="animate-fade-in sticky top-8 space-y-6 rounded-xl bg-white p-6 shadow-2xl">
                 <ImageUpload onImageUpload={handleImageUpload} onImageRemove={handleImageRemove} />
                 <div>
-                  <h3 className="mb-2 text-center font-semibold text-gray-700">Routine Preference</h3>
+                  <h3 className="mb-2 text-center font-semibold text-gray-700">Sở Thích Quy Trình</h3>
                   <PreferenceButtons selectedPreference={preference} onPreferenceChange={setPreference} />
                 </div>
                 <div>
@@ -77,13 +77,13 @@ const SkincareAI = () => {
                 </div>
 
                 {}
-                {isFilterOptionsLoading && <p className="py-4 text-center text-sm text-gray-500">Loading filters...</p>}
+                {isFilterOptionsLoading && <p className="py-4 text-center text-sm text-gray-500">Đang tải bộ lọc...</p>}
                 {!isFilterOptionsLoading && allFilterOptions && (
                   <div className="space-y-1 border-t border-gray-200 pt-4">
                     <div className="mb-3 flex items-center justify-between">
                       <h3 className="flex items-center text-lg font-semibold text-gray-700">
                         <Sparkles size={20} className="text-primary mr-2" />
-                        Refine Your Search
+                        Tinh Chỉnh Tìm Kiếm
                       </h3>
                       <Button
                         variant="link"
@@ -91,7 +91,7 @@ const SkincareAI = () => {
                         onClick={handleClearAllFilters}
                         className="text-primary hover:text-primary/80 h-auto p-0 text-xs"
                       >
-                        <Trash2 size={14} className="mr-1" /> Clear All
+                        <Trash2 size={14} className="mr-1" /> Xóa Tất Cả
                       </Button>
                     </div>
 
@@ -99,7 +99,7 @@ const SkincareAI = () => {
                     {allFilterOptions.filter_hsk_skin_type && (
                       <div className="pb-3">
                         <label htmlFor="userSkinTypeSelect" className="mb-1 block text-sm font-medium text-gray-600">
-                          Your Skin Type <span className="text-xs text-gray-400">(Optional)</span>
+                          Loại Da Của Bạn <span className="text-xs text-gray-400">(Tùy chọn)</span>
                         </label>
                         <Select
                           value={selectedUserSkinType || "let_ai_diagnose"}
@@ -108,10 +108,10 @@ const SkincareAI = () => {
                           }
                         >
                           <SelectTrigger className="w-full text-sm">
-                            <SelectValue placeholder="Let AI Diagnose" />
+                            <SelectValue placeholder="Để AI Chẩn Đoán" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="let_ai_diagnose">Let AI Diagnose</SelectItem>
+                            <SelectItem value="let_ai_diagnose">Để AI Chẩn Đoán</SelectItem>
                             {allFilterOptions.filter_hsk_skin_type.map((st) => (
                               <SelectItem key={st.filter_ID} value={st.name}>
                                 {st.name}
@@ -125,7 +125,7 @@ const SkincareAI = () => {
                     <Accordion type="multiple" className="w-full">
                       {allFilterOptions.filter_brand && allFilterOptions.filter_brand.length > 0 && (
                         <FilterAccordionItem
-                          title="Preferred Brands"
+                          title="Thương Hiệu Ưa Thích"
                           icon={<Building2 size={16} className="mr-2 text-gray-500" />}
                           options={allFilterOptions.filter_brand}
                           selectedValues={selectedBrands}
@@ -137,7 +137,7 @@ const SkincareAI = () => {
                         allFilterOptions.filter_hsk_product_type.length > 0 && (
                           <div className="relative">
                             <FilterAccordionItem
-                              title="Product Types"
+                              title="Loại Sản Phẩm"
                               icon={<ShoppingBag size={16} className="mr-2 text-gray-500" />}
                               options={allFilterOptions.filter_hsk_product_type}
                               selectedValues={selectedProductTypes}
@@ -153,7 +153,7 @@ const SkincareAI = () => {
                                 </TooltipTrigger>
                                 <TooltipContent>
                                   <p className="">
-                                    This filter acts as a suggestion to help the AI prioritize product types.
+                                    Bộ lọc này hoạt động như một gợi ý để giúp AI ưu tiên các loại sản phẩm.
                                   </p>
                                 </TooltipContent>
                               </Tooltip>
@@ -163,7 +163,7 @@ const SkincareAI = () => {
                       {allFilterOptions.filter_hsk_uses && allFilterOptions.filter_hsk_uses.length > 0 && (
                         <div className="relative">
                           <FilterAccordionItem
-                            title="Desired Uses/Effects"
+                            title="Tác Dụng/Hiệu Quả Mong Muốn"
                             icon={<Sparkles size={16} className="mr-2 text-gray-500" />}
                             options={allFilterOptions.filter_hsk_uses}
                             selectedValues={selectedUses}
@@ -174,13 +174,12 @@ const SkincareAI = () => {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <span className="absolute top-4.5 right-10">
-                                 
                                   <Info size={14} className="text-gray-400 hover:text-gray-600" />
                                 </span>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <p className="max-w-xs">
-                                  This filter helps the AI understand your desired outcomes for the routine.
+                                  Bộ lọc này giúp AI hiểu được kết quả mong muốn của bạn cho quy trình chăm sóc.
                                 </p>
                               </TooltipContent>
                             </Tooltip>
@@ -189,7 +188,7 @@ const SkincareAI = () => {
                       )}
                       {allFilterOptions.filter_hsk_ingredient && allFilterOptions.filter_hsk_ingredient.length > 0 && (
                         <FilterAccordionItem
-                          title="Key Ingredients (from Tags)"
+                          title="Thành Phần Chính (từ Tags)"
                           icon={<FlaskConical size={16} className="mr-2 text-gray-500" />}
                           options={allFilterOptions.filter_hsk_ingredient}
                           selectedValues={selectedIngredients}
@@ -199,7 +198,7 @@ const SkincareAI = () => {
                       )}
                       {allFilterOptions.filter_dac_tinh && allFilterOptions.filter_dac_tinh.length > 0 && (
                         <FilterAccordionItem
-                          title="Product Characteristics"
+                          title="Đặc Tính Sản Phẩm"
                           icon={<BadgeCheck size={16} className="mr-2 text-gray-500" />}
                           options={allFilterOptions.filter_dac_tinh}
                           selectedValues={selectedCharacteristics}
@@ -209,7 +208,7 @@ const SkincareAI = () => {
                       )}
                       {allFilterOptions.filter_hsk_size && allFilterOptions.filter_hsk_size.length > 0 && (
                         <FilterAccordionItem
-                          title="Product Sizes"
+                          title="Kích Thước Sản Phẩm"
                           icon={<Ruler size={16} className="mr-2 text-gray-500" />}
                           options={allFilterOptions.filter_hsk_size}
                           selectedValues={selectedSizes}
@@ -228,7 +227,7 @@ const SkincareAI = () => {
                     disabled={isAnalyzing || !uploadedImageBase64}
                     className="bg-primary hover:bg-primary/90 flex-1 py-3 text-white"
                   >
-                    {isAnalyzing ? "Analyzing..." : "Get My Routine"}
+                    {isAnalyzing ? "Đang Phân Tích..." : "Nhận Quy Trình Của Tôi"}
                   </Button>
                 </div>
               </div>

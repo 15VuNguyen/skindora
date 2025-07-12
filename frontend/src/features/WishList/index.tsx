@@ -39,8 +39,8 @@ const WishlistPage = () => {
   if (isError || !wishlistItems) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center">
-        <h2 className="text-destructive mb-2 text-2xl font-bold">Could not load wishlist</h2>
-        <p className="text-muted-foreground mb-6">Please try again later.</p>
+        <h2 className="text-destructive mb-2 text-2xl font-bold">Không thể tải danh sách yêu thích</h2>
+        <p className="text-muted-foreground mb-6">Vui lòng thử lại sau.</p>
       </div>
     );
   }
@@ -49,11 +49,11 @@ const WishlistPage = () => {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center">
         <Heart className="mb-4 h-16 w-16 text-gray-400" />
-        <h2 className="mb-2 text-2xl font-bold text-gray-900">Your Wishlist is Empty</h2>
+        <h2 className="mb-2 text-2xl font-bold text-gray-900">Danh sách yêu thích của bạn đang trống</h2>
         <p className="mb-6 max-w-md text-center text-gray-500">
-          Explore our products and add your favorites to your wishlist!
+          Khám phá các sản phẩm và thêm vào danh sách yêu thích của bạn!
         </p>
-        <Button onClick={() => navigate("/products")}>Explore Products</Button>
+        <Button onClick={() => navigate("/products")}>Khám phá sản phẩm</Button>
       </div>
     );
   }
@@ -63,9 +63,9 @@ const WishlistPage = () => {
       <div className="mb-6 flex items-center">
         <Button variant="ghost" onClick={() => navigate("/products")} className="mr-4">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Continue Shopping
+          Tiếp tục mua sắm
         </Button>
-        <h1 className="text-2xl font-bold">Your Wishlist ({wishlistItems.length} items)</h1>
+        <h1 className="text-2xl font-bold">Danh sách yêu thích ({wishlistItems.length} sản phẩm)</h1>
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-3">
@@ -73,7 +73,6 @@ const WishlistPage = () => {
           <ProductCard
             key={item._id}
             product={item}
-            
             variant="wishlist"
             onRemoveFromWishlist={handleRemove}
             onAddToCart={handleAddToCart}
@@ -87,7 +86,7 @@ const WishlistPage = () => {
       <div className="mt-8 text-center">
         <Button onClick={() => navigate("/cart")} className="mr-4">
           <ShoppingBag className="mr-2 h-4 w-4" />
-          View Cart
+          Xem giỏ hàng
         </Button>
       </div>
     </div>

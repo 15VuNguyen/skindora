@@ -47,7 +47,7 @@ export const VoucherDialog = ({
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-lg p-0">
         <DialogHeader className="flex flex-row items-center justify-between p-6 pb-4">
-          <DialogTitle className="text-xl font-bold">My Vouchers & Offers</DialogTitle>
+          <DialogTitle className="text-xl font-bold">Ưu đãi & Mã giảm giá của tôi</DialogTitle>
           <DialogClose asChild />
         </DialogHeader>
         <Separator />
@@ -79,9 +79,9 @@ export const VoucherDialog = ({
                           <p className="font-semibold">{voucher.description}</p>
 
                           <p className={`text-xs ${isApplicable ? "text-gray-500" : "font-medium text-red-500"}`}>
-                            Min. order: {Number(voucher.minOrderValue).toLocaleString("vi-VN")}₫
+                            Đơn tối thiểu: {Number(voucher.minOrderValue).toLocaleString("vi-VN")}₫
                           </p>
-                          <p className="text-xs text-gray-500">Expires: {formatDate(voucher.endDate)}</p>
+                          <p className="text-xs text-gray-500">Hết hạn: {formatDate(voucher.endDate)}</p>
                         </div>
                         <RadioGroupItem value={voucher.code} id={labelId} className="mt-1" disabled={!isApplicable} />
                       </label>
@@ -95,10 +95,10 @@ export const VoucherDialog = ({
         <Separator />
         <div className="flex items-center justify-between p-6">
           <span className="text-sm font-medium">
-            {locallySelectedCode ? "1 Voucher selected" : "0 Vouchers selected"}
+            {locallySelectedCode ? "Đã chọn 1 mã giảm giá" : "Chưa chọn mã giảm giá"}
           </span>
           <Button onClick={handleApply} disabled={!locallySelectedCode}>
-            Apply
+            Áp dụng
           </Button>
         </div>
       </DialogContent>

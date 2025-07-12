@@ -16,11 +16,9 @@ const PaymentReturnPage = () => {
       vnpayData[key] = value;
     });
 
-    
     if (vnpayData["vnp_ResponseCode"] && vnpayData["vnp_TxnRef"]) {
       verifyPayment(vnpayData);
     } else {
-     
       navigate("/error");
     }
   }, [searchParams, verifyPayment, navigate]);
@@ -30,8 +28,10 @@ const PaymentReturnPage = () => {
       return (
         <>
           <LoaderCircle className="text-primary h-16 w-16 animate-spin" />
-          <h1 className="mt-6 text-2xl font-bold">Verifying Payment...</h1>
-          <p className="text-muted-foreground mt-2">Please wait while we confirm your transaction.</p>
+          <h1 className="mt-6 text-2xl font-bold">Đang xác thực thanh toán...</h1>
+          <p className="text-muted-foreground mt-2">
+            Vui lòng chờ trong giây lát để chúng tôi xác nhận giao dịch của bạn.
+          </p>
         </>
       );
     }
@@ -40,10 +40,10 @@ const PaymentReturnPage = () => {
       return (
         <>
           <AlertTriangle className="text-destructive h-16 w-16" />
-          <h1 className="mt-6 text-2xl font-bold">Payment Verification Failed</h1>
-          <p className="text-muted-foreground mt-2">{error?.message || "There was an issue verifying your payment."}</p>
+          <h1 className="mt-6 text-2xl font-bold">Xác thực thanh toán thất bại</h1>
+          <p className="text-muted-foreground mt-2">{error?.message || "Đã xảy ra lỗi khi xác thực thanh toán."}</p>
           <Button onClick={() => navigate("/profile")} className="mt-6">
-            Go to My Profile
+            Về trang cá nhân
           </Button>
         </>
       );
@@ -53,10 +53,12 @@ const PaymentReturnPage = () => {
       return (
         <>
           <CheckCircle className="h-16 w-16 text-green-500" />
-          <h1 className="mt-6 text-2xl font-bold">Payment Successful!</h1>
-          <p className="text-muted-foreground mt-2">Your order has been confirmed. You will be redirected shortly.</p>
+          <h1 className="mt-6 text-2xl font-bold">Thanh toán thành công!</h1>
+          <p className="text-muted-foreground mt-2">
+            Đơn hàng của bạn đã được xác nhận. Bạn sẽ được chuyển hướng trong giây lát.
+          </p>
           <Button onClick={() => navigate("/profile/orders")} className="mt-6">
-            View My Orders
+            Xem đơn hàng của tôi
           </Button>
         </>
       );
@@ -65,12 +67,12 @@ const PaymentReturnPage = () => {
     return (
       <>
         <AlertTriangle className="text-destructive h-16 w-16" />
-        <h1 className="mt-6 text-2xl font-bold">Payment Failed</h1>
+        <h1 className="mt-6 text-2xl font-bold">Thanh toán thất bại</h1>
         <p className="text-muted-foreground mt-2">
-          {data?.isOk() ? data.value.data.message : "The transaction was not completed successfully."}
+          {data?.isOk() ? data.value.data.message : "Giao dịch không thành công."}
         </p>
         <Button onClick={() => navigate("/checkout")} variant="outline" className="mt-6">
-          Try Again
+          Thử lại
         </Button>
       </>
     );

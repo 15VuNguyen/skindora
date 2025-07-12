@@ -6,12 +6,12 @@ export const SkinPreferencesTab: React.FC = React.memo(() => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Skin Preferences</CardTitle>
+        <CardTitle>Thông tin làn da</CardTitle>
       </CardHeader>
       <CardContent>
         <p className="text-muted-foreground">
-          This section is under development. You'll soon be able to manage your skin type, concerns, and product
-          preferences here.
+          Tính năng này đang được phát triển. Bạn sẽ sớm có thể quản lý loại da, mối quan tâm và sở thích sản phẩm của
+          mình tại đây.
         </p>
       </CardContent>
     </Card>

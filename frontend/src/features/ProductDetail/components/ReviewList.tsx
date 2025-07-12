@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useProductReviewsQuery } from "@/hooks/queries/useProductReviewsQuery";
 import type { Review } from "@/types";
 
-
 interface ReviewListProps {
   productId: string;
 }
@@ -26,7 +25,7 @@ export function ReviewList({ productId }: ReviewListProps) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
         <LoaderCircle className="text-primary h-10 w-10 animate-spin" />
-        <p className="text-muted-foreground mt-2">Loading reviews...</p>
+        <p className="text-muted-foreground mt-2">Đang tải đánh giá...</p>
       </div>
     );
   }
@@ -35,7 +34,7 @@ export function ReviewList({ productId }: ReviewListProps) {
     return (
       <div className="border-destructive/50 bg-destructive/10 flex flex-col items-center justify-center rounded-lg border py-12 text-center">
         <AlertTriangle className="text-destructive h-10 w-10" />
-        <p className="text-destructive mt-2 font-semibold">Could not load reviews</p>
+        <p className="text-destructive mt-2 font-semibold">Không thể tải đánh giá</p>
         <p className="text-muted-foreground mt-1 text-sm">{error.message}</p>
       </div>
     );
@@ -44,7 +43,7 @@ export function ReviewList({ productId }: ReviewListProps) {
   if (reviews.length === 0) {
     return (
       <div className="py-8 text-center">
-        <p className="text-muted-foreground">No reviews yet. Be the first to review this product!</p>
+        <p className="text-muted-foreground">Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</p>
       </div>
     );
   }
@@ -54,7 +53,6 @@ export function ReviewList({ productId }: ReviewListProps) {
 
   return (
     <div className="space-y-6">
-   
       <div className="bg-muted/30 flex items-center gap-4 rounded-lg p-4">
         <div className="text-center">
           <div className="text-3xl font-bold">{averageRating.toFixed(1)}</div>
@@ -66,10 +64,9 @@ export function ReviewList({ productId }: ReviewListProps) {
               />
             ))}
           </div>
-          <div className="text-muted-foreground text-sm">{reviews.length} reviews</div>
+          <div className="text-muted-foreground text-sm">{reviews.length} đánh giá</div>
         </div>
 
-        
         <div className="flex-1 space-y-1">
           {[5, 4, 3, 2, 1].map((rating) => {
             const count = reviews.filter((r: Review) => r.rating === rating).length;
@@ -97,7 +94,7 @@ export function ReviewList({ productId }: ReviewListProps) {
               </Avatar>
               <div className="flex-1">
                 <div className="mb-1 flex items-center gap-2">
-                  <span className="font-medium">Verified User</span>
+                  <span className="font-medium">Người dùng xác thực</span>
                 </div>
                 <div className="mb-2 flex items-center gap-2">
                   <div className="flex items-center">

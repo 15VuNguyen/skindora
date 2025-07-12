@@ -5,8 +5,8 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
 interface ImageUploadProps {
-  onImageUpload: (base64DataUrl: string) => void; 
-  onImageRemove: () => void; 
+  onImageUpload: (base64DataUrl: string) => void;
+  onImageRemove: () => void;
 }
 
 const ImageUpload = ({ onImageUpload, onImageRemove }: ImageUploadProps) => {
@@ -22,11 +22,11 @@ const ImageUpload = ({ onImageUpload, onImageRemove }: ImageUploadProps) => {
 
   const validateAndProcessImage = (file: File) => {
     if (!file.type.match("image.*")) {
-      toast.error("Please upload an image file (JPEG, PNG, GIF, etc.)");
+      toast.error("Vui lòng tải lên tệp hình ảnh (JPEG, PNG, GIF, v.v.)");
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      toast.error("Image must be smaller than 5MB");
+      toast.error("Ảnh phải nhỏ hơn 5MB");
       return;
     }
 
@@ -35,11 +35,11 @@ const ImageUpload = ({ onImageUpload, onImageRemove }: ImageUploadProps) => {
       const base64DataUrl = reader.result as string;
       setPreview(base64DataUrl);
       onImageUpload(base64DataUrl);
-      toast.success("Image uploaded successfully!");
+      toast.success("Tải ảnh lên thành công!");
     };
     reader.onerror = () => {
-      toast.error("Failed to read the image file.");
-      setPreview(null); 
+      toast.error("Không thể đọc tệp hình ảnh.");
+      setPreview(null);
     };
     reader.readAsDataURL(file);
   };
@@ -64,10 +64,10 @@ const ImageUpload = ({ onImageUpload, onImageRemove }: ImageUploadProps) => {
 
   const handleRemoveImage = () => {
     setPreview(null);
-    onImageRemove(); 
+    onImageRemove();
     const fileInput = document.getElementById("file-upload") as HTMLInputElement;
     if (fileInput) {
-      fileInput.value = ""; 
+      fileInput.value = "";
     }
   };
 
@@ -83,11 +83,11 @@ const ImageUpload = ({ onImageUpload, onImageRemove }: ImageUploadProps) => {
           onDrop={handleDrop}
         >
           <Upload className="text-skin-blue mx-auto mb-4 h-12 w-12" />
-          <h3 className="mb-2 text-lg font-medium">Upload your photo</h3>
-          <p className="mb-4 text-sm text-gray-500">Drag and drop or click to browse (Max 5MB)</p>
+          <h3 className="mb-2 text-lg font-medium">Tải lên ảnh của bạn</h3>
+          <p className="mb-4 text-sm text-gray-500">Kéo và thả hoặc nhấn để chọn (Tối đa 5MB)</p>
           <input
             type="file"
-            accept="image/jpeg, image/png, image/gif, image/webp" 
+            accept="image/jpeg, image/png, image/gif, image/webp"
             onChange={handleFileChange}
             className="hidden"
             id="file-upload"
@@ -96,9 +96,9 @@ const ImageUpload = ({ onImageUpload, onImageRemove }: ImageUploadProps) => {
             <Button
               type="button"
               className="bg-primary hover:bg-primary/90 text-white"
-              onClick={() => document.getElementById("file-upload")?.click()} 
+              onClick={() => document.getElementById("file-upload")?.click()}
             >
-              Select Image
+              Chọn ảnh
             </Button>
           </label>
         </div>
@@ -107,11 +107,11 @@ const ImageUpload = ({ onImageUpload, onImageRemove }: ImageUploadProps) => {
           <img src={preview} alt="Face preview" className="h-auto w-full rounded-lg shadow-md" />
           <Button
             className="absolute top-2 right-2 rounded-full bg-white p-2 text-gray-700 shadow-md hover:bg-gray-200"
-            onClick={handleRemoveImage} 
+            onClick={handleRemoveImage}
             size="icon"
-            variant="outline" 
+            variant="outline"
           >
-            <svg 
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="16"
               height="16"

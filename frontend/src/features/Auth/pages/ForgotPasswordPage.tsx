@@ -4,21 +4,21 @@ import LeftPanel from "../components/LeftPanel";
 const ForgotPasswordFeatures: FeatureProps[] = [
   {
     icon: "🔑",
-    title: "Secure & Simple",
-    description: "Enter your email to receive a secure link to reset your password.",
+    title: "Bảo mật & Đơn giản",
+    description: "Nhập email để nhận liên kết bảo mật đặt lại mật khẩu.",
   },
   {
     icon: "⚡",
-    title: "Quick Recovery",
-    description: "Get back to your skincare journey in just a few moments.",
+    title: "Khôi phục nhanh chóng",
+    description: "Quay lại hành trình chăm sóc da chỉ trong vài phút.",
   },
 ];
 
 export default function ForgotPasswordPage() {
   return (
     <LeftPanel
-      title="Forgot Your Password?"
-      subtitle="No worries, we'll help you get back into your account."
+      title="Quên mật khẩu?"
+      subtitle="Đừng lo, chúng tôi sẽ giúp bạn truy cập lại tài khoản."
       features={ForgotPasswordFeatures}
     />
   );

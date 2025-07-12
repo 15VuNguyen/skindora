@@ -53,7 +53,7 @@ const ChatContainer = ({ messages, isAnalyzing }: ChatContainerProps) => {
           className="react-resizable flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white shadow-xl"
         >
           <div className="bg-primary sticky top-0 flex-shrink-0 p-4 text-white">
-            <h3 className="text-center text-lg font-medium">Personalized Skin Recommendations</h3>
+            <h3 className="text-center text-lg font-medium">Gợi Ý Chăm Sóc Da Cá Nhân Hóa</h3>
           </div>
 
           <div ref={chatContentRef} className="flex-grow space-y-4 overflow-y-auto bg-gray-50 p-4 md:p-6">
@@ -69,10 +69,10 @@ const ChatContainer = ({ messages, isAnalyzing }: ChatContainerProps) => {
                 <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-blue-300/30">
                   <span className="text-skin-blue text-4xl">🧴</span>
                 </div>
-                <p className="text-xl font-medium text-gray-600">Ready for your skin glow-up?</p>
+                <p className="text-xl font-medium text-gray-600">Sẵn sàng để da bạn rạng rỡ?</p>
                 <p className="text-md max-w-sm text-gray-500">
-                  Upload a photo of your face, or use the Demo Mode, to receive your personalized skincare product
-                  recommendations.
+                  Tải lên ảnh khuôn mặt của bạn, hoặc sử dụng Chế độ Demo, để nhận được gợi ý sản phẩm chăm sóc da cá
+                  nhân hóa.
                 </p>
               </div>
             )}
@@ -82,7 +82,7 @@ const ChatContainer = ({ messages, isAnalyzing }: ChatContainerProps) => {
                 <div className="rounded-xl rounded-bl-none bg-gray-200 px-4 py-3 text-gray-700 shadow-md">
                   <div className="flex items-center space-x-2">
                     <div className="dot-typing"></div>
-                    <span className="text-sm">Analyzing your skin...</span>
+                    <span className="text-sm">Đang phân tích làn da của bạn...</span>
                   </div>
                 </div>
               </div>

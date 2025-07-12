@@ -52,18 +52,18 @@ export function ProductStockAndActions({
       {isOutOfStock ? (
         <div className="flex items-center font-medium text-red-600">
           <XCircle className="mr-1 h-5 w-5" />
-          <span>Out of Stock</span>
+          <span>Hết hàng</span>
         </div>
       ) : (
         <div className="flex items-center text-green-600">
           <Check className="mr-1 h-5 w-5" />
-          <span>In Stock ({product.quantity} available)</span>
+          <span>Còn hàng ({product.quantity} sản phẩm)</span>
         </div>
       )}
 
       {!isOutOfStock && (
         <div className="flex items-center gap-4">
-          <p className="text-sm font-medium">Quantity:</p>
+          <p className="text-sm font-medium">Số lượng:</p>
           <div className="flex items-center rounded-md border">
             <Button
               variant="ghost"
@@ -95,7 +95,7 @@ export function ProductStockAndActions({
           ) : (
             <ShoppingCart className="mr-2 h-4 w-4" />
           )}
-          {isAddingToCart ? "Adding..." : "Add to Cart"}
+          {isAddingToCart ? "Đang thêm..." : "Thêm vào giỏ hàng"}
         </Button>
         <Button
           variant="outline"
@@ -104,7 +104,7 @@ export function ProductStockAndActions({
           onClick={onBuyNow}
         >
           {isBuyingNow ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : null}
-          {isBuyingNow ? "Processing..." : "Buy Now"}
+          {isBuyingNow ? "Đang xử lý..." : "Mua ngay"}
         </Button>
       </div>
     </div>
