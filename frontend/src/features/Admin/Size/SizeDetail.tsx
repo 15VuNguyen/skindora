@@ -1,7 +1,9 @@
 import { Loader2 } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -46,27 +48,42 @@ const SizeDetail = () => {
   }
 
   // Destructure sizeData for easier access
-  const { _id, option_name, category_name, category_param, state, created_at, updated_at } = sizeData;
+  const { _id, option_name, category_name, category_param, created_at, updated_at } = sizeData;
 
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Chi tiết kích thước</h1>
-        <Button onClick={handleGoBack} variant="outline">
-          Quay lại
-        </Button>
+        <h1 className="text-3xl font-bold">Chi tiết Kích Thước</h1>
+        <div className="flex gap-2">
+          <div>
+            <Button onClick={handleGoBack} variant="outline">
+              Quay lại
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="default"
+              onClick={() => {
+                navigate(`/admin/${id}/update-size`);
+              }}
+            >
+              <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
+            </Button>
+          </div>
+        </div>
       </div>
 
       <Card className="shadow-lg">
         <CardHeader className="border-b pb-4">
-          <CardTitle className="text-3xl font-extrabold text-gray-900">{option_name}</CardTitle>
+          <CardTitle className="text-3xl text-gray-900">
+            <Typography className="">{option_name}</Typography>
+          </CardTitle>
           <CardDescription className="text-md mt-1 text-gray-600">
-            ID: <span className="font-mono text-sm">{_id}</span>
+            Size ID: <span className="font-mono text-sm">{_id}</span>
           </CardDescription>
         </CardHeader>
 
         <CardContent className="grid gap-6 p-6">
-          {/* Category Information */}
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
               Danh mục
@@ -77,28 +94,21 @@ const SizeDetail = () => {
             </p>
           </div>
 
-          {/* State Badge */}
           <div>
             <Label htmlFor="state" className="text-sm font-medium text-gray-700">
-              Trạng thái
+              Trạng thái (State):
             </Label>
-            <Badge
-              id="state"
-              className={`mt-1 rounded-full px-3 py-1 text-sm font-medium ${
-                state === "active"
-                  ? "bg-green-100 text-green-800 hover:bg-green-200"
-                  : "bg-red-100 text-red-800 hover:bg-red-200"
-              }`}
-            >
-              {state === "active" ? "Hoạt động" : "Không hoạt động"}
-            </Badge>
+            {sizeData.state === "active" ? (
+              <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>
+            ) : (
+              <Badge variant="secondary">Không hoạt động</Badge>
+            )}
           </div>
 
-          {/* Timestamps */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Label htmlFor="created-at" className="text-sm font-medium text-gray-700">
-                Ngày tạo
+                Ngày được tạo
               </Label>
               <p id="created-at" className="mt-1 text-base text-gray-800">
                 {new Date(created_at).toLocaleString()}

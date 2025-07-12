@@ -54,9 +54,8 @@ const ManageOrdersStaff: React.FC = () => {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Phần Card thống kê */}
       <div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6">
+        <div className="grid grid-cols-1 gap-6 p-4 sm:grid-cols-2 lg:grid-cols-6">
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -80,7 +79,6 @@ const ManageOrdersStaff: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Card: Đang giao (Shipping) */}
           <Card className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
@@ -93,7 +91,6 @@ const ManageOrdersStaff: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Card: Đã giao (Delivered) */}
           <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
@@ -106,7 +103,6 @@ const ManageOrdersStaff: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Card: Bị trả lại (Returned) */}
           <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">

@@ -16,12 +16,6 @@ import {
 import { useUpdateStatusBrand } from "@/hooks/Brand/useUpdateStatusBrand";
 import type { Brand } from "@/types/Filter/brand";
 
-// const formatCurrency = (amount: number | string) => {
-//   return new Intl.NumberFormat("vi-VN", {
-//     style: "currency",
-//     currency: "VND",
-//   }).format(Number(amount));
-// };
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("vi-VN");
 };
@@ -55,7 +49,13 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Brand }; re
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/detail-brand`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-brand`)}>Chỉnh sửa</DropdownMenuItem>
+          {state === "ACTIVE" ? (
+            <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-brand`)}>Chỉnh sửa</DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-brand`)} disabled>
+              Chỉnh sửa
+            </DropdownMenuItem>
+          )}
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}
@@ -122,7 +122,7 @@ export const brandsColumn = (refetchData: () => void): ColumnDef<Brand>[] => [
       return <div className="pl-2 font-medium text-blue-600">{row.getValue("option_name")}</div>;
     },
   },
-  // Cột Trạng thái
+
   {
     accessorKey: "state",
     header: "Trạng thái",
@@ -135,17 +135,23 @@ export const brandsColumn = (refetchData: () => void): ColumnDef<Brand>[] => [
     },
   },
 
-  // Cột Ngày hiệu lực
   {
     accessorKey: "created_at",
-    header: "Thời gian hiệu lực",
+    header: "Ngày được tạo",
     cell: ({ row }) => {
       const { created_at } = row.original;
       return <div>{`${formatDate(created_at)}`}</div>;
     },
   },
 
-  // Cột Actions
+  {
+    accessorKey: "updated_at",
+    header: "Cập nhật lần cuối",
+    cell: ({ row }) => {
+      const { updated_at } = row.original;
+      return <div>{`${formatDate(updated_at)}`}</div>;
+    },
+  },
   {
     id: "actions",
     cell: ({ row }) => <ActionsCell row={row} refetchData={refetchData} />,

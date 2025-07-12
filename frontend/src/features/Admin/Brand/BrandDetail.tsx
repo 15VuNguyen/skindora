@@ -1,7 +1,9 @@
 import { Loader2 } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -53,22 +55,41 @@ const BrandDetail = () => {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Brand Details</h1>
-        <Button onClick={handleGoBack} variant="outline">
-          Quay lại
-        </Button>
+        <h1 className="text-3xl font-bold">Chi tiết Thương Hiệu</h1>
+        <div className="flex gap-2">
+          <div>
+            <Button onClick={handleGoBack} variant="outline">
+              Quay lại
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="default"
+              onClick={() => {
+                navigate(`/admin/${id}/update-brand`);
+              }}
+            >
+              <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
+            </Button>
+          </div>
+        </div>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold">{brand.option_name}</CardTitle>
-          <CardDescription className="text-lg text-gray-600">Details for Brand ID: {brand._id}</CardDescription>
+      <Card className="shadow-lg">
+        <CardHeader className="border-b pb-4">
+          <CardTitle className="text-3xl text-gray-900">
+            <Typography className="">{brand.option_name}</Typography>
+          </CardTitle>
+          <CardDescription className="text-md mt-1 text-gray-600">
+            Brand ID: <span className="font-mono text-sm">{brand._id}</span>
+          </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-6">
+
+        <CardContent className="grid gap-6 p-6">
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
-              Category
+              Danh mục
             </Label>
-            <p id="category-info" className="text-base text-gray-800">
+            <p id="category-info" className="mt-1 text-base text-gray-800">
               <span className="font-semibold">{brand.category_name}</span>{" "}
               <span className="text-gray-500 italic">({brand.category_param})</span>
             </p>
@@ -76,34 +97,29 @@ const BrandDetail = () => {
 
           <div>
             <Label htmlFor="state" className="text-sm font-medium text-gray-700">
-              State
+              Trạng thái (State):
             </Label>
-            <Badge
-              id="state"
-              className={`mt-1 text-sm font-medium ${
-                brand.state === "active"
-                  ? "bg-green-100 text-green-800 hover:bg-green-200"
-                  : "bg-red-100 text-red-800 hover:bg-red-200"
-              }`}
-            >
-              {brand.state}
-            </Badge>
+            {brand.state === "active" ? (
+              <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>
+            ) : (
+              <Badge variant="secondary">Không hoạt động</Badge>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Label htmlFor="created-at" className="text-sm font-medium text-gray-700">
-                Created At
+                Ngày được tạo
               </Label>
-              <p id="created-at" className="text-base text-gray-800">
+              <p id="created-at" className="mt-1 text-base text-gray-800">
                 {new Date(brand.created_at).toLocaleString()}
               </p>
             </div>
             <div>
               <Label htmlFor="updated-at" className="text-sm font-medium text-gray-700">
-                Last Updated
+                Cập nhật lần cuối
               </Label>
-              <p id="updated-at" className="text-base text-gray-800">
+              <p id="updated-at" className="mt-1 text-base text-gray-800">
                 {new Date(brand.updated_at).toLocaleString()}
               </p>
             </div>

@@ -1,23 +1,11 @@
-// Vẫn giữ lại cho thanh thống kê
-import {
-  AlertCircle,
-  ArrowLeft,
-  Calendar,
-  CheckCircle,
-  Edit,
-  Loader2,
-  // Import Loader2
-  Tag,
-} from "lucide-react";
+import { AlertCircle, ArrowLeft, Calendar, CheckCircle, Edit, Loader2, Tag } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-// Import các component của shadcn/ui
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-// Giả định hook của bạn được import từ đây
 import { useFetchVoucherByID } from "@/hooks/Voucher/useFetchVoucherById";
 import { useToggleStatusVoucher } from "@/hooks/Voucher/useToggleStatusVoucher";
 
@@ -34,7 +22,6 @@ const VoucherDetail = () => {
     fetchAllVoucherByID();
   }, [fetchAllVoucherByID]);
 
-  // Helper functions
   const formatCurrency = (value: string) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
@@ -50,7 +37,6 @@ const VoucherDetail = () => {
     });
   };
 
-  // --- Render Trạng thái Tải với Loader2 ---
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -62,7 +48,6 @@ const VoucherDetail = () => {
     );
   }
 
-  // --- Render Khi không tìm thấy voucher ---
   if (!voucher) {
     return (
       <div className="container mx-auto p-8 text-center">
@@ -73,7 +58,7 @@ const VoucherDetail = () => {
     );
   }
 
-  const usagePercentage = (voucher.usedCount / voucher.usageLimit) * 100;
+  const usagePercentage = (Number(voucher.usedCount) / Number(voucher.usageLimit)) * 100;
   const isExpired = new Date(voucher.endDate) < new Date();
 
   return (
@@ -121,7 +106,6 @@ const VoucherDetail = () => {
             </div>
           </CardHeader>
           <CardContent className="grid gap-6">
-            {/* Usage Stats */}
             <div>
               <h3 className="mb-2 text-lg font-semibold">Thống kê sử dụng</h3>
               <div className="mb-1 flex items-center justify-between">
@@ -137,7 +121,6 @@ const VoucherDetail = () => {
             </div>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              {/* Discount Info */}
               <div className="space-y-4">
                 <h3 className="border-b pb-2 text-lg font-semibold">Thông tin giảm giá</h3>
                 <div className="flex justify-between">
@@ -164,7 +147,6 @@ const VoucherDetail = () => {
                 </div>
               </div>
 
-              {/* Validity Period */}
               <div className="space-y-4">
                 <h3 className="border-b pb-2 text-lg font-semibold">Thời gian hiệu lực</h3>
                 <div className="flex items-center justify-between">

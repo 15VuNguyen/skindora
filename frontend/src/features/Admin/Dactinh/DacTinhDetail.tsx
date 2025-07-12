@@ -1,7 +1,9 @@
 import { Loader2 } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,7 +26,7 @@ const DacTinhDetail = () => {
   }, [dacTinhData]);
 
   const handleGoBack = () => {
-    navigate(-1); // Navigate back to the previous page in history
+    navigate(-1);
   };
 
   if (loading) {
@@ -38,7 +40,6 @@ const DacTinhDetail = () => {
     );
   }
 
-  // Use dacTinh for clarity, assuming dacTinhData will be a single object
   const dacTinh: DacTinh | undefined = dacTinhData;
 
   if (!dacTinh) {
@@ -56,65 +57,71 @@ const DacTinhDetail = () => {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Chi tiết Đặc tính</h1> {/* Updated title */}
-        <Button onClick={handleGoBack} variant="outline">
-          Quay lại
-        </Button>
+        <h1 className="text-3xl font-bold">Chi tiết Đặc tính</h1>
+        <div className="flex gap-2">
+          <div>
+            <Button onClick={handleGoBack} variant="outline">
+              Quay lại
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="default"
+              onClick={() => {
+                navigate(`/admin/${id}/update-dac-tinh`);
+              }}
+            >
+              <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
+            </Button>
+          </div>
+        </div>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold">{dacTinh.option_name}</CardTitle> {/* Display DacTinh name */}
-          <CardDescription className="text-lg text-gray-600">
-            Details for Đặc tính ID: {dacTinh._id}
-          </CardDescription>{" "}
-          {/* Display DacTinh ID */}
+      <Card className="shadow-lg">
+        <CardHeader className="border-b pb-4">
+          <CardTitle className="text-3xl text-gray-900">
+            <Typography className="">{dacTinh.option_name}</Typography>
+          </CardTitle>
+          <CardDescription className="text-md mt-1 text-gray-600">
+            DacTinh ID: <span className="font-mono text-sm">{dacTinh._id}</span>
+          </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-6">
-          {/* Category Information */}
+
+        <CardContent className="grid gap-6 p-6">
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
               Danh mục
-            </Label>{" "}
-            {/* Updated label */}
-            <p id="category-info" className="text-base text-gray-800">
-              <span className="font-semibold">{dacTinh.category_name}</span>
-              <span className="text-gray-500 italic"> ({dacTinh.category_param})</span>
+            </Label>
+            <p id="category-info" className="mt-1 text-base text-gray-800">
+              <span className="font-semibold">{dacTinh.category_name}</span>{" "}
+              <span className="text-gray-500 italic">({dacTinh.category_param})</span>
             </p>
           </div>
 
           <div>
             <Label htmlFor="state" className="text-sm font-medium text-gray-700">
-              Trạng thái
-            </Label>{" "}
-            {/* Updated label */}
-            <Badge
-              id="state"
-              className={`mt-1 text-sm font-medium ${
-                dacTinh.state === "ACTIVE" // Use 'ACTIVE' (uppercase) as per your schema
-                  ? "bg-green-100 text-green-800 hover:bg-green-200"
-                  : "bg-red-100 text-red-800 hover:bg-red-200"
-              }`}
-            >
-              {dacTinh.state}
-            </Badge>
+              Trạng thái (State):
+            </Label>
+            {dacTinh.state === "active" ? (
+              <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>
+            ) : (
+              <Badge variant="secondary">Không hoạt động</Badge>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Label htmlFor="created-at" className="text-sm font-medium text-gray-700">
-                Ngày tạo
-              </Label>{" "}
-              {/* Updated label */}
-              <p id="created-at" className="text-base text-gray-800">
+                Ngày được tạo
+              </Label>
+              <p id="created-at" className="mt-1 text-base text-gray-800">
                 {new Date(dacTinh.created_at).toLocaleString()}
               </p>
             </div>
             <div>
               <Label htmlFor="updated-at" className="text-sm font-medium text-gray-700">
                 Cập nhật lần cuối
-              </Label>{" "}
-              {/* Updated label */}
-              <p id="updated-at" className="text-base text-gray-800">
+              </Label>
+              <p id="updated-at" className="mt-1 text-base text-gray-800">
                 {new Date(dacTinh.updated_at).toLocaleString()}
               </p>
             </div>

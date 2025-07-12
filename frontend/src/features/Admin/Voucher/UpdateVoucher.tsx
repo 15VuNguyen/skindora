@@ -40,9 +40,9 @@ const AddVoucherPage: React.FC = () => {
       code: voucher?.code,
       description: voucher?.description,
       discountType: voucher?.discountType,
-      discountValue: Number(voucher?.discountValue),
-      maxDiscountAmount: Number(voucher?.maxDiscountAmount),
-      minOrderValue: Number(voucher?.minOrderValue),
+      discountValue: voucher?.discountValue,
+      maxDiscountAmount: voucher?.maxDiscountAmount,
+      minOrderValue: voucher?.minOrderValue,
       startDate: voucher?.startDate,
       endDate: voucher?.endDate,
       usageLimit: voucher?.usageLimit,
@@ -53,36 +53,27 @@ const AddVoucherPage: React.FC = () => {
     if (voucher) {
       console.log("Voucher data fetched:", voucher);
       form.reset({
-        // Sử dụng form.reset() để điền dữ liệu vào form
-        code: voucher.code || "", // Đảm bảo giá trị không phải null/undefined
+        code: voucher.code || "",
         description: voucher.description || "",
-        discountType: voucher.discountType || "PERCENTAGE", // Cung cấp giá trị mặc định nếu cần
-        // eslint-disable-next-line no-constant-binary-expression
-        discountValue: Number(voucher.discountValue) ?? 0, // Dùng ?? để xử lý null/undefined
-        // eslint-disable-next-line no-constant-binary-expression
-        maxDiscountAmount: Number(voucher.maxDiscountAmount) ?? 0,
-        // eslint-disable-next-line no-constant-binary-expression
-        minOrderValue: Number(voucher.minOrderValue) ?? 0,
-        startDate: voucher.startDate ? new Date(voucher.startDate).toISOString().split("T")[0] : "", // Định dạng ngày cho input type="date"
-        endDate: voucher.endDate ? new Date(voucher.endDate).toISOString().split("T")[0] : "", // Định dạng ngày cho input type="date"
-        usageLimit: voucher.usageLimit ?? 0,
-        userUsageLimit: voucher.userUsageLimit ?? 0,
+        discountType: voucher.discountType || "PERCENTAGE",
+        discountValue: voucher.discountValue,
+        maxDiscountAmount: voucher.maxDiscountAmount,
+        minOrderValue: voucher.minOrderValue,
+        startDate: voucher.startDate ? new Date(voucher.startDate).toISOString().split("T")[0] : "",
+        endDate: voucher.endDate ? new Date(voucher.endDate).toISOString().split("T")[0] : "",
+        usageLimit: String(voucher.usageLimit),
+        userUsageLimit: String(voucher.userUsageLimit),
       });
     }
   }, [voucher, form.reset]);
   useEffect(() => {
-    // Only proceed if loading has finished (or if status is set)
-    // and if status is specifically a success code (e.g., 200, 201, 204)
     if (!loading && status !== undefined) {
-      // Check that the operation is complete
       if (status >= 200 && status < 300) {
-        // Check for success status codes (2xx range)
         toast.success("Thành công", {
-          description: "Voucher đã được cập nhật thành công!", // Changed description for update
+          description: "Voucher đã được cập nhật thành công!",
         });
-        form.reset(); // Reset the form on success
+        form.reset();
       } else {
-        // Handle error cases
         toast.error("Thất bại", {
           description: `Có lỗi xảy ra khi cập nhật voucher. Mã lỗi: ${status}`,
         });
@@ -194,14 +185,7 @@ const AddVoucherPage: React.FC = () => {
                             <FormItem>
                               <FormLabel>Giá trị giảm giá</FormLabel>
                               <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(event) => {
-                                    const value = event.target.value;
-                                    field.onChange(value === "" ? undefined : parseFloat(value));
-                                  }}
-                                />
+                                <Input type="number" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -235,14 +219,7 @@ const AddVoucherPage: React.FC = () => {
                             <FormItem>
                               <FormLabel>Giá trị đơn hàng tối thiểu</FormLabel>
                               <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(event) => {
-                                    const value = event.target.value;
-                                    field.onChange(value === "" ? undefined : parseFloat(value));
-                                  }}
-                                />
+                                <Input type="number" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -255,14 +232,7 @@ const AddVoucherPage: React.FC = () => {
                             <FormItem>
                               <FormLabel>Số tiền giảm tối đa</FormLabel>
                               <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(event) => {
-                                    const value = event.target.value;
-                                    field.onChange(value === "" ? undefined : parseFloat(value));
-                                  }}
-                                />
+                                <Input type="number" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -312,15 +282,7 @@ const AddVoucherPage: React.FC = () => {
                             <FormItem>
                               <FormLabel>Tổng số lượt sử dụng</FormLabel>
                               <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(event) => {
-                                    const value = event.target.value;
-                                    field.onChange(value === "" ? undefined : parseFloat(value));
-                                  }}
-                                  value={field.value ?? ""}
-                                />
+                                <Input type="number" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>
@@ -333,15 +295,7 @@ const AddVoucherPage: React.FC = () => {
                             <FormItem>
                               <FormLabel>Giới hạn sử dụng cho mỗi người dùng</FormLabel>
                               <FormControl>
-                                <Input
-                                  type="number"
-                                  {...field}
-                                  onChange={(event) => {
-                                    const value = event.target.value;
-                                    field.onChange(value === "" ? undefined : parseFloat(value));
-                                  }}
-                                  value={field.value ?? ""}
-                                />
+                                <Input type="number" {...field} />
                               </FormControl>
                               <FormMessage />
                             </FormItem>

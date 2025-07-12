@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
 // import {
 //   type filter_hsk_ingredient_props,
 //   type filter_hsk_product_type_props,
@@ -17,6 +15,7 @@ import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
 //   type filter_origin_props,
 // } from "@/hooks/Filter/useFetchActiveFilter";
 import type {
+  filter_brand_props,
   filter_dac_tinh_type_props,
   filter_hsk_ingredient_props,
   filter_hsk_product_type_props,
@@ -26,10 +25,8 @@ import type {
   filter_origin_props,
 } from "@/hooks/Filter/useFetchAllFilter";
 import { useFetchAllFilter } from "@/hooks/Filter/useFetchAllFilter";
-import { useFetchLowStock } from "@/hooks/Product/useFetchLowStock";
-import { useFetchOnSale } from "@/hooks/Product/useFetchOnSaleProduct";
 import { useFetchProduct } from "@/hooks/Product/useFetchProduct";
-import { useFetchOutOfStock } from "@/hooks/Product/useFetchProductOutOfStock";
+import { useFetchStaticsProduct } from "@/hooks/Product/useFetchStatics";
 import type { ProductFE } from "@/types/product";
 
 import { PaginationDemo } from "./Pagination";
@@ -86,7 +83,6 @@ export function ProductOverview() {
     changeUses,
     changeSkinType,
   } = useFetchProduct();
-  const { data: brand, fetchListBrand } = useFetchBrand();
 
   const [selectedBrand, setSelectedBrand] = useState<string>("");
   const [selectedUses, setSelectedUses] = useState<string>("");
@@ -104,13 +100,11 @@ export function ProductOverview() {
   const [ingredient, setIngredient] = useState<filter_hsk_ingredient_props[]>([]);
   const [skinType, setSkinType] = useState<filter_hsk_skin_type_props[]>([]);
   const [origin, setOrigin] = useState<filter_origin_props[]>([]);
-
+  const [brand, setBrand] = useState<filter_brand_props[]>([]);
   const { data: filter, fetchFilter } = useFetchAllFilter();
 
   const [expandedSection, setExpandedSection] = useState<string | null>("skin-type");
-  const { fetchOutOfStockProduct, params: OutOfStockProductPagination } = useFetchOutOfStock();
-  const { fetchLowStockProduct, params: LowStockProductPagination } = useFetchLowStock();
-  const { fetchOnSaleProduct, params: OnSaleProductPagination } = useFetchOnSale();
+  const { data: statics, fetchStaticsProduct } = useFetchStaticsProduct();
   const toggleSection = (sectionName: string) => {
     setExpandedSection(expandedSection === sectionName ? null : sectionName);
   };
@@ -120,11 +114,13 @@ export function ProductOverview() {
     children,
     sectionName,
     hasNoBorder = false,
+    count = 0,
   }: {
     title: string;
     children: React.ReactNode;
     sectionName: string;
     hasNoBorder?: boolean;
+    count?: number;
   }) => (
     <div className={`overflow-hidden ${hasNoBorder ? "" : "border-b border-gray-200"}`}>
       <button
@@ -132,12 +128,24 @@ export function ProductOverview() {
         className="flex w-full items-center justify-between px-3 py-2 text-left font-semibold text-gray-800 transition-colors duration-200 hover:bg-gray-50 focus:outline-none"
       >
         <span>{title}</span>
-        <span
-          className={`transform transition-transform duration-200 ${expandedSection === sectionName ? "rotate-180" : "rotate-0"}`}
-        >
-          ▲
-        </span>
+        <div className="flex gap-2">
+          <div>
+            <span
+              className={`transform transition-transform duration-200 ${expandedSection === sectionName ? "rotate-180" : "rotate-0"}`}
+            >
+              ▲
+            </span>
+          </div>
+          <div className="pt-0.5">
+            {count > 0 && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
+                {count}
+              </span>
+            )}
+          </div>
+        </div>
       </button>
+
       {expandedSection === sectionName && (
         <div className="animate-slide-down bg-white px-3 pb-3">
           {" "}
@@ -167,12 +175,12 @@ export function ProductOverview() {
     setSelectedIngredient("");
     setSelectedSkinType("");
     setSelectedOrigin("");
+    changePage(1);
   };
 
   useEffect(() => {
-    fetchListBrand();
     fetchFilter();
-  }, [fetchListBrand, fetchFilter]);
+  }, [fetchFilter]);
 
   useEffect(() => {
     fetchListProduct();
@@ -189,7 +197,6 @@ export function ProductOverview() {
     params.filter_origin,
   ]);
 
-  // Update product list based on filter changes
   useEffect(() => {
     changeBrand(selectedBrand);
     changeSkinType(selectedSkinType);
@@ -199,6 +206,7 @@ export function ProductOverview() {
     changeSize(selectedSize);
     changeProductType(selectedProductType);
     changeUses(selectedUses);
+    changePage(1);
   }, [
     selectedBrand,
     selectedUses,
@@ -231,8 +239,8 @@ export function ProductOverview() {
     if (filter?.filter_hsk_size) {
       setSize(filter.filter_hsk_size);
     }
-    if (filter?.filter_hsk_ingredients) {
-      setIngredient(filter.filter_hsk_ingredients);
+    if (filter?.filter_hsk_ingredient) {
+      setIngredient(filter.filter_hsk_ingredient);
     }
     if (filter?.filter_hsk_skin_type) {
       setSkinType(filter.filter_hsk_skin_type);
@@ -240,16 +248,15 @@ export function ProductOverview() {
     if (filter?.filter_origin) {
       setOrigin(filter.filter_origin);
     }
+    if (filter?.filter_brand) {
+      setBrand(filter.filter_brand);
+    }
   }, [filter]);
   useEffect(() => {
-    fetchOutOfStockProduct();
-    fetchLowStockProduct();
-    fetchOnSaleProduct();
-  }, [fetchOutOfStockProduct, fetchLowStockProduct, fetchOnSaleProduct]);
+    fetchStaticsProduct();
+  }, []);
   return (
     <div className="flex min-h-screen flex-col gap-6 bg-gray-50 p-4 lg:flex-row">
-      {" "}
-      {/* Added bg-gray-50 for subtle background */}
       {loading ? (
         <div className="flex min-h-[60vh] w-full items-center justify-center">
           <div className="text-muted-foreground flex items-center gap-2">
@@ -259,13 +266,9 @@ export function ProductOverview() {
         </div>
       ) : (
         <>
-          {/* Filter Sidebar - Left Column */}
           <div className="sticky top-4 h-fit w-full max-w-[300px] min-w-[250px] rounded-lg border border-gray-100 bg-white shadow-md lg:w-1/4">
             {" "}
-            {/* Adjusted max-width, shadow, border, h-fit, sticky top */}
             <h3 className="border-b border-gray-200 p-4 text-lg font-bold text-gray-800">Bộ lọc</h3>{" "}
-            {/* Smaller font size */}
-            {/* Clear Filters Button */}
             <div className="border-b border-gray-200 p-3">
               <Button
                 variant="outline"
@@ -276,22 +279,22 @@ export function ProductOverview() {
                 Xóa tất cả bộ lọc
               </Button>
             </div>
-            {/* Brand Filter (still a select as it's a long list usually) */}
-            <FilterSection title="Thương hiệu" sectionName="brand">
-              <Select onValueChange={setSelectedBrand} value={selectedBrand}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn thương hiệu" />
-                </SelectTrigger>
-                <SelectContent>
-                  {brand.map((b) => (
-                    <SelectItem key={b._id} value={b._id}>
-                      {b.option_name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <FilterSection title="Thương hiệu" sectionName="brand" count={selectedBrand ? 1 : 0}>
+              {brand.map((item) => (
+                <div
+                  key={item.filter_ID}
+                  className={`cursor-pointer rounded-md px-2 py-1 text-sm transition-colors duration-200 ${
+                    selectedSkinType === item.filter_ID
+                      ? "bg-blue-100 font-medium text-blue-800"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`}
+                  onClick={() => setSelectedSkinType(selectedSkinType === item.filter_ID ? "" : item.filter_ID)}
+                >
+                  {item.name}
+                </div>
+              ))}
             </FilterSection>
-            <FilterSection title="Loại da" sectionName="skin-type">
+            <FilterSection title="Loại da" sectionName="skin-type" count={selectedSkinType ? 1 : 0}>
               <div className="space-y-1">
                 {skinType.map((item) => (
                   <div
@@ -308,7 +311,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Loại sản phẩm" sectionName="product-type">
+            <FilterSection title="Loại sản phẩm" sectionName="product-type" count={selectedProductType ? 1 : 0}>
               <div className="space-y-1">
                 {productType.map((item) => (
                   <div
@@ -325,7 +328,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Thành phần" sectionName="ingredient">
+            <FilterSection title="Thành phần" sectionName="ingredient" count={selectedIngredient ? 1 : 0}>
               <div className="space-y-1">
                 {ingredient.map((item) => (
                   <div
@@ -343,7 +346,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Công dụng" sectionName="uses">
+            <FilterSection title="Công dụng" sectionName="uses" count={selectedUses ? 1 : 0}>
               <div className="space-y-1">
                 {uses.map((item) => (
                   <div
@@ -361,8 +364,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            {/* Origin Filter */}
-            <FilterSection title="Xuất xứ" sectionName="origin">
+            <FilterSection title="Xuất xứ" sectionName="origin" count={selectedOrigin ? 1 : 0}>
               <div className="space-y-1">
                 {origin.map((item) => (
                   <div
@@ -380,7 +382,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Đặc tính" sectionName="dactinh">
+            <FilterSection title="Đặc tính" sectionName="dactinh" count={selectedDactinh ? 1 : 0}>
               <div className="space-y-1">
                 {dactinh.map((item) => (
                   <div
@@ -397,7 +399,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Kích cỡ" sectionName="size" hasNoBorder={true}>
+            <FilterSection title="Kích cỡ" sectionName="size" hasNoBorder={true} count={selectedSize ? 1 : 0}>
               <div className="space-y-1">
                 {size.map((item) => (
                   <div
@@ -424,7 +426,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-blue-100">Tổng sản phẩm</p>
-                      <p className="text-3xl font-bold">{params.totalRecords}</p>
+                      <p className="text-3xl font-bold">{statics?.totalProducts}</p>
                     </div>
                     <Package className="h-8 w-8 text-blue-200" />
                   </div>
@@ -435,7 +437,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-green-100">Đang bán</p>
-                      <p className="text-3xl font-bold">{OnSaleProductPagination.totalRecords}</p>
+                      <p className="text-3xl font-bold">{statics?.onSale}</p>
                     </div>
                     <Star className="h-8 w-8 text-green-200" />
                   </div>
@@ -446,7 +448,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-yellow-100">Sắp hết hàng</p>
-                      <p className="text-3xl font-bold">{LowStockProductPagination.totalRecords}</p>
+                      <p className="text-3xl font-bold">{statics?.lowStock}</p>
                     </div>
                     <Package className="h-8 w-8 text-yellow-200" />
                   </div>
@@ -457,7 +459,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-red-100">Hết hàng</p>
-                      <p className="text-3xl font-bold">{OutOfStockProductPagination.totalRecords}</p>
+                      <p className="text-3xl font-bold">{statics?.outOfStock}</p>
                     </div>
                     <Package className="h-8 w-8 text-red-200" />
                   </div>

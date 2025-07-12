@@ -26,13 +26,13 @@ const AddVoucherPage: React.FC = () => {
       code: "",
       description: "",
       discountType: "",
-      discountValue: 0,
-      maxDiscountAmount: 0,
-      minOrderValue: 0,
+      discountValue: undefined,
+      maxDiscountAmount: undefined,
+      minOrderValue: undefined,
       startDate: "",
       endDate: "",
-      usageLimit: 0,
-      userUsageLimit: 0,
+      usageLimit: undefined,
+      userUsageLimit: undefined,
     },
   });
   const onSubmit = async (values: VoucherFormValue) => {
@@ -140,11 +140,11 @@ const AddVoucherPage: React.FC = () => {
                             <Input
                               type="number"
                               {...field}
-                              onChange={(event) => {
-                                const value = event.target.value;
-                                field.onChange(value === "" ? undefined : parseFloat(value));
-                              }}
-                              value={field.value ?? ""}
+                              // onChange={(event) => {
+                              //   const value = event.target.value;
+                              //   field.onChange(value === "" ? undefined : parseFloat(value));
+                              // }}
+                              // value={field.value ?? ""}
                             />
                           </FormControl>
                           <FormMessage />
@@ -179,15 +179,7 @@ const AddVoucherPage: React.FC = () => {
                         <FormItem>
                           <FormLabel>Giá trị đơn hàng tối thiểu</FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              {...field}
-                              onChange={(event) => {
-                                const value = event.target.value;
-                                field.onChange(value === "" ? undefined : parseFloat(value));
-                              }}
-                              value={field.value ?? ""}
-                            />
+                            <Input type="number" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -200,15 +192,7 @@ const AddVoucherPage: React.FC = () => {
                         <FormItem>
                           <FormLabel>Số tiền giảm tối đa</FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              {...field}
-                              onChange={(event) => {
-                                const value = event.target.value;
-                                field.onChange(value === "" ? undefined : parseFloat(value));
-                              }}
-                              value={field.value ?? ""}
-                            />
+                            <Input type="number" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -258,15 +242,7 @@ const AddVoucherPage: React.FC = () => {
                         <FormItem>
                           <FormLabel>Tổng số lượt sử dụng</FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              {...field}
-                              onChange={(event) => {
-                                const value = event.target.value;
-                                field.onChange(value === "" ? undefined : parseFloat(value));
-                              }}
-                              value={field.value ?? ""}
-                            />
+                            <Input type="number" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -279,15 +255,7 @@ const AddVoucherPage: React.FC = () => {
                         <FormItem>
                           <FormLabel>Giới hạn sử dụng cho mỗi người dùng</FormLabel>
                           <FormControl>
-                            <Input
-                              type="number"
-                              {...field}
-                              onChange={(event) => {
-                                const value = event.target.value;
-                                field.onChange(value === "" ? undefined : parseFloat(value));
-                              }}
-                              value={field.value ?? ""}
-                            />
+                            <Input type="number" {...field} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

@@ -11,8 +11,8 @@ export interface VoucherUpdate {
   minOrderValue: string | number;
   startDate: string;
   endDate: string;
-  usageLimit: number;
-  userUsageLimit: number;
+  usageLimit: number | string;
+  userUsageLimit: number | string;
 }
 export const useUpdateVoucher = (id: string) => {
   const [loading, setLoading] = useState<boolean>();

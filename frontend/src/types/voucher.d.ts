@@ -8,9 +8,9 @@ export interface Voucher {
   minOrderValue: string;
   startDate: string;
   endDate: string;
-  usageLimit: number;
-  usedCount: number;
-  userUsageLimit: number;
+  usageLimit: string;
+  usedCount: string;
+  userUsageLimit: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;

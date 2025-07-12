@@ -6,8 +6,8 @@ import Product from '~/models/schemas/Product.schema'
 
 export const staffGetAllProductController = async (req: Request, res: Response, next: NextFunction) => {
   const projection = {
-    _id: 0,
-    updated_at: 0,
+    // _id: 0,
+    updated_at: 0
   }
   const filter: Filter<Product> = {}
   const filterFields = [
