@@ -21,7 +21,7 @@ const CartPage = () => {
     cartItems,
     isAllSelected,
     isClearing,
-    isMutating,
+    mutatingItemId,
     isVoucherDialogOpen,
     subtotal,
     shipping,
@@ -113,7 +113,7 @@ const CartPage = () => {
                     key={item.ProductID}
                     item={item}
                     isSelected={selectedItemIds.includes(item.ProductID)}
-                    isMutating={isMutating}
+                    isMutating={mutatingItemId === item.ProductID}
                     onSelectItem={handleSelectItem}
                     onUpdateQuantity={handleUpdateQuantity}
                     onRemoveItem={handleRemoveItem}

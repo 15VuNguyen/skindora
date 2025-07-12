@@ -116,31 +116,39 @@ const ProductDetailPage = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <Button
+      variant="ghost"
+      className="mb-6 flex items-center"
+      onClick={() => navigate(-1)}
+      >
+      <ArrowLeft className="mr-2 h-4 w-4" />
+      Quay lại
+      </Button>
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
-        <ProductImageGallery images={product.main_images_detail} name={product.productName_detail} autoSlide={false} />
-        <div className="space-y-6">
-          <ProductHeader
-            productName={product.productName_detail}
-            averageRating={averageRating}
-            reviewCount={reviewCount}
-            onToggleWishlist={handleToggleWishlist}
-            isAddingToWishlist={isAddingToWishlist}
-            isRemovingFromWishlist={isRemovingFromWishlist}
-            isInWishlist={isInWishlist}
-          />
-          <ProductPrice product={product} />
-          <Separator />
-          <ProductStockAndActions
-            product={product}
-            filterIdToNameMap={filterIdToNameMap}
-            quantity={quantity}
-            onQuantityChange={handleQuantityChange}
-            onBuyNow={handleBuyNow}
-            isBuyingNow={isBuyingNow}
-          />
-          <Separator />
-          <ProductShippingAndReturns />
-        </div>
+      <ProductImageGallery images={product.main_images_detail} name={product.productName_detail} autoSlide={false} />
+      <div className="space-y-6">
+        <ProductHeader
+        productName={product.productName_detail}
+        averageRating={averageRating}
+        reviewCount={reviewCount}
+        onToggleWishlist={handleToggleWishlist}
+        isAddingToWishlist={isAddingToWishlist}
+        isRemovingFromWishlist={isRemovingFromWishlist}
+        isInWishlist={isInWishlist}
+        />
+        <ProductPrice product={product} />
+        <Separator />
+        <ProductStockAndActions
+        product={product}
+        filterIdToNameMap={filterIdToNameMap}
+        quantity={quantity}
+        onQuantityChange={handleQuantityChange}
+        onBuyNow={handleBuyNow}
+        isBuyingNow={isBuyingNow}
+        />
+        <Separator />
+        <ProductShippingAndReturns />
+      </div>
       </div>
       <ProductTabs product={product} />
     </div>

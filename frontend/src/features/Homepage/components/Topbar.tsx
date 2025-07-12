@@ -138,7 +138,6 @@ function HeaderActions() {
                 <Link to="/profile/wishlist">
                   <DropdownMenuItem>Danh sách yêu thích</DropdownMenuItem>
                 </Link>
-                <DropdownMenuItem>Cài đặt</DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem disabled={actions.isLoggingOut} onClick={actions.logout}>

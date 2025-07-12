@@ -5,12 +5,11 @@ import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth.context";
 import { useClearCartMutation } from "@/hooks/mutations/useClearCartMutation";
 import { usePrepareOrderMutation } from "@/hooks/mutations/usePrepareOrderMutation";
-import { useRemoveFromCartMutation } from "@/hooks/mutations/useRemoveFromCartMutation";
-import { useUpdateCartMutation } from "@/hooks/mutations/useUpdateCartMutation";
-import { useCartQuery } from "@/hooks/queries/useCartQuery";
+import {  useCartQuery } from "@/hooks/queries/useCartQuery";
 import { useVouchersQuery } from "@/hooks/queries/useVouchersQuery";
 import type { Voucher } from "@/types/voucher";
-
+import { useUpdateCartMutation } from "@/hooks/mutations/useUpdateCartMutation";
+import { useRemoveFromCartMutation } from "@/hooks/mutations/useRemoveFromCartMutation";
 interface ApiCartProduct {
   ProductID: string;
   Quantity: number;
@@ -22,8 +21,10 @@ interface ApiCartProduct {
 }
 
 export const useCartPageLogic = () => {
+  const [mutatingItemId, setMutatingItemId] = useState<string | null>(null);
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+
   const { data: cartResponse, isLoading: isCartLoading, isError, error } = useCartQuery(isAuthenticated);
   const { data: voucherResponse } = useVouchersQuery(isAuthenticated);
 
@@ -31,19 +32,16 @@ export const useCartPageLogic = () => {
   const [isVoucherDialogOpen, setIsVoucherDialogOpen] = useState(false);
   const [appliedVoucher, setAppliedVoucher] = useState<Voucher | null>(null);
 
+ const updateCartMutation = useUpdateCartMutation(setMutatingItemId);
+  const removeFromCartMutation = useRemoveFromCartMutation(setMutatingItemId);
+
+
+
   const { mutate: clearCart, isPending: isClearing } = useClearCartMutation();
-  const updateCartMutation = useUpdateCartMutation();
-  const removeFromCartMutation = useRemoveFromCartMutation();
   const { mutate: prepareOrder, isPending: isPreparingOrder } = usePrepareOrderMutation();
 
-  const isMutating = updateCartMutation.isPending || removeFromCartMutation.isPending;
-
   const cartItems = useMemo(
-    () =>
-      (cartResponse?.result?.Products || []).map((item: ApiCartProduct) => ({
-        ...item,
-        stock: item.stock || 99,
-      })),
+    () => (cartResponse?.result?.Products || []).map((item: ApiCartProduct) => ({ ...item, stock: item.stock || 99 })),
     [cartResponse]
   );
 
@@ -91,7 +89,9 @@ export const useCartPageLogic = () => {
     (voucher: Voucher) => {
       if (subtotal < Number(voucher.minOrderValue)) {
         toast.error("Không thể áp dụng mã giảm giá", {
-          description: `Tổng đơn hàng của bạn chưa đạt tối thiểu ${Number(voucher.minOrderValue).toLocaleString("vi-VN")}₫.`,
+          description: `Tổng đơn hàng của bạn chưa đạt tối thiểu ${Number(voucher.minOrderValue).toLocaleString(
+            "vi-VN"
+          )}₫.`,
         });
         return;
       }
@@ -170,7 +170,7 @@ export const useCartPageLogic = () => {
     cartItems,
     isAllSelected,
     isClearing,
-    isMutating,
+    mutatingItemId,
     isPreparingOrder,
     isVoucherDialogOpen,
     subtotal,
