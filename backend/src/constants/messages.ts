@@ -358,7 +358,9 @@ export const ADMIN_MESSAGES = {
   //get user filter by status
   GET_UNVERIFIED_USERS_SUCCESS: 'Get unverified users successfully',
   GET_VERIFIED_USERS_SUCCESS: 'Get verified users successfully',
-  GET_BANNED_USERS_SUCCESS: 'Get banned users successfully'
+  GET_BANNED_USERS_SUCCESS: 'Get banned users successfully',
+  FILTER_OPTION_NAME_ALREADY_EXISTS: 'Option name "{value}" already exists for an active filter.',
+  
 } as const
 
 export const CART_MESSAGES = {

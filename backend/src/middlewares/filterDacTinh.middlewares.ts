@@ -13,7 +13,19 @@ export const createNewFilterDacTinhValidator = validate(
       option_name: {
         notEmpty: { errorMessage: ADMIN_MESSAGES.FILTER_DAC_TINH_OPTION_NAME_IS_REQUIRED },
         isString: { errorMessage: ADMIN_MESSAGES.FILTER_DAC_TINH_OPTION_NAME_MUST_BE_STRING },
-        trim: true
+        trim: true,
+        custom: {
+          options: async (value) => {
+            const existing = await databaseService.filterDacTinh.findOne({
+              option_name: value,
+              state: GenericFilterState.ACTIVE
+            })
+            if (existing) {
+              throw new Error(ADMIN_MESSAGES.FILTER_OPTION_NAME_ALREADY_EXISTS.replace('{value}', value))
+            }
+            return true
+          }
+        }
       },
       category_name: {
         notEmpty: { errorMessage: ADMIN_MESSAGES.FILTER_DAC_TINH_CATEGORY_NAME_IS_REQUIRED },
@@ -67,7 +79,20 @@ export const updateFilterDacTinhValidator = validate(
       isString: {
         errorMessage: ADMIN_MESSAGES.FILTER_DAC_TINH_OPTION_NAME_MUST_BE_A_STRING
       },
-      trim: true
+      trim: true,
+      custom: {
+        options: async (value, { req }) => {
+          const existing = await databaseService.filterDacTinh.findOne({
+            _id: { $ne: new ObjectId(req.params?._id) },
+            option_name: value,
+            state: GenericFilterState.ACTIVE
+          })
+          if (existing) {
+            throw new Error(ADMIN_MESSAGES.FILTER_OPTION_NAME_ALREADY_EXISTS.replace('{value}', value))
+          }
+          return true
+        }
+      }
     },
     category_name: {
       optional: true,
