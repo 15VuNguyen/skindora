@@ -120,11 +120,13 @@ export function ProductOverview() {
     children,
     sectionName,
     hasNoBorder = false,
+    count = 0,
   }: {
     title: string;
     children: React.ReactNode;
     sectionName: string;
     hasNoBorder?: boolean;
+    count?: number;
   }) => (
     <div className={`overflow-hidden ${hasNoBorder ? "" : "border-b border-gray-200"}`}>
       <button
@@ -132,12 +134,24 @@ export function ProductOverview() {
         className="flex w-full items-center justify-between px-3 py-2 text-left font-semibold text-gray-800 transition-colors duration-200 hover:bg-gray-50 focus:outline-none"
       >
         <span>{title}</span>
-        <span
-          className={`transform transition-transform duration-200 ${expandedSection === sectionName ? "rotate-180" : "rotate-0"}`}
-        >
-          ▲
-        </span>
+        <div className="flex gap-3">
+          <div>
+            <span
+              className={`transform transition-transform duration-200 ${expandedSection === sectionName ? "rotate-180" : "rotate-0"}`}
+            >
+              ▲
+            </span>
+          </div>
+          <div>
+            {count > 0 && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
+                {count}
+              </span>
+            )}
+          </div>
+        </div>
       </button>
+
       {expandedSection === sectionName && (
         <div className="animate-slide-down bg-white px-3 pb-3">
           {" "}
@@ -167,6 +181,7 @@ export function ProductOverview() {
     setSelectedIngredient("");
     setSelectedSkinType("");
     setSelectedOrigin("");
+    changePage(1);
   };
 
   useEffect(() => {
@@ -189,7 +204,6 @@ export function ProductOverview() {
     params.filter_origin,
   ]);
 
-  // Update product list based on filter changes
   useEffect(() => {
     changeBrand(selectedBrand);
     changeSkinType(selectedSkinType);
@@ -199,6 +213,7 @@ export function ProductOverview() {
     changeSize(selectedSize);
     changeProductType(selectedProductType);
     changeUses(selectedUses);
+    changePage(1);
   }, [
     selectedBrand,
     selectedUses,
@@ -248,8 +263,6 @@ export function ProductOverview() {
   }, [fetchOutOfStockProduct, fetchLowStockProduct, fetchOnSaleProduct]);
   return (
     <div className="flex min-h-screen flex-col gap-6 bg-gray-50 p-4 lg:flex-row">
-      {" "}
-      {/* Added bg-gray-50 for subtle background */}
       {loading ? (
         <div className="flex min-h-[60vh] w-full items-center justify-center">
           <div className="text-muted-foreground flex items-center gap-2">
@@ -259,13 +272,9 @@ export function ProductOverview() {
         </div>
       ) : (
         <>
-          {/* Filter Sidebar - Left Column */}
           <div className="sticky top-4 h-fit w-full max-w-[300px] min-w-[250px] rounded-lg border border-gray-100 bg-white shadow-md lg:w-1/4">
             {" "}
-            {/* Adjusted max-width, shadow, border, h-fit, sticky top */}
             <h3 className="border-b border-gray-200 p-4 text-lg font-bold text-gray-800">Bộ lọc</h3>{" "}
-            {/* Smaller font size */}
-            {/* Clear Filters Button */}
             <div className="border-b border-gray-200 p-3">
               <Button
                 variant="outline"
@@ -276,8 +285,7 @@ export function ProductOverview() {
                 Xóa tất cả bộ lọc
               </Button>
             </div>
-            {/* Brand Filter (still a select as it's a long list usually) */}
-            <FilterSection title="Thương hiệu" sectionName="brand">
+            <FilterSection title="Thương hiệu" sectionName="brand" count={selectedBrand ? 1 : 0}>
               <Select onValueChange={setSelectedBrand} value={selectedBrand}>
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Chọn thương hiệu" />
@@ -291,7 +299,7 @@ export function ProductOverview() {
                 </SelectContent>
               </Select>
             </FilterSection>
-            <FilterSection title="Loại da" sectionName="skin-type">
+            <FilterSection title="Loại da" sectionName="skin-type" count={selectedSkinType ? 1 : 0}>
               <div className="space-y-1">
                 {skinType.map((item) => (
                   <div
@@ -308,7 +316,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Loại sản phẩm" sectionName="product-type">
+            <FilterSection title="Loại sản phẩm" sectionName="product-type" count={selectedProductType ? 1 : 0}>
               <div className="space-y-1">
                 {productType.map((item) => (
                   <div
@@ -325,7 +333,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Thành phần" sectionName="ingredient">
+            <FilterSection title="Thành phần" sectionName="ingredient" count={selectedIngredient ? 1 : 0}>
               <div className="space-y-1">
                 {ingredient.map((item) => (
                   <div
@@ -343,7 +351,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Công dụng" sectionName="uses">
+            <FilterSection title="Công dụng" sectionName="uses" count={selectedUses ? 1 : 0}>
               <div className="space-y-1">
                 {uses.map((item) => (
                   <div
@@ -362,7 +370,7 @@ export function ProductOverview() {
               </div>
             </FilterSection>
             {/* Origin Filter */}
-            <FilterSection title="Xuất xứ" sectionName="origin">
+            <FilterSection title="Xuất xứ" sectionName="origin" count={selectedOrigin ? 1 : 0}>
               <div className="space-y-1">
                 {origin.map((item) => (
                   <div
@@ -380,7 +388,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Đặc tính" sectionName="dactinh">
+            <FilterSection title="Đặc tính" sectionName="dactinh" count={selectedDactinh ? 1 : 0}>
               <div className="space-y-1">
                 {dactinh.map((item) => (
                   <div
@@ -397,7 +405,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Kích cỡ" sectionName="size" hasNoBorder={true}>
+            <FilterSection title="Kích cỡ" sectionName="size" hasNoBorder={true} count={selectedSize ? 1 : 0}>
               <div className="space-y-1">
                 {size.map((item) => (
                   <div
