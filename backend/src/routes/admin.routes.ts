@@ -2,10 +2,13 @@ import { Router } from 'express'
 import {
   createNewFilterBrandController,
   getAllUserController,
+  getBannedUsersController,
   getLowStockProductsController,
   getOnSaleProductsController,
   getOutOfStockProductsController,
+  getUnverifiedUsersController,
   getUserDetailController,
+  getVerifiedUsersController,
   updateProductController,
   updateProductStateController,
   updateUserStateController
@@ -72,6 +75,29 @@ import { createNewFilterHskOriginValidator, disableFilterHskOriginValidator, get
 const adminRouter = Router()
 //user management
 adminRouter.get('/manage-users/get-all', accessTokenValidator, isAdminValidator, wrapAsync(getAllUserController))
+adminRouter.get(
+  '/manage-users/unverified',
+  accessTokenValidator,
+  isAdminValidator,
+  paginationValidator,
+  wrapAsync(getUnverifiedUsersController)
+)
+
+adminRouter.get(
+  '/manage-users/verified',
+  accessTokenValidator,
+  isAdminValidator,
+  paginationValidator,
+  wrapAsync(getVerifiedUsersController)
+)
+
+adminRouter.get(
+  '/manage-users/banned',
+  accessTokenValidator,
+  isAdminValidator,
+  paginationValidator,
+  wrapAsync(getBannedUsersController)
+)
 adminRouter.get('/manage-users/:_id', accessTokenValidator, isAdminValidator, wrapAsync(getUserDetailController))
 adminRouter.put(
   '/manage-users/update-user-states/:id',
