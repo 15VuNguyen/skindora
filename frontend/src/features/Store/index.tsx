@@ -8,15 +8,15 @@ import { useAllProductsQuery } from "@/hooks/queries/useAllProductsQuery";
 import { useFilterOptionsQuery } from "@/hooks/queries/useFilterOptionsQuery";
 import { useDebounce } from "@/hooks/useDebounce";
 
-import { ProductList } from "./components/ProductList";
 import { AccordionFilter } from "./components/AccordionFilter";
+import { ProductList } from "./components/ProductList";
 // import { ProductBanner } from "./components/ProductBanner";
 import { StoreFooter } from "./components/StoreFooter";
 
 const StoreFront = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>(() => {
     const filters: Record<string, string[]> = {};
     for (const [key, value] of searchParams.entries()) {
@@ -26,19 +26,26 @@ const StoreFront = () => {
   });
   const [currentPage, setCurrentPage] = useState(Number(searchParams.get("page")) || 1);
   const searchTerm = searchParams.get("q") || "";
-  
+
   const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
 
   const debouncedFilters = useDebounce(selectedFilters, 500);
   const { data: filterData } = useFilterOptionsQuery();
-  const { data: paginatedData, isLoading, isError } = useAllProductsQuery(currentPage, 12, debouncedFilters, searchTerm);
+  const {
+    data: paginatedData,
+    isLoading,
+    isError,
+  } = useAllProductsQuery(currentPage, 12, debouncedFilters, searchTerm);
   const { mutate: addToCart } = useAddToCartMutation();
 
   const handleAddToCart = (productId: string) => {
     setLoadingProductId(productId);
-    addToCart({ ProductID: productId, Quantity: 1 }, {
+    addToCart(
+      { ProductID: productId, Quantity: 1 },
+      {
         onSettled: () => setLoadingProductId(null),
-    });
+      }
+    );
   };
 
   const handleCardClick = (productId: string) => navigate(`/product/${productId}`);
@@ -50,21 +57,48 @@ const StoreFront = () => {
     setSelectedFilters({});
     setCurrentPage(1);
   };
+  // const handleFilterChange = (filterType: string, filterId: string) => {
+  //   const correctedFilterType = filterType === "filter_hsk_ingredient" ? "filter_hsk_ingredients" : filterType;
+  //   logger.info(correctedFilterType);
+  //   setSelectedFilters((prev) => {
+  //     const currentValues = prev[correctedFilterType] || [];
+  //     const newValues = currentValues.includes(filterId)
+  //       ? currentValues.filter((id) => id !== filterId)
+  //       : [...currentValues, filterId];
+  //     if (newValues.length === 0) {
+  //       const { [filterType]: _, ...rest } = prev;
+  //       return rest;
+  //     }
+  //     return { ...prev, [filterType]: newValues };
+  //   });
+  //   setCurrentPage(1);
+  // };
   const handleFilterChange = (filterType: string, filterId: string) => {
+    const correctedFilterType = filterType === "filter_hsk_ingredient" ? "filter_hsk_ingredients" : filterType;
+
     setSelectedFilters((prev) => {
-      const currentValues = prev[filterType] || [];
-      const newValues = currentValues.includes(filterId)
-        ? currentValues.filter((id) => id !== filterId)
-        : [...currentValues, filterId];
-      if (newValues.length === 0) {
-        const { [filterType]: _, ...rest } = prev;
-        return rest;
+      const newFilters = { ...prev };
+      const currentValues = newFilters[correctedFilterType] || [];
+      const isAlreadySelected = currentValues.includes(filterId);
+
+      if (isAlreadySelected) {
+       
+        newFilters[correctedFilterType] = currentValues.filter((id) => id !== filterId);
+      } else {
+        
+        newFilters[correctedFilterType] = [...currentValues, filterId];
       }
-      return { ...prev, [filterType]: newValues };
+
+      
+      if (newFilters[correctedFilterType].length === 0) {
+        delete newFilters[correctedFilterType];
+      }
+
+      return newFilters;
     });
+
     setCurrentPage(1);
   };
-
   const filterIdToNameMap = useMemo(() => {
     if (!filterData) return new Map<string, string>();
     const map = new Map<string, string>();
@@ -109,7 +143,6 @@ const StoreFront = () => {
               </div>
             ) : (
               <>
-              
                 <ProductList
                   products={paginatedData?.data ?? []}
                   onAddToCart={handleAddToCart}

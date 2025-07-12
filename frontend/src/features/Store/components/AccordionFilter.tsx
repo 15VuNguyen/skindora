@@ -9,7 +9,7 @@ interface AccordionFilterProps {
   selectedFilters: Record<string, string[]>;
   onFilterChange: (filterType: string, filterId: string) => void;
   onClearFilters: () => void;
-  filterIdToNameMap: Map<string, string>; // New prop
+  filterIdToNameMap: Map<string, string>; 
 }
 
 const filterTitles: Record<string, string> = {
@@ -102,7 +102,9 @@ export function AccordionFilter({
                   <AccordionContent>
                     <div className="max-h-60 space-y-2 overflow-y-auto">
                       {options.map((option) => {
-                        const isSelected = selectedFilters[filterType]?.includes(option.filter_ID) || false;
+                        const correctedFilterType =
+                          filterType === "filter_hsk_ingredient" ? "filter_hsk_ingredients" : filterType;
+                        const isSelected = selectedFilters[correctedFilterType]?.includes(option.filter_ID) || false;
                         return (
                           <Button
                             key={option.filter_ID}
@@ -124,4 +126,3 @@ export function AccordionFilter({
     </div>
   );
 }
-  
