@@ -14,23 +14,18 @@ export const voucherSchema = z
     userUsageLimit: z.string().min(0, "UserUsageLimit sản phẩm không được để trống"),
   })
   .superRefine((data, ctx) => {
-    // data: là toàn bộ object của form
-    // ctx: là context để bạn thêm lỗi (issue) vào một trường cụ thể
-
-    // Logic điều kiện của bạn ở đây
     if (data.discountType === "PERCENTAGE" && Number(data.discountValue) >= 100) {
-      // Nếu loại là % và giá trị lớn hơn 100
       ctx.addIssue({
-        code: z.ZodIssueCode.custom, // Loại lỗi custom
+        code: z.ZodIssueCode.custom,
         message: "Giá trị giảm giá theo % không được vượt quá 100",
-        path: ["discountValue"], // Lỗi này sẽ hiển thị ở trường `discountValue`
+        path: ["discountValue"],
       });
     }
     if (data.startDate > data.endDate) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom, // Loại lỗi custom
+        code: z.ZodIssueCode.custom,
         message: "Ngày kết thúc phải sau ngày bắt đầu",
-        path: ["endDate"], // Lỗi này sẽ hiển thị ở trường `discountValue`
+        path: ["endDate"],
       });
     }
   });
