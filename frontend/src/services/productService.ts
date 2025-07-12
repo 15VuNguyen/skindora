@@ -27,7 +27,7 @@ export const productService = {
     });
 
     const queryString = params.toString();
-    const result = await apiClient.get<PaginatedProductsResponse>(`/products/get-all?${queryString}`);
+    const result = await apiClient.get<PaginatedProductsResponse>(`/products/v1/get-all?${queryString}`);
 
     if (result.isErr()) {
       throw result.error;
