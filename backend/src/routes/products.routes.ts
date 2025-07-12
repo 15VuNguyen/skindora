@@ -15,4 +15,5 @@ const productRouter = Router()
 productRouter.get('/get-all', wrapAsync(userGetAllProductController))
 productRouter.get('/v1/get-all', wrapAsync(userGetAllProductControllerWithQ))
 productRouter.get('/:_id', wrapAsync(getProductDetailController))
+productRouter.get('/get-all-filter-hsk-product-types', wrapAsync(getAllFilterHskProductTypesController))
 export default productRouter
