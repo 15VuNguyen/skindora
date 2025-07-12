@@ -354,7 +354,13 @@ export const ADMIN_MESSAGES = {
   GET_PRODUCT_STATS_SUCCESS: 'Get product statistics successfully',
   GET_ON_SALE_PRODUCTS_SUCCESS: 'Get on-sale products successfully',
   GET_LOW_STOCK_PRODUCTS_SUCCESS: 'Get low-stock products successfully',
-  GET_OUT_OF_STOCK_PRODUCTS_SUCCESS: 'Get out-of-stock products successfully'
+  GET_OUT_OF_STOCK_PRODUCTS_SUCCESS: 'Get out-of-stock products successfully',
+  //get user filter by status
+  GET_UNVERIFIED_USERS_SUCCESS: 'Get unverified users successfully',
+  GET_VERIFIED_USERS_SUCCESS: 'Get verified users successfully',
+  GET_BANNED_USERS_SUCCESS: 'Get banned users successfully',
+  FILTER_OPTION_NAME_ALREADY_EXISTS: 'Option name "{value}" already exists for an active filter.',
+  
 } as const
 
 export const CART_MESSAGES = {

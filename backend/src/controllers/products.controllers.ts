@@ -281,7 +281,7 @@ export const userGetAllProductControllerWithQ = async (req: Request, res: Respon
     'filter_hsk_uses',
     'filter_hsk_product_type',
     'filter_dac_tinh',
-    'filter_hsk_ingredient',
+    'filter_hsk_ingredients',
     'filter_hsk_size',
     'filter_origin'
   ];
