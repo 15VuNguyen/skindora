@@ -112,7 +112,9 @@ export interface ResultProductStatics {
 export const fetchAllStaticsProduct = async () => {
   return await httpClient.get<ProductStatics>("/admin/manage-products/stats", {}).then((response) => response.data);
 };
-
+export const fetchAllStaticsStaffProduct = async () => {
+  return await httpClient.get<ProductStatics>("/staffs/manage-products/stats", {}).then((response) => response.data);
+};
 //(staff) get-all-product
 export const fetchStaffProduct = async (params: FetchProductProps) => {
   return await httpClient

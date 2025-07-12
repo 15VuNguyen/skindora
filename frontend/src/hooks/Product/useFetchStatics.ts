@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { fetchAllStaticsProduct as api } from "@/api/product";
+import { fetchAllStaticsProduct as api, fetchAllStaticsStaffProduct as apiStaff } from "@/api/product";
 import type { ResultProductStatics } from "@/api/product";
 
 export const useFetchStaticsProduct = () => {
@@ -19,11 +19,23 @@ export const useFetchStaticsProduct = () => {
       setTimeout(() => setLoading(false), 1000);
     }
   }, []);
-
+  const fetchStaticsProductByStaff = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await apiStaff();
+      console.log(response.result);
+      setData(response.result);
+    } catch (error) {
+      console.error("Failed to fetch all users:", error);
+    } finally {
+      setTimeout(() => setLoading(false), 1000);
+    }
+  }, []);
   return {
     loading,
     data,
     setData,
+    fetchStaticsProductByStaff,
     fetchStaticsProduct,
   };
 };

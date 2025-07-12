@@ -1,20 +1,11 @@
-import { Eye, Loader2, XCircle } from "lucide-react";
 // Import XCircle for clear button
+import { Eye, Loader2, Package, Star, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-// import {
-//   type filter_hsk_ingredient_props,
-//   type filter_hsk_product_type_props,
-//   type filter_hsk_size_props,
-//   type filter_hsk_skin_type_props,
-//   type filter_hsk_uses_props,
-//   type filter_origin_props,
-// } from "@/hooks/Filter/useFetchActiveFilter";
 import type {
   filter_brand_props,
   filter_dac_tinh_type_props,
@@ -26,45 +17,11 @@ import type {
   filter_origin_props,
 } from "@/hooks/Filter/useFetchAllFilter";
 import { useFetchAllFilter } from "@/hooks/Filter/useFetchAllFilter";
+import { useFetchStaticsProduct } from "@/hooks/Product/useFetchStatics";
 import { useFetchProductStaff } from "@/hooks/Staff/Product/useFetchProductStaff";
 import type { ProductFE } from "@/types/product";
 
 import { PaginationDemo } from "../Admin/components/Pagination";
-
-// export interface Product {
-//   _id: string;
-//   name_on_list: string;
-//   engName_on_list: string;
-//   price_on_list: string;
-//   image_on_list: string;
-//   hover_image_on_list: string;
-//   product_detail_url: string;
-//   productName_detail: string;
-//   engName_detail: string;
-//   description_detail: {
-//     rawHtml: string;
-//     plainText: string;
-//   };
-//   ingredients_detail: {
-//     rawHtml: string;
-//     plainText: string;
-//   };
-//   guide_detail: {
-//     rawHtml: string;
-//     plainText: string;
-//   };
-//   specification_detail: {
-//     rawHtml: string;
-//     plainText: string;
-//   };
-//   main_images_detail: string[];
-//   sub_images_detail: string[];
-//   filter_hsk_ingredient: string;
-//   filter_hsk_skin_type: string;
-//   filter_hsk_uses: string;
-//   filter_hsk_product_type: string;
-//   filter_origin: string;
-// }
 
 export function ProductOverview() {
   const navigate = useNavigate();
@@ -103,7 +60,7 @@ export function ProductOverview() {
   const [origin, setOrigin] = useState<filter_origin_props[]>([]);
   const [brand, setBrand] = useState<filter_brand_props[]>([]);
   const { data: filter, fetchFilter } = useFetchAllFilter();
-
+  const { data: statics, fetchStaticsProductByStaff } = useFetchStaticsProduct();
   const [expandedSection, setExpandedSection] = useState<string | null>("skin-type");
 
   const toggleSection = (sectionName: string) => {
@@ -115,11 +72,13 @@ export function ProductOverview() {
     children,
     sectionName,
     hasNoBorder = false,
+    count = 0,
   }: {
     title: string;
     children: React.ReactNode;
     sectionName: string;
     hasNoBorder?: boolean;
+    count?: number;
   }) => (
     <div className={`overflow-hidden ${hasNoBorder ? "" : "border-b border-gray-200"}`}>
       <button
@@ -127,11 +86,22 @@ export function ProductOverview() {
         className="flex w-full items-center justify-between px-3 py-2 text-left font-semibold text-gray-800 transition-colors duration-200 hover:bg-gray-50 focus:outline-none"
       >
         <span>{title}</span>
-        <span
-          className={`transform transition-transform duration-200 ${expandedSection === sectionName ? "rotate-180" : "rotate-0"}`}
-        >
-          ▲
-        </span>
+        <div className="flex gap-3">
+          <div>
+            <span
+              className={`transform transition-transform duration-200 ${expandedSection === sectionName ? "rotate-180" : "rotate-0"}`}
+            >
+              ▲
+            </span>
+          </div>
+          <div className="pt-0.5">
+            {count > 0 && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
+                {count}
+              </span>
+            )}
+          </div>
+        </div>
       </button>
       {expandedSection === sectionName && (
         <div className="animate-slide-down bg-white px-3 pb-3">
@@ -167,6 +137,7 @@ export function ProductOverview() {
 
   useEffect(() => {
     fetchFilter();
+    fetchStaticsProductByStaff();
   }, [fetchFilter]);
 
   useEffect(() => {
@@ -265,21 +236,24 @@ export function ProductOverview() {
               </Button>
             </div>
             {/* Brand Filter (still a select as it's a long list usually) */}
-            <FilterSection title="Thương hiệu" sectionName="brand">
-              <Select onValueChange={setSelectedBrand} value={selectedBrand}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn thương hiệu" />
-                </SelectTrigger>
-                <SelectContent>
-                  {brand.map((b) => (
-                    <SelectItem key={b.filter_ID} value={b.filter_ID}>
-                      {b.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <FilterSection title="Thương hiệu" sectionName="brand" count={selectedBrand ? 1 : 0}>
+              <div className="space-y-1">
+                {brand.map((item) => (
+                  <div
+                    key={item.filter_ID}
+                    className={`cursor-pointer rounded-md px-2 py-1 text-sm transition-colors duration-200 ${
+                      selectedSkinType === item.filter_ID
+                        ? "bg-blue-100 font-medium text-blue-800"
+                        : "text-gray-700 hover:bg-gray-50"
+                    }`}
+                    onClick={() => setSelectedSkinType(selectedSkinType === item.filter_ID ? "" : item.filter_ID)}
+                  >
+                    {item.name}
+                  </div>
+                ))}
+              </div>
             </FilterSection>
-            <FilterSection title="Loại da" sectionName="skin-type">
+            <FilterSection title="Loại da" sectionName="skin-type" count={selectedSkinType ? 1 : 0}>
               <div className="space-y-1">
                 {skinType.map((item) => (
                   <div
@@ -296,7 +270,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Loại sản phẩm" sectionName="product-type">
+            <FilterSection title="Loại sản phẩm" sectionName="product-type" count={selectedProductType ? 1 : 0}>
               <div className="space-y-1">
                 {productType.map((item) => (
                   <div
@@ -313,7 +287,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Thành phần" sectionName="ingredient">
+            <FilterSection title="Thành phần" sectionName="ingredient" count={selectedIngredient ? 1 : 0}>
               <div className="space-y-1">
                 {ingredient.map((item) => (
                   <div
@@ -331,7 +305,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Công dụng" sectionName="uses">
+            <FilterSection title="Công dụng" sectionName="uses" count={selectedUses ? 1 : 0}>
               <div className="space-y-1">
                 {uses.map((item) => (
                   <div
@@ -348,7 +322,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Xuất xứ" sectionName="origin">
+            <FilterSection title="Xuất xứ" sectionName="origin" count={selectedOrigin ? 1 : 0}>
               <div className="space-y-1">
                 {origin.map((item) => (
                   <div
@@ -366,7 +340,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Đặc tính" sectionName="dactinh">
+            <FilterSection title="Đặc tính" sectionName="dactinh" count={selectedDactinh ? 1 : 0}>
               <div className="space-y-1">
                 {dactinh.map((item) => (
                   <div
@@ -383,7 +357,7 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            <FilterSection title="Kích cỡ" sectionName="size" hasNoBorder={true}>
+            <FilterSection title="Kích cỡ" sectionName="size" hasNoBorder={true} count={selectedSize ? 1 : 0}>
               <div className="space-y-1">
                 {size.map((item) => (
                   <div
@@ -403,6 +377,53 @@ export function ProductOverview() {
           </div>
 
           <div className="flex-1 space-y-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {" "}
+              <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-blue-100">Tổng sản phẩm</p>
+                      <p className="text-3xl font-bold">{statics?.totalProducts}</p>
+                    </div>
+                    <Package className="h-8 w-8 text-blue-200" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-green-100">Đang bán</p>
+                      <p className="text-3xl font-bold">{statics?.onSale}</p>
+                    </div>
+                    <Star className="h-8 w-8 text-green-200" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-yellow-100">Sắp hết hàng</p>
+                      <p className="text-3xl font-bold">{statics?.lowStock}</p>
+                    </div>
+                    <Package className="h-8 w-8 text-yellow-200" />
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-red-100">Hết hàng</p>
+                      <p className="text-3xl font-bold">{statics?.outOfStock}</p>
+                    </div>
+                    <Package className="h-8 w-8 text-red-200" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">

@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
 // import {
 //   type filter_hsk_ingredient_props,
 //   type filter_hsk_product_type_props,
@@ -17,6 +15,7 @@ import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
 //   type filter_origin_props,
 // } from "@/hooks/Filter/useFetchActiveFilter";
 import type {
+  filter_brand_props,
   filter_dac_tinh_type_props,
   filter_hsk_ingredient_props,
   filter_hsk_product_type_props,
@@ -84,7 +83,6 @@ export function ProductOverview() {
     changeUses,
     changeSkinType,
   } = useFetchProduct();
-  const { data: brand, fetchListBrand } = useFetchBrand();
 
   const [selectedBrand, setSelectedBrand] = useState<string>("");
   const [selectedUses, setSelectedUses] = useState<string>("");
@@ -102,7 +100,7 @@ export function ProductOverview() {
   const [ingredient, setIngredient] = useState<filter_hsk_ingredient_props[]>([]);
   const [skinType, setSkinType] = useState<filter_hsk_skin_type_props[]>([]);
   const [origin, setOrigin] = useState<filter_origin_props[]>([]);
-
+  const [brand, setBrand] = useState<filter_brand_props[]>([]);
   const { data: filter, fetchFilter } = useFetchAllFilter();
 
   const [expandedSection, setExpandedSection] = useState<string | null>("skin-type");
@@ -130,7 +128,7 @@ export function ProductOverview() {
         className="flex w-full items-center justify-between px-3 py-2 text-left font-semibold text-gray-800 transition-colors duration-200 hover:bg-gray-50 focus:outline-none"
       >
         <span>{title}</span>
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <div>
             <span
               className={`transform transition-transform duration-200 ${expandedSection === sectionName ? "rotate-180" : "rotate-0"}`}
@@ -138,7 +136,7 @@ export function ProductOverview() {
               ▲
             </span>
           </div>
-          <div>
+          <div className="pt-0.5">
             {count > 0 && (
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
                 {count}
@@ -181,9 +179,8 @@ export function ProductOverview() {
   };
 
   useEffect(() => {
-    fetchListBrand();
     fetchFilter();
-  }, [fetchListBrand, fetchFilter]);
+  }, [fetchFilter]);
 
   useEffect(() => {
     fetchListProduct();
@@ -251,6 +248,9 @@ export function ProductOverview() {
     if (filter?.filter_origin) {
       setOrigin(filter.filter_origin);
     }
+    if (filter?.filter_brand) {
+      setBrand(filter.filter_brand);
+    }
   }, [filter]);
   useEffect(() => {
     fetchStaticsProduct();
@@ -280,18 +280,19 @@ export function ProductOverview() {
               </Button>
             </div>
             <FilterSection title="Thương hiệu" sectionName="brand" count={selectedBrand ? 1 : 0}>
-              <Select onValueChange={setSelectedBrand} value={selectedBrand}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Chọn thương hiệu" />
-                </SelectTrigger>
-                <SelectContent>
-                  {brand.map((b) => (
-                    <SelectItem key={b._id} value={b._id}>
-                      {b.option_name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {brand.map((item) => (
+                <div
+                  key={item.filter_ID}
+                  className={`cursor-pointer rounded-md px-2 py-1 text-sm transition-colors duration-200 ${
+                    selectedSkinType === item.filter_ID
+                      ? "bg-blue-100 font-medium text-blue-800"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`}
+                  onClick={() => setSelectedSkinType(selectedSkinType === item.filter_ID ? "" : item.filter_ID)}
+                >
+                  {item.name}
+                </div>
+              ))}
             </FilterSection>
             <FilterSection title="Loại da" sectionName="skin-type" count={selectedSkinType ? 1 : 0}>
               <div className="space-y-1">
