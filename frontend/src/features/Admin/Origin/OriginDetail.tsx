@@ -79,7 +79,7 @@ const OriginDetail = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-3xl font-bold">{origin.option_name}</CardTitle>
-          <CardDescription className="text-lg text-gray-600">Chi tiết Xuất xứ ID: {origin._id}</CardDescription>{" "}
+          <CardDescription className="text-lg text-gray-600">Xuất xứ ID(Origin): {origin._id}</CardDescription>{" "}
         </CardHeader>
         <CardContent className="grid gap-6">
           <div>
@@ -94,24 +94,19 @@ const OriginDetail = () => {
 
           <div>
             <Label htmlFor="state" className="text-sm font-medium text-gray-700">
-              Trạng thái
+              Trạng thái(State):
             </Label>
-            <Badge
-              id="state"
-              className={`mt-1 text-sm font-medium ${
-                origin.state === "ACTIVE"
-                  ? "bg-green-100 text-green-800 hover:bg-green-200"
-                  : "bg-red-100 text-red-800 hover:bg-red-200"
-              }`}
-            >
-              {origin.state}
-            </Badge>
+            {origin.state === "active" ? (
+              <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>
+            ) : (
+              <Badge variant="secondary">Không hoạt động</Badge>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Label htmlFor="created-at" className="text-sm font-medium text-gray-700">
-                Ngày tạo
+                Ngày được tạo
               </Label>
               <p id="created-at" className="text-base text-gray-800">
                 {new Date(origin.created_at).toLocaleString()}

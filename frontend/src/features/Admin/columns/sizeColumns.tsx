@@ -51,7 +51,14 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Size }; ref
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/size-detail`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-size`)}>Chỉnh sửa</DropdownMenuItem>
+
+          {state === "ACTIVE" ? (
+            <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-size`)}>Chỉnh sửa</DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-size`)} disabled>
+              Chỉnh sửa
+            </DropdownMenuItem>
+          )}
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}
@@ -74,8 +81,10 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Size }; ref
     </div>
   );
 };
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString("vi-VN");
+};
 
-// Định nghĩa các cột cho bảng kích thước
 export const sizeColumn = (refetchData: () => void): ColumnDef<Size>[] => [
   {
     id: "select",
@@ -121,29 +130,39 @@ export const sizeColumn = (refetchData: () => void): ColumnDef<Size>[] => [
     ),
     cell: ({ row }) => <div className="capitalize">{row.getValue("option_name")}</div>,
   },
-  {
-    accessorKey: "category_name",
-    header: "Tên Danh mục",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("category_name")}</div>,
-  },
-  {
-    accessorKey: "category_param",
-    header: "Tham số Danh mục",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("category_param")}</div>,
-  },
+
   {
     accessorKey: "state",
     header: "Trạng thái",
     cell: ({ row }) => {
-      const state = row.getValue("state") as string;
-      return <Badge variant={state === "ACTIVE" ? "default" : "destructive"}>{state}</Badge>;
+      const state = row.getValue("state");
+      if (state === "ACTIVE") {
+        return <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>;
+      }
+      return <Badge variant="danger">Không hoạt động</Badge>;
+    },
+  },
+  {
+    accessorKey: "created_at",
+    header: "Ngày được tạo",
+    cell: ({ row }) => {
+      const { created_at } = row.original;
+      return <div>{`${formatDate(created_at)}`}</div>;
+    },
+  },
+
+  {
+    accessorKey: "updated_at",
+    header: "Cập nhật lần cuối",
+    cell: ({ row }) => {
+      const { updated_at } = row.original;
+      return <div>{`${formatDate(updated_at)}`}</div>;
     },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      // Truyền hàm refetchData xuống ActionsCell
       return <ActionsCell row={row} refetchData={refetchData} />;
     },
   },

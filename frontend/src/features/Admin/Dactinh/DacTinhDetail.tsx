@@ -1,4 +1,5 @@
 import { Loader2 } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -24,7 +25,7 @@ const DacTinhDetail = () => {
   }, [dacTinhData]);
 
   const handleGoBack = () => {
-    navigate(-1); // Navigate back to the previous page in history
+    navigate(-1);
   };
 
   if (loading) {
@@ -38,7 +39,6 @@ const DacTinhDetail = () => {
     );
   }
 
-  // Use dacTinh for clarity, assuming dacTinhData will be a single object
   const dacTinh: DacTinh | undefined = dacTinhData;
 
   if (!dacTinh) {
@@ -56,26 +56,37 @@ const DacTinhDetail = () => {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Chi tiết Đặc tính</h1> {/* Updated title */}
-        <Button onClick={handleGoBack} variant="outline">
-          Quay lại
-        </Button>
+        <h1 className="text-3xl font-bold">Chi tiết Đặc tính</h1>
+        <div className="flex gap-2">
+          <div>
+            <Button onClick={handleGoBack} variant="outline">
+              Quay lại
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="default"
+              onClick={() => {
+                navigate(`/admin/${id}/update-dac-tinh`);
+              }}
+            >
+              <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
+            </Button>
+          </div>
+        </div>
       </div>
       <Card>
         <CardHeader>
-          <CardTitle className="text-3xl font-bold">{dacTinh.option_name}</CardTitle> {/* Display DacTinh name */}
+          <CardTitle className="text-3xl font-bold">{dacTinh.option_name}</CardTitle>
           <CardDescription className="text-lg text-gray-600">
-            Details for Đặc tính ID: {dacTinh._id}
+            Đặc tính ID(Characteristics): {dacTinh._id}
           </CardDescription>{" "}
-          {/* Display DacTinh ID */}
         </CardHeader>
         <CardContent className="grid gap-6">
-          {/* Category Information */}
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
-              Danh mục
+              Danh mục(Category):
             </Label>{" "}
-            {/* Updated label */}
             <p id="category-info" className="text-base text-gray-800">
               <span className="font-semibold">{dacTinh.category_name}</span>
               <span className="text-gray-500 italic"> ({dacTinh.category_param})</span>
@@ -84,27 +95,20 @@ const DacTinhDetail = () => {
 
           <div>
             <Label htmlFor="state" className="text-sm font-medium text-gray-700">
-              Trạng thái
+              Trạng thái(State):
             </Label>{" "}
-            {/* Updated label */}
-            <Badge
-              id="state"
-              className={`mt-1 text-sm font-medium ${
-                dacTinh.state === "ACTIVE" // Use 'ACTIVE' (uppercase) as per your schema
-                  ? "bg-green-100 text-green-800 hover:bg-green-200"
-                  : "bg-red-100 text-red-800 hover:bg-red-200"
-              }`}
-            >
-              {dacTinh.state}
-            </Badge>
+            {dacTinh.state === "active" ? (
+              <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>
+            ) : (
+              <Badge variant="secondary">Không hoạt động</Badge>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Label htmlFor="created-at" className="text-sm font-medium text-gray-700">
-                Ngày tạo
+                Ngày được tạo
               </Label>{" "}
-              {/* Updated label */}
               <p id="created-at" className="text-base text-gray-800">
                 {new Date(dacTinh.created_at).toLocaleString()}
               </p>
@@ -113,7 +117,6 @@ const DacTinhDetail = () => {
               <Label htmlFor="updated-at" className="text-sm font-medium text-gray-700">
                 Cập nhật lần cuối
               </Label>{" "}
-              {/* Updated label */}
               <p id="updated-at" className="text-base text-gray-800">
                 {new Date(dacTinh.updated_at).toLocaleString()}
               </p>

@@ -127,8 +127,11 @@ export const usesColumn = (refetchData: () => void): ColumnDef<Uses>[] => [
     accessorKey: "state",
     header: "Trạng thái",
     cell: ({ row }) => {
-      const state = row.getValue("state") as string;
-      return <Badge variant={state === "ACTIVE" ? "default" : "destructive"}>{state}</Badge>;
+      const state = row.getValue("state");
+      if (state === "ACTIVE") {
+        return <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>;
+      }
+      return <Badge variant="secondary">Không hoạt động</Badge>;
     },
   },
   {

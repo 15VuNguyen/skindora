@@ -54,7 +54,7 @@ const BrandDetail = () => {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Brand Details</h1>
+        <h1 className="text-3xl font-bold">Chi tiết Thương Hiệu</h1>
         <div className="flex gap-2">
           <div>
             <Button onClick={handleGoBack} variant="outline">
@@ -76,12 +76,12 @@ const BrandDetail = () => {
       <Card>
         <CardHeader>
           <CardTitle className="text-3xl font-bold">{brand.option_name}</CardTitle>
-          <CardDescription className="text-lg text-gray-600">Details for Brand ID: {brand._id}</CardDescription>
+          <CardDescription className="text-lg text-gray-600">Thương hiệu ID(Brand) : {brand._id}</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
-              Category
+              Danh mục
             </Label>
             <p id="category-info" className="text-base text-gray-800">
               <span className="font-semibold">{brand.category_name}</span>{" "}
@@ -91,24 +91,20 @@ const BrandDetail = () => {
 
           <div>
             <Label htmlFor="state" className="text-sm font-medium text-gray-700">
-              State
+              Trạng thái (State):
             </Label>
-            <Badge
-              id="state"
-              className={`mt-1 text-sm font-medium ${
-                brand.state === "active"
-                  ? "bg-green-100 text-green-800 hover:bg-green-200"
-                  : "bg-red-100 text-red-800 hover:bg-red-200"
-              }`}
-            >
-              {brand.state}
-            </Badge>
+
+            {brand.state === "active" ? (
+              <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>
+            ) : (
+              <Badge variant="secondary">Không hoạt động</Badge>
+            )}
           </div>
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Label htmlFor="created-at" className="text-sm font-medium text-gray-700">
-                Created At
+                Ngày được tạo
               </Label>
               <p id="created-at" className="text-base text-gray-800">
                 {new Date(brand.created_at).toLocaleString()}
@@ -116,7 +112,7 @@ const BrandDetail = () => {
             </div>
             <div>
               <Label htmlFor="updated-at" className="text-sm font-medium text-gray-700">
-                Last Updated
+                Cập nhật lần cuối
               </Label>
               <p id="updated-at" className="text-base text-gray-800">
                 {new Date(brand.updated_at).toLocaleString()}

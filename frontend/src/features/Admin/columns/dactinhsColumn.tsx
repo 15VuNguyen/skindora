@@ -51,7 +51,14 @@ export const DacTinhActionsCell = ({ row, refetchData }: { row: { original: DacT
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/dac-tinh-detail`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-dac-tinh`)}>Chỉnh sửa</DropdownMenuItem>
+
+          {state === "ACTIVE" ? (
+            <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-dac-tinh`)}>Chỉnh sửa</DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-dac-tinh`)} disabled>
+              Chỉnh sửa
+            </DropdownMenuItem>
+          )}
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}
@@ -143,13 +150,20 @@ export const dacTinhColumn = (refetchData: () => void): ColumnDef<DacTinh>[] => 
 
   {
     accessorKey: "created_at",
-    header: "Ngày tạo",
+    header: "Ngày được tạo",
     cell: ({ row }) => {
       const { created_at } = row.original;
       return <div>{`${formatDate(created_at)}`}</div>;
     },
   },
-
+  {
+    accessorKey: "updated_at",
+    header: "Cập nhật lần cuối",
+    cell: ({ row }) => {
+      const { updated_at } = row.original;
+      return <div>{`${formatDate(updated_at)}`}</div>;
+    },
+  },
   {
     id: "actions",
     cell: ({ row }) => <DacTinhActionsCell row={row} refetchData={refetchData} />,
