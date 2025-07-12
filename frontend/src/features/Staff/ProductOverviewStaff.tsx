@@ -1,4 +1,4 @@
-import { Edit, Eye, Loader2, XCircle } from "lucide-react";
+import { Eye, Loader2, XCircle } from "lucide-react";
 // Import XCircle for clear button
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -26,7 +26,7 @@ import type {
   filter_origin_props,
 } from "@/hooks/Filter/useFetchAllFilter";
 import { useFetchAllFilter } from "@/hooks/Filter/useFetchAllFilter";
-import { useFetchProduct } from "@/hooks/Product/useFetchProduct";
+import { useFetchProductStaff } from "@/hooks/Staff/Product/useFetchProductStaff";
 import type { ProductFE } from "@/types/product";
 
 import { PaginationDemo } from "../Admin/components/Pagination";
@@ -82,7 +82,7 @@ export function ProductOverview() {
     changeSize,
     changeUses,
     changeSkinType,
-  } = useFetchProduct();
+  } = useFetchProductStaff();
   // const { data: brand, fetchListBrand } = useFetchBrand();
 
   const [selectedBrand, setSelectedBrand] = useState<string>("");
@@ -105,9 +105,7 @@ export function ProductOverview() {
   const { data: filter, fetchFilter } = useFetchAllFilter();
 
   const [expandedSection, setExpandedSection] = useState<string | null>("skin-type");
-  // const { fetchOutOfStockProduct, params: OutOfStockProductPagination } = useFetchOutOfStock();
-  // const { fetchLowStockProduct, params: LowStockProductPagination } = useFetchLowStock();
-  // const { fetchOnSaleProduct, params: OnSaleProductPagination } = useFetchOnSale();
+
   const toggleSection = (sectionName: string) => {
     setExpandedSection(expandedSection === sectionName ? null : sectionName);
   };
@@ -228,8 +226,8 @@ export function ProductOverview() {
     if (filter?.filter_hsk_size) {
       setSize(filter.filter_hsk_size);
     }
-    if (filter?.filter_hsk_ingredients) {
-      setIngredient(filter.filter_hsk_ingredients);
+    if (filter?.filter_hsk_ingredient) {
+      setIngredient(filter.filter_hsk_ingredient);
     }
     if (filter?.filter_hsk_skin_type) {
       setSkinType(filter.filter_hsk_skin_type);
@@ -339,7 +337,6 @@ export function ProductOverview() {
                   <div
                     key={item.filter_ID}
                     className={`cursor-pointer rounded-md px-2 py-1 text-sm transition-colors duration-200 ${
-                      // Smaller padding and font
                       selectedUses === item.filter_ID
                         ? "bg-blue-100 font-medium text-blue-800"
                         : "text-gray-700 hover:bg-gray-50"
@@ -351,7 +348,6 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            {/* Origin Filter */}
             <FilterSection title="Xuất xứ" sectionName="origin">
               <div className="space-y-1">
                 {origin.map((item) => (
@@ -407,53 +403,6 @@ export function ProductOverview() {
           </div>
 
           <div className="flex-1 space-y-6">
-            {/* <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-              {" "}
-              <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-blue-100">Tổng sản phẩm</p>
-                      <p className="text-3xl font-bold">{params.totalRecords}</p>
-                    </div>
-                    <Package className="h-8 w-8 text-blue-200" />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-green-100">Đang bán</p>
-                      <p className="text-3xl font-bold">{OnSaleProductPagination.totalRecords}</p>
-                    </div>
-                    <Star className="h-8 w-8 text-green-200" />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-yellow-100">Sắp hết hàng</p>
-                      <p className="text-3xl font-bold">{LowStockProductPagination.totalRecords}</p>
-                    </div>
-                    <Package className="h-8 w-8 text-yellow-200" />
-                  </div>
-                </CardContent>
-              </Card>
-              <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-red-100">Hết hàng</p>
-                      <p className="text-3xl font-bold">{OutOfStockProductPagination.totalRecords}</p>
-                    </div>
-                    <Package className="h-8 w-8 text-red-200" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div> */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
@@ -472,7 +421,7 @@ export function ProductOverview() {
                           src={product.image_on_list}
                           alt={product.name_on_list}
                           onClick={() => {
-                            navigate(`/admin/${product._id}/detail`);
+                            navigate(`/staff/${product._id}/detail`);
                           }}
                           className="h-16 w-16 flex-shrink-0 cursor-pointer rounded-lg object-cover"
                         />
@@ -496,13 +445,13 @@ export function ProductOverview() {
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button
+                          {/* <Button
                             variant="outline"
                             size="icon"
                             onClick={() => navigate(`/staff/${product._id}/update-product`)}
                           >
                             <Edit className="h-4 w-4" />
-                          </Button>
+                          </Button> */}
                         </div>
                       </div>
                     ))

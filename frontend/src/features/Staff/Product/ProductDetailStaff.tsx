@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useFetchProductByID } from "@/hooks/Product/useFetchProductByID";
+import { useFetchStaffProductByID } from "@/hooks/Staff/Product/useFetchProductStaffByID";
 
 // Hàm tiện ích để định dạng tiền tệ
 const formatCurrency = (price: string | number) => {
@@ -19,13 +19,15 @@ const formatCurrency = (price: string | number) => {
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { FetchProductByID, data, loading } = useFetchProductByID(String(id));
+
+  const { FetchStaffProductByID, data, loading } = useFetchStaffProductByID(String(id));
   const [mainImage, setMainImage] = useState<string>("");
+
   useEffect(() => {
     if (id) {
-      FetchProductByID();
+      FetchStaffProductByID();
     }
-  }, [id, FetchProductByID]);
+  }, [id, FetchStaffProductByID]);
 
   useEffect(() => {
     if (data?.main_images_detail?.[0]) {
@@ -56,7 +58,7 @@ const ProductDetail = () => {
         <Button
           variant="ghost"
           onClick={() => {
-            navigate("/admin/products");
+            navigate("/staff/products");
           }}
         >
           <ArrowLeft />

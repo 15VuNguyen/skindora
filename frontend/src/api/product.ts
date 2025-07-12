@@ -42,14 +42,14 @@ export const fetchProductByID = async (params: FetchProductByIDProps) => {
     .then((response) => response.data);
 };
 //get-product-by-staff
-export const fetchProductByStaff = async (params: FetchProductProps) => {
-  return await httpClient
-    .get<API.IResponseSearch<ProductFE>>("/staffs/manage-products/get-all", {
-      limit: params.limit,
-      page: params.page,
-    })
-    .then((response) => response.data);
-};
+// export const fetchProductByStaff = async (params: FetchProductProps) => {
+//   return await httpClient
+//     .get<API.IResponseSearch<ProductFE>>("/staffs/manage-products/get-all", {
+//       limit: params.limit,
+//       page: params.page,
+//     })
+//     .then((response) => response.data);
+// };
 
 //get-all-out-of-stock-product
 export interface FetchOutOfStockProductProps {
@@ -111,4 +111,28 @@ export interface ResultProductStatics {
 }
 export const fetchAllStaticsProduct = async () => {
   return await httpClient.get<ProductStatics>("/admin/manage-products/stats", {}).then((response) => response.data);
+};
+
+//(staff) get-all-product
+export const fetchStaffProduct = async (params: FetchProductProps) => {
+  return await httpClient
+    .get<API.IResponseSearch<ProductFE>>("/staffs/manage-products/get-all", {
+      limit: params.limit,
+      page: params.page,
+      filter_brand: params.filter_brand,
+      filter_dac_tinh: params.filter_dac_tinh,
+      filter_hsk_ingredients: params.filter_hsk_ingredients,
+      filter_hsk_product_type: params.filter_hsk_product_type,
+      filter_hsk_size: params.filter_hsk_size,
+      filter_hsk_skin_type: params.filter_hsk_skin_type,
+      filter_hsk_uses: params.filter_hsk_uses,
+      filter_origin: params.filter_origin,
+    })
+    .then((response) => response.data);
+};
+
+export const fetchStaffProductByID = async (params: FetchProductByIDProps) => {
+  return await httpClient
+    .get<API.IResponse<ProductFE>>(`/staffs/manage-products/${params.id}`)
+    .then((response) => response.data);
 };

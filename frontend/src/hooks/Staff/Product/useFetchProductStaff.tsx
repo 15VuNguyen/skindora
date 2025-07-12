@@ -1,11 +1,10 @@
 import React, { useCallback } from "react";
 
 import type { FetchProductProps } from "@/api/product";
-import { fetchProduct } from "@/api/product";
 import { fetchStaffProduct } from "@/api/product";
 import type { ProductFE } from "@/types/product";
 
-export const useFetchProduct = () => {
+export const useFetchProductStaff = () => {
   const [loading, setLoading] = React.useState(false);
   const [params, setParams] = React.useState<FetchProductProps>({
     limit: 10,
@@ -56,7 +55,7 @@ export const useFetchProduct = () => {
     setLoading(true);
     console.log(params);
     try {
-      const response = await fetchProduct({
+      const response = await fetchStaffProduct({
         limit: params.limit,
         page: params.page,
         filter_brand: params.filter_brand,
@@ -94,36 +93,14 @@ export const useFetchProduct = () => {
     params.filter_hsk_skin_type,
   ]);
 
-  const fetchListProductByStaff = useCallback(async () => {
-    setLoading(true);
-    try {
-      const response = await fetchStaffProduct({
-        limit: params.limit,
-        page: params.page,
-      });
-      console.log(response);
-      setData(response.data);
-      setParams((prev) => ({
-        ...prev,
-        totalPages: response.pagination.totalPages,
-        totalRecords: response.pagination.totalRecords,
-      }));
-    } catch (error) {
-      console.error("Failed to fetch paginated users:", error);
-      setData([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [params.limit, params.page]);
   return {
     loading,
-    fetchListProduct,
     data,
     params,
     setParams,
     changeLimit,
     changePage,
-    fetchListProductByStaff,
+    fetchListProduct,
     changeBrand,
     changeDactinh,
     changeIngredient,
