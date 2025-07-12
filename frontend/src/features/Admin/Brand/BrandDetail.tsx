@@ -1,4 +1,5 @@
 import { Loader2 } from "lucide-react";
+import { Edit } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -54,9 +55,23 @@ const BrandDetail = () => {
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-3xl font-bold">Brand Details</h1>
-        <Button onClick={handleGoBack} variant="outline">
-          Quay lại
-        </Button>
+        <div className="flex gap-2">
+          <div>
+            <Button onClick={handleGoBack} variant="outline">
+              Quay lại
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="default"
+              onClick={() => {
+                navigate(`/admin/${id}/update-brand`);
+              }}
+            >
+              <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
+            </Button>
+          </div>
+        </div>
       </div>
       <Card>
         <CardHeader>
