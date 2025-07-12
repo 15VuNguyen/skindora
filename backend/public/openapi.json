@@ -1072,6 +1072,260 @@
         }
       }
     },
+    "/staffs/manage-products/stats": {
+      "get": {
+        "tags": [
+          "Staffs"
+        ],
+        "summary": "(Staff) Get Product Statistics",
+        "description": "Lấy 4 số liệu thống kê chính về sản phẩm cho dashboard của nhân viên.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trả về các số liệu thống kê thành công.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Get product statistics successfully"
+                    },
+                    "result": {
+                      "$ref": "#/components/schemas/ProductStatsResponse"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/staffs/manage-products/search-by-name": {
+      "get": {
+        "tags": [
+          "Staffs"
+        ],
+        "summary": "(Staff) Search Products by Name",
+        "description": "Nhân viên tìm kiếm sản phẩm theo tên (name_on_list).",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          },
+          {
+            "name": "keyword",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of matching products.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/staffs/manage-products/on-sale": {
+      "get": {
+        "tags": [
+          "Staffs"
+        ],
+        "summary": "(Staff) Get Paginated On-Sale Products",
+        "description": "Lấy danh sách các sản phẩm đang bán (trạng thái ACTIVE) có phân trang.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of on-sale products.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/staffs/manage-products/low-stock": {
+      "get": {
+        "tags": [
+          "Staffs"
+        ],
+        "summary": "(Staff) Get Paginated Low-Stock Products",
+        "description": "Lấy danh sách các sản phẩm sắp hết hàng (số lượng > 0 và <= 10) có phân trang.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of low-stock products.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/staffs/manage-products/out-of-stock": {
+      "get": {
+        "tags": [
+          "Staffs"
+        ],
+        "summary": "(Staff) Get Paginated Out-of-Stock Products",
+        "description": "Lấy danh sách các sản phẩm đã hết hàng (số lượng = 0) có phân trang.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of out-of-stock products.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
+    "/staffs/manage-products/{_id}": {
+      "get": {
+        "tags": [
+          "Staffs"
+        ],
+        "summary": "(Staff) Get Product Detail",
+        "description": "Nhân viên lấy thông tin chi tiết của một sản phẩm bằng ID.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product details retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          }
+        }
+      }
+    },
     "/review/{orderId}/products/{productId}/review": {
       "post": {
         "tags": [
