@@ -40,9 +40,9 @@ databaseService.connect().then(async () => {
   databaseService.indexVouchers()
   // databaseService.indexProducts()
 
-  // await waitForKafkaReady()
-  // await connectProducer()
-  // await startVoucherConsumer()
+  await waitForKafkaReady()
+  await connectProducer()
+  await startVoucherConsumer()
 })
 
 app.get('/', (req, res) => {
