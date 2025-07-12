@@ -7,6 +7,14 @@ import { ObjectId } from 'mongodb'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 
+const activeBrandStates = [
+  FilterBrandState.ACTIVE,
+  FilterBrandState.COLLABORATION,
+  FilterBrandState.PARTNERSHIP,
+  FilterBrandState.EXCLUSIVE,
+  FilterBrandState.LIMITED_EDITION
+]
+
 export const updateFilterBrandValidator = validate(
   checkSchema({
     _id: {
@@ -39,7 +47,20 @@ export const updateFilterBrandValidator = validate(
       isString: {
         errorMessage: ADMIN_MESSAGES.FILTER_BRAND_OPTION_NAME_MUST_BE_A_STRING
       },
-      trim: true
+      trim: true,
+      custom: {
+        options: async (value, { req }) => {
+          const existingBrand = await databaseService.filterBrand.findOne({
+            _id: { $ne: new ObjectId(req.params?._id) },
+            option_name: value,
+            state: { $in: activeBrandStates }
+          })
+          if (existingBrand) {
+            throw new Error(ADMIN_MESSAGES.FILTER_OPTION_NAME_ALREADY_EXISTS.replace('{value}', value))
+          }
+          return true
+        }
+      }
     },
     category_name: {
       optional: true,

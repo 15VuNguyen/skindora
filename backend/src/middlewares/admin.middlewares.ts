@@ -19,6 +19,14 @@ import filterOriginService from '~/services/filterOrigin.services'
 import PRODUCT from '~/constants/product'
 import { VoucherType } from '~/models/schemas/Voucher.schema'
 
+const activeBrandStates = [
+  FilterBrandState.ACTIVE,
+  FilterBrandState.COLLABORATION,
+  FilterBrandState.PARTNERSHIP,
+  FilterBrandState.EXCLUSIVE,
+  FilterBrandState.LIMITED_EDITION
+]
+
 export const isAdminValidator = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { user_id } = req.decoded_authorization as TokenPayLoad
@@ -622,7 +630,19 @@ export const createNewFilterBrandValidator = validate(
       isString: {
         errorMessage: ADMIN_MESSAGES.FILTER_BRAND_OPTION_NAME_MUST_BE_A_STRING
       },
-      trim: true
+      trim: true,
+      custom: {
+        options: async (value) => {
+          const existingBrand = await databaseService.filterBrand.findOne({
+            option_name: value,
+            state: { $in: activeBrandStates }
+          })
+          if (existingBrand) {
+            throw new Error(ADMIN_MESSAGES.FILTER_OPTION_NAME_ALREADY_EXISTS.replace('{value}', value))
+          }
+          return true
+        }
+      }
     },
     category_name: {
       notEmpty: {

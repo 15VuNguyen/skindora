@@ -1500,6 +1500,72 @@
       '403':
         $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
 
+/admin/manage-users/unverified:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Paginated Unverified Users
+    description: Lấy danh sách những người dùng chưa xác thực tài khoản có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of unverified users.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedUserResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-users/verified:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Paginated Verified Users
+    description: Lấy danh sách những người dùng đã xác thực tài khoản có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of verified users.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedUserResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-users/banned:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Paginated Banned Users
+    description: Lấy danh sách những người dùng đã bị cấm có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of banned users.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedUserResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
 /admin/manage-users/{_id}:
   get:
     tags: [Admin]
