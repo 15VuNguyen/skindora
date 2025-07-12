@@ -13,6 +13,7 @@ import { CreateNewProductReqBody } from '~/models/requests/Product.requests'
 import Review from '~/models/schemas/Reviewschema'
 import logger from '~/utils/logger'
 import Product from '~/models/schemas/Product.schema'
+import { ProductState } from '~/constants/enums'
 
 export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
   const { productId } = req.body
@@ -80,7 +81,7 @@ export const removeFromWishListController = async (req: Request, res: Response):
 export const getProductFromWishListController = async (req: Request, res: Response): Promise<void> => {
   const { user_id } = req.decoded_authorization as TokenPayLoad
   const productID = await productService.getWishList(user_id)
-  
+
   if (!user_id || typeof user_id !== 'string') {
     res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
     return
@@ -215,6 +216,7 @@ export const getAllProductController = async (req: Request, res: Response, next:
 
   await sendPaginatedResponse(res, next, databaseService.products, req.query, filter)
 }
+
 export const userGetAllProductController = async (req: Request, res: Response, next: NextFunction) => {
   const projection = {
     name_on_list: 1,
@@ -270,10 +272,10 @@ export const userGetAllProductControllerWithQ = async (req: Request, res: Respon
     _id: 1
   }
   // const filter = {} as any
-   const filter: Filter<any> = {};
-  if (req.query.q){
+  const filter: Filter<any> = {}
+  if (req.query.q) {
     const searchQuery = req.query.q as string
-    filter.name_on_list = { $regex: searchQuery, $options: 'i' };
+    filter.name_on_list = { $regex: searchQuery, $options: 'i' }
   }
   const validFilterKeys = [
     'filter_brand',
@@ -284,15 +286,17 @@ export const userGetAllProductControllerWithQ = async (req: Request, res: Respon
     'filter_hsk_ingredients',
     'filter_hsk_size',
     'filter_origin'
-  ];
-  for ( const key of validFilterKeys){if(req.query[key]){
-    const filterValues = (req.query[key] as string).split(',');
-    const objectIds = filterValues.map(id => new ObjectId(id));
-    if (objectIds.length > 0) {
-      filter[key] = { $in: objectIds };
+  ]
+  for (const key of validFilterKeys) {
+    if (req.query[key]) {
+      const filterValues = (req.query[key] as string).split(',')
+      const objectIds = filterValues.map((id) => new ObjectId(id))
+      if (objectIds.length > 0) {
+        filter[key] = { $in: objectIds }
+      }
     }
-  }}
-  logger.info(filter);
+  }
+  logger.info(filter)
   await sendPaginatedResponse(res, next, databaseService.products, req.query, filter, projection)
   // await sendPaginatedResponse(res, next, databaseService.products, req.query, filter)
 }
@@ -332,4 +336,20 @@ export const getProductStatsController = async (req: Request, res: Response, nex
   } catch (error) {
     next(error)
   }
+}
+
+export const userSearchProductsController = async (req: Request, res: Response, next: NextFunction) => {
+  const { keyword } = req.query
+  const filter: Filter<Product> = {}
+
+  filter.state = ProductState.ACTIVE
+
+  if (keyword) {
+    filter.name_on_list = {
+      $regex: keyword as string,
+      $options: 'i'
+    }
+  }
+
+  await sendPaginatedResponse(res, next, databaseService.products, req.query, filter)
 }

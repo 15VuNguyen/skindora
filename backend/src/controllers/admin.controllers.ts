@@ -174,3 +174,21 @@ export const getBannedUsersController = async (req: Request, res: Response, next
   }
   await sendPaginatedResponse(res, next, databaseService.users, req.query, filter, projection)
 }
+
+export const adminSearchProductsByNameController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { keyword } = req.query
+    const filter: Filter<Product> = {}
+
+    if (keyword) {
+      filter.name_on_list = {
+        $regex: keyword as string,
+        $options: 'i'
+      }
+    }
+
+    await sendPaginatedResponse(res, next, databaseService.products, req.query, filter)
+  } catch (error) {
+    next(error)
+  }
+}
