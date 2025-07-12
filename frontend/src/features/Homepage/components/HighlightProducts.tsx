@@ -1,5 +1,6 @@
 import Autoplay from "embla-carousel-autoplay";
 import { ChevronRight, LoaderCircle } from "lucide-react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { ProductCard } from "@/components/ui/ProductCard";
@@ -9,13 +10,21 @@ import { useAllProductsQuery } from "@/hooks/queries/useAllProductsQuery";
 
 function HighlightProductsCarousel() {
   const { data: paginatedData, isLoading, isError, error } = useAllProductsQuery(1, 10, {});
-  const { mutate: addToCart, isPending: isAddingToCart } = useAddToCartMutation();
+  const { mutate: addToCart } = useAddToCartMutation();
   const navigate = useNavigate();
+  const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
 
   const handleAddToCart = (productId: string) => {
-    addToCart({ ProductID: productId, Quantity: 1 });
+    setLoadingProductId(productId);
+    addToCart(
+      { ProductID: productId, Quantity: 1 },
+      {
+        onSettled: () => {
+          setLoadingProductId(null);
+        },
+      }
+    );
   };
-
   const handleCardClick = (productId: string) => {
     navigate(`/product/${productId}`);
   };
@@ -56,10 +65,10 @@ function HighlightProductsCarousel() {
           <CarouselItem key={product._id} className="md:basis-1/2 lg:basis-1/4">
             <ProductCard
               product={product}
-              variant="carousel" 
+              variant="carousel"
               onAddToCart={handleAddToCart}
               onCardClick={handleCardClick}
-              isAddingToCart={isAddingToCart}
+              isAddingToCart={loadingProductId === product._id}
             />
           </CarouselItem>
         ))}

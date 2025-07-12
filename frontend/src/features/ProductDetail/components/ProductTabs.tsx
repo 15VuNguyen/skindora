@@ -16,7 +16,7 @@ export function ProductTabs({ product }: ProductTabsProps) {
           <TabsTrigger value="description">Mô tả</TabsTrigger>
           <TabsTrigger value="ingredients">Thành phần</TabsTrigger>
           <TabsTrigger value="reviews">Đánh giá</TabsTrigger>
-          <TabsTrigger value="specification">Miêu sản phẩm</TabsTrigger>
+          <TabsTrigger value="specification">Thông số sản phẩm</TabsTrigger>
         </TabsList>
         <CardContent className="prose prose-sm max-w-none">
           <TabsContent value="description">
