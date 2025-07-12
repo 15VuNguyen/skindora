@@ -4,6 +4,7 @@ import ProfilePage from "@/features/Admin/Profile/ProfileAdmin";
 import ManageStatics from "@/features/Admin/Statics/ManageStatics";
 import ManageOrdersStaff from "@/features/Staff/ManageOrdersStaff";
 import ManageProduct from "@/features/Staff/ManageProductStaff";
+import ProductDetail from "@/features/Staff/Product/ProductDetailStaff";
 import StaffLayout from "@/layouts/staffLayout";
 
 const staffRoutes: RouteObject[] = [
@@ -19,6 +20,10 @@ const staffRoutes: RouteObject[] = [
       {
         path: "orders",
         element: <ManageOrdersStaff />,
+      },
+      {
+        path: ":id/detail",
+        element: <ProductDetail />,
       },
       {
         path: "profile",

@@ -10,6 +10,7 @@ import { useHeader } from "@/contexts/header.context";
 // import type { Product } from "@/types";
 import { ProductOverview } from "./ProductOverviewStaff";
 
+// import { ProductOverview } from "../Admin/components/ProductOverview";
 const ManageProduct: React.FC = () => {
   const navigate = useNavigate();
   const { setHeaderName, headerName } = useHeader();

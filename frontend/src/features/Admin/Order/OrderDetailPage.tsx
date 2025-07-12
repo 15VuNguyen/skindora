@@ -8,13 +8,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-// Import Dialog components
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useFetchOrderByID } from "@/hooks/Orders/useFetchOrderByID";
 import { useUpdateStatus } from "@/hooks/Orders/useUpdateStatus";
 import type { User } from "@/types/order";
-
-// Import User type
 
 const OrderDetailPage = () => {
   const { orderId } = useParams<{ orderId: string }>();
@@ -22,9 +19,8 @@ const OrderDetailPage = () => {
   const { loading, data, FetchProductByID } = useFetchOrderByID(String(orderId));
   const { updateStatus } = useUpdateStatus(String(orderId));
 
-  // State to control modal visibility
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
-  // State to hold the customer data for the modal
+
   const [selectedCustomer, setSelectedCustomer] = useState<User | null>(null);
 
   const handleUpdateStatus = () => {
@@ -52,7 +48,7 @@ const OrderDetailPage = () => {
     );
   }
 
-  const { order, orderDetail } = data; // Destructure order and orderDetail from data
+  const { order, orderDetail } = data;
 
   const variant =
     order.Status === "DELIVERED"
@@ -82,10 +78,8 @@ const OrderDetailPage = () => {
               <Badge variant={variant}>{order.Status}</Badge>
             </div>
 
-            {/* Main Content */}
             <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
               <div className="grid auto-rows-max items-start gap-4 lg:col-span-2 lg:gap-8">
-                {/* Order Details Card */}
                 <Card>
                   <CardHeader className="pb-4">
                     <CardTitle>Đơn hàng #{order._id.slice(-6).toUpperCase()}</CardTitle>
@@ -104,7 +98,6 @@ const OrderDetailPage = () => {
                   </CardContent>
                 </Card>
 
-                {/* Shipping Details Card */}
                 <Card>
                   <CardHeader>
                     <CardTitle>Thông tin giao hàng</CardTitle>
@@ -117,7 +110,7 @@ const OrderDetailPage = () => {
                         <p className="text-muted-foreground text-sm">
                           {order.User.first_name} {order.User.last_name} (ID: {order.User._id})
                         </p>
-                        {/* Modified Button to trigger modal */}
+
                         <Button
                           variant="link"
                           className="h-auto p-0 text-sm"
@@ -137,7 +130,6 @@ const OrderDetailPage = () => {
                   </CardContent>
                 </Card>
 
-                {/* Order Detail Items Card */}
                 <Card>
                   <CardHeader>
                     <CardTitle>Sản phẩm trong đơn hàng</CardTitle>
@@ -184,7 +176,6 @@ const OrderDetailPage = () => {
                   </CardContent>
                 </Card>
 
-                {/* Cancel Request Details Card (Conditional Rendering) */}
                 {order.CancelRequest && (
                   <Card>
                     <CardHeader className="pb-4">
@@ -236,7 +227,6 @@ const OrderDetailPage = () => {
                 )}
               </div>
 
-              {/* Right Sidebar - Actions */}
               <div className="grid auto-rows-max items-start gap-4 lg:gap-8">
                 <Card>
                   <CardHeader>
@@ -244,7 +234,12 @@ const OrderDetailPage = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="grid gap-2">
-                      <Button variant="outline" className="w-full justify-start" onClick={handleUpdateStatus}>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                        onClick={handleUpdateStatus}
+                        disabled={["FAILED", "RETURNED", "CANCELLED"].includes(order.Status)}
+                      >
                         <span>Thay đổi trạng thái</span>
                       </Button>
                     </div>
@@ -253,7 +248,6 @@ const OrderDetailPage = () => {
               </div>
             </div>
 
-            {/* Action buttons for mobile view */}
             <div className="flex items-center justify-center gap-2 md:hidden">
               <Button variant="outline" size="sm" className="w-full">
                 Hủy
@@ -266,7 +260,6 @@ const OrderDetailPage = () => {
         </main>
       </div>
 
-      {/* Customer Details Modal */}
       <Dialog open={isCustomerModalOpen} onOpenChange={setIsCustomerModalOpen}>
         <DialogContent>
           <DialogHeader>
