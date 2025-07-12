@@ -26,10 +26,8 @@ import type {
   filter_origin_props,
 } from "@/hooks/Filter/useFetchAllFilter";
 import { useFetchAllFilter } from "@/hooks/Filter/useFetchAllFilter";
-import { useFetchLowStock } from "@/hooks/Product/useFetchLowStock";
-import { useFetchOnSale } from "@/hooks/Product/useFetchOnSaleProduct";
 import { useFetchProduct } from "@/hooks/Product/useFetchProduct";
-import { useFetchOutOfStock } from "@/hooks/Product/useFetchProductOutOfStock";
+import { useFetchStaticsProduct } from "@/hooks/Product/useFetchStatics";
 import type { ProductFE } from "@/types/product";
 
 import { PaginationDemo } from "./Pagination";
@@ -108,9 +106,7 @@ export function ProductOverview() {
   const { data: filter, fetchFilter } = useFetchAllFilter();
 
   const [expandedSection, setExpandedSection] = useState<string | null>("skin-type");
-  const { fetchOutOfStockProduct, params: OutOfStockProductPagination } = useFetchOutOfStock();
-  const { fetchLowStockProduct, params: LowStockProductPagination } = useFetchLowStock();
-  const { fetchOnSaleProduct, params: OnSaleProductPagination } = useFetchOnSale();
+  const { data: statics, fetchStaticsProduct } = useFetchStaticsProduct();
   const toggleSection = (sectionName: string) => {
     setExpandedSection(expandedSection === sectionName ? null : sectionName);
   };
@@ -257,10 +253,8 @@ export function ProductOverview() {
     }
   }, [filter]);
   useEffect(() => {
-    fetchOutOfStockProduct();
-    fetchLowStockProduct();
-    fetchOnSaleProduct();
-  }, [fetchOutOfStockProduct, fetchLowStockProduct, fetchOnSaleProduct]);
+    fetchStaticsProduct();
+  }, []);
   return (
     <div className="flex min-h-screen flex-col gap-6 bg-gray-50 p-4 lg:flex-row">
       {loading ? (
@@ -369,7 +363,6 @@ export function ProductOverview() {
                 ))}
               </div>
             </FilterSection>
-            {/* Origin Filter */}
             <FilterSection title="Xuất xứ" sectionName="origin" count={selectedOrigin ? 1 : 0}>
               <div className="space-y-1">
                 {origin.map((item) => (
@@ -432,7 +425,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-blue-100">Tổng sản phẩm</p>
-                      <p className="text-3xl font-bold">{params.totalRecords}</p>
+                      <p className="text-3xl font-bold">{statics?.totalProducts}</p>
                     </div>
                     <Package className="h-8 w-8 text-blue-200" />
                   </div>
@@ -443,7 +436,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-green-100">Đang bán</p>
-                      <p className="text-3xl font-bold">{OnSaleProductPagination.totalRecords}</p>
+                      <p className="text-3xl font-bold">{statics?.onSale}</p>
                     </div>
                     <Star className="h-8 w-8 text-green-200" />
                   </div>
@@ -454,7 +447,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-yellow-100">Sắp hết hàng</p>
-                      <p className="text-3xl font-bold">{LowStockProductPagination.totalRecords}</p>
+                      <p className="text-3xl font-bold">{statics?.lowStock}</p>
                     </div>
                     <Package className="h-8 w-8 text-yellow-200" />
                   </div>
@@ -465,7 +458,7 @@ export function ProductOverview() {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-red-100">Hết hàng</p>
-                      <p className="text-3xl font-bold">{OutOfStockProductPagination.totalRecords}</p>
+                      <p className="text-3xl font-bold">{statics?.outOfStock}</p>
                     </div>
                     <Package className="h-8 w-8 text-red-200" />
                   </div>

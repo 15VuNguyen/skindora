@@ -98,3 +98,17 @@ export const fetchOnSaleProduct = async (params: FetchOnSaleProductProps) => {
     })
     .then((response) => response.data);
 };
+//get-all-statics-product
+export interface ProductStatics {
+  message: string;
+  result: ResultProductStatics;
+}
+export interface ResultProductStatics {
+  totalProducts: number | string;
+  onSale: number | string;
+  lowStock: number | string;
+  outOfStock: number | string;
+}
+export const fetchAllStaticsProduct = async () => {
+  return await httpClient.get<ProductStatics>("/admin/manage-products/stats", {}).then((response) => response.data);
+};
