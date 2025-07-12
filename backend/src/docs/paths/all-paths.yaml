@@ -749,6 +749,38 @@
       '500':
         $ref: '../components/schemas/ErrorServerResponse.yaml'
 
+/products/search:
+  get:
+    tags: [Products]
+    summary: (Public) Search Products by Name
+    description: >
+      Tìm kiếm và trả về danh sách các sản phẩm đang hoạt động (state: ACTIVE) có phân trang
+      dựa trên từ khóa trùng khớp với `name_on_list`.
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa để tìm kiếm trong tên sản phẩm (không phân biệt chữ hoa/thường).
+        required: false
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A paginated list of matching products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '422':
+        description: Validation error (e.g., keyword is not a string).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
 /products/get-all:
   get:
     tags: [Products]
@@ -1831,6 +1863,35 @@
       '422':
         $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
 
+/admin/manage-products/search-by-name:
+  get:
+    tags: [Admin]
+    summary: (Admin) Search Products by Name Only
+    description: >
+      Tìm kiếm và trả về danh sách các sản phẩm có phân trang chỉ dựa trên từ khóa
+      trùng khớp với `name_on_list`. API này không nhận các tham số filter khác.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa để tìm kiếm trong tên sản phẩm (name_on_list).
+        required: false
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A paginated list of matching products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
 # ======================= FILTER MANAGEMENT =======================
 /admin/manage-filters/create-new-filter-brand:
   post:
@@ -1987,7 +2048,7 @@
               properties:
                 message:
                   type: string
-                  example: "Get product statistics successfully"
+                  example: 'Get product statistics successfully'
                 result:
                   $ref: '../components/schemas/ProductStatsResponse.yaml'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
