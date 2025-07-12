@@ -1,4 +1,3 @@
-
 import { Search, X } from "lucide-react";
 import React, { useMemo, useState } from "react";
 
@@ -73,7 +72,7 @@ const FilterAccordionItem: React.FC<FilterAccordionItemProps> = ({
             <Search className="absolute top-1/2 left-3.5 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input
               type="text"
-              placeholder={`Search ${title.toLowerCase()}...`}
+              placeholder={`Tìm kiếm ${title.toLowerCase()}...`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="focus:border-primary focus:ring-primary h-9 w-full rounded-md border-gray-300 py-1.5 pr-2 pl-9 text-sm"
@@ -86,9 +85,9 @@ const FilterAccordionItem: React.FC<FilterAccordionItemProps> = ({
               filteredOptions.map((option) => {
                 const checkboxId = `${value}-${option.filter_ID || option.name}`;
                 return (
-                  <label 
+                  <label
                     key={option.filter_ID || option.name}
-                    htmlFor={checkboxId} 
+                    htmlFor={checkboxId}
                     className="flex cursor-pointer items-center space-x-2 rounded px-1 py-1.5 hover:bg-gray-100"
                   >
                     <Checkbox
@@ -97,15 +96,15 @@ const FilterAccordionItem: React.FC<FilterAccordionItemProps> = ({
                       onCheckedChange={(checked) => handleCheckboxChange(option.name, checked)}
                       className="border-primary/50 data-[state=checked]:bg-primary data-[state=checked]:text-white"
                     />
-                    <span className="flex-1 text-sm font-normal text-gray-700">
-                      {option.name}
-                    </span>
+                    <span className="flex-1 text-sm font-normal text-gray-700">{option.name}</span>
                   </label>
                 );
               })
             ) : (
               <p className="py-4 text-center text-xs text-gray-500">
-                {searchTerm ? `No matching ${title.toLowerCase()} found.` : `No options available for ${title.toLowerCase()}.`}
+                {searchTerm
+                  ? `Không tìm thấy ${title.toLowerCase()} phù hợp.`
+                  : `Không có tùy chọn cho ${title.toLowerCase()}.`}
               </p>
             )}
           </div>
@@ -121,7 +120,7 @@ const FilterAccordionItem: React.FC<FilterAccordionItemProps> = ({
             }}
             className="text-primary hover:text-primary/90 mt-3 flex h-auto items-center p-0 text-xs"
           >
-            <X size={12} className="mr-1" /> Clear selection
+            <X size={12} className="mr-1" /> Xóa lựa chọn
           </Button>
         )}
       </AccordionContent>

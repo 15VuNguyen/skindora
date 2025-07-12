@@ -79,7 +79,7 @@ export function ProductCard({
           <span className="font-bold">{parseInt(product.price_on_list).toLocaleString("vi-VN")}₫</span>
           {product.quantity !== undefined && (
             <span className={`text-xs ${product.quantity > 0 ? "text-green-600" : "text-red-500"}`}>
-              {product.quantity > 0 ? "In Stock" : "Out of Stock"}
+              {product.quantity > 0 ? "Còn hàng" : "Hết hàng"}
             </span>
           )}
         </div>
@@ -96,7 +96,7 @@ export function ProductCard({
             ) : (
               <ShoppingCart className="mr-2 h-4 w-4" />
             )}
-            Add to Cart
+            Thêm vào giỏ hàng
           </Button>
         )}
       </CardFooter>

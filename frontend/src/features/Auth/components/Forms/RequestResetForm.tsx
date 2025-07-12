@@ -33,8 +33,8 @@ export function RequestResetForm() {
   return (
     <Card className="w-full max-w-md border-0 shadow-none sm:shadow-lg">
       <CardHeader className="space-y-1 text-center">
-        <CardTitle className="text-2xl font-bold tracking-tight sm:text-3xl">Forgot Password</CardTitle>
-        <CardDescription>Enter your email to receive a password reset link.</CardDescription>
+        <CardTitle className="text-2xl font-bold tracking-tight sm:text-3xl">Quên mật khẩu</CardTitle>
+        <CardDescription>Nhập email để nhận liên kết đặt lại mật khẩu.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -64,7 +64,7 @@ export function RequestResetForm() {
             />
             <Button type="submit" className="w-full" disabled={actions.isRequestingReset}>
               {actions.isRequestingReset && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Send Reset Link
+              Gửi liên kết đặt lại
             </Button>
           </form>
         </Form>
@@ -73,7 +73,7 @@ export function RequestResetForm() {
         <Button variant="link" className="mx-auto" asChild>
           <Link to="/auth/login">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Login
+            Quay lại đăng nhập
           </Link>
         </Button>
       </CardFooter>

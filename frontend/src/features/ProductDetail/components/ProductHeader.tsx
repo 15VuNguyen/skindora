@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 
 import { StarRating } from "./StarRating";
 
-
 interface ProductHeaderProps {
   productName: string;
   averageRating: number;
@@ -49,7 +48,7 @@ export function ProductHeader({
       <div className="mt-2 flex items-center">
         <StarRating rating={averageRating} />
         <span className="ml-2 text-sm text-gray-600">
-          {averageRating.toFixed(1)} ({reviewCount} reviews)
+          {averageRating.toFixed(1)} ({reviewCount} đánh giá)
         </span>
       </div>
     </div>

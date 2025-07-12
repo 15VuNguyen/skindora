@@ -20,7 +20,7 @@ export const OrderItemsCard = ({
   <Card className="mt-6">
     <CardHeader>
       <CardTitle className="flex items-center gap-2">
-        <Package className="h-5 w-5" /> Items in Order
+        <Package className="h-5 w-5" /> Sản phẩm trong đơn hàng
       </CardTitle>
     </CardHeader>
     <CardContent>
@@ -30,18 +30,18 @@ export const OrderItemsCard = ({
             <img src={item.Products.image} alt={item.Products.name} className="h-16 w-16 rounded-lg object-cover" />
             <div className="flex-1">
               <h4 className="font-medium">{item.Products.name}</h4>
-              <p className="text-sm text-gray-500">Quantity: {item.Quantity}</p>
+              <p className="text-sm text-gray-500">Số lượng: {item.Quantity}</p>
               <p className="text-lg font-bold">{parseInt(item.UnitPrice).toLocaleString("vi-VN")}₫</p>
             </div>
             {orderStatus === "DELIVERED" && (
               <div className="flex items-center">
                 {reviewedProductIds.includes(item.Products.productId) ? (
                   <Button variant="outline" size="sm" disabled>
-                    <CheckCircle className="mr-2 h-4 w-4" /> Reviewed
+                    <CheckCircle className="mr-2 h-4 w-4" /> Đã đánh giá
                   </Button>
                 ) : (
                   <Button variant="outline" size="sm" onClick={() => onOpenReviewModal(item.Products)}>
-                    Write a Review
+                    Viết đánh giá
                   </Button>
                 )}
               </div>

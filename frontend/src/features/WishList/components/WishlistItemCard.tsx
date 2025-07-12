@@ -34,11 +34,15 @@ export function WishlistItemCard({
 
   return (
     <Card
-      className="group p-0 flex cursor-pointer flex-col overflow-hidden transition-shadow hover:shadow-lg"
+      className="group flex cursor-pointer flex-col overflow-hidden p-0 transition-shadow hover:shadow-lg"
       onClick={() => onProductClick(product._id)}
     >
       <div className="relative">
-        <img src={product.image_on_list} alt={product.name_on_list} className="h-56 w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+        <img
+          src={product.image_on_list}
+          alt={product.name_on_list}
+          className="h-56 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+        />
         {product.onSale && <Badge className="absolute top-2 left-2 bg-red-500">Giảm giá</Badge>}
         <Button
           variant="ghost"
@@ -52,7 +56,7 @@ export function WishlistItemCard({
       </div>
 
       <CardContent className="flex flex-1 flex-col p-4">
-        <p className="text-muted-foreground mb-1 text-sm">{product.category || "Uncategorized"}</p>
+        <p className="text-muted-foreground mb-1 text-sm">{product.category || "Chưa phân loại"}</p>
         <h3 className="mb-2 line-clamp-2 h-12 font-medium">{product.name_on_list}</h3>
 
         {product.rating && (
@@ -65,7 +69,7 @@ export function WishlistItemCard({
                 />
               ))}
             </div>
-            <span className="ml-2 text-xs text-gray-600">({product.reviews || 0} reviews)</span>
+            <span className="ml-2 text-xs text-gray-600">({product.reviews || 0} đánh giá)</span>
           </div>
         )}
 
@@ -73,7 +77,7 @@ export function WishlistItemCard({
           <span className="font-bold">{parseInt(product.price_on_list).toLocaleString("vi-VN")}₫</span>
           {product.quantity !== undefined && (
             <span className={`text-xs ${product.quantity > 0 ? "text-green-600" : "text-red-500"}`}>
-              {product.quantity > 0 ? "In Stock" : "Out of Stock"}
+              {product.quantity > 0 ? "Còn hàng" : "Hết hàng"}
             </span>
           )}
         </div>
@@ -86,7 +90,7 @@ export function WishlistItemCard({
           ) : (
             <ShoppingCart className="mr-2 h-4 w-4" />
           )}
-          Add to Cart
+          Thêm vào giỏ hàng
         </Button>
       </CardFooter>
     </Card>

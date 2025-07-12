@@ -4,21 +4,21 @@ import LeftPanel from "../components/LeftPanel";
 const ResetPasswordFeatures: FeatureProps[] = [
   {
     icon: "🔒",
-    title: "Secure Reset",
-    description: "Your password will be encrypted and secure.",
+    title: "Đặt lại bảo mật",
+    description: "Mật khẩu của bạn sẽ được mã hóa và bảo mật.",
   },
   {
     icon: "✨",
-    title: "Instant Access",
-    description: "Get back to your skincare journey immediately.",
+    title: "Truy cập ngay lập tức",
+    description: "Quay lại hành trình chăm sóc da ngay lập tức.",
   },
 ];
 
 export default function ResetPasswordPage() {
   return (
     <LeftPanel
-      title="Reset Your Password"
-      subtitle="Create a new secure password for your Skindora account to continue your skincare journey."
+      title="Đặt lại mật khẩu"
+      subtitle="Tạo mật khẩu mới bảo mật cho tài khoản Skindora để tiếp tục hành trình chăm sóc da của bạn."
       features={ResetPasswordFeatures}
     />
   );

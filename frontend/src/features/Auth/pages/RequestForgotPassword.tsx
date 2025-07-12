@@ -22,13 +22,13 @@ type FormData = z.infer<typeof formSchema>;
 const ForgotPasswordFeatures: FeatureProps[] = [
   {
     icon: "🔑",
-    title: "Secure & Simple",
-    description: "Enter your email to receive a secure link to reset your password.",
+    title: "Bảo mật & Đơn giản",
+    description: "Nhập email để nhận liên kết bảo mật đặt lại mật khẩu.",
   },
   {
     icon: "⚡",
-    title: "Quick Recovery",
-    description: "Get back to your skincare journey in just a few moments.",
+    title: "Khôi phục nhanh chóng",
+    description: "Quay lại hành trình chăm sóc da chỉ trong vài phút.",
   },
 ];
 
@@ -49,15 +49,15 @@ export default function RequestForgotPasswordPage() {
   return (
     <>
       <LeftPanel
-        title="Forgot Your Password?"
-        subtitle="No worries, we'll help you get back into your account."
+        title="Quên mật khẩu?"
+        subtitle="Đừng lo, chúng tôi sẽ giúp bạn truy cập lại tài khoản."
         features={ForgotPasswordFeatures}
       />
       <div className="relative flex w-full flex-col items-center justify-center p-4 sm:p-8 lg:w-1/2">
         <Card className="w-full max-w-md border-0 shadow-none sm:shadow-lg">
           <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-2xl font-bold tracking-tight sm:text-3xl">Forgot Password</CardTitle>
-            <CardDescription>Enter your email to receive a password reset link.</CardDescription>
+            <CardTitle className="text-2xl font-bold tracking-tight sm:text-3xl">Quên mật khẩu</CardTitle>
+            <CardDescription>Nhập email để nhận liên kết đặt lại mật khẩu.</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -87,7 +87,7 @@ export default function RequestForgotPasswordPage() {
                 />
                 <Button type="submit" className="w-full" disabled={actions.isRequestingReset}>
                   {actions.isRequestingReset && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Send Reset Link
+                  Gửi liên kết đặt lại
                 </Button>
               </form>
             </Form>
@@ -96,7 +96,7 @@ export default function RequestForgotPasswordPage() {
             <Button variant="link" className="mx-auto" asChild>
               <Link to="/auth/login">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Login
+                Quay lại đăng nhập
               </Link>
             </Button>
           </CardFooter>

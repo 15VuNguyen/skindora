@@ -1,7 +1,7 @@
 import { Heart, Menu, Search, ShoppingCart, User as UserIcon, X } from "lucide-react";
-import { useState ,useEffect} from "react";
-import { Link, useLocation, useNavigate,useSearchParams } from "react-router-dom";
-import { useDebounce } from "@/hooks/useDebounce";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+
 import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/auth.context";
 import { useCartQuery } from "@/hooks/queries/useCartQuery";
 import { useWishlistQuery } from "@/hooks/queries/useWishlistQuery";
-
+import { useDebounce } from "@/hooks/useDebounce";
 
 interface AppHeaderProps {
   branding?: string;
@@ -72,7 +72,7 @@ function SearchBar() {
       <form onSubmit={handleSearch} className="relative w-full max-w-lg">
         <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
         <Input
-          placeholder="Search for products, brands, and more..."
+          placeholder="Tìm kiếm sản phẩm, thương hiệu và nhiều hơn nữa..."
           className="pl-10"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
@@ -129,20 +129,20 @@ function HeaderActions() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <Link to="/profile">
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem>Hồ sơ</DropdownMenuItem>
                 </Link>
                 <Link to="/profile/wishlist">
-                  <DropdownMenuItem>Wishlist</DropdownMenuItem>
+                  <DropdownMenuItem>Danh sách yêu thích</DropdownMenuItem>
                 </Link>
-                <DropdownMenuItem>Settings</DropdownMenuItem>
+                <DropdownMenuItem>Cài đặt</DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem disabled={actions.isLoggingOut} onClick={actions.logout}>
-                Log out
+                Đăng xuất
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -175,7 +175,7 @@ export default function Topbar({ branding, navItems = [] }: AppHeaderProps = {})
             >
               {mobileMenuOpen ? <X /> : <Menu />}
             </Button>
-            <Link to="/" aria-label="Go to homepage">
+            <Link to="/" aria-label="Về trang chủ">
               <img src={logo} alt="Skindora" title={branding || "Skindora"} loading="eager" className="h-8 w-auto" />
             </Link>
           </div>

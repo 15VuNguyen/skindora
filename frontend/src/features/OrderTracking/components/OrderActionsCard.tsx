@@ -22,30 +22,30 @@ export const OrderActionsCard = ({
       <div className="flex flex-col items-center text-center">
         <div className="flex items-center text-sm font-medium text-blue-600">
           <Clock className="mr-2 h-4 w-4" />
-          <span>Cancellation Awaiting Approval</span>
+          <span>Yêu cầu hủy đang chờ duyệt</span>
         </div>
-        <p className="mt-1 text-xs text-gray-500">Your request has been submitted.</p>
+        <p className="mt-1 text-xs text-gray-500">Yêu cầu của bạn đã được gửi.</p>
       </div>
     );
   } else if (cancelRequestStatus === "APPROVED") {
     content = (
       <div className="flex items-center text-sm font-medium text-green-600">
         <CheckCircle className="mr-2 h-4 w-4" />
-        <span>Cancellation Approved</span>
+        <span>Yêu cầu hủy đã được chấp nhận</span>
       </div>
     );
   } else if (cancelRequestStatus === "REJECTED") {
     content = (
       <div className="flex items-center text-sm font-medium text-red-600">
         <XCircle className="mr-2 h-4 w-4" />
-        <span>Cancellation Rejected</span>
+        <span>Yêu cầu hủy bị từ chối</span>
       </div>
     );
   } else if (isCancelable) {
     content = (
       <Button variant="destructive" className="w-full" onClick={onCancel} disabled={isCancelling}>
         <XCircle className="mr-2 h-4 w-4" />
-        {isCancelling ? "Submitting..." : "Cancel Order"}
+        {isCancelling ? "Đang gửi yêu cầu..." : "Hủy đơn hàng"}
       </Button>
     );
   } else {
@@ -55,7 +55,7 @@ export const OrderActionsCard = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Order Actions</CardTitle>
+        <CardTitle>Thao tác đơn hàng</CardTitle>
       </CardHeader>
       <CardContent>{content}</CardContent>
     </Card>

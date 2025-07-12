@@ -40,7 +40,7 @@ export function ProductImageGallery({
     return (
       <div className="overflow-hidden rounded-lg bg-white shadow-md">
         <div className="flex h-[400px] w-full items-center justify-center bg-gray-200">
-          <span className="text-gray-400">No image available</span>
+          <span className="text-gray-400">Không có hình ảnh</span>
         </div>
       </div>
     );
@@ -58,7 +58,7 @@ export function ProductImageGallery({
                 selectedImage === index ? "border-primary shadow-md" : "border-gray-200 hover:border-gray-300"
               }`}
             >
-              <img src={image} alt={`${name} thumbnail ${index + 1}`} className="h-full w-full object-cover" />
+              <img src={image} alt={`Ảnh sản phẩm ${name} ${index + 1}`} className="h-full w-full object-cover" />
             </button>
           ))}
         </div>
@@ -68,7 +68,7 @@ export function ProductImageGallery({
         <div className="group relative overflow-hidden rounded-lg bg-white shadow-md">
           <img
             src={images[selectedImage]}
-            alt={`${name} - Image ${selectedImage + 1}`}
+            alt={`Ảnh sản phẩm ${name} ${selectedImage + 1}`}
             className="h-[400px] w-full object-cover"
           />
 
@@ -95,7 +95,7 @@ export function ProductImageGallery({
 
           {images.length > 1 && (
             <div className="absolute right-2 bottom-2 rounded bg-black/50 px-2 py-1 text-sm text-white">
-              {selectedImage + 1} / {images.length}
+              {`Ảnh ${selectedImage + 1} / ${images.length}`}
             </div>
           )}
         </div>

@@ -13,10 +13,10 @@ const BudgetSlider = ({ budget, onBudgetChange }: BudgetSliderProps) => {
       <div className="mb-2 flex items-center justify-between">
         <label htmlFor="budget" className="flex items-center text-sm font-medium text-gray-700">
           <DollarSign className="mr-1 h-4 w-4" />
-          Budget
+          Ngân Sách
         </label>
         <span className="text-skin-blue text-sm font-semibold">
-          {budget === 25 ? "Under $25" : budget === 50 ? "$25-$50" : budget === 75 ? "$50-$100" : "Over $100"}
+          {budget === 25 ? "Dưới $25" : budget === 50 ? "$25-$50" : budget === 75 ? "$50-$100" : "Trên $100"}
         </span>
       </div>
       <Slider
@@ -29,8 +29,8 @@ const BudgetSlider = ({ budget, onBudgetChange }: BudgetSliderProps) => {
         className="from-skin-lightblue to-skin-blue [&>span:first-child]:bg-gradient-to-r"
       />
       <div className="mt-1 flex justify-between text-xs text-gray-500">
-        <span>Budget</span>
-        <span>Premium</span>
+        <span>Tiết Kiệm</span>
+        <span>Cao Cấp</span>
       </div>
     </div>
   );

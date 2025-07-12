@@ -17,8 +17,8 @@ interface CartSummaryProps {
   onOpenVoucherDialog: () => void;
   onClearVoucher?: () => void;
   onApplyManualVoucher: (code: string) => void;
-  onCheckout: () => void; 
-  isProcessingCheckout: boolean; 
+  onCheckout: () => void;
+  isProcessingCheckout: boolean;
 }
 
 export function CartSummary({
@@ -44,25 +44,25 @@ export function CartSummary({
   return (
     <div className="space-y-4">
       <div className="rounded-lg bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-lg font-semibold">Order Information</h2>
+        <h2 className="mb-4 text-lg font-semibold">Thông tin đơn hàng</h2>
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Subtotal ({selectedItems.length} items):</span>
+            <span className="text-gray-600">Tạm tính ({selectedItems.length} sản phẩm):</span>
             <span className="font-medium">{subtotal.toLocaleString("vi-VN")}₫</span>
           </div>
           {discount && discount.amount > 0 && (
             <div className="flex justify-between text-sm text-green-600">
-              <span className="flex items-center gap-1 font-medium">Voucher ({discount.code})</span>
+              <span className="flex items-center gap-1 font-medium">Mã giảm giá ({discount.code})</span>
               <span>-{discount.amount.toLocaleString("vi-VN")}₫</span>
             </div>
           )}
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Shipping:</span>
-            <span className="font-medium">{shipping > 0 ? `${shipping.toLocaleString("vi-VN")}₫` : "Free"}</span>
+            <span className="text-gray-600">Phí vận chuyển:</span>
+            <span className="font-medium">{shipping > 0 ? `${shipping.toLocaleString("vi-VN")}₫` : "Miễn phí"}</span>
           </div>
           <Separator />
           <div className="flex justify-between text-base font-bold">
-            <span>Total:</span>
+            <span>Tổng cộng:</span>
             <span>{total.toLocaleString("vi-VN")}₫</span>
           </div>
         </div>
@@ -70,13 +70,13 @@ export function CartSummary({
 
       <div className="rounded-lg bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between">
-          <span className="font-medium">Discount Code</span>
+          <span className="font-medium">Mã giảm giá</span>
           <Button
             variant="link"
             className="h-auto p-0 text-sm text-blue-600 hover:underline"
             onClick={onOpenVoucherDialog}
           >
-            {discount?.code ? "Change" : "My Offers ›"}
+            {discount?.code ? "Thay đổi" : "Ưu đãi của tôi ›"}
           </Button>
         </div>
         <div className="mt-4">
@@ -93,14 +93,14 @@ export function CartSummary({
           ) : (
             <div className="flex gap-2">
               <Input
-                placeholder="Enter discount code"
+                placeholder="Nhập mã giảm giá"
                 className="flex-1"
                 value={manualCode}
                 onChange={(e) => setManualCode(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleApplyClick()}
               />
               <Button variant="secondary" onClick={handleApplyClick}>
-                APPLY
+                Áp dụng
               </Button>
             </div>
           )}
@@ -113,7 +113,7 @@ export function CartSummary({
         className="w-full"
         size="lg"
       >
-        {isProcessingCheckout ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : "Proceed to Checkout"}
+        {isProcessingCheckout ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : "Tiến hành thanh toán"}
       </Button>
     </div>
   );

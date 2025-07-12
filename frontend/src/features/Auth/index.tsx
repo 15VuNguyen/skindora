@@ -19,8 +19,8 @@ export default function AuthPage() {
 
   useEffect(() => {
     if (location.state?.reason === "unauthorized") {
-      toast.error("Access Denied", {
-        description: "Please log in to view that page.",
+      toast.error("Truy cập bị từ chối", {
+        description: "Vui lòng đăng nhập để xem trang này.",
       });
       navigate(location.pathname, { replace: true, state: {} });
     }
@@ -56,7 +56,7 @@ const ReturnHomeButton = ({ className = "" }): React.JSX.Element => {
       <Link to="/">
         <Button variant="ghost" className="text-primary hover:bg-primary lg:text-white lg:hover:bg-white/20">
           <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
+          Về trang chủ
         </Button>
       </Link>
     </div>

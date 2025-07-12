@@ -9,18 +9,16 @@ import { useMyOrdersQuery } from "@/hooks/queries/useMyOrdersQuery";
 
 import { OrderSummaryCard } from "./OrderSummaryCard";
 
-
 export const OrderHistoryTab: React.FC = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  
-  const { data: ordersData, isLoading, isError, error } = useMyOrdersQuery(isAuthenticated);
 
+  const { data: ordersData, isLoading, isError, error } = useMyOrdersQuery(isAuthenticated);
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <LoaderCircle className="text-primary h-12 w-12 animate-spin" />
-        <p className="text-muted-foreground mt-4">Loading your order history...</p>
+        <p className="text-muted-foreground mt-4">Đang tải lịch sử đơn hàng...</p>
       </div>
     );
   }
@@ -30,11 +28,11 @@ export const OrderHistoryTab: React.FC = () => {
       <Card className="border-destructive/50 bg-destructive/10">
         <CardHeader>
           <CardTitle className="text-destructive flex items-center gap-2">
-            <AlertCircle /> Could Not Load Orders
+            <AlertCircle /> Không thể tải đơn hàng
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p>{error?.message || "An unexpected error occurred."}</p>
+          <p>{error?.message || "Đã xảy ra lỗi không mong muốn."}</p>
         </CardContent>
       </Card>
     );
@@ -46,10 +44,10 @@ export const OrderHistoryTab: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 py-20 text-center">
         <ShoppingBag className="h-16 w-16 text-gray-400" />
-        <h3 className="mt-4 text-xl font-semibold">No Orders Yet</h3>
-        <p className="text-muted-foreground mt-2">You haven't placed any orders with us.</p>
+        <h3 className="mt-4 text-xl font-semibold">Chưa có đơn hàng nào</h3>
+        <p className="text-muted-foreground mt-2">Bạn chưa đặt đơn hàng nào với chúng tôi.</p>
         <Button variant="link" className="mt-4" onClick={() => navigate("/products")}>
-          Start Shopping
+          Mua sắm ngay
         </Button>
       </div>
     );
@@ -57,7 +55,7 @@ export const OrderHistoryTab: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-bold">Your Orders</h2>
+      <h2 className="text-2xl font-bold">Đơn hàng của bạn</h2>
       {orders.map((order) => (
         <OrderSummaryCard key={order.orderId} order={order} />
       ))}

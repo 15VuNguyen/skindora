@@ -14,7 +14,6 @@ export function useProfilePageLogic() {
   const [isSubmittingActions, setIsSubmittingActions] = useState(false);
   const updateProfileMutation = useUpdateProfileMutation();
 
-  //TODO: doi sang vietnamese
   const form = useForm<ProfileUpdateFormData>({
     resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
@@ -67,21 +66,21 @@ export function useProfilePageLogic() {
       }
 
       if (!hasChanges) {
-        sonnerToast.info("No Changes", { description: "No changes were detected to save." });
+        sonnerToast.info("Không có thay đổi", { description: "Không phát hiện thay đổi nào để lưu." });
         setIsEditing(false);
         return;
       }
 
       updateProfileMutation.mutate(payload, {
         onSuccess: () => {
-          sonnerToast.success("Profile Updated", {
-            description: "Your profile has been updated successfully.",
+          sonnerToast.success("Cập nhật hồ sơ thành công", {
+            description: "Thông tin cá nhân của bạn đã được cập nhật thành công.",
           });
           setIsEditing(false);
         },
         onError: (error) => {
-          sonnerToast.error("Update Failed", {
-            description: error.message || "Could not update profile.",
+          sonnerToast.error("Cập nhật thất bại", {
+            description: error.message || "Không thể cập nhật hồ sơ.",
           });
         },
       });
@@ -93,12 +92,12 @@ export function useProfilePageLogic() {
     setIsSubmittingActions(true);
     const result = await authService.resendVerificationEmail();
     if (result.isOk()) {
-      sonnerToast.success("Verification Email Sent", {
-        description: "Please check your email for verification instructions.",
+      sonnerToast.success("Đã gửi email xác thực", {
+        description: "Vui lòng kiểm tra email để xác thực tài khoản.",
       });
     } else {
-      sonnerToast.error("Failed to Send Email", {
-        description: result.error.message || "Could not send verification email.",
+      sonnerToast.error("Gửi email thất bại", {
+        description: result.error.message || "Không thể gửi email xác thực.",
       });
     }
     setIsSubmittingActions(false);

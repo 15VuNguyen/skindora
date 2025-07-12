@@ -4,7 +4,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
-            <h3 className="mb-4 text-lg font-semibold">Về DMP Shop</h3>
+            <h3 className="mb-4 text-lg font-semibold">Về Skindora shop</h3>
             <p className="text-gray-600">
               Cung cấp các sản phẩm dược mỹ phẩm chất lượng cao, chính hãng với giá cả hợp lý nhất thị trường.
             </p>
@@ -37,7 +37,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-6 text-center text-gray-600">
-          <p>© 2025 DMP Shop. Tất cả các quyền được bảo lưu.</p>
+          <p>© 2025 Skindora Shop. Tất cả các quyền được bảo lưu.</p>
         </div>
       </div>
     </footer>

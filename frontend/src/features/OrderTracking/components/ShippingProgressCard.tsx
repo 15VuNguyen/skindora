@@ -26,7 +26,7 @@ export const ShippingProgressCard = ({ steps }: ShippingProgressCardProps) => (
   <Card>
     <CardHeader>
       <CardTitle className="flex items-center gap-2">
-        <Truck className="h-5 w-5" /> Shipping Progress
+        <Truck className="h-5 w-5" /> Tiến trình giao hàng
       </CardTitle>
     </CardHeader>
     <CardContent>
@@ -39,7 +39,6 @@ export const ShippingProgressCard = ({ steps }: ShippingProgressCardProps) => (
           return (
             <div key={index} className="flex gap-4">
               <div className="flex flex-col items-center">
-              
                 {getStepIcon({ ...step, completed: displayAsCompleted })}
                 {index < steps.length - 1 && (
                   <div className={`mt-2 h-16 w-0.5 ${displayAsCompleted ? "bg-green-600" : "bg-gray-300"}`} />
@@ -48,17 +47,16 @@ export const ShippingProgressCard = ({ steps }: ShippingProgressCardProps) => (
               <div className="flex-1 pb-8">
                 <div className="mb-1 flex items-center gap-2">
                   <h3
-                  
                     className={`font-medium ${
                       displayAsCompleted ? "text-green-600" : step.current ? "text-blue-600" : "text-gray-500"
                     }`}
                   >
                     {step.title}
                   </h3>
-               
+
                   {step.current && !isFinalStep && (
                     <Badge variant="default" className="bg-blue-600 text-xs">
-                      Current
+                      Đang xử lý
                     </Badge>
                   )}
                 </div>

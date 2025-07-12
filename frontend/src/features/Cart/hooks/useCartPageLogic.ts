@@ -25,7 +25,7 @@ export const useCartPageLogic = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const { data: cartResponse, isLoading: isCartLoading, isError, error } = useCartQuery(isAuthenticated);
-  const { data: voucherResponse } = useVouchersQuery(isAuthenticated); 
+  const { data: voucherResponse } = useVouchersQuery(isAuthenticated);
 
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [isVoucherDialogOpen, setIsVoucherDialogOpen] = useState(false);
@@ -34,7 +34,7 @@ export const useCartPageLogic = () => {
   const { mutate: clearCart, isPending: isClearing } = useClearCartMutation();
   const updateCartMutation = useUpdateCartMutation();
   const removeFromCartMutation = useRemoveFromCartMutation();
-  const {mutate:prepareOrder, isPending: isPreparingOrder } = usePrepareOrderMutation();
+  const { mutate: prepareOrder, isPending: isPreparingOrder } = usePrepareOrderMutation();
 
   const isMutating = updateCartMutation.isPending || removeFromCartMutation.isPending;
 
@@ -57,16 +57,14 @@ export const useCartPageLogic = () => {
     [selectedItems]
   );
 
-  
   useEffect(() => {
     if (appliedVoucher && subtotal < Number(appliedVoucher.minOrderValue)) {
       setAppliedVoucher(null);
-      toast.warning("Voucher removed", {
-        description: `Your order total is now below the minimum required for the ${appliedVoucher.code} voucher.`,
+      toast.warning("Đã xóa mã giảm giá", {
+        description: `Tổng đơn hàng của bạn hiện thấp hơn mức tối thiểu cho mã ${appliedVoucher.code}.`,
       });
     }
   }, [subtotal, appliedVoucher]);
-  
 
   const discountAmount = useMemo(() => {
     if (!appliedVoucher || subtotal < Number(appliedVoucher.minOrderValue)) return 0;
@@ -92,13 +90,13 @@ export const useCartPageLogic = () => {
   const handleApplyVoucher = useCallback(
     (voucher: Voucher) => {
       if (subtotal < Number(voucher.minOrderValue)) {
-        toast.error("Cannot apply voucher", {
-          description: `Your order total does not meet the minimum requirement of ${Number(voucher.minOrderValue).toLocaleString("vi-VN")}₫.`,
+        toast.error("Không thể áp dụng mã giảm giá", {
+          description: `Tổng đơn hàng của bạn chưa đạt tối thiểu ${Number(voucher.minOrderValue).toLocaleString("vi-VN")}₫.`,
         });
         return;
       }
       setAppliedVoucher(voucher);
-      toast.success(`Voucher "${voucher.code}" applied!`);
+      toast.success(`Đã áp dụng mã "${voucher.code}"!`);
     },
     [subtotal]
   );
@@ -109,7 +107,7 @@ export const useCartPageLogic = () => {
       const voucherToApply = allVouchers.find((v) => v.code.toUpperCase() === code.toUpperCase());
 
       if (!voucherToApply) {
-        toast.error("Invalid Voucher", { description: "The voucher code you entered does not exist." });
+        toast.error("Mã giảm giá không hợp lệ", { description: "Mã bạn nhập không tồn tại." });
         return;
       }
       handleApplyVoucher(voucherToApply);
@@ -119,7 +117,7 @@ export const useCartPageLogic = () => {
 
   const clearVoucher = () => {
     setAppliedVoucher(null);
-    toast.info("Voucher removed.");
+    toast.info("Đã xóa mã giảm giá.");
   };
 
   useEffect(() => {
@@ -152,13 +150,12 @@ export const useCartPageLogic = () => {
 
   const handleCheckout = () => {
     if (selectedItems.length === 0) {
-      toast.error("Please select items to checkout.");
+      toast.error("Vui lòng chọn sản phẩm để thanh toán.");
       return;
     }
     const selectedProductIDs = selectedItems.map((item) => item.ProductID);
     prepareOrder(selectedProductIDs, {
       onSuccess: () => {
-        
         navigate("/checkout", { state: { appliedVoucher } });
       },
     });
@@ -192,6 +189,6 @@ export const useCartPageLogic = () => {
     clearVoucher,
     clearCart,
     setIsVoucherDialogOpen,
-    handleCheckout
+    handleCheckout,
   };
 };

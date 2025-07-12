@@ -24,12 +24,12 @@ const generateShippingSteps = (status: string, orderDate: string, requireDate: s
   const steps = [
     {
       status: "CONFIRMED",
-      title: "Order Confirmed",
-      description: "Your order has been confirmed and is being prepared.",
+      title: "Đã xác nhận đơn hàng",
+      description: "Đơn hàng của bạn đã được xác nhận và đang được chuẩn bị.",
     },
-    { status: "PROCESSING", title: "Processing", description: "The items are being carefully packaged." },
-    { status: "SHIPPING", title: "In Transit", description: "The order is on its way to you." },
-    { status: "DELIVERED", title: "Delivered", description: "Your order has been successfully delivered." },
+    { status: "PROCESSING", title: "Đang xử lý", description: "Sản phẩm đang được đóng gói cẩn thận." },
+    { status: "SHIPPING", title: "Đang vận chuyển", description: "Đơn hàng đang trên đường đến bạn." },
+    { status: "DELIVERED", title: "Đã giao hàng", description: "Đơn hàng đã được giao thành công." },
   ];
   const statusHierarchy = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPING", "DELIVERED", "CANCELLED", "FAILED"];
   const currentStatusIndex = statusHierarchy.indexOf(status);
@@ -75,7 +75,7 @@ const OrderTracking = () => {
 
   const handleRequestCancellation = () => {
     if (!cancelReason.trim()) {
-      toast.error("Please provide a reason for cancellation.");
+      toast.error("Vui lòng nhập lý do hủy đơn hàng.");
       return;
     }
     if (orderId) {
@@ -112,7 +112,7 @@ const OrderTracking = () => {
     return (
       <div className="flex min-h-[80vh] flex-col items-center justify-center">
         <LoaderCircle className="text-primary h-12 w-12 animate-spin" />
-        <p className="text-muted-foreground mt-4">Loading order details...</p>
+        <p className="text-muted-foreground mt-4">Đang tải chi tiết đơn hàng...</p>
       </div>
     );
   }
@@ -121,12 +121,12 @@ const OrderTracking = () => {
     return (
       <div className="flex min-h-[80vh] flex-col items-center justify-center p-4 text-center">
         <AlertCircle className="text-destructive h-16 w-16" />
-        <h2 className="mt-4 text-2xl font-bold">Order Not Found</h2>
+        <h2 className="mt-4 text-2xl font-bold">Không tìm thấy đơn hàng</h2>
         <p className="text-muted-foreground mt-2">
-          {error?.message || "We couldn't find the order you're looking for."}
+          {error?.message || "Chúng tôi không tìm thấy đơn hàng bạn yêu cầu."}
         </p>
         <Button onClick={() => navigate("/profile")} variant="outline" className="mt-6">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to My Orders
+          <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại đơn hàng của tôi
         </Button>
       </div>
     );
