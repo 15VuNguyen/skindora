@@ -3,6 +3,7 @@ import { Edit } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -73,17 +74,22 @@ const BrandDetail = () => {
           </div>
         </div>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-3xl font-bold">{brand.option_name}</CardTitle>
-          <CardDescription className="text-lg text-gray-600">Thương hiệu ID(Brand) : {brand._id}</CardDescription>
+      <Card className="shadow-lg">
+        <CardHeader className="border-b pb-4">
+          <CardTitle className="text-3xl text-gray-900">
+            <Typography className="">{brand.option_name}</Typography>
+          </CardTitle>
+          <CardDescription className="text-md mt-1 text-gray-600">
+            Brand ID: <span className="font-mono text-sm">{brand._id}</span>
+          </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-6">
+
+        <CardContent className="grid gap-6 p-6">
           <div>
             <Label htmlFor="category-info" className="text-sm font-medium text-gray-700">
               Danh mục
             </Label>
-            <p id="category-info" className="text-base text-gray-800">
+            <p id="category-info" className="mt-1 text-base text-gray-800">
               <span className="font-semibold">{brand.category_name}</span>{" "}
               <span className="text-gray-500 italic">({brand.category_param})</span>
             </p>
@@ -93,7 +99,6 @@ const BrandDetail = () => {
             <Label htmlFor="state" className="text-sm font-medium text-gray-700">
               Trạng thái (State):
             </Label>
-
             {brand.state === "active" ? (
               <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>
             ) : (
@@ -106,7 +111,7 @@ const BrandDetail = () => {
               <Label htmlFor="created-at" className="text-sm font-medium text-gray-700">
                 Ngày được tạo
               </Label>
-              <p id="created-at" className="text-base text-gray-800">
+              <p id="created-at" className="mt-1 text-base text-gray-800">
                 {new Date(brand.created_at).toLocaleString()}
               </p>
             </div>
@@ -114,7 +119,7 @@ const BrandDetail = () => {
               <Label htmlFor="updated-at" className="text-sm font-medium text-gray-700">
                 Cập nhật lần cuối
               </Label>
-              <p id="updated-at" className="text-base text-gray-800">
+              <p id="updated-at" className="mt-1 text-base text-gray-800">
                 {new Date(brand.updated_at).toLocaleString()}
               </p>
             </div>

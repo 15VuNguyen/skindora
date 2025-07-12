@@ -231,8 +231,8 @@ export function ProductOverview() {
     if (filter?.filter_hsk_size) {
       setSize(filter.filter_hsk_size);
     }
-    if (filter?.filter_hsk_ingredients) {
-      setIngredient(filter.filter_hsk_ingredients);
+    if (filter?.filter_hsk_ingredient) {
+      setIngredient(filter.filter_hsk_ingredient);
     }
     if (filter?.filter_hsk_skin_type) {
       setSkinType(filter.filter_hsk_skin_type);

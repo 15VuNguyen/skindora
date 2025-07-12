@@ -123,7 +123,7 @@ export const originColumn = (refetchData: () => void): ColumnDef<Origin>[] => [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),
-    cell: ({ row }) => <div className="capitalize">{row.getValue("option_name")}</div>,
+    cell: ({ row }) => <div className="pl-2 font-medium text-blue-600">{row.getValue("option_name")}</div>,
   },
 
   {

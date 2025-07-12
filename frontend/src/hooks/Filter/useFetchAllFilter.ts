@@ -9,7 +9,7 @@ export interface FilterProps {
 
   filter_dac_tinh: filter_dac_tinh_type_props[];
 
-  filter_hsk_ingredients: filter_hsk_ingredient_props[];
+  filter_hsk_ingredient: filter_hsk_ingredient_props[];
 
   filter_hsk_size: filter_hsk_size_props[];
 

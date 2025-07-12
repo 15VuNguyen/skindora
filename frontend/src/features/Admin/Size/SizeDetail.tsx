@@ -3,6 +3,7 @@ import { Edit } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,7 +53,7 @@ const SizeDetail = () => {
   return (
     <div className="container mx-auto py-8">
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold">Chi tiết kích thước</h1>
+        <h1 className="text-3xl font-bold">Chi tiết Kích Thước</h1>
         <div className="flex gap-2">
           <div>
             <Button onClick={handleGoBack} variant="outline">
@@ -63,7 +64,7 @@ const SizeDetail = () => {
             <Button
               variant="default"
               onClick={() => {
-                navigate(`/admin/${id}/update-brand`);
+                navigate(`/admin/${id}/update-size`);
               }}
             >
               <Edit className="mr-2 h-4 w-4" /> Chỉnh sửa
@@ -74,7 +75,9 @@ const SizeDetail = () => {
 
       <Card className="shadow-lg">
         <CardHeader className="border-b pb-4">
-          <CardTitle className="text-3xl font-extrabold text-gray-900">{option_name}</CardTitle>
+          <CardTitle className="text-3xl text-gray-900">
+            <Typography className="">{option_name}</Typography>
+          </CardTitle>
           <CardDescription className="text-md mt-1 text-gray-600">
             Size ID: <span className="font-mono text-sm">{_id}</span>
           </CardDescription>

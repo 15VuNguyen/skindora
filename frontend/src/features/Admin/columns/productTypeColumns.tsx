@@ -18,6 +18,9 @@ import {
 import { useUpdateStatusProductType } from "@/hooks/ProductType/useUpdateStatusProductType";
 import type { ProductType } from "@/types/Filter/productType";
 
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString("vi-VN");
+};
 export const ActionsCell = ({ row, refetchData }: { row: { original: ProductType }; refetchData: () => void }) => {
   const { _id, option_name, state } = row.original;
 
@@ -52,7 +55,14 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: ProductType
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/product-type-detail`)}>
             Xem chi tiết
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-product-type`)}>Chỉnh sửa</DropdownMenuItem>
+
+          {state === "ACTIVE" ? (
+            <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-product-type`)}>Chỉnh sửa</DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/update-product-type`)} disabled>
+              Chỉnh sửa
+            </DropdownMenuItem>
+          )}
           {state === "ACTIVE" ? (
             <DropdownMenuItem
               disabled={loading}
@@ -114,24 +124,35 @@ export const productTypeColumn = (refetchData: () => void): ColumnDef<ProductTyp
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),
-    cell: ({ row }) => <div className="capitalize">{row.getValue("option_name")}</div>,
+    cell: ({ row }) => <div className="pl-2 font-medium text-blue-600">{row.getValue("option_name")}</div>,
   },
-  {
-    accessorKey: "category_name",
-    header: "Tên Danh mục",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("category_name")}</div>,
-  },
-  {
-    accessorKey: "category_param",
-    header: "Tham số Danh mục",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("category_param")}</div>,
-  },
+
   {
     accessorKey: "state",
     header: "Trạng thái",
     cell: ({ row }) => {
-      const state = row.getValue("state") as string;
-      return <Badge variant={state === "ACTIVE" ? "default" : "destructive"}>{state}</Badge>;
+      const state = row.getValue("state");
+      if (state === "ACTIVE") {
+        return <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>;
+      }
+      return <Badge variant="secondary">Không hoạt động</Badge>;
+    }
+  },
+  {
+    accessorKey: "created_at",
+    header: "Ngày được tạo",
+    cell: ({ row }) => {
+      const { created_at } = row.original;
+      return <div>{`${formatDate(created_at)}`}</div>;
+    },
+  },
+
+  {
+    accessorKey: "updated_at",
+    header: "Cập nhật lần cuối",
+    cell: ({ row }) => {
+      const { updated_at } = row.original;
+      return <div>{`${formatDate(updated_at)}`}</div>;
     },
   },
   {

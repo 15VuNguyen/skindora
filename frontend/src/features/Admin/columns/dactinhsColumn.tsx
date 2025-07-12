@@ -124,17 +124,6 @@ export const dacTinhColumn = (refetchData: () => void): ColumnDef<DacTinh>[] => 
       return <div className="pl-2 font-medium text-blue-600">{row.getValue("option_name")}</div>;
     },
   },
-  {
-    accessorKey: "category_name",
-    header: ({ column }) => (
-      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Tên danh mục <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => {
-      return <div className="pl-2 font-medium">{row.getValue("category_name")}</div>;
-    },
-  },
 
   {
     accessorKey: "state",
