@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { getRevenueData } from "@/api/revenue";
 import type { IRevenueResponse } from "@/api/revenue";
