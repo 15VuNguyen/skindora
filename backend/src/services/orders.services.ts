@@ -189,7 +189,7 @@ class OrdersService {
     }
 
     const totalPrice = tempOrder.TotalPrice - discount
-    order.TotalPrice = totalPrice.toString()
+    order.TotalPrice = Math.max(0, totalPrice).toString()
 
     const session = databaseService.getClient().startSession()
 

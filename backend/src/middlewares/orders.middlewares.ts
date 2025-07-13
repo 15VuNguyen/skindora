@@ -37,15 +37,15 @@ import { getBaseRequiredDate } from '~/utils/date'
 export const checkOutValidator = validate(
   checkSchema(
     {
-      RecipientName:{
+      RecipientName: {
         optional: true,
         trim: true
       },
-      PhoneNumber:{
+      PhoneNumber: {
         optional: true,
-        isMobilePhone:{
-          options: ["vi-VN"],
-          errorMessage: ORDER_MESSAGES.INVALID_PHONE_NUMBER,
+        isMobilePhone: {
+          options: ['vi-VN'],
+          errorMessage: ORDER_MESSAGES.INVALID_PHONE_NUMBER
         }
       },
       ShipAddress: {
@@ -302,7 +302,6 @@ export const getAllCancelledOrdersValidator = validate(
   })
 )
 
-
 export const getNextOrderStatusValidator = validate(
   checkSchema({
     orderId: {
@@ -331,14 +330,18 @@ export const getNextOrderStatusValidator = validate(
             })
           }
 
-          if(order.CancelRequest && order.CancelRequest.status === CancelRequestStatus.REQUESTED){
+          if (order.CancelRequest && order.CancelRequest.status === CancelRequestStatus.REQUESTED) {
             throw new ErrorWithStatus({
               message: ORDER_MESSAGES.CANCEL_REQUESTING,
               status: HTTP_STATUS.BAD_REQUEST
             })
           }
 
-          if (order.Status === OrderStatus.RETURNED || order.Status === OrderStatus.CANCELLED) {
+          if (
+            order.Status === OrderStatus.DELIVERED ||
+            order.Status === OrderStatus.RETURNED ||
+            order.Status === OrderStatus.CANCELLED
+          ) {
             throw new ErrorWithStatus({
               message: ORDER_MESSAGES.CANNOT_UPDATE_STATUS.replace('%s', order.Status),
               status: HTTP_STATUS.BAD_REQUEST
@@ -435,7 +438,7 @@ export const cancelledOrderRequestedValidator = validate(
             })
           }
 
-          if(order.Status === OrderStatus.CANCELLED){
+          if (order.Status === OrderStatus.CANCELLED) {
             throw new ErrorWithStatus({
               message: ORDER_MESSAGES.ORDER_CANCELLED,
               status: HTTP_STATUS.BAD_REQUEST
@@ -698,7 +701,7 @@ export const savePendingOrderToRedis = async (req: Request, res: Response, next:
     const cart = req.cart as Cart
     const products = req.products as Array<Product>
     const voucher = req.voucher as VoucherType
-    const { ShipAddress, Description, RequireDate, PaymentMethod: method} = req.body as OrderReqBody
+    const { ShipAddress, Description, RequireDate, PaymentMethod: method } = req.body as OrderReqBody
     let finalPrice = 0
     const pendingOrderId = new ObjectId()
 
@@ -742,7 +745,7 @@ export const savePendingOrderToRedis = async (req: Request, res: Response, next:
     }
     if (discount > 0) {
       finalPrice -= discount
-      pendingOrder.TotalPrice = finalPrice.toString()
+      pendingOrder.TotalPrice = Math.max(0, finalPrice).toString()
     }
 
     await redisClient.setEx(
