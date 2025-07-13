@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { getRevenueData } from "@/api/revenue";
@@ -26,7 +27,14 @@ export default function RevenuePage() {
   }, []);
 
   if (isLoading) {
-    return <div>Đang tải báo cáo...</div>;
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="text-muted-foreground flex items-center gap-2">
+          <Loader2 className="text-primary h-8 w-8 animate-spin" />
+          <span className="text-lg">Đang tải dữ liệu...</span>
+        </div>
+      </div>
+    );
   }
 
   if (!apiResponse) {
