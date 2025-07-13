@@ -107,7 +107,7 @@ export const orderColumn = (refechData: () => void): ColumnDef<Order, unknown>[]
     accessorKey: "RequireDate",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Ngày yêu cầu <ArrowUpDown className="h-4 w-4" />
+        Ngày nhận hàng <ArrowUpDown className="h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
