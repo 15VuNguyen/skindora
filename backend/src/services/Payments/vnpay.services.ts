@@ -1,6 +1,7 @@
 import moment from 'moment'
 import crypto from 'crypto'
 import querystring from 'qs'
+import redisClient from '../redis.services'
 
 interface PaymentData {
   amount: number
@@ -17,7 +18,6 @@ interface VnpParams {
 function sortObject(obj: VnpParams): VnpParams {
   const sorted: VnpParams = {}
   const str = Object.keys(obj).sort()
-
   for (const key of str) {
     if (obj[key] !== undefined && obj[key] !== null && obj[key] !== '') {
       sorted[key] = encodeURIComponent(String(obj[key])).replace(/%20/g, '+')
@@ -26,19 +26,15 @@ function sortObject(obj: VnpParams): VnpParams {
   return sorted
 }
 
-export const createPaymentUrl = (data: PaymentData, clientIp: string): string => {
+export const createPaymentUrl = async (data: PaymentData, clientIp: string, redisOrderId: string): Promise<string> => {
   const date = new Date()
   const createDate = moment(date).format('YYYYMMDDHHmmss')
   const orderId = moment(date).format('HHmmss')
 
-  const tmnCode = process.env.VNPAY_TMN_CODE
-  const secretKey = process.env.VNPAY_HASHSECRET
-  const vnpUrl = process.env.VNP_URL
-  const returnUrl = process.env.VNP_RETURNURL
-
-  if (!tmnCode || !secretKey || !vnpUrl || !returnUrl) {
-    throw new Error('Missing required VNPay configuration')
-  }
+  const tmnCode = process.env.VNPAY_TMN_CODE!
+  const secretKey = process.env.VNPAY_HASHSECRET!
+  const vnpUrl = process.env.VNP_URL!
+  const returnUrl = process.env.VNP_RETURNURL!
 
   const { amount, bankCode, language = 'vn', orderDescription, orderType = 'other' } = data
 
@@ -49,7 +45,7 @@ export const createPaymentUrl = (data: PaymentData, clientIp: string): string =>
     vnp_Locale: language,
     vnp_CurrCode: 'VND',
     vnp_TxnRef: orderId,
-    vnp_OrderInfo: orderDescription ?? `Thanh toan don hang: ${orderId}`,
+    vnp_OrderInfo: orderDescription ?? `Thanh toan don hang ${orderId}`,
     vnp_OrderType: orderType,
     vnp_Amount: amount * 100,
     vnp_ReturnUrl: returnUrl,
@@ -57,9 +53,9 @@ export const createPaymentUrl = (data: PaymentData, clientIp: string): string =>
     vnp_CreateDate: createDate
   }
 
-  if (bankCode) {
-    vnp_Params['vnp_BankCode'] = bankCode
-  }
+  if (bankCode) vnp_Params['vnp_BankCode'] = bankCode
+
+  await redisClient.set(orderId, redisOrderId, { EX: 900 })
 
   const sortedParams = sortObject(vnp_Params)
   const signData = querystring.stringify(sortedParams, { encode: false })
@@ -71,9 +67,7 @@ export const createPaymentUrl = (data: PaymentData, clientIp: string): string =>
     vnp_SecureHash: signed
   }
 
-  return vnpUrl + '?' + querystring.stringify(finalParams, { encode: false })
-}
+  console.log(finalParams)
 
-export const callBackUrl = (req: any) => {
-  console.log('callbaclurl')
+  return vnpUrl + '?' + querystring.stringify(finalParams, { encode: false })
 }

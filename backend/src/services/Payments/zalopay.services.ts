@@ -2,8 +2,10 @@ import axios from 'axios'
 import CryptoJS from 'crypto-js'
 import { v1 as uuidv1 } from 'uuid'
 import moment from 'moment'
-import cartService from '../cart.services'
+import redisClient from '../redis.services'
+import dotenv from 'dotenv'
 
+dotenv.config()
 interface Item {
   _id: string
   productID: string
@@ -33,11 +35,10 @@ const config = {
 }
 
 const createOrder = async (req: any, res: any): Promise<void> => {
-  const cartKey = cartService.getCartKey(req.decoded_authorization)
-  const cart = cartService.getCart(cartKey)
+  const orderid = req.redis_order_id
 
   const embeddata = {
-    redirecturl: process.env.VNP_RETURNURL,
+    redirecturl: process.env.ZALO_PAY_CALLBACK,
     orderDetails: req.body.orderDetails
   }
 
@@ -64,8 +65,10 @@ const createOrder = async (req: any, res: any): Promise<void> => {
     amount: req.body.total,
     description: 'Skin Dora Shop',
     bankcode: '',
-    callback_url: process.env.VNP_IPNURL
+    callback_url: 'https://0d6133ca891c.ngrok-free.app/payment/zalopay_callbacks'
   }
+
+  await redisClient.set(order.apptransid, orderid.toString(), { EX: 900 })
 
   const data = [
     order.appid,
