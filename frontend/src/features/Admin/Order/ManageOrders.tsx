@@ -35,8 +35,6 @@ const ManageOrdersStaff: React.FC = () => {
     { value: "shipping", status: "SHIPPING" as const, label: "Đang giao" },
     { value: "delivered", status: "DELIVERED" as const, label: "Đã giao" },
     { value: "cancelled", status: "CANCELLED" as const, label: "Đã hủy" },
-    { value: "returned", status: "RETURNED" as const, label: "Hoàn hàng" },
-    { value: "failed", status: "FAILED" as const, label: "Thất bại" },
   ];
 
   if (loading) {
@@ -53,7 +51,7 @@ const ManageOrdersStaff: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 p-5">
       <div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {/* Card: Tổng đơn hàng */}
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md">
             <CardContent className="p-5">
@@ -102,32 +100,6 @@ const ManageOrdersStaff: React.FC = () => {
                   <p className="text-3xl font-bold">{orderStatics?.statusCounts.DELIVERED || 0}</p>
                 </div>
                 <Package className="h-8 w-8 text-green-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Card: Bị trả lại (Returned) */}
-          <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-orange-100">Bị Trả Lại</p>
-                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.RETURNED || 0}</p>
-                </div>
-                <Package className="h-8 w-8 text-orange-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Card: Đã hủy (Cancelled) */}
-          <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-red-100">Đã Hủy</p>
-                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.CANCELLED || 0}</p>
-                </div>
-                <Package className="h-8 w-8 text-red-200" />
               </div>
             </CardContent>
           </Card>

@@ -40,6 +40,7 @@ export const useFetchVoucher = () => {
           page: params.page,
         });
       }
+      console.log(response);
       setParams({
         ...response.pagination,
         page: response.pagination.currentPage,
