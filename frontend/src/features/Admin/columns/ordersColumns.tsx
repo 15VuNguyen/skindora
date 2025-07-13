@@ -2,7 +2,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +16,9 @@ import {
 import { useUpdateStatus } from "@/hooks/Orders/useUpdateStatus";
 import type { Order } from "@/types/order";
 
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString("vi-VN");
+};
 export const ActionsCell = ({ row, refechData }: { row: { original: Order }; refechData: () => void }) => {
   const navigate = useNavigate();
   const { _id } = row.original;
@@ -144,19 +146,22 @@ export const orderColumn = (refechData: () => void): ColumnDef<Order, unknown>[]
       return value.includes(row.getValue(id));
     },
   },
+  {
+    accessorKey: "createdAt",
+    header: "Ngày tạo đơn hàng",
+    cell: ({ row }) => {
+      const { created_at } = row.original;
 
+      return <div>{`${formatDate(created_at)}`}</div>;
+    },
+  },
   {
     accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        <Typography>Cập nhật</Typography>
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
+    header: "Ngày đơn hàng được cập nhật",
     cell: ({ row }) => {
-      const dateString = row.getValue("updatedAt") as string;
+      const { updated_at } = row.original;
 
-      return <Typography className="ml-3">{new Date(dateString).toLocaleString("vi-VN")}</Typography>;
+      return <div>{`${formatDate(updated_at)}`}</div>;
     },
   },
 
