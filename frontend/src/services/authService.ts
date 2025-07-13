@@ -15,6 +15,7 @@ export interface UpdateMePayload {
   username?: string;
   location?: string;
   avatar?: string;
+  phone_number?: string;
 }
 interface UpdateUserResponse {
   message: string;

@@ -1,4 +1,4 @@
-import { CheckCircle, Loader2, XCircle } from "lucide-react";
+import { CheckCircle, Loader2, XCircle,Phone } from "lucide-react";
 import React from "react";
 import type { UseFormReturn } from "react-hook-form";
 
@@ -87,6 +87,27 @@ export const PersonalInfoTab = React.memo(
                     )}
                   </div>
                 </div>
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5 sm:col-span-2">
+                      <FormLabel>Số điện thoại</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Phone className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+                          <Input
+                            {...field}
+                            placeholder="09..."
+                            disabled={!isEditing || form.formState.isSubmitting}
+                            className="pl-9"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <FormField
                   control={form.control}
                   name="location"
