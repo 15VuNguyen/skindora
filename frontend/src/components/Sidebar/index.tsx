@@ -37,8 +37,8 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
-  { title: "Tổng quan", url: "/admin", icon: Home },
-  { title: "Hồ sơ", url: "/admin/profile", icon: User2 },
+  { title: "Tổng quan", url: "/admin", icon: User2 },
+  { title: "Hồ sơ", url: "/admin/dashboard", icon: Home },
   { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
   // {
   //   title: "Thống kê",

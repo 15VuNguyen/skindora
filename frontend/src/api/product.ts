@@ -21,7 +21,7 @@ export interface FetchProductByIDProps {
 //get-all-product
 export const fetchProduct = async (params: FetchProductProps) => {
   return await httpClient
-    .get<API.IResponseSearch<ProductFE>>("/admin/manage-products/get-all", {
+    .get<API.IResponseSearch<ProductFE>>("/products/v1/get-all", {
       limit: params.limit,
       page: params.page,
       filter_brand: params.filter_brand,
@@ -118,7 +118,7 @@ export const fetchAllStaticsStaffProduct = async () => {
 //(staff) get-all-product
 export const fetchStaffProduct = async (params: FetchProductProps) => {
   return await httpClient
-    .get<API.IResponseSearch<ProductFE>>("/staffs/manage-products/get-all", {
+    .get<API.IResponseSearch<ProductFE>>("/products/v1/get-all", {
       limit: params.limit,
       page: params.page,
       filter_brand: params.filter_brand,

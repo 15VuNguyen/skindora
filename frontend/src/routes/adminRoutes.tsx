@@ -54,7 +54,11 @@ const adminRoutes: RouteObject[] = [
     path: "/admin",
     element: <AdminLayout />,
     children: [
-      { index: true, element: <Admin /> },
+      { index: true, element: <ProfileAdmin /> },
+      {
+        path: "dashboard",
+        element: <Admin />,
+      },
       {
         path: "customers",
         element: <ManageCustomer />,
