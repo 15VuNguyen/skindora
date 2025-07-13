@@ -30,14 +30,14 @@ const ManageOrdersStaff: React.FC = () => {
   };
 
   const filterOptions: FilterOptionsProps[] = [
-    { value: "", status: "ALL" as const },
-    { value: "pending", status: "PENDING" as const },
-    { value: "confirmed", status: "CONFIRMED" as const },
-    { value: "shipping", status: "SHIPPING" as const },
-    { value: "delivered", status: "DELIVERED" as const },
-    { value: "cancelled", status: "CANCELLED" as const },
-    { value: "returned", status: "RETURNED" as const },
-    { value: "failed", status: "FAILED" as const },
+    { value: "", status: "ALL" as const, label: "Tất cả" },
+    { value: "pending", status: "PENDING" as const, label: "Đang chờ" },
+    { value: "confirmed", status: "CONFIRMED" as const, label: "Đã đồng ý" },
+    { value: "shipping", status: "SHIPPING" as const, label: "Đang giao" },
+    { value: "delivered", status: "DELIVERED" as const, label: "Đã giao" },
+    { value: "cancelled", status: "CANCELLED" as const, label: "Đã hủy" },
+    { value: "returned", status: "RETURNED" as const, label: "Hoàn hàng" },
+    { value: "failed", status: "FAILED" as const, label: "Thất bại" },
   ];
 
   if (loading) {

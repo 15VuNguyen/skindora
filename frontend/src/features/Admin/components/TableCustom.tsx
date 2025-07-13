@@ -26,6 +26,16 @@ export interface FilterOptionsProps {
     | "ALL"
     | "CONFIRMED"
     | "PENDING";
+  label?:
+    | "Đang giao"
+    | "Thất bại"
+    | "Đã hủy"
+    | "Hoàn hàng"
+    | "Đã giao"
+    | "Đang xử lý"
+    | "Tất cả"
+    | "Đã đồng ý"
+    | "Đang chờ";
 }
 
 interface DataTableProps<TData, TValue> {
@@ -100,7 +110,7 @@ export function DataTable<TData, TValue>({
             return (
               <div key={option.value}>
                 <Button variant={status === option.status ? "default" : "secondary"} onClick={handleClick}>
-                  {option.status}
+                  {option.label}
                 </Button>
               </div>
             );
