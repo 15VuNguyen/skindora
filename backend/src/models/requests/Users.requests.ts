@@ -48,6 +48,7 @@ export interface UpdateMeReqBody {
   last_name?: string
   location?: string
   username?: string
+  phone_number?: string
   avatar?: string
 }
 

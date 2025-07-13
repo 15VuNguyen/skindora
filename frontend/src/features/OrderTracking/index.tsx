@@ -139,8 +139,7 @@ const OrderTracking = () => {
   const discountAmount = parseFloat(order.DiscountValue || "0");
   const subtotal = finalTotal + discountAmount;
 
-  const shippingFee = subtotal > 500000 ? 0 : 30000;
-  const grandTotal = subtotal - discountAmount + shippingFee;
+  const grandTotal = subtotal - discountAmount;
   const isCancelable = (order.Status === "PENDING" || order.Status === "CONFIRMED") && !order.CancelRequest;
 
   return (
@@ -162,7 +161,6 @@ const OrderTracking = () => {
               <ShippingAddressCard address={order.ShipAddress} />
               <OrderSummaryCard
                 orderTotal={subtotal}
-                shippingFee={shippingFee}
                 discount={discountAmount}
                 grandTotal={grandTotal}
                 paymentMethod={order.PaymentMethod}

@@ -1,12 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { paymentService } from "@/services/paymentService";
-import type { VNPayPayload } from "@/services/paymentService";
+import { paymentService,type  PaymentRequestPayload } from "@/services/paymentService";
 import type { ApiError } from "@/utils";
 
 export const useVNPayMutation = () => {
   return useMutation({
-    mutationFn: (payload: VNPayPayload) => paymentService.createVNPayUrl(payload),
+    mutationFn: (payload: PaymentRequestPayload) => paymentService.createVNPayUrl(payload),
     onSuccess: (result) => {
       if (result.isOk()) {
         window.location.href = result.value.data.data.paymentUrl;

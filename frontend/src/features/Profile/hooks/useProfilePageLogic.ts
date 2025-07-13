@@ -22,6 +22,7 @@ export function useProfilePageLogic() {
       username: "",
       location: "",
       avatar: "",
+      phone: "",
     },
   });
 
@@ -33,6 +34,7 @@ export function useProfilePageLogic() {
         username: user.username || "",
         location: user.location || "",
         avatar: user.avatar || "",
+        phone: user.phone || "",
       });
     }
   }, [user, form, isEditing]);
@@ -64,7 +66,10 @@ export function useProfilePageLogic() {
         payload.avatar = data.avatar;
         hasChanges = true;
       }
-
+      if (data.phone !== undefined && data.phone !== (user.phone || "")) {
+        payload.phone_number = data.phone;
+        hasChanges = true;
+      }
       if (!hasChanges) {
         sonnerToast.info("Không có thay đổi", { description: "Không phát hiện thay đổi nào để lưu." });
         setIsEditing(false);
@@ -111,6 +116,7 @@ export function useProfilePageLogic() {
         username: user.username || "",
         location: user.location || "",
         avatar: user.avatar || "",
+        phone: user.phone || "",
       });
     }
     setIsEditing(false);

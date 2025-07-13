@@ -6,7 +6,6 @@ import type { ProductInOrder } from "@/services/orders.service";
 
 interface CheckoutOrderSummaryProps {
   subtotal: number;
-  shipping: number;
   discount: number;
   total: number;
   items: ProductInOrder[];
@@ -15,7 +14,6 @@ interface CheckoutOrderSummaryProps {
 
 export function CheckoutOrderSummary({
   subtotal,
-  shipping,
   discount,
   total,
   items,
@@ -32,10 +30,7 @@ export function CheckoutOrderSummary({
             <span className="text-muted-foreground">Tạm tính:</span>
             <span className="font-semibold">{subtotal.toLocaleString("vi-VN")}₫</span>
           </div>
-          <div className="flex items-center justify-between text-sm font-medium">
-            <span className="text-muted-foreground">Phí vận chuyển:</span>
-            <span className="font-semibold">{shipping.toLocaleString("vi-VN")}₫</span>
-          </div>
+          
           {discount > 0 && (
             <div className="flex items-center justify-between text-sm font-medium text-green-600">
               <span>

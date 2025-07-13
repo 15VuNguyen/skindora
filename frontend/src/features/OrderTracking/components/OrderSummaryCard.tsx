@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 
 interface OrderSummaryCardProps {
   orderTotal: number;
-  shippingFee: number;
   grandTotal: number;
   paymentMethod: string;
   requireDate: string;
@@ -17,7 +16,6 @@ interface OrderSummaryCardProps {
 
 export const OrderSummaryCard = ({
   orderTotal,
-  shippingFee,
   grandTotal,
   paymentMethod,
   requireDate,
@@ -39,10 +37,7 @@ export const OrderSummaryCard = ({
           <span>-{discount.toLocaleString("vi-VN")}₫</span>
         </div>
       )}
-      <div className="flex justify-between">
-        <span>Phí vận chuyển:</span>
-        <span>{shippingFee > 0 ? `${shippingFee.toLocaleString("vi-VN")}₫` : "Miễn phí"}</span>
-      </div>
+     
       <Separator />
       <div className="flex justify-between text-lg font-bold">
         <span>Tổng cộng:</span>

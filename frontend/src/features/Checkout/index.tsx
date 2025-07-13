@@ -11,7 +11,7 @@ import { useZaloPayMutation } from "@/hooks/mutations/useZaloPayMutation";
 import { useCheckoutMutation } from "@/hooks/queries/useCheckoutMutation";
 import { usePreparedOrderQuery } from "@/hooks/queries/usePreparedOrderQuery";
 import type { CheckoutPayload, ProductInOrder } from "@/services/orders.service";
-import type { VNPayPayload, ZaloPayPayload } from "@/services/paymentService";
+import { type PaymentRequestPayload } from "@/services/paymentService";
 
 import { CheckoutForm } from "./components/CheckoutForm";
 import { CheckoutOrderSummary } from "./components/CheckoutOrderSummary";
@@ -44,11 +44,9 @@ const CheckoutPage = () => {
   const onSubmit = (formData: CheckoutFormData) => {
     const orderDetails = preparedOrderResponse?.result;
     if (!orderDetails) {
-      toast.error("Your checkout session has expired. Please return to the cart.");
+      toast.error("Phiên thanh toán của bạn đã hết hạn. Vui lòng quay lại giỏ hàng.");
       return;
     }
-
-    const totalAmount = orderDetails.FinalPrice || orderDetails.TotalPrice;
 
     const basePayload: CheckoutPayload = {
       ...formData,
@@ -70,13 +68,13 @@ const CheckoutPage = () => {
         createOrderWithCOD(payload, {
           onSuccess: (result) => {
             if (result.isOk()) {
-              toast.success("Order Placed Successfully!", {
-                description: "Thank you for your purchase. We will process it shortly.",
+              toast.success("Đặt hàng thành công!", {
+                description: "Cảm ơn bạn đã mua hàng. Chúng tôi sẽ xử lý đơn hàng trong thời gian sớm nhất.",
               });
               navigate("/profile");
             } else {
-              toast.error("Checkout Failed", {
-                description: result.error.message || "There was an issue placing your order. Please try again.",
+              toast.error("Thanh toán thất bại", {
+                description: result.error.message || "Có lỗi khi đặt hàng. Vui lòng thử lại.",
               });
             }
           },
@@ -85,30 +83,31 @@ const CheckoutPage = () => {
       }
 
       case "ZALOPAY": {
-        const zaloPayPayload: ZaloPayPayload = {
+        const payload: PaymentRequestPayload = {
+          ...basePayload,
+          PaymentMethod: "ZALOPAY",
           orderDetails: orderDetails.Products.map((p: ProductInOrder) => ({
             _id: p.ProductID,
             ProductID: p.ProductID,
             Quantity: p.Quantity,
             Discount: 0,
           })),
-          total: totalAmount,
+          total: orderDetails.FinalPrice || orderDetails.TotalPrice,
         };
-        payWithZaloPay(zaloPayPayload);
+        payWithZaloPay(payload);
         break;
       }
       case "VNPAY": {
-        const vnPayPayload: VNPayPayload = {
-          amount: totalAmount,
-          orderDescription: "Payment for Skindora Order",
-          orderType: "billpayment",
-          language: "vn",
+        const payload: PaymentRequestPayload = {
+          ...basePayload,
+          PaymentMethod: "VNPAY",
+          amount: orderDetails.FinalPrice || orderDetails.TotalPrice,
         };
-        payWithVNPay(vnPayPayload);
+        payWithVNPay(payload);
         break;
       }
       default:
-        toast.error("Invalid payment method selected.");
+        toast.error("Phương thức thanh toán không hợp lệ.");
     }
   };
 
@@ -124,19 +123,18 @@ const CheckoutPage = () => {
     return (
       <div className="flex h-screen flex-col items-center justify-center p-4 text-center">
         <Frown className="text-destructive mb-4 h-16 w-16" />
-        <h2 className="mb-2 text-xl font-bold">Checkout Session Expired</h2>
+        <h2 className="mb-2 text-xl font-bold">Phiên thanh toán đã hết hạn</h2>
         <p className="text-muted-foreground mb-6">
-          Your cart may have changed. Please return to your cart to continue.
+          Giỏ hàng của bạn có thể đã thay đổi. Vui lòng quay lại giỏ hàng để tiếp tục.
         </p>
         <Button variant="outline" onClick={() => navigate("/cart")}>
-          <ArrowLeft className="mr-2 h-4 w-4" /> Go Back to Cart
+          <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại giỏ hàng
         </Button>
       </div>
     );
   }
 
   const orderDetails = preparedOrderResponse.result;
-  const shippingFee = orderDetails.TotalPrice > 500000 ? 0 : 30000;
   const discountAmount =
     appliedVoucher && orderDetails.TotalPrice >= Number(appliedVoucher.minOrderValue)
       ? appliedVoucher.discountType === "PERCENTAGE"
@@ -147,13 +145,11 @@ const CheckoutPage = () => {
         : Number(appliedVoucher.discountValue)
       : 0;
 
-  const finalTotal = orderDetails.TotalPrice + shippingFee - discountAmount;
+  const finalTotal = orderDetails.TotalPrice - discountAmount;
   const summaryDetails = {
     subtotal: orderDetails.TotalPrice,
-    shipping: shippingFee,
     discount: orderDetails.DiscountAmount || 0,
     total: finalTotal > 0 ? finalTotal : 0,
-    // total: (orderDetails.FinalPrice || orderDetails.TotalPrice) + shippingFee,
     items: orderDetails.Products,
     voucherCode: appliedVoucher?.code,
   };
