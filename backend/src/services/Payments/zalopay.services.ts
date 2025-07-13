@@ -4,6 +4,8 @@ import { v1 as uuidv1 } from 'uuid'
 import moment from 'moment'
 import redisClient from '../redis.services'
 import dotenv from 'dotenv'
+import ordersService from '../orders.services'
+import { PendingOrder } from '~/models/requests/Orders.requests'
 
 dotenv.config()
 interface Item {
@@ -37,32 +39,30 @@ const config = {
 const createOrder = async (req: any, res: any): Promise<void> => {
   const orderid = req.redis_order_id
 
+  const pendingOrderKey = ordersService.getPendingOrderKey(orderid?.toString())
+  const pendingOrder: PendingOrder = await ordersService.getPendingOrder(pendingOrderKey)
+
+  const { Details } = pendingOrder
+
   const embeddata = {
     redirecturl: process.env.ZALO_PAY_CALLBACK,
-    orderDetails: req.body.orderDetails
+    orderDetails: Details
   }
 
-  const orderDetails = req.body.orderDetails
+  const orderDetails = Details
 
   if (!Array.isArray(orderDetails) || orderDetails.length === 0 || !orderDetails) {
     return res.status(400).json({ error: 'OrderDetails is required and must be a non-empty array.' })
   }
-
-  const items: Item[] = orderDetails.map((item: any) => ({
-    _id: item._id,
-    productID: item.ProductID,
-    quantity: item.Quantity,
-    discount: item.Discount
-  }))
 
   const order: Order = {
     appid: config.app_id,
     apptransid: `${moment().format('YYMMDD')}_${uuidv1()}`,
     appuser: 'Skin Dora Shop',
     apptime: Date.now(),
-    item: JSON.stringify(items),
+    item: JSON.stringify(orderDetails),
     embeddata: JSON.stringify(embeddata),
-    amount: req.body.total,
+    amount: Number(pendingOrder.TotalPrice),
     description: 'Skin Dora Shop',
     bankcode: '',
     callback_url: 'https://0d6133ca891c.ngrok-free.app/payment/zalopay_callbacks'

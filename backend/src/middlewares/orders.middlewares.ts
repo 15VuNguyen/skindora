@@ -146,6 +146,104 @@ export const checkOutValidator = validate(
   )
 )
 
+export const paymentOnlineValidator = validate(
+  checkSchema(
+    {
+      RecipientName: {
+        optional: true,
+        trim: true
+      },
+      PhoneNumber: {
+        optional: true,
+        isMobilePhone: {
+          options: ['vi-VN'],
+          errorMessage: ORDER_MESSAGES.INVALID_PHONE_NUMBER
+        }
+      },
+      ShipAddress: {
+        notEmpty: {
+          errorMessage: ORDER_MESSAGES.SHIP_ADDRESS_REQUIRED
+        },
+        isString: {
+          errorMessage: ORDER_MESSAGES.SHIP_ADDRESS_MUST_BE_STRING
+        }
+      },
+      RequireDate: {
+        optional: true,
+        isISO8601: {
+          errorMessage: ORDER_MESSAGES.INVALID_REQUIRE_DATE
+        },
+        custom: {
+          options: (value) => {
+            const requiredDate = new Date(value)
+            const now = new Date()
+            if (requiredDate < now) {
+              throw new ErrorWithStatus({
+                message: ORDER_MESSAGES.PRESENT_REQUIRE_DATE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            return true
+          }
+        }
+      },
+      voucherCode: {
+        optional: true,
+        custom: {
+          options: async (value, { req }) => {
+            const voucher = await databaseService.vouchers.findOne({ code: value })
+            if (!voucher) {
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+
+            if (!voucher.isActive) {
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.NOT_ACTIVE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (voucher.endDate < new Date()) {
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.EXPIRED,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            if (voucher.usedCount >= voucher.usageLimit) {
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.REACH_LIMIT_USED,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+
+            const { user_id } = req.decoded_authorization as TokenPayLoad
+            const orderWithVoucherCount = await databaseService.orders
+              .find({
+                UserID: new ObjectId(user_id),
+                'VoucherSnapshot.code': voucher.code
+              })
+              .toArray()
+
+            if (orderWithVoucherCount.length >= voucher.userUsageLimit) {
+              throw new ErrorWithStatus({
+                message: VOUCHER_MESSAGES.USE_ONLY_ONCE,
+                status: HTTP_STATUS.BAD_REQUEST
+              })
+            }
+            req.voucher = voucher
+            return true
+          }
+        }
+      }
+    },
+    ['body']
+  )
+)
+
 export const prepareOrderValidator = validate(
   checkSchema({
     selectedProductIDs: {
@@ -701,7 +799,17 @@ export const savePendingOrderToRedis = async (req: Request, res: Response, next:
     const cart = req.cart as Cart
     const products = req.products as Array<Product>
     const voucher = req.voucher as VoucherType
-    const { ShipAddress, Description, RequireDate, PaymentMethod: method } = req.body as OrderReqBody
+    const { ShipAddress, Description, RequireDate } = req.body as OrderReqBody
+
+    let method: PaymentMethod
+    if (req.path.includes('zalopay')) {
+      method = PaymentMethod.ZALOPAY
+    } else if (req.path.includes('vnpay')) {
+      method = PaymentMethod.VNPAY
+    } else {
+      method = PaymentMethod.COD
+    }
+
     let finalPrice = 0
     const pendingOrderId = new ObjectId()
 
@@ -723,7 +831,7 @@ export const savePendingOrderToRedis = async (req: Request, res: Response, next:
       ShipAddress,
       Description,
       RequireDate: RequireDate ?? getBaseRequiredDate().toISOString(),
-      PaymentMethod: method ?? PaymentMethod.COD,
+      PaymentMethod: method,
       PaymentStatus: PaymentStatus.UNPAID,
       TotalPrice: finalPrice.toString()
     }
