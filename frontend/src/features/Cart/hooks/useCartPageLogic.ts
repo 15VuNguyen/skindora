@@ -78,12 +78,11 @@ export const useCartPageLogic = () => {
     return discount;
   }, [appliedVoucher, subtotal]);
 
-  const shipping = subtotal > 500000 || subtotal === 0 ? 0 : 30000;
 
   const total = useMemo(() => {
-    const calculatedTotal = subtotal + shipping - discountAmount;
+    const calculatedTotal = subtotal  - discountAmount;
     return calculatedTotal > 0 ? calculatedTotal : 0;
-  }, [subtotal, shipping, discountAmount]);
+  }, [subtotal, discountAmount]);
 
   const handleApplyVoucher = useCallback(
     (voucher: Voucher) => {
@@ -174,7 +173,6 @@ export const useCartPageLogic = () => {
     isPreparingOrder,
     isVoucherDialogOpen,
     subtotal,
-    shipping,
     total,
     discountAmount,
     appliedVoucher,
