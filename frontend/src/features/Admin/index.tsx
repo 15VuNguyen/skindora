@@ -5,7 +5,8 @@ import { Link } from "react-router-dom";
 import Typography from "@/components/Typography";
 import { useHeader } from "@/contexts/header.context";
 
-import ManageOrdersStaff from "../Staff/ManageOrdersStaff";
+import ManageOrdersStaff from "./Order/ManageOrders";
+// import ManageOrdersStaff from "../Staff/ManageOrdersStaff";
 import { CardIcon } from "./components/CardIcon";
 
 const Admin: React.FC = () => {
