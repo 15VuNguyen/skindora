@@ -1,5 +1,5 @@
 import { easeOut, motion } from "framer-motion";
-import { Award, CheckCircle, Heart, Users } from "lucide-react";
+import { Award, CheckCircle, Heart} from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 
