@@ -1,6 +1,5 @@
 import { ChevronLeft, FileText, Loader2, Truck, User as UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-// Import useState
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +10,7 @@ import { useFetchOrderByID } from "@/hooks/Orders/useFetchOrderByID";
 import { useUpdateStatus } from "@/hooks/Orders/useUpdateStatus";
 import type { User } from "@/types/order";
 
-const OrderDetailPage = () => {
+const OrderDetailStaffPage = () => {
   const { orderId } = useParams<{ orderId: string }>();
   const navigate = useNavigate();
   const { loading, data, FetchProductByID } = useFetchOrderByID(String(orderId));
@@ -66,7 +65,7 @@ const OrderDetailPage = () => {
           {/* Header */}
           <div className="mx-auto grid w-full max-w-6xl flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
-              <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => navigate("/admin/orders")}>
+              <Button variant="outline" size="icon" className="h-7 w-7" onClick={() => navigate("/staff/orders")}>
                 <ChevronLeft className="h-4 w-4" />
               </Button>
               <h1 className="flex-1 shrink-0 text-xl font-semibold tracking-tight whitespace-nowrap sm:grow-0">
@@ -308,4 +307,4 @@ const OrderDetailPage = () => {
   );
 };
 
-export default OrderDetailPage;
+export default OrderDetailStaffPage;
