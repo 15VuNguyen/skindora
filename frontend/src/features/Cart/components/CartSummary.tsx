@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 
 interface CartSummaryProps {
   subtotal: number;
-  shipping: number;
   total: number;
   discount?: {
     code?: string;

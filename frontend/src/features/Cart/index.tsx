@@ -24,7 +24,6 @@ const CartPage = () => {
     mutatingItemId,
     isVoucherDialogOpen,
     subtotal,
-    shipping,
     total,
     discountAmount,
     appliedVoucher,
@@ -129,7 +128,6 @@ const CartPage = () => {
                   subtotal={subtotal}
                   isProcessingCheckout={isPreparingOrder}
                   onCheckout={handleCheckout}
-                  shipping={shipping}
                   total={total}
                   discount={appliedVoucher ? { code: appliedVoucher.code, amount: discountAmount } : undefined}
                   selectedItems={selectedItems}
