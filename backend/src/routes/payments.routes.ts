@@ -16,15 +16,6 @@ paymentsRouter.post(
   accessTokenValidator,
   productInStockValidator,
   checkOutValidator,
-  filterMiddleware<OrderReqBody>([
-    'ShipAddress',
-    'Description',
-    'RequireDate',
-    'PaymentMethod',
-    'PaymentStatus',
-    'voucherCode',
-    'type'
-  ]),
   savePendingOrderToRedis,
   wrapAsync(createOrder)
 )
@@ -33,19 +24,10 @@ paymentsRouter.post(
   accessTokenValidator,
   productInStockValidator,
   checkOutValidator,
-  filterMiddleware<OrderReqBody>([
-    'ShipAddress',
-    'Description',
-    'RequireDate',
-    'PaymentMethod',
-    'PaymentStatus',
-    'voucherCode',
-    'type'
-  ]),
   savePendingOrderToRedis,
   wrapAsync(createPaymentUrlController)
 )
 paymentsRouter.get('/vnpay_return', wrapAsync(vnpayReturn))
-paymentsRouter.post('/zalopay_callbacks', wrapAsync(zaloPayCallback))
+paymentsRouter.get('/zalopay_callbacks', wrapAsync(zaloPayCallback))
 
 export default paymentsRouter

@@ -34,15 +34,11 @@ const config = {
   endpoint: process.env.ZALO_PAY_ENDPOINT_SANDBOX || ''
 }
 
-console.log(config)
-
 const createOrder = async (req: any, res: any): Promise<void> => {
   const orderid = req.redis_order_id
 
-  console.log(orderid)
-
   const embeddata = {
-    redirecturl: process.env.VNP_RETURNURL,
+    redirecturl: process.env.ZALO_PAY_CALLBACK,
     orderDetails: req.body.orderDetails
   }
 
@@ -69,10 +65,10 @@ const createOrder = async (req: any, res: any): Promise<void> => {
     amount: req.body.total,
     description: 'Skin Dora Shop',
     bankcode: '',
-    callback_url: process.env.ZALO_PAY_CALLBACK
+    callback_url: 'https://0d6133ca891c.ngrok-free.app/payment/zalopay_callbacks'
   }
 
-  await redisClient.set(order.apptransid, orderid, { EX: 900 })
+  await redisClient.set(order.apptransid, orderid.toString(), { EX: 900 })
 
   const data = [
     order.appid,

@@ -67,5 +67,7 @@ export const createPaymentUrl = async (data: PaymentData, clientIp: string, redi
     vnp_SecureHash: signed
   }
 
+  console.log(finalParams)
+
   return vnpUrl + '?' + querystring.stringify(finalParams, { encode: false })
 }
