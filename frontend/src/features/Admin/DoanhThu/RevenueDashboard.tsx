@@ -91,7 +91,7 @@ export function RevenueDashboard({ revenueData }: RevenueDashboardProps) {
                   tickFormatter={(value) => `${(value as number) / 1000}k`}
                 />
                 <Tooltip
-                  cursor={{ fill: "hsl(var(--muted))" }}
+                  cursor={{ fill: "rgba(0,0,0,0.05)" }}
                   contentStyle={{ backgroundColor: "hsl(var(--background))", border: "1px solid hsl(var(--border))" }}
                   labelFormatter={(label) =>
                     new Date(label).toLocaleDateString("vi-VN", {
