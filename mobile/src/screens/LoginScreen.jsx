@@ -59,7 +59,7 @@ export default function LoginScreen() {
       setErrors({});
       await login({ email, password });
     } catch (error) {
-      console.log("login error: ", error.response)
+      console.log("login error: ", error)
       const serverErrors = error.response?.data?.errors;
       if (serverErrors) {
         const extractedErrors = {};
@@ -109,7 +109,7 @@ export default function LoginScreen() {
               <Text style={styles.loginButtonText}>Đăng nhập</Text>
             </TouchableOpacity>
 
-            <View style={styles.separator}>
+            {/* <View style={styles.separator}>
               <View style={styles.line} />
               <Text style={styles.separatorText}>hoặc</Text>
               <View style={styles.line} />
@@ -121,7 +121,7 @@ export default function LoginScreen() {
               disabled={!request}
             >
               <Text style={styles.googleButtonText}>Đăng nhập với Google</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <View style={styles.footer}>
               <Text>Chưa có tài khoản?</Text>
