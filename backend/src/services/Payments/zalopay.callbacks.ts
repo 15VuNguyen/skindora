@@ -13,7 +13,8 @@ export const zaloPayCallback = async (req: Request, res: Response) => {
 
     await redisClient.del(apptransid as string)
 
-    res.redirect(`${process.env.FRONTEND_URL}?status=success`)
+      res.redirect(`${process.env.FRONTEND_URL}/profile?tab=orders`)
+
   } catch (error) {
     console.error('ZaloPay Return Error:', error)
     return res.redirect(`${process.env.FRONTEND_URL}?status=error`)
