@@ -41,7 +41,7 @@ function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <Link to="/admin/profile">
+          <Link to="/staff">
             <DropdownMenuItem>Profile</DropdownMenuItem>
           </Link>
           <Link to={"/"}>
@@ -82,7 +82,7 @@ interface HeaderAdminProps {
   name: string;
 }
 
-const HeaderAdmin: React.FC<HeaderAdminProps> = () => {
+const HeaderStaff: React.FC<HeaderAdminProps> = () => {
   return (
     <>
       <div className="top-0 left-0 box-border w-full border-b bg-white px-6 py-5">
@@ -105,4 +105,4 @@ const HeaderAdmin: React.FC<HeaderAdminProps> = () => {
   );
 };
 
-export default HeaderAdmin;
+export default HeaderStaff;
