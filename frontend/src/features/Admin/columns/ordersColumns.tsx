@@ -126,20 +126,30 @@ export const orderColumn = (refechData: () => void): ColumnDef<Order, unknown>[]
     accessorKey: "Status",
     header: "Trạng thái đơn hàng",
     cell: ({ row }) => {
-      const status = row.getValue("Status") as Order["Status"];
-
+      // const status = row.getValue("Status") as Order["Status"];
+      const { Status } = row.original;
       const variant =
-        status === "DELIVERED"
-          ? "complete"
-          : status === "CANCELLED"
+        Status === "DELIVERED"
+          ? "delievered"
+          : Status === "CANCELLED"
             ? "danger"
-            : status === "RETURNED"
+            : Status === "RETURNED"
               ? "default"
-              : status === "SHIPPING"
+              : Status === "SHIPPING"
                 ? "waiting"
-                : "secondary";
+                : Status === "PROCESSING"
+                  ? "processing"
+                  : Status === "PENDING"
+                    ? "pending"
+                    : Status === "CONFIRMED"
+                      ? "confirmed"
+                      : "outline";
 
-      return <Badge variant={variant}>{status}</Badge>;
+      return (
+        <Badge variant={variant} className="w-3/5 p-2">
+          {Status}
+        </Badge>
+      );
     },
 
     filterFn: (row, id, value) => {

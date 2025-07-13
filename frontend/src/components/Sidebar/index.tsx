@@ -12,6 +12,7 @@ import {
   Leaf,
   ListChecks,
   Package,
+  PoundSterling,
   Shield,
   ShoppingCart,
   // New icons for the updated items
@@ -40,6 +41,7 @@ const items = [
   { title: "Hồ sơ", url: "/admin", icon: User2 },
   { title: "Tổng quan", url: "/admin/dashboard", icon: Home },
   { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
+  { title: "Doanh thu", url: "/admin/money", icon: PoundSterling },
   // {
   //   title: "Thống kê",
   //   url: "/admin/statics",

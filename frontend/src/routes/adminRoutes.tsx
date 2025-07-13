@@ -11,6 +11,7 @@ import CreateDacTinh from "@/features/Admin/Dactinh/CreateDacTinh";
 import DacTinhDetail from "@/features/Admin/Dactinh/DacTinhDetail";
 import ManageDacTinh from "@/features/Admin/Dactinh/ManageDacTinh";
 import UpdateDacTinh from "@/features/Admin/Dactinh/UpdateDacTinh";
+import RevenueDashboard from "@/features/Admin/DoanhThu";
 import CreateIngredient from "@/features/Admin/Ingredient/CreateIngredient";
 import IngredientDetail from "@/features/Admin/Ingredient/IngredientDetail";
 import ManageIngredient from "@/features/Admin/Ingredient/ManageIngredient";
@@ -58,6 +59,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "dashboard",
         element: <Admin />,
+      },
+      {
+        path: "money",
+        element: <RevenueDashboard />,
       },
       {
         path: "customers",
