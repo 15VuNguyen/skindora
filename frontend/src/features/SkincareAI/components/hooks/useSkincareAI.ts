@@ -34,6 +34,7 @@ export const useSkincareAI = () => {
   const { mutate: getAdvice, isPending: isAnalyzing } = useMutation({
     mutationFn: (payload: SkincareAdvisorRequestBody) => aiService.getSkincareAdvice(payload),
     onSuccess: (recommendationData) => {
+      
       if (
         recommendationData &&
         (recommendationData.routineRecommendation || recommendationData.error || recommendationData.info)
