@@ -148,7 +148,7 @@ const CheckoutPage = () => {
   const finalTotal = orderDetails.TotalPrice - discountAmount;
   const summaryDetails = {
     subtotal: orderDetails.TotalPrice,
-    discount: orderDetails.DiscountAmount || 0,
+    discount: discountAmount,
     total: finalTotal > 0 ? finalTotal : 0,
     items: orderDetails.Products,
     voucherCode: appliedVoucher?.code,
