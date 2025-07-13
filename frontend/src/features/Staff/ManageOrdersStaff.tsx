@@ -6,17 +6,16 @@ import { useHeader } from "@/contexts/header.context";
 import { useFetchOrderStatics } from "@/hooks/Orders/useFetchOrderStatis";
 import { useFetchOrder } from "@/hooks/Orders/useFetchOrders";
 
-import { orderColumn } from "../Admin/columns/ordersColumns";
 import { PaginationDemo } from "../Admin/components/Pagination";
 import type { FilterOptionsProps } from "../Admin/components/TableCustom";
 import { DataTable } from "../Admin/components/TableCustom";
+import { orderColumn } from "./orderStaffColumn";
 
 const ManageOrdersStaff: React.FC = () => {
   const { setHeaderName } = useHeader();
   const { fetchOrder, data, params, changePage, changeStatus, loading } = useFetchOrder();
   const { data: orderStatics, fetchOrder: fetchOrderStatics } = useFetchOrderStatics();
   useEffect(() => {
-    // Đổi tên header để phù hợp hơn với nội dung trang
     setHeaderName("Quản Lý Đơn Hàng");
   }, [setHeaderName]);
 
@@ -31,14 +30,14 @@ const ManageOrdersStaff: React.FC = () => {
   };
 
   const filterOptions: FilterOptionsProps[] = [
-    { value: "", status: "ALL" as const },
-    { value: "pending", status: "PENDING" as const },
-    { value: "confirmed", status: "CONFIRMED" as const },
-    { value: "shipping", status: "SHIPPING" as const },
-    { value: "delivered", status: "DELIVERED" as const },
-    { value: "cancelled", status: "CANCELLED" as const },
-    { value: "returned", status: "RETURNED" as const },
-    { value: "failed", status: "FAILED" as const },
+    { value: "", status: "ALL" as const, label: "Tất cả" },
+    { value: "pending", status: "PENDING" as const, label: "Đang chờ" },
+    { value: "confirmed", status: "CONFIRMED" as const, label: "Đã đồng ý" },
+    { value: "shipping", status: "SHIPPING" as const, label: "Đang giao" },
+    { value: "delivered", status: "DELIVERED" as const, label: "Đã giao" },
+    { value: "cancelled", status: "CANCELLED" as const, label: "Đã hủy" },
+    { value: "returned", status: "RETURNED" as const, label: "Hoàn hàng" },
+    { value: "failed", status: "FAILED" as const, label: "Thất bại" },
   ];
 
   if (loading) {
@@ -61,7 +60,7 @@ const ManageOrdersStaff: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-blue-100">Tổng đơn hàng</p>
-                  <p className="text-3xl font-bold">{params.totalRecords}</p>
+                  <p className="text-3xl font-bold">{orderStatics?.total}</p>
                 </div>
                 <Package className="h-8 w-8 text-blue-200" />
               </div>
@@ -115,7 +114,6 @@ const ManageOrdersStaff: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Card: Đã hủy (Cancelled) */}
           <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
@@ -130,7 +128,6 @@ const ManageOrdersStaff: React.FC = () => {
         </div>
       </div>
 
-      {/* Phần Bảng dữ liệu */}
       <Card className="shadow-md">
         <CardHeader>
           <CardTitle>Danh sách Đơn hàng</CardTitle>

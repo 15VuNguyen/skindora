@@ -1,11 +1,22 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,6 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Textarea } from "@/components/ui/textarea";
 import { useApproveCancelRequest } from "@/hooks/CancelRequest/useApproveCancelRequest";
 import { useRejectCancelRequest } from "@/hooks/CancelRequest/useRejectCancelRequest";
 import type { CancelRequest } from "@/types/cancelRequest";
@@ -31,26 +43,38 @@ const formatDate = (dateString: string) => {
 };
 
 export const ActionsCell = ({ row }: { row: { original: CancelRequest } }) => {
-  const { _id, UserID } = row.original;
+  const { _id, UserID, CancelRequest } = row.original;
   const navigate = useNavigate();
-  const { appproveCancelRequest } = useApproveCancelRequest(String(_id));
-  const { rejectedCancelRequest } = useRejectCancelRequest(String(_id));
-  const handleApprove = () => {
-    console.log("Approving request:", _id);
-    appproveCancelRequest();
-    toast.success("Thành công!", {
-      description: "Thông tin đơn hàng đã được cập nhật",
-    });
-    window.location.reload();
-  };
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [actionType, setActionType] = useState<"approve" | "reject" | null>(null);
+  const [staffNote, setStaffNote] = useState<string>("");
 
-  const handleReject = () => {
-    console.log("Rejecting request:", _id);
-    rejectedCancelRequest();
-    toast.success("Thành công!", {
-      description: "Thông tin đơn hàng đã được cập nhật",
-    });
-    window.location.reload();
+  const { appproveCancelRequest } = useApproveCancelRequest({
+    id: String(_id),
+    staffNote: staffNote,
+  });
+  const { rejectedCancelRequest } = useRejectCancelRequest({
+    id: String(_id),
+    staffNote: staffNote,
+  });
+
+  const handleAction = async () => {
+    if (actionType === "approve") {
+      console.log("Approving request:", _id, "with note:", staffNote);
+      await appproveCancelRequest();
+      toast.success("Thành công!", {
+        description: "Thông tin đơn hàng đã được cập nhật",
+      });
+    } else if (actionType === "reject") {
+      console.log("Rejecting request:", _id, "with note:", staffNote);
+      await rejectedCancelRequest();
+      toast.success("Thành công!", {
+        description: "Thông tin đơn hàng đã được cập nhật",
+      });
+    }
+    setDialogOpen(false);
+    // You might still want to reload the page or refetch data after a successful action
+    // window.location.reload();
   };
 
   return (
@@ -67,8 +91,63 @@ export const ActionsCell = ({ row }: { row: { original: CancelRequest } }) => {
           <DropdownMenuItem onClick={() => navigator.clipboard.writeText(UserID)}>Copy Mã người dùng</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/order-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleApprove()}>Chấp nhận</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => handleReject()}>Từ chối</DropdownMenuItem>
+          {CancelRequest.status === "REQUESTED" ? (
+            <>
+              <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+                <DialogTrigger asChild>
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      setActionType("approve");
+                      setDialogOpen(true);
+                    }}
+                  >
+                    Chấp nhận
+                  </DropdownMenuItem>
+                </DialogTrigger>
+                <DialogTrigger asChild>
+                  <DropdownMenuItem
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      setActionType("reject");
+                      setDialogOpen(true);
+                    }}
+                  >
+                    Từ chối
+                  </DropdownMenuItem>
+                </DialogTrigger>
+
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>
+                      {actionType === "approve" ? "Chấp nhận yêu cầu hủy đơn" : "Từ chối yêu cầu hủy đơn"}
+                    </DialogTitle>
+                    <DialogDescription>Vui lòng nhập lý do/ghi chú của nhân viên cho hành động này.</DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <Textarea
+                      id="staffNote"
+                      placeholder="Nhập lý do hoặc ghi chú..."
+                      value={staffNote}
+                      onChange={(e) => setStaffNote(e.target.value)}
+                      className="col-span-3"
+                    />
+                  </div>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Hủy</Button>
+                    </DialogClose>
+                    <Button onClick={handleAction}>Xác nhận</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </>
+          ) : (
+            <div>
+              <DropdownMenuItem disabled>Chấp nhận</DropdownMenuItem>
+              <DropdownMenuItem disabled>Từ chối</DropdownMenuItem>
+            </div>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
@@ -108,11 +187,6 @@ export const cancelRequestColumns: ColumnDef<CancelRequest>[] = [
   },
   {
     accessorKey: "UserID",
-    // header: ({ column }) => (
-    //   <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-    //     Mã Người Dùng <ArrowUpDown className="ml-2 h-4 w-4" />
-    //   </Button>
-    // ),
     header: "Mã Người Dùng ",
     cell: ({ row }) => {
       return (
@@ -136,9 +210,6 @@ export const cancelRequestColumns: ColumnDef<CancelRequest>[] = [
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("TotalPrice"));
       return (
-        // <div className="pl-3 whitespace-nowrap">
-        //   <span className="font-medium text-green-600"> {formatCurrency(amount)}</span>
-        // </div>
         <div className="pl-3">
           <span className="font-medium text-green-600">{formatCurrency(amount)}</span>
         </div>
@@ -171,6 +242,34 @@ export const cancelRequestColumns: ColumnDef<CancelRequest>[] = [
         return <Badge variant="destructive">Đã từ chối</Badge>;
       }
       return <Badge className="bg-yellow-500 text-white hover:bg-yellow-600">Đang chờ</Badge>;
+    },
+  },
+  {
+    accessorFn: (row) => row.CancelRequest.reason,
+    id: "reason",
+    header: "Lý do hủy",
+    cell: ({ row }) => {
+      const reason = row.original.CancelRequest.reason;
+
+      return (
+        <div className="">
+          <span>{reason || "Không có"}</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorFn: (row) => row.CancelRequest.reason,
+    id: "staffNote",
+    header: "Staff Note",
+    cell: ({ row }) => {
+      const staffnNote = row.original.CancelRequest.staffNote;
+
+      return (
+        <div className="">
+          <span>{staffnNote || "Không có"}</span>
+        </div>
+      );
     },
   },
   {

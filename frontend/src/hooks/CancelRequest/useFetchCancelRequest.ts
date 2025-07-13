@@ -25,6 +25,7 @@ export const useFetchCancelRequest = () => {
         limit: params.limit,
         page: params.page,
       });
+      console.log(response);
       setData(response.data);
       setParams((prev) => ({
         ...prev,

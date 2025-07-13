@@ -17,16 +17,22 @@ export const fetchCancelRequest = async (params: FetchAllCancelProps) => {
     .then((response) => response.data);
 };
 //approve order cancellation
-export interface ApproveCancelRequest {
+export interface ApproveCancelRequestProps {
   id: string;
+  payload: CancelRequestPayload;
 }
-export const approveCancelRequest = async (params: ApproveCancelRequest) => {
-  return httpClient.patch(`/orders/${params.id}/cancel-request/approve`).then((response) => response.data);
+export type CancelRequestPayload = {
+  staffNote: string;
+};
+export const approveCancelRequest = async (params: ApproveCancelRequestProps) => {
+  return httpClient
+    .patch(`/orders/${params.id}/cancel-request/approve`, params.payload)
+    .then((response) => response.data);
 };
 //reject order cancellation
-export interface RejectCancelRequest {
-  id: string;
-}
-export const rejectCancelRequest = async (params: RejectCancelRequest) => {
-  return httpClient.patch(`/orders/${params.id}/cancel-request/reject`).then((response) => response.data);
+
+export const rejectCancelRequest = async (params: ApproveCancelRequestProps) => {
+  return httpClient
+    .patch(`/orders/${params.id}/cancel-request/reject`, params.payload)
+    .then((response) => response.data);
 };

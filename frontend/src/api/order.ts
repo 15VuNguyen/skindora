@@ -26,7 +26,8 @@ export interface FetchOrderByIdProps {
 export interface ApproveCancelRequestProps {
   id: string;
   payload: {
-    staffNote?: string;
+    staffNote: string;
+    reason: string;
   };
 }
 //get-all-order
