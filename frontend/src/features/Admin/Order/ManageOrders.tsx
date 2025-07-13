@@ -35,8 +35,6 @@ const ManageOrdersStaff: React.FC = () => {
     { value: "shipping", status: "SHIPPING" as const, label: "Đang giao" },
     { value: "delivered", status: "DELIVERED" as const, label: "Đã giao" },
     { value: "cancelled", status: "CANCELLED" as const, label: "Đã hủy" },
-    { value: "returned", status: "RETURNED" as const, label: "Hoàn hàng" },
-    { value: "failed", status: "FAILED" as const, label: "Thất bại" },
   ];
 
   if (loading) {

@@ -16,26 +16,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export interface FilterOptionsProps {
   value: string;
-  status?:
-    | "SHIPPING"
-    | "FAILED"
-    | "CANCELLED"
-    | "RETURNED"
-    | "DELIVERED"
-    | "PROCESSING"
-    | "ALL"
-    | "CONFIRMED"
-    | "PENDING";
-  label?:
-    | "Đang giao"
-    | "Thất bại"
-    | "Đã hủy"
-    | "Hoàn hàng"
-    | "Đã giao"
-    | "Đang xử lý"
-    | "Tất cả"
-    | "Đã đồng ý"
-    | "Đang chờ";
+  status?: "SHIPPING" | "CANCELLED" | "DELIVERED" | "PROCESSING" | "ALL" | "CONFIRMED" | "PENDING";
+  label?: "Đang giao" | "Đã hủy" | "Đã giao" | "Đang xử lý" | "Tất cả" | "Đã đồng ý" | "Đang chờ";
 }
 
 interface DataTableProps<TData, TValue> {
