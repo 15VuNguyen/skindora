@@ -37,15 +37,15 @@ import { getBaseRequiredDate } from '~/utils/date'
 export const checkOutValidator = validate(
   checkSchema(
     {
-      RecipientName:{
+      RecipientName: {
         optional: true,
         trim: true
       },
-      PhoneNumber:{
+      PhoneNumber: {
         optional: true,
-        isMobilePhone:{
-          options: ["vi-VN"],
-          errorMessage: ORDER_MESSAGES.INVALID_PHONE_NUMBER,
+        isMobilePhone: {
+          options: ['vi-VN'],
+          errorMessage: ORDER_MESSAGES.INVALID_PHONE_NUMBER
         }
       },
       ShipAddress: {
@@ -337,7 +337,11 @@ export const getNextOrderStatusValidator = validate(
             })
           }
 
-          if (order.Status === OrderStatus.RETURNED || order.Status === OrderStatus.CANCELLED) {
+          if (
+            order.Status === OrderStatus.DELIVERED ||
+            order.Status === OrderStatus.RETURNED ||
+            order.Status === OrderStatus.CANCELLED
+          ) {
             throw new ErrorWithStatus({
               message: ORDER_MESSAGES.CANNOT_UPDATE_STATUS.replace('%s', order.Status),
               status: HTTP_STATUS.BAD_REQUEST
@@ -741,7 +745,7 @@ export const savePendingOrderToRedis = async (req: Request, res: Response, next:
     }
     if (discount > 0) {
       finalPrice -= discount
-      pendingOrder.TotalPrice = finalPrice.toString()
+      pendingOrder.TotalPrice = Math.max(0, finalPrice).toString()
     }
 
     await redisClient.setEx(
