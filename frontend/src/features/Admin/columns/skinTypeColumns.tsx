@@ -20,7 +20,7 @@ import { useUpdateStatusSkinType } from "@/hooks/SkinType/useUpdateStatusSkinTyp
 import type { SkinType } from "@/types/Filter/skinType";
 
 export const ActionsCell = ({ row, refetchData }: { row: { original: SkinType }; refetchData: () => void }) => {
-  const { _id, option_name, state } = row.original;
+  const { _id, state } = row.original;
   const navigate = useNavigate();
   const payload = {
     state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",

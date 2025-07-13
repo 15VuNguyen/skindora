@@ -21,7 +21,7 @@ const formatDate = (dateString: string) => {
 };
 
 export const ActionsCell = ({ row, refetchData }: { row: { original: Brand }; refetchData: () => void }) => {
-  const { _id, option_name, state } = row.original;
+  const { _id, state } = row.original;
 
   const navigate = useNavigate();
   const payload = {

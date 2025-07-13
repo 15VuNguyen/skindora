@@ -21,7 +21,7 @@ const formatDate = (dateString: string) => {
 };
 
 export const DacTinhActionsCell = ({ row, refetchData }: { row: { original: DacTinh }; refetchData: () => void }) => {
-  const { _id, option_name, state } = row.original;
+  const { _id, state } = row.original;
 
   const navigate = useNavigate();
   const payload = {

@@ -22,7 +22,7 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("vi-VN");
 };
 export const ActionsCell = ({ row, refetchData }: { row: { original: ProductType }; refetchData: () => void }) => {
-  const { _id, option_name, state } = row.original;
+  const { _id,  state } = row.original;
 
   const navigate = useNavigate();
 
