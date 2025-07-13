@@ -1,12 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { paymentService } from "@/services/paymentService";
-import type { ZaloPayPayload } from "@/services/paymentService";
+import { paymentService,type  PaymentRequestPayload } from "@/services/paymentService";
 import type { ApiError } from "@/utils";
 
 export const useZaloPayMutation = () => {
   return useMutation({
-    mutationFn: (payload: ZaloPayPayload) => paymentService.createZaloPayOrder(payload),
+    mutationFn: (payload: PaymentRequestPayload) => paymentService.createZaloPayOrder(payload),
     onSuccess: (result) => {
       if (result.isOk() && result.value.data.returncode === 1) {
         window.location.href = result.value.data.orderurl;

@@ -18,6 +18,6 @@ export const vnpayReturn = async (req: Request, res: Response) => {
       await ordersService.saveOrderToDB(new ObjectId(redisOrderId))
     }
 
-    res.redirect(`${process.env.FRONTEND_URL}`)
+    res.redirect(`${process.env.FRONTEND_URL}/profile?tab=orders`)
   }
 }
