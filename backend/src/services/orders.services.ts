@@ -160,8 +160,8 @@ class OrdersService {
     console.log(payload)
     const order: Partial<Order> = {
       UserID: new ObjectId(userId),
-      RecipientName: payload.RecipientName || "",
-      PhoneNumber: payload.PhoneNumber || "",
+      RecipientName: payload.RecipientName || '',
+      PhoneNumber: payload.PhoneNumber || '',
       ShipAddress: payload.ShipAddress,
       Description: payload.Description || '',
       RequireDate: payload.RequireDate,
@@ -616,7 +616,13 @@ class OrdersService {
       }
     })
 
-    return dailyResult
+    const totalRevenue = filteredOrder.reduce((sum, order) => sum + Number(order.TotalPrice), 0)
+
+    return {
+      data: dailyResult,
+      totalOrder: filteredOrder.length,
+      totalRevenue
+    }
   }
 
   async countOrder() {
