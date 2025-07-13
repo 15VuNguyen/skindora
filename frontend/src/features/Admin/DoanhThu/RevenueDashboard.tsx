@@ -7,6 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 // Đường dẫn có thể thay đổi tùy cấu trúc dự án
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
+import { CustomTooltip } from "./Custom";
+
 // Định nghĩa lại kiểu dữ liệu để component có thể nhận props
 interface IRevenueDataPoint {
   date: string;
@@ -70,8 +72,8 @@ export function RevenueDashboard({ revenueData }: RevenueDashboardProps) {
             <CardTitle>Biểu đồ doanh thu</CardTitle>
             <CardDescription>Biểu đồ doanh thu theo từng ngày.</CardDescription>
           </CardHeader>
-          <CardContent className="pl-2">
-            <ResponsiveContainer width="100%" height={350}>
+          <CardContent className="pl-6">
+            <ResponsiveContainer width="20%" height={500} className="ml-4">
               <BarChart data={revenueData.data}>
                 <XAxis
                   dataKey="date"
@@ -88,9 +90,9 @@ export function RevenueDashboard({ revenueData }: RevenueDashboardProps) {
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
-                  tickFormatter={(value) => `${(value as number) / 1000}k`}
+                  tickFormatter={(value) => `${(value as number) / 1000}`}
                 />
-                <Tooltip
+                {/* <Tooltip
                   cursor={{ fill: "rgba(0,0,0,0.05)" }}
                   contentStyle={{ backgroundColor: "hsl(var(--background))", border: "1px solid hsl(var(--border))" }}
                   labelFormatter={(label) =>
@@ -102,7 +104,8 @@ export function RevenueDashboard({ revenueData }: RevenueDashboardProps) {
                     })
                   }
                   formatter={(value) => [formatCurrency(value as number), "Doanh thu"]}
-                />
+                /> */}
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(0,0,0,0.03)" }} />
                 <Bar dataKey="totalRevenue" fill="#8884d8" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
