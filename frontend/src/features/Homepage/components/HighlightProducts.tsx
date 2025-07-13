@@ -1,54 +1,75 @@
 import Autoplay from "embla-carousel-autoplay";
 import { ChevronRight, LoaderCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { ProductCard } from "@/components/ui/ProductCard";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { useAddToCartMutation } from "@/hooks/mutations/useAddToCartMutation";
+import { useAllProductsQuery } from "@/hooks/queries/useAllProductsQuery";
 
-type products = {
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-  mainFeature: string;
-  catagory?: string;
-};
+function HighlightProductsCarousel() {
+  const { data: paginatedData, isLoading, isError, error } = useAllProductsQuery(1, 10, {});
+  const { mutate: addToCart } = useAddToCartMutation();
+  const navigate = useNavigate();
+  const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
 
-function HighlightProductCard({ product }: { product: products }) {
-  return (
-    <Card className="hover:shadow-primary/25 hover:border-primary/40 overflow-hidden transition-shadow duration-400 hover:shadow-lg">
-      <CardHeader className="p-2">
-        <div className="relative">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="h-56 w-full object-contain transition-transform duration-400 hover:scale-125"
-          />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <h3 className="line-clamp-2 text-sm font-medium">{product.name}</h3>
-      </CardContent>
-      <CardFooter className="flex flex-col items-start px-6">
-        <p className="text-primary mt-2 text-lg font-bold">{product.price.toLocaleString()}đ</p>
-      </CardFooter>
-    </Card>
-  );
-}
+  const handleAddToCart = (productId: string) => {
+    setLoadingProductId(productId);
+    addToCart(
+      { ProductID: productId, Quantity: 1 },
+      {
+        onSettled: () => {
+          setLoadingProductId(null);
+        },
+      }
+    );
+  };
+  const handleCardClick = (productId: string) => {
+    navigate(`/product/${productId}`);
+  };
 
-function HighlightProductsCarousel({ products }: { products: products[] }) {
-  if (!products.length) {
-    return <LoaderCircle className="mx-auto h-8 w-8 animate-spin text-gray-500" />;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-12">
+        <LoaderCircle className="text-primary h-10 w-10 animate-spin" />
+      </div>
+    );
   }
+
+  if (isError) {
+    return (
+      <div className="flex justify-center py-12 text-center text-red-600">
+        <p>
+          Could not load products. Please try again later. <br />{" "}
+          <span className="text-sm text-gray-500">({error.message})</span>
+        </p>
+      </div>
+    );
+  }
+
+  const products = paginatedData?.data ?? [];
+
+  if (products.length === 0) {
+    return (
+      <div className="flex justify-center py-12 text-center text-gray-500">
+        <p>No featured products available at the moment.</p>
+      </div>
+    );
+  }
+
   return (
-    <Carousel
-      className="mb-12"
-      plugins={[Autoplay({ delay: 10000, stopOnMouseEnter: true, stopOnInteraction: false })]}
-    >
+    <Carousel className="mb-12" plugins={[Autoplay({ delay: 5000, stopOnMouseEnter: true, stopOnInteraction: false })]}>
       <CarouselContent className="py-4">
-        {products.map((product, index) => (
-          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
-            <HighlightProductCard product={product} />
+        {products.map((product) => (
+          <CarouselItem key={product._id} className="md:basis-1/2 lg:basis-1/4">
+            <ProductCard
+              product={product}
+              variant="carousel"
+              onAddToCart={handleAddToCart}
+              onCardClick={handleCardClick}
+              isAddingToCart={loadingProductId === product._id}
+            />
           </CarouselItem>
         ))}
       </CarouselContent>
@@ -59,132 +80,18 @@ function HighlightProductsCarousel({ products }: { products: products[] }) {
 }
 
 export default function HighlightProducts(): React.JSX.Element {
-  // const { products } = props;
-
   return (
     <section className="bg-white py-16">
       <div className="container mx-auto px-4">
         <div className="mb-12 flex items-center justify-between">
           <h2 className="prose-h2 text-2xl font-bold">Sản phẩm nổi bật</h2>
-          <Link to="/store" className="text-primary flex items-center hover:underline">
+          <Link to="/products" className="text-primary flex items-center hover:underline">
             Xem tất cả
             <ChevronRight className="ml-1 inline h-4 w-4" />
           </Link>
         </div>
-        <HighlightProductsCarousel products={mockProducts} />
+        <HighlightProductsCarousel />
       </div>
     </section>
   );
 }
-const mockProducts: products[] = [
-  {
-    name: "Gel Rửa Mặt La Roche-Posay Dành Cho Da Dầu, Nhạy Cảm 400ml",
-    price: 446000,
-    image:
-      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-gel-rua-mat-la-roche-posay-cho-da-dau-nhay-cam-400ml-1716438599_img_380x380_64adc6_fit_center.jpg",
-    description:
-      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.\n \nLưu ý: Tác dụng có thể khác nhau tuỳ cơ địa của người dùng",
-    mainFeature:
-      "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
-    catagory: "sữa rửa mặt",
-  },
-  {
-    name: "Combo 3 Gel Rửa Mặt La Roche-Posay Cho Da Dầu Nhạy Cảm 50ml",
-    price: 149000,
-    image:
-      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-combo-3-gel-rua-mat-la-roche-posay-cho-da-dau-nhay-cam-50ml-1738575685_img_380x380_64adc6_fit_center.jpg",
-    description:
-      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.",
-    mainFeature:
-      "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
-    catagory: "sữa rửa mặt",
-  },
-  {
-    name: "Nước Tẩy Trang La Roche-Posay Cho Da Dầu, Nhạy Cảm 400ml",
-    price: 364000,
-    image:
-      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-nuoc-tay-trang-la-roche-posay-danh-cho-da-dau-da-nhay-cam-400ml-1716439321_img_380x380_64adc6_fit_center.jpg",
-    description:
-      "Nước Tẩy Trang Sạch Sâu & Kiểm Soát Nhờn Cho Da Dầu La Roche-Posay Effaclar Micellar Water Ultra Oily Skin là sản phẩm nước tẩy trang đến từ thương hiệu dược mỹ phẩm La Roche-Posay, với công nghệ cải tiến Glyco Micellar mang lại hiệu quả làm sạch sâu vượt trội, giúp lấy đi lớp trang điểm, bã nhờn và các hạt bụi siêu nhỏ có trong khói xe và môi trường ô nhiễm nhưng vẫn an toàn cho làn da dầu nhạy cảm & dễ kích ứng.\n \n\n \nNước Tẩy Trang La Roche-Posay Effaclar Micellar Water Ultra Oily Skin hiện đã có mặt tại Hasaki với các quy cách đóng gói:\n\n\n100ml\n\n\n200ml\n\n\n400ml\n\n\n400mlx2\n\n\n\n\n\n\nLoại da phù hợp:\n\nNước Tẩy Trang La Roche-Posay Effaclar Micellar Water Ultra Oily Skin phù hợp cho da dầu, da mụn, da nhạy cảm.\n\nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to.\n\n\nDa mụn hoặc dễ nổi mụn.\n\n\nDa nhạy cảm, dễ kích ứng.\n\n\nDa trang điểm nhiều.\n\n\nƯu thế nổi bật:\n\n\nCông nghệ GLYCO-MICELLAR giúp làm sạch sâu da, lấy đi lớp trang điểm, bã nhờn và bụi mịn PM2.5 hiệu quả mà vẫn giữ được sự cân bằng cho bề mặt da, mang đến cảm giác sạch thoáng và tươi mát.\n\n\nLàm sạch đến 99% lớp trang điểm, 70% mascara và các hạt bụi siêu nhỏ có trong khói xe và môi trường ô nhiễm chỉ sau một lượt bông cotton.\n\n\n\n\nVới nước khoáng La Roche-Posay - nguồn khoáng duy nhất có chứa nồng độ Selenium tự nhiên cao, giúp làm dịu & chống oxy hoá.\n\n\nCung cấp độ ẩm với Glycerin, giảm thiểu ma sát gây tổn thương da trong quá trình làm sạch.\n\n\n\n\nSản phẩm có chứa muối kẽm (Zinc) giúp điều tiết bã nhờn, kiềm dầu hiệu quả.\n\n\nDịu nhẹ cho làn da nhạy cảm, có thể sử dụng cho cả mắt và môi mà không làm cay mắt.\n\n\n\n\n \n\n\n\n  \nĐộ an toàn:\n\n\nNước Tẩy Trang La Roche-Posay Effaclar Micellar Water Ultra Oily Skin không chứa xà phòng, chất tạo màu, cồn hay paraben, đảm bảo tuyệt đối an toàn cho người sử dụng.\n\n\n \n\n \n\nBảo quản:\n\n\nTránh ánh nắng trực tiếp.\n\n\nĐể nơi khô ráo, thoáng mát.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\nThông số sản phẩm:\n\n\nDung tích: 100ml / 200ml / 400ml / 400mlx2\n\n\nXuất xứ thương hiệu: Pháp\n\n\nNơi sản xuất: Pháp\n\n\nHạn sử dụng: 3 năm kể từ ngày sản xuất\n\n\nNgày sản xuất: Xem trên bao bì sản phẩm.",
-    mainFeature:
-      "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
-    catagory: "nước tẩy trang",
-  },
-  {
-    name: "Gel Rửa Mặt La Roche-Posay Dành Cho Da Dầu, Nhạy Cảm 200ml",
-    price: 275000,
-    image:
-      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-gel-rua-mat-tao-bot-la-roche-posay-danh-cho-da-dau-nhay-cam-200ml-1716603223_img_380x380_64adc6_fit_center.jpg",
-    description:
-      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.",
-    mainFeature:
-      "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
-    catagory: "sữa rửa mặt",
-  },
-  {
-    name: "Sữa Chống Nắng La Roche-Posay Cho Da Dầu Mụn 50ml",
-    price: 398000,
-    image:
-      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-sua-chong-nang-la-roche-posay-cho-da-dau-mun-50ml-1716609472_img_380x380_64adc6_fit_center.jpg",
-    description:
-      "ANTHELIOS UVMUNE 400 là dòng sản phẩm chống nắng mới nhất của La Roche Posay, với màng lọc độc quyền Mexoryl 400 giúp bảo vệ da tối ưu trước tia UVA dài, ngăn ngừa thâm nám tiềm ẩn và công nghệ Netlock cho khả năng thẩm thấu nhanh chóng, không gây nhờn dính da. Đồng thời, khả năng kháng trôi cao giúp bạn an tâm bảo vệ da phổ rộng suốt cả ngày.\nDòng sản phẩm Sữa Chống Nắng La Roche Posay ANTHELIOS UVMUNE 400 hiện đã có mặt tại Hasaki với 2 phiên bản cho bạn lựa chọn:\n\n\nSữa Chống Nắng La Roche-Posay Anthelios UVMUNE 400 Invisible Fluid: dành cho mọi loại da, đặc biệt là da thường đến da khô.\n\n\nSữa Chống Nắng La Roche-Posay Anthelios UVMUNE 400 Oil Control Fluid: dành cho da dầu, da hỗn hợp dầu đang gặp vấn đề về mụn.\n\n\n\n\n\n1. Sữa Chống Nắng La Roche-Posay Anthelios UVMUNE 400 Invisible Fluid Bảo Vệ Khỏi Tia UVA Dài 50ml\nSữa Chống Nắng La Roche-Posay Anthelios UVMune 400 Fluide Invisible Fluid SPF50+ là phiên bản cải tiến của Anthelios Invisible Fluid – dòng sản phẩm chống nắng rất được yêu thích và được đánh giá cao từ thương hiệu dược mỹ phẩm La Roche-Posay. Sản phẩm cung cấp khả năng bảo vệ da vượt trội khỏi tia UVB & UVA dài – ngay cả các tia ở bước sóng 380 – 400 NM – thủ phạm tiềm ẩn hình thành các gốc thâm nám nằm sâu dưới da.\n \n\n  \nLoại da phù hợp:\n\n\nSản phẩm phù hợp cho mọi loại da, đặc biệt là da thường, da khô.\n\n\nGiải pháp cho tình trạng da:\n\n\nNgười thường xuyên tham gia các hoạt động ngoài trời.\n\n\nNgười có làn da đang gặp vấn đề thâm nám, tàn nhang.\n\n\nNgười có làn da nhạy cảm, dễ kích ứng với ánh nắng.\n\n\n \n\n \nƯu thế nổi bật:\n\n\nMàng lọc Mexoryl 400 độc quyền giúp chống nắng tối ưu suốt cả ngày dài, bảo vệ da vượt trội khỏi tia UVB và UVA dài (bước sóng 380-400nm), ngăn ngừa hình thành thâm nám hiệu quả.\n\n\n\n\n\nCông nghệ Netlock độc quyền tạo ra kết cấu mỏng nhẹ, kháng trôi tối ưu và trải đều trên bề mặt da.\n\n\n\n\n\nKhả năng kháng nước, kháng cát, kháng mồ hôi, không gây cay mắt rất phù hợp với các hoạt động ngoài trời.\n\n\nKết cấu dạng sữa mỏng nhẹ, thấm nhanh, không bóng nhờn, không để lại vệt trắng trên da.\n\n\n\n\n \n \n \n\n \n2. Sữa Chống Nắng La Roche-Posay Anthelios UVMUNE 400 Oil Control Fluid Cho Da Dầu Mụn 50ml\nSữa Chống Nắng La Roche-Posay Anthelios UVMune 400 Oil Control Fluid là dòng chống nắng phổ rộng giúp bảo vệ toàn diện cho làn da dầu mụn trước tác hại từ ánh nắng và ô nhiễm, ngăn chặn các tác nhân gây thâm nám. Sản phẩm với chỉ số PPD cao lên đến 55.8 giúp bảo vệ làn da vượt trội khỏi UVA, kết hợp cùng hoạt chất Airlicium giúp kiềm dầu, giữ da thông thoáng lên đến 12H.\n \n\n \n\n \nLoại da phù hợp:\n\n\nSản phẩm phù hợp cho da dầu, da hỗn hợp thiên dầu.\n\n\nSử dụng cho da mặt. \n\n\n \n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nNgười thường xuyên tham gia các hoạt động ngoài trời.\n\n\nNgười có làn da đang gặp vấn đề thâm nám, tàn nhang.\n\n\nNgười có làn da dầu nhờn nhiều, bị mụn hoặc dễ nổi mụn.\n\n\nƯu thế nổi bật:\n\n\nMàng lọc Mexoryl 400 độc quyền giúp chống nắng tối ưu suốt cả ngày dài, bảo vệ da vượt trội khỏi tia UVB và UVA dài (bước sóng 380-400nm), ngăn ngừa hình thành thâm nám hiệu quả.\n\n\nCông nghệ Netlock độc quyền tạo ra kết cấu mỏng nhẹ, kháng trôi tối ưu và trải đều trên bề mặt da.\n\n\nCông thức cải tiến có chứa hoạt chất AIRLICIUM giúp kiểm soát dầu hiệu quả, giữ cho làn da khô thoáng suốt 12 giờ.\n\n\n\n\nKhả năng kháng nước, kháng cát, kháng mồ hôi, không gây cay mắt rất phù hợp với các hoạt động ngoài trời.\n\n\nKết cấu dạng sữa mỏng nhẹ, thấm nhanh, không bóng nhờn, không để lại vệt trắng trên da.\n\n\n \n\n \nHiệu quả sử dụng:\n\n\nHiệu quả với làn da thâm nám sau 8 tuần.\n\n\n \n\n \n\n \n\n \n\nĐộ an toàn:\n\n\nĐược kiểm nghiệm dưới sự giám sát của các chuyên gia da liễu.\n\n\nNgăn chặn hiệu quả tia UVA/UVB.\n\n\nKhả năng dung nạp cao.\n\n\n\nBảo quản:\n\n\nNơi khô ráo thoáng mát.\n\n\nTránh ánh nắng trực tiếp, nơi có nhiệt độ cao hoặc ẩm ướt.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\nThông số sản phẩm:\n\n\nDung tích: 50ml\n\n\nHSD: 03 năm kể từ NSX\n\n\nNSX: Xem trên bao bì\n\n\nThương hiệu: La Roche-Posay\n\n\nXuất xứ thương hiệu: Pháp\n\n\nNơi sản xuất: Pháp.",
-    mainFeature:
-      "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
-    catagory: "chống nắng",
-  },
-  {
-    name: "[Mini] Gel Rửa Mặt La Roche-Posay Dành Cho Da Dầu, Nhạy Cảm 50ml",
-    price: 79000,
-    image:
-      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-gel-rua-mat-tao-bot-la-roche-posay-danh-cho-da-dau-nhay-cam-50ml-1729259557_img_380x380_64adc6_fit_center.jpg",
-    description:
-      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.",
-    mainFeature:
-      "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
-    catagory: "sữa rửa mặt",
-  },
-  {
-    name: "Combo 8 Gel Rửa Mặt La Roche-Posay Cho Da Dầu Nhạy Cảm 50ml",
-    price: 399000,
-    image:
-      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-combo-8-gel-rua-mat-la-roche-posay-danh-cho-da-dau-nhay-cam-50mlx8-1738576731_img_380x380_64adc6_fit_center.jpg",
-    description:
-      "Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n \n\n \nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin Dành Cho Da Dầu, Nhạy Cảm hiện đã có mặt tại Hasaki với 4 dung tích đa dạng phù hợp với từng nhu cầu:\n\n\nDạng tuýp 50ml: thiết kế nhỏ gọn, phù hợp mang theo bên người khi đi du lịch hoặc công tác.\n\n\nDạng tuýp 200ml: phù hợp cho nhu cầu sử dụng hằng ngày tại nhà.\n\n\nDạng chai vòi nhấn 400ml: dung tích lớn hơn, tiết kiệm hơn cùng thiết kế vòi nhấn tiện lợi.\n\n\nTúi refill 400ml: thiết kế dạng túi mới tiện lợi để refill lại vào chai với mục đích bảo vệ môi trường và tiết kiệm giá thành.\n\n\n\n\n\n\n\nThông báo thay đổi bao bì sản phẩm:\nDòng sản phẩm Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có sự thay đổi về bao bì sản phẩm trong năm 2024 như sau:\n \n\n \n\n\nLưu ý: Công thức và kết cấu sản phẩm bên trong không thay đổi.\n\n\nHiện tại Hasaki đang bán song song cả hai phiên bản bao bì cũ và mới.\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa\n\n\nDa nhạy cảm, dễ kích ứng\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n \n \nThông số sản phẩm:\nThương hiệu: La Roche-Posay\nXuất xứ thương hiệu: Pháp\nSản xuất tại: Pháp\nDung tích: 50ml / 200ml / 400ml/ Túi refill 400ml/ 2x50ml/ 3x50ml/ 4x50ml.",
-    mainFeature:
-      "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
-    catagory: "sữa rửa mặt",
-  },
-  {
-    name: "[Mini] Sữa Chống Nắng La Roche-Posay Cho Da Dầu Mụn 15ml",
-    price: 135000,
-    image:
-      "https://media.hcdn.vn/catalog/product/g/o/google-shopping-mini-sua-chong-nang-la-roche-posay-cho-da-dau-mun-15ml-1731982344_img_380x380_64adc6_fit_center.jpg",
-    description:
-      "ANTHELIOS UVMUNE 400 là dòng sản phẩm chống nắng mới nhất của La Roche Posay, với màng lọc độc quyền Mexoryl 400 giúp bảo vệ da tối ưu trước tia UVA dài, ngăn ngừa thâm nám tiềm ẩn và công nghệ Netlock cho khả năng thẩm thấu nhanh chóng, không gây nhờn dính da. Đồng thời, khả năng kháng trôi cao giúp bạn an tâm bảo vệ da phổ rộng suốt cả ngày.\nDòng sản phẩm Sữa Chống Nắng La Roche Posay ANTHELIOS UVMUNE 400 hiện đã có mặt tại Hasaki với 2 phiên bản cho bạn lựa chọn:\n\n\nSữa Chống Nắng La Roche-Posay Anthelios UVMUNE 400 Invisible Fluid: dành cho mọi loại da, đặc biệt là da thường đến da khô.\n\n\nSữa Chống Nắng La Roche-Posay Anthelios UVMUNE 400 Oil Control Fluid: dành cho da dầu, da hỗn hợp dầu đang gặp vấn đề về mụn.\n\n\n\n\n\n1. Sữa Chống Nắng La Roche-Posay Anthelios UVMUNE 400 Invisible Fluid Bảo Vệ Khỏi Tia UVA Dài 50ml\nSữa Chống Nắng La Roche-Posay Anthelios UVMune 400 Fluide Invisible Fluid SPF50+ là phiên bản cải tiến của Anthelios Invisible Fluid – dòng sản phẩm chống nắng rất được yêu thích và được đánh giá cao từ thương hiệu dược mỹ phẩm La Roche-Posay. Sản phẩm cung cấp khả năng bảo vệ da vượt trội khỏi tia UVB & UVA dài – ngay cả các tia ở bước sóng 380 – 400 NM – thủ phạm tiềm ẩn hình thành các gốc thâm nám nằm sâu dưới da.\n \n\n  \nLoại da phù hợp:\n\n\nSản phẩm phù hợp cho mọi loại da, đặc biệt là da thường, da khô.\n\n\nGiải pháp cho tình trạng da:\n\n\nNgười thường xuyên tham gia các hoạt động ngoài trời.\n\n\nNgười có làn da đang gặp vấn đề thâm nám, tàn nhang.\n\n\nNgười có làn da nhạy cảm, dễ kích ứng với ánh nắng.\n\n\n \n\n \nƯu thế nổi bật:\n\n\nMàng lọc Mexoryl 400 độc quyền giúp chống nắng tối ưu suốt cả ngày dài, bảo vệ da vượt trội khỏi tia UVB và UVA dài (bước sóng 380-400nm), ngăn ngừa hình thành thâm nám hiệu quả.\n\n\n\n\n\nCông nghệ Netlock độc quyền tạo ra kết cấu mỏng nhẹ, kháng trôi tối ưu và trải đều trên bề mặt da.\n\n\n\n\n\nKhả năng kháng nước, kháng cát, kháng mồ hôi, không gây cay mắt rất phù hợp với các hoạt động ngoài trời.\n\n\nKết cấu dạng sữa mỏng nhẹ, thấm nhanh, không bóng nhờn, không để lại vệt trắng trên da.\n\n\n\n\n \n \n \n\n \n2. Sữa Chống Nắng La Roche-Posay Anthelios UVMUNE 400 Oil Control Fluid Cho Da Dầu Mụn 50ml\nSữa Chống Nắng La Roche-Posay Anthelios UVMune 400 Oil Control Fluid là dòng chống nắng phổ rộng giúp bảo vệ toàn diện cho làn da dầu mụn trước tác hại từ ánh nắng và ô nhiễm, ngăn chặn các tác nhân gây thâm nám. Sản phẩm với chỉ số PPD cao lên đến 55.8 giúp bảo vệ làn da vượt trội khỏi UVA, kết hợp cùng hoạt chất Airlicium giúp kiềm dầu, giữ da thông thoáng lên đến 12H.\n \n\n \n\n \nLoại da phù hợp:\n\n\nSản phẩm phù hợp cho da dầu, da hỗn hợp thiên dầu.\n\n\nSử dụng cho da mặt. \n\n\n \n\n \n\n \nGiải pháp cho tình trạng da:\n\n\nNgười thường xuyên tham gia các hoạt động ngoài trời.\n\n\nNgười có làn da đang gặp vấn đề thâm nám, tàn nhang.\n\n\nNgười có làn da dầu nhờn nhiều, bị mụn hoặc dễ nổi mụn.\n\n\nƯu thế nổi bật:\n\n\nMàng lọc Mexoryl 400 độc quyền giúp chống nắng tối ưu suốt cả ngày dài, bảo vệ da vượt trội khỏi tia UVB và UVA dài (bước sóng 380-400nm), ngăn ngừa hình thành thâm nám hiệu quả.\n\n\nCông nghệ Netlock độc quyền tạo ra kết cấu mỏng nhẹ, kháng trôi tối ưu và trải đều trên bề mặt da.\n\n\nCông thức cải tiến có chứa hoạt chất AIRLICIUM giúp kiểm soát dầu hiệu quả, giữ cho làn da khô thoáng suốt 12 giờ.\n\n\n\n\nKhả năng kháng nước, kháng cát, kháng mồ hôi, không gây cay mắt rất phù hợp với các hoạt động ngoài trời.\n\n\nKết cấu dạng sữa mỏng nhẹ, thấm nhanh, không bóng nhờn, không để lại vệt trắng trên da.\n\n\n \n\n \nHiệu quả sử dụng:\n\n\nHiệu quả với làn da thâm nám sau 8 tuần.\n\n\n \n\n \n\n \n\n \n\nĐộ an toàn:\n\n\nĐược kiểm nghiệm dưới sự giám sát của các chuyên gia da liễu.\n\n\nNgăn chặn hiệu quả tia UVA/UVB.\n\n\nKhả năng dung nạp cao.\n\n\n\nBảo quản:\n\n\nNơi khô ráo thoáng mát.\n\n\nTránh ánh nắng trực tiếp, nơi có nhiệt độ cao hoặc ẩm ướt.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\nThông số sản phẩm:\n\n\nDung tích: 50ml\n\n\nHSD: 03 năm kể từ NSX\n\n\nNSX: Xem trên bao bì\n\n\nThương hiệu: La Roche-Posay\n\n\nXuất xứ thương hiệu: Pháp\n\n\nNơi sản xuất: Pháp.",
-    mainFeature:
-      "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
-    catagory: "chống nắng",
-  },
-  {
-    name: "Combo 2 Nước Tẩy Trang La Roche-Posay Cho Da Dầu, Nhạy Cảm 400ml",
-    price: 722000,
-    image:
-      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-combo-2-nuoc-tay-trang-la-roche-posay-cho-da-dau-nhay-cam-400ml-1700471917_img_380x380_64adc6_fit_center.jpg",
-    description:
-      "Nước Tẩy Trang Sạch Sâu & Kiểm Soát Nhờn Cho Da Dầu La Roche-Posay Effaclar Micellar Water Ultra Oily Skin là sản phẩm nước tẩy trang đến từ thương hiệu dược mỹ phẩm La Roche-Posay, với công nghệ cải tiến Glyco Micellar mang lại hiệu quả làm sạch sâu vượt trội, giúp lấy đi lớp trang điểm, bã nhờn và các hạt bụi siêu nhỏ có trong khói xe và môi trường ô nhiễm nhưng vẫn an toàn cho làn da dầu nhạy cảm & dễ kích ứng.\n \n\n \nNước Tẩy Trang La Roche-Posay Effaclar Micellar Water Ultra Oily Skin hiện đã có mặt tại Hasaki với các quy cách đóng gói:\n\n\n100ml\n\n\n200ml\n\n\n400ml\n\n\n400mlx2\n\n\n\n\n\n\nLoại da phù hợp:\n\nNước Tẩy Trang La Roche-Posay Effaclar Micellar Water Ultra Oily Skin phù hợp cho da dầu, da mụn, da nhạy cảm.\n\nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to.\n\n\nDa mụn hoặc dễ nổi mụn.\n\n\nDa nhạy cảm, dễ kích ứng.\n\n\nDa trang điểm nhiều.\n\n\nƯu thế nổi bật:\n\n\nCông nghệ GLYCO-MICELLAR giúp làm sạch sâu da, lấy đi lớp trang điểm, bã nhờn và bụi mịn PM2.5 hiệu quả mà vẫn giữ được sự cân bằng cho bề mặt da, mang đến cảm giác sạch thoáng và tươi mát.\n\n\nLàm sạch đến 99% lớp trang điểm, 70% mascara và các hạt bụi siêu nhỏ có trong khói xe và môi trường ô nhiễm chỉ sau một lượt bông cotton.\n\n\n\n\nVới nước khoáng La Roche-Posay - nguồn khoáng duy nhất có chứa nồng độ Selenium tự nhiên cao, giúp làm dịu & chống oxy hoá.\n\n\nCung cấp độ ẩm với Glycerin, giảm thiểu ma sát gây tổn thương da trong quá trình làm sạch.\n\n\n\n\nSản phẩm có chứa muối kẽm (Zinc) giúp điều tiết bã nhờn, kiềm dầu hiệu quả.\n\n\nDịu nhẹ cho làn da nhạy cảm, có thể sử dụng cho cả mắt và môi mà không làm cay mắt.\n\n\n\n\n \n\n\n\n  \nĐộ an toàn:\n\n\nNước Tẩy Trang La Roche-Posay Effaclar Micellar Water Ultra Oily Skin không chứa xà phòng, chất tạo màu, cồn hay paraben, đảm bảo tuyệt đối an toàn cho người sử dụng.\n\n\n \n\n \n\nBảo quản:\n\n\nTránh ánh nắng trực tiếp.\n\n\nĐể nơi khô ráo, thoáng mát.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\nThông số sản phẩm:\n\n\nDung tích: 100ml / 200ml / 400ml / 400mlx2\n\n\nXuất xứ thương hiệu: Pháp\n\n\nNơi sản xuất: Pháp\n\n\nHạn sử dụng: 3 năm kể từ ngày sản xuất\n\n\nNgày sản xuất: Xem trên bao bì sản phẩm.",
-    mainFeature:
-      "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
-    catagory: "nước tẩy trang",
-  },
-  {
-    name: "Combo La Roche-Posay Chống Nắng Kiểm Soát Dầu & Làm Sạch Da",
-    price: 479000,
-    image:
-      "https://media.hcdn.vn/catalog/product/f/a/facebook-dynamic-204900058-1700187870_img_380x380_64adc6_fit_center.jpg",
-    description:
-      "Bộ sản phẩm bao gồm 2 món:\n\n\n01 x Kem chống nắng La Roche-Posay UVMune 400 Oil Control Gel Cream 50ml\n\n\n01 x Gel Rửa Mặt Dành Cho Da Dầu, Nhạy Cảm La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin 50ml\n\n\nTHÔNG TIN SẢN PHẨM\n1. Kem chống nắng La Roche-Posay UVMune 400 Oil Control Gel Cream 50ml\nKem chống nắng La Roche-Posay UVMune 400 Oil Control Gel Cream 50ml đến từ thương hiệu dược mỹ phẩm La Roche-Posay là sản phẩm kem chống nắng nắng dành cho da dầu phiên bản công thức cải tiến mới giúp kiểm soát bóng nhờn và bảo vệ da trước tác hại từ ánh nắng & ô nhiễm, ngăn chặn các tác nhân gây lão hóa sớm. Sản phẩm có công thức chống thấm nước thích hợp dùng hằng ngày và cả những hoạt động ngoài trời.\n\n\n \nLưu ý: Hiện Hasaki đang bán song song 2 mẫu cũ và mới.\nLoại da phù hợp:\n\n\nSản phẩm phù hợp cho da dầu và da hỗn hợp.\n\n\nThích hợp sử dụng cho da mặt và cổ.\n\n\nGiải pháp cho tình trạng da:\n\n\nDa dầu thừa - lỗ chân lông to.\n\n\nDa mụn hoặc dễ nổi mụn do bít tắc lỗ chân lông.\n\n\nƯu điểm nổi bật:\n\n\nKết cấu dạng kem gel, thẩm thấu tức thì, mang lại cảm giác khô thoáng, không để lại vệt trắng.\n\n\nKiểm soát bã nhờn & mồ hôi vượt trội nhờ hoạt chất AIRLICIUM, giúp mang đến một cảm giác “sạch” cho làn da đến 12h.\n\n\nBảo vệ da trước những tác hại từ ánh nắng & ô nhiễm: lão hóa sớm, đốm nâu, kích ứng ánh nắng.\n\n\nĐộ chống nắng cao nhất SPF 50+ bảo vệ da tối ưu dưới ánh nắng.\n\n\nChống nắng phổ rộng với màng lọc độc quyền MEXORYL 400 - màng lọc UV duy nhất trên thị trường và hiệu quả nhất, kể cả trước những tia UVA dài làm hủy hoại tế bào da với bước sóng 380-400nm. Ngăn chặn hiệu quả của thâm nám da.\n\n\nBảo quản:\n\n\nTránh ánh nắng trực tiếp.\n\n\nĐể nơi khô ráo, thoáng mát.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n2. Gel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin\nGel Rửa Mặt La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin là dòng sản phẩm sữa rửa mặt chuyên biệt dành cho làn da dầu, mụn, nhạy cảm đến từ thương hiệu dược mỹ phẩm La Roche-Posay nổi tiếng của Pháp, với kết cấu dạng gel tạo bọt nhẹ nhàng giúp loại bỏ bụi bẩn, tạp chất và bã nhờn dư thừa trên da hiệu quả, mang đến làn da sạch mịn, thoáng nhẹ và tươi mát. Công thức sản phẩm an toàn, lành tính, giảm thiểu tình trạng kích ứng đối với làn da nhạy cảm.\n\n\n\nLoại da phù hợp:\n\nSản phẩm phù hợp cho da dầu, da mụn, da nhạy cảm.\n\n \n\n\nGiải pháp cho tình trạng da:\n\n\nDầu thừa - lỗ chân lông to.\n\n\nDa mụn cám, đầu đen, đầu trắng và sưng viêm từ trung bình đến nặng vừa.\n\n\nDa nhạy cảm, dễ kích ứng.\n\n\nƯu thế nổi bật:\n La Roche-Posay Effaclar Purifying Foaming Gel For Oily Sensitive Skin có công thức được lựa chọn kĩ càng với các thành phần hoạt tính dịu nhẹ, phù hợp cho làn da dầu, mụn & nhạy cảm:\n\n\nNước khoáng thiên nhiên La Roche-Posay có tác dụng làm dịu da và giảm kích ứng.\n\n\nZinC PCA giúp điều tiết lượng dầu tiết ra trên da, từ đó kiểm soát bóng dầu và bã nhờn dư thừa hiệu quả, giảm hình thành mụn đầu đen.\n\n\nĐộ pH 5.5 giống với độ pH tự nhiên trên da, giúp củng cố hàng rào bảo vệ da, không gây cảm giác khô căng, khó chịu.\n\n\nKết cấu sản phẩm dạng gel tạo bọt, nhẹ nhàng loại bỏ những tạp chất, bụi bẩn và ô nhiễm trên da, mang đến cảm giác tươi mát đầy sảng khoái sau khi rửa mặt.\n\n\nHương thơm hoa cúc dịu nhẹ sẽ giúp bạn thư giãn trong suốt quá trình sử dụng.\n\n\n \n\n\n \n\n \n\n\n\nĐộ an toàn:\n\n\nKhông chứa Paraben, chất tạo màu, xà phòng, cồn, an toàn cho làn da nhạy cảm.\n\n\nCông thức không chứa dầu (oil-free) nên rất thích hợp cho da dầu.\n\n\nBảo quản:\n\n\nBảo quản nơi khô ráo, thoáng mát, tránh ánh nắng trực tiếp hoặc nơi có nhiệt độ cao / ẩm ướt.\n\n\nTránh xa tầm tay trẻ em.\n\n\nĐậy nắp kín sau khi sử dụng.\n\n\n \n\n \nThông số sản phẩm:\n\n\nThương hiệu: La Roche-Posay\n\n\nXuất xứ thương hiệu: Pháp\n\n\nSản xuất tại: Pháp\n\n\nQuy cách đóng gói: Combo 2 món (kem chống nắng 50ml + gel rửa mặt 50ml)\n\n\n Lưu ý: Tác dụng có thể khác nhau tuỳ cơ địa của người dùng",
-    mainFeature:
-      "Gently cleanses and purifies oily, acne-prone, and sensitive skin. Controls excess oil and reduces blackheads with Zinc PCA. Soothes and reduces irritation with La Roche-Posay Thermal Spring Water, formulated with a physiological pH 5.5.",
-    catagory: "combo",
-  },
-];

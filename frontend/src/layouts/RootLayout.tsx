@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 
+import { AppGuard } from "@/components/AppGuard";
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/contexts/auth.context";
 
@@ -16,7 +17,6 @@ export default function RootLayout() {
     // </div>
     <div className="min-h-screen bg-white">
       <AuthProvider>
-        <Outlet />
         <Toaster
           toastOptions={{
             classNames: {
@@ -35,6 +35,9 @@ export default function RootLayout() {
             },
           }}
         />
+        <AppGuard>
+          <Outlet />
+        </AppGuard>
       </AuthProvider>
     </div>
   );

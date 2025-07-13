@@ -1,0 +1,33 @@
+type: object
+properties:
+  ShipAddress:
+    type: string
+    description: The shipping address for the order.
+    example: "123 Le Loi, District 1, Ho Chi Minh City"
+  Description:
+    type: string
+    description: Optional notes or description for the order.
+    example: "Please call before delivery."
+  RequireDate:
+    type: string
+    format: date-time
+    description: The required delivery date for the order.
+  Discount:
+    type: string
+    description: "Discount percentage (e.g., '10' for 10%)."
+    example: "10"
+  PaymentMethod:
+    type: string
+    enum: [COD, ZALOPAY, VNPAY]
+    default: COD
+  PaymentStatus:
+    type: string
+    enum: [UNPAID, PAID]
+    default: UNPAID
+  type:
+    type: string
+    enum: [cart, buy-now]
+    description: The type of checkout.
+required:
+  - ShipAddress
+  - RequireDate

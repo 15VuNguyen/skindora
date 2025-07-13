@@ -1,0 +1,21 @@
+type: object
+properties:
+  data:
+    type: array
+    items:
+      $ref: './Voucher.yaml'
+  pagination:
+    type: object
+    properties:
+      limit:
+        type: integer
+        example: 10
+      currentPage:
+        type: integer
+        example: 1
+      totalPages:
+        type: integer
+        example: 5
+      totalRecords:
+        type: integer
+        example: 48

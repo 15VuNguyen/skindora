@@ -1,0 +1,9 @@
+type: object
+properties:
+  Quantity:
+    type: integer
+    description: "The new quantity for the product. Set to 0 to remove the item."
+    example: 3
+    minimum: 0
+required:
+  - Quantity

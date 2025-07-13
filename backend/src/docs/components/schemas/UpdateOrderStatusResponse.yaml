@@ -1,0 +1,17 @@
+type: object
+properties:
+  message:
+    type: string
+    example: "Update to next status successfully"
+  result:
+    type: object
+    properties:
+      orderId:
+        type: string
+        format: mongoId
+      previousStatus:
+        type: string
+        enum: [PENDING, CONFIRMED, PROCESSING, SHIPPING, DELIVERED, CANCELLED, RETURNED, FAILED]
+      updatedStatus:
+        type: string
+        enum: [PENDING, CONFIRMED, PROCESSING, SHIPPING, DELIVERED, CANCELLED, RETURNED, FAILED]

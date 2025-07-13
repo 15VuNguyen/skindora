@@ -1,0 +1,19 @@
+type: object
+required:
+  - option_name
+  - category_name
+  - category_param
+properties:
+  option_name:
+    type: string
+    example: 'Làm Sáng Da'
+  category_name:
+    type: string
+    example: 'Đặc Tính'
+  category_param:
+    type: string
+    example: 'lam-sang-da'
+  state:
+    type: string
+    enum: [INACTIVE, ACTIVE]
+    default: 'ACTIVE'

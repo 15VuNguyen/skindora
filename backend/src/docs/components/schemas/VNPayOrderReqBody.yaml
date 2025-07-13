@@ -1,0 +1,26 @@
+type: object
+properties:
+  amount:
+    type: number
+    description: "Total amount for the payment."
+    example: 500000
+  bankCode:
+    type: string
+    description: "Optional bank code for specific bank gateway."
+    example: "NCB"
+  language:
+    type: string
+    description: "Language for the payment gateway."
+    enum: [vn, en]
+    default: "vn"
+  orderDescription:
+    type: string
+    description: "Description of the order."
+    example: "Thanh toan don hang #12345"
+  orderType:
+    type: string
+    description: "Type of the order."
+    default: "other"
+    example: "billpayment"
+required:
+  - amount

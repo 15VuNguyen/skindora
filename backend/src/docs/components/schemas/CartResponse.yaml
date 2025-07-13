@@ -1,0 +1,31 @@
+type: object
+properties:
+  message:
+    type: string
+    example: 'Cart fetched successfully'
+  result:
+    type: object
+    properties:
+      Products:
+        type: array
+        items:
+          type: object
+          properties:
+            ProductID:
+              type: string
+              format: mongoId
+            Quantity:
+              type: integer
+            name:
+              type: string
+              example: 'Toner Pad'
+            image:
+              type: string
+              format: uri
+              example: 'https://example.com/image.jpg'
+            unitPrice:
+              type: number
+              example: 250000
+            totalPrice:
+              type: number
+              example: 500000

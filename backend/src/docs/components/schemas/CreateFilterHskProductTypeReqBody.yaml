@@ -1,0 +1,22 @@
+type: object
+required:
+  - option_name
+  - category_name
+  - category_param
+properties:
+  option_name:
+    type: string
+    example: 'Kem Chống Nắng'
+  description:
+    type: string
+    example: 'Sản phẩm bảo vệ da khỏi tia UV'
+  category_name:
+    type: string
+    example: 'Loại Sản Phẩm HSK'
+  category_param:
+    type: string
+    example: 'kem-chong-nang'
+  state:
+    type: string
+    enum: [INACTIVE, ACTIVE]
+    default: 'ACTIVE'

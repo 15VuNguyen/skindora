@@ -1,0 +1,20 @@
+type: object
+properties:
+  description:
+    type: string
+  discountType:
+    type: string
+    enum: [PERCENTAGE, FIXED]
+  discountValue:
+    type: number
+  maxDiscountAmount:
+    type: number
+  minOrderValue:
+    type: number
+  endDate:
+    type: string
+    format: date-time
+  usageLimit:
+    type: integer
+  userUsageLimit:
+    type: integer

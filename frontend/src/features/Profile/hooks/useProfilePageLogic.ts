@@ -4,14 +4,16 @@ import { useForm } from "react-hook-form";
 import { toast as sonnerToast } from "sonner";
 
 import { useAuth } from "@/contexts/auth.context";
+import { useUpdateProfileMutation } from "@/hooks/mutations/useUpdateProfileMutation";
 import { type ProfileUpdateFormData, profileUpdateSchema } from "@/schemas/authSchemas";
 import { type UpdateMePayload, authService } from "@/services/authService";
 
 export function useProfilePageLogic() {
-  const { user, fetchUserProfile, isLoading: isAuthLoadingGlobal } = useAuth();
+  const { user, isLoading: isAuthLoadingGlobal } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmittingActions, setIsSubmittingActions] = useState(false);
-//TODO: doi sang vietnamese 
+  const updateProfileMutation = useUpdateProfileMutation();
+
   const form = useForm<ProfileUpdateFormData>({
     resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
@@ -20,6 +22,7 @@ export function useProfilePageLogic() {
       username: "",
       location: "",
       avatar: "",
+      phone: "",
     },
   });
 
@@ -31,6 +34,7 @@ export function useProfilePageLogic() {
         username: user.username || "",
         location: user.location || "",
         avatar: user.avatar || "",
+        phone: user.phone || "",
       });
     }
   }, [user, form, isEditing]);
@@ -62,35 +66,43 @@ export function useProfilePageLogic() {
         payload.avatar = data.avatar;
         hasChanges = true;
       }
-
+      if (data.phone !== undefined && data.phone !== (user.phone || "")) {
+        payload.phone_number = data.phone;
+        hasChanges = true;
+      }
       if (!hasChanges) {
-        sonnerToast.info("No Changes", { description: "No changes were detected to save." });
+        sonnerToast.info("Không có thay đổi", { description: "Không phát hiện thay đổi nào để lưu." });
         setIsEditing(false);
         return;
       }
 
-      const result = await authService.updateMe(payload);
-      if (result.isOk()) {
-        sonnerToast.success("Profile Updated", { description: "Your profile has been updated successfully." });
-        await fetchUserProfile();
-        setIsEditing(false);
-      } else {
-        sonnerToast.error("Update Failed", { description: result.error.message || "Could not update profile." });
-      }
+      updateProfileMutation.mutate(payload, {
+        onSuccess: () => {
+          sonnerToast.success("Cập nhật hồ sơ thành công", {
+            description: "Thông tin cá nhân của bạn đã được cập nhật thành công.",
+          });
+          setIsEditing(false);
+        },
+        onError: (error) => {
+          sonnerToast.error("Cập nhật thất bại", {
+            description: error.message || "Không thể cập nhật hồ sơ.",
+          });
+        },
+      });
     },
-    [user, fetchUserProfile, setIsEditing]
+    [user, updateProfileMutation]
   );
 
   const handleVerifyEmail = useCallback(async () => {
     setIsSubmittingActions(true);
     const result = await authService.resendVerificationEmail();
     if (result.isOk()) {
-      sonnerToast.success("Verification Email Sent", {
-        description: "Please check your email for verification instructions.",
+      sonnerToast.success("Đã gửi email xác thực", {
+        description: "Vui lòng kiểm tra email để xác thực tài khoản.",
       });
     } else {
-      sonnerToast.error("Failed to Send Email", {
-        description: result.error.message || "Could not send verification email.",
+      sonnerToast.error("Gửi email thất bại", {
+        description: result.error.message || "Không thể gửi email xác thực.",
       });
     }
     setIsSubmittingActions(false);
@@ -104,6 +116,7 @@ export function useProfilePageLogic() {
         username: user.username || "",
         location: user.location || "",
         avatar: user.avatar || "",
+        phone: user.phone || "",
       });
     }
     setIsEditing(false);

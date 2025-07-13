@@ -1,0 +1,47 @@
+type: object
+required:
+  - code
+  - discountType
+  - discountValue
+  - maxDiscountAmount
+  - minOrderValue
+  - startDate
+  - endDate
+properties:
+  code:
+    type: string
+    description: "Unique voucher code (3-10 alphanumeric characters)."
+    example: "SUMMER25"
+  description:
+    type: string
+    description: "A short description."
+    example: "Summer Sale 25%"
+  discountType:
+    type: string
+    enum: [PERCENTAGE, FIXED]
+  discountValue:
+    type: number
+    description: "Discount value. If percentage, must be >0 and <100. If fixed, must be >1000."
+    example: 25
+  maxDiscountAmount:
+    type: number
+    description: "Maximum discount amount."
+    example: 50000
+  minOrderValue:
+    type: number
+    description: "Minimum order value to apply the voucher."
+    example: 200000
+  startDate:
+    type: string
+    format: date-time
+  endDate:
+    type: string
+    format: date-time
+  usageLimit:
+    type: integer
+    description: "Total usage limit."
+    example: 100
+  userUsageLimit:
+    type: integer
+    description: "Usage limit per user."
+    example: 1

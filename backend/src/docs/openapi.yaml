@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Skindora API
   version: '1.0.0'
-  description: API for the Skindora application, primarily handling user authentication and management.
+  description: API for the Skindora application, handling user authentication, management, and other core features.
   contact:
     name: Skindora Team
     email: skindora.site@gmail.com
@@ -11,19 +11,50 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
 
 servers:
-  - url: https://api.skindora.site/api-docs
-    description: Server development
+  - url: http://localhost:4000
+    description: Development Server
+  - url: https://skindora.site
+    description: Production Server
 
 tags:
   - name: Users
-    description: User authentication and management operations
-
+    description: Operations related to user authentication, profile, and management.
+  - name: Staffs
+    description: Operations available only to staff and admin roles.
+  - name: Reviews
+    description: Operations for creating and managing product reviews.
+  - name: Products
+    description: Operations for viewing and managing products.
+  - name: Payments
+    description: Operations related to payment gateways like ZaloPay and VNPay.
+  - name: Orders
+    description: Operations related to creating and managing customer orders.
+  - name: Carts
+    description: Operations for managing the user's shopping cart.
+  - name: Admin
+    description: Operations for managing the system.
+  - name: Admin - Filter Brand
+    description: 'Quản lý bộ lọc Thương hiệu (filter_brand)'
+  - name: Admin - Filter Dac Tinh
+    description: 'Quản lý bộ lọc Đặc tính (filter_dac_tinh)'
+  - name: Admin - Filter Ingredient
+    description: 'Quản lý bộ lọc Thành phần (filter_hsk_ingredient)'
+  - name: Admin - Filter Product Type
+    description: 'Quản lý bộ lọc Loại sản phẩm (filter_hsk_product_type)'
+  - name: Admin - Filter Size
+    description: 'Quản lý bộ lọc Kích thước (filter_hsk_size)'
+  - name: Admin - Filter Skin Type
+    description: 'Quản lý bộ lọc Loại da (filter_hsk_skin_type)'
+  - name: Admin - Filter Uses
+    description: 'Quản lý bộ lọc Công dụng (filter_hsk_uses)'
+  - name: Admin - Filter Origin
+    description: 'Quản lý bộ lọc Nguồn gốc (filter_origin)'
 paths:
-  $ref: './paths/users.yaml'
+  $ref: './paths/all-paths.yaml'
 
 components:
   schemas:
-    #Schemas cho Request Body
+    # --- Request Body Schemas ---
     RegisterReqBody:
       $ref: './components/schemas/RegisterReqBody.yaml'
     LoginReqBody:
@@ -44,30 +75,204 @@ components:
       $ref: './components/schemas/UpdateMeReqBody.yaml'
     RefreshTokenReqBody:
       $ref: './components/schemas/RefreshTokenReqBody.yaml'
+    AddToWishListReqBody:
+      $ref: './components/schemas/AddToWishListReqBody.yaml'
+    RemoveFromWishListReqBody:
+      $ref: './components/schemas/RemoveFromWishListReqBody.yaml'
+    # staff
+    PaginatedProductResponse:
+      $ref: './components/schemas/PaginatedProductResponse.yaml'
+    Product:
+      $ref: './components/schemas/Product.yaml'
+    # review
+    AddNewReviewReqBody:
+      $ref: './components/schemas/AddNewReviewReqBody.yaml'
+    UpdateReviewReqBody:
+      $ref: './components/schemas/UpdateReviewReqBody.yaml'
+    Review:
+      $ref: './components/schemas/Review.yaml'
+    ReviewSuccessResponse:
+      $ref: './components/schemas/ReviewSuccessResponse.yaml'
+    PaginatedReviewResponse:
+      $ref: './components/schemas/PaginatedReviewResponse.yaml'
+    # payment
+    ZaloPayOrderReqBody:
+      $ref: './components/schemas/ZaloPayOrderReqBody.yaml'
+    VNPayOrderReqBody:
+      $ref: './components/schemas/VNPayOrderReqBody.yaml'
+    # orders
+    PrepareOrderReqBody:
+      $ref: './components/schemas/PrepareOrderReqBody.yaml'
+    BuyNowReqBody:
+      $ref: './components/schemas/BuyNowReqBody.yaml'
+    CheckoutReqBody:
+      $ref: './components/schemas/CheckoutReqBody.yaml'
+    CancelOrderReqBody:
+      $ref: './components/schemas/CancelOrderReqBody.yaml'
+    ApproveRejectCancelReqBody:
+      $ref: './components/schemas/ApproveRejectCancelReqBody.yaml'
+    Order:
+      $ref: './components/schemas/Order.yaml'
+    PreparedOrderResponse:
+      $ref: './components/schemas/PreparedOrderResponse.yaml'
+    OrderWithDetailsResponse:
+      $ref: './components/schemas/OrderWithDetailsResponse.yaml'
+    PaginatedOrderResponse:
+      $ref: './components/schemas/PaginatedOrderResponse.yaml'
+    UpdateOrderStatusResponse:
+      $ref: './components/schemas/UpdateOrderStatusResponse.yaml'
+    OrderCreationResponse:
+      $ref: './components/schemas/OrderCreationResponse.yaml'
+    # carts
+    AddToCartReqBody:
+      $ref: './components/schemas/AddToCartReqBody.yaml'
+    UpdateCartReqBody:
+      $ref: './components/schemas/UpdateCartReqBody.yaml'
+    CartResponse:
+      $ref: './components/schemas/CartResponse.yaml'
+    # admin
+    PaginatedUserResponse:
+      $ref: './components/schemas/PaginatedUserResponse.yaml'
+    CreateVoucherReqBody:
+      $ref: './components/schemas/CreateVoucherReqBody.yaml'
+    UpdateVoucherReqBody:
+      $ref: './components/schemas/UpdateVoucherReqBody.yaml'
+    VoucherCreationResponse:
+      $ref: './components/schemas/VoucherCreationResponse.yaml'
+    CreateProductReqBody:
+      $ref: './components/schemas/CreateProductReqBody.yaml'
+    UpdateProductReqBody:
+      $ref: './components/schemas/UpdateProductReqBody.yaml'
+    CreateFilterBrandReqBody:
+      $ref: './components/schemas/CreateFilterBrandReqBody.yaml'
+    DetailSection:
+      $ref: './components/schemas/DetailSection.yaml'
+    UpdateUserStateReqBody:
+      $ref: './components/schemas/UpdateUserStateReqBody.yaml'
+    UpdateProductStateReqBody:
+      $ref: './components/schemas/UpdateProductStateReqBody.yaml'
+    #Filter management
+    #FilterBrand
+    FilterBrand:
+      $ref: './components/schemas/FilterBrand.yaml'
+    PaginatedFilterBrandResponse:
+      $ref: './components/schemas/PaginatedFilterBrandResponse.yaml'
+    UpdateFilterBrandReqBody:
+      $ref: './components/schemas/UpdateFilterBrandReqBody.yaml'
+    DisableFilterBrandReqBody:
+      $ref: './components/schemas/DisableFilterBrandReqBody.yaml'
+    # FilterDacTinh
+    FilterDacTinh:
+      $ref: './components/schemas/FilterDacTinh.yaml'
+    CreateFilterDacTinhReqBody:
+      $ref: './components/schemas/CreateFilterDacTinhReqBody.yaml'
+    UpdateFilterDacTinhReqBody:
+      $ref: './components/schemas/UpdateFilterDacTinhReqBody.yaml'
+    DisableFilterDacTinhReqBody:
+      $ref: './components/schemas/DisableFilterDacTinhReqBody.yaml'
+    PaginatedFilterDacTinhResponse:
+      $ref: './components/schemas/PaginatedFilterDacTinhResponse.yaml'
+    # FilterHskIngredient
+    FilterHskIngredient:
+      $ref: './components/schemas/FilterHskIngredient.yaml'
+    CreateFilterHskIngredientReqBody:
+      $ref: './components/schemas/CreateFilterHskIngredientReqBody.yaml'
+    UpdateFilterHskIngredientReqBody:
+      $ref: './components/schemas/UpdateFilterHskIngredientReqBody.yaml'
+    DisableFilterHskIngredientReqBody:
+      $ref: './components/schemas/DisableFilterHskIngredientReqBody.yaml'
+    PaginatedFilterHskIngredientResponse:
+      $ref: './components/schemas/PaginatedFilterHskIngredientResponse.yaml'
+    # FilterHskProductType
+    FilterHskProductType:
+      $ref: './components/schemas/FilterHskProductType.yaml'
+    CreateFilterHskProductTypeReqBody:
+      $ref: './components/schemas/CreateFilterHskProductTypeReqBody.yaml'
+    UpdateFilterHskProductTypeReqBody:
+      $ref: './components/schemas/UpdateFilterHskProductTypeReqBody.yaml'
+    DisableFilterHskProductTypeReqBody:
+      $ref: './components/schemas/DisableFilterHskProductTypeReqBody.yaml'
+    PaginatedFilterHskProductTypeResponse:
+      $ref: './components/schemas/PaginatedFilterHskProductTypeResponse.yaml'
+    # FilterHskSize
+    FilterHskSize:
+      $ref: './components/schemas/FilterHskSize.yaml'
+    CreateFilterHskSizeReqBody:
+      $ref: './components/schemas/CreateFilterHskSizeReqBody.yaml'
+    UpdateFilterHskSizeReqBody:
+      $ref: './components/schemas/UpdateFilterHskSizeReqBody.yaml'
+    DisableFilterHskSizeReqBody:
+      $ref: './components/schemas/DisableFilterHskSizeReqBody.yaml'
+    PaginatedFilterHskSizeResponse:
+      $ref: './components/schemas/PaginatedFilterHskSizeResponse.yaml'
+    # FilterHskSkinType
+    FilterHskSkinType:
+      $ref: './components/schemas/FilterHskSkinType.yaml'
+    CreateFilterHskSkinTypeReqBody:
+      $ref: './components/schemas/CreateFilterHskSkinTypeReqBody.yaml'
+    UpdateFilterHskSkinTypeReqBody:
+      $ref: './components/schemas/UpdateFilterHskSkinTypeReqBody.yaml'
+    DisableFilterHskSkinTypeReqBody:
+      $ref: './components/schemas/DisableFilterHskSkinTypeReqBody.yaml'
+    PaginatedFilterHskSkinTypeResponse:
+      $ref: './components/schemas/PaginatedFilterHskSkinTypeResponse.yaml'
+    # FilterHskUses
+    FilterHskUses:
+      $ref: './components/schemas/FilterHskUses.yaml'
+    CreateFilterHskUsesReqBody:
+      $ref: './components/schemas/CreateFilterHskUsesReqBody.yaml'
+    UpdateFilterHskUsesReqBody:
+      $ref: './components/schemas/UpdateFilterHskUsesReqBody.yaml'
+    DisableFilterHskUsesReqBody:
+      $ref: './components/schemas/DisableFilterHskUsesReqBody.yaml'
+    PaginatedFilterHskUsesResponse:
+      $ref: './components/schemas/PaginatedFilterHskUsesResponse.yaml'
+    # FilterHskOrigin
+    FilterHskOrigin:
+      $ref: './components/schemas/FilterHskOrigin.yaml'
+    CreateFilterHskOriginReqBody:
+      $ref: './components/schemas/CreateFilterHskOriginReqBody.yaml'
+    UpdateFilterHskOriginReqBody:
+      $ref: './components/schemas/UpdateFilterHskOriginReqBody.yaml'
+    DisableFilterHskOriginReqBody:
+      $ref: './components/schemas/DisableFilterHskOriginReqBody.yaml'
+    PaginatedFilterHskOriginResponse:
+      $ref: './components/schemas/PaginatedFilterHskOriginResponse.yaml'
 
-    #Schemas cho Response
+    # --- Response Schemas ---
+    ProductStatsResponse:
+      $ref: './components/schemas/ProductStatsResponse.yaml'
     AuthSuccessResponse:
       $ref: './components/schemas/AuthSuccessResponse.yaml'
+    LoginSuccessResponse:
+      $ref: './components/schemas/LoginSuccessResponse.yaml'
+    GetMeSuccessResponse:
+      $ref: './components/schemas/GetMeSuccessResponse.yaml'
+    RefreshTokenSuccessResponse:
+      $ref: './components/schemas/RefreshTokenSuccessResponse.yaml'
     MessageResponse:
       $ref: './components/schemas/MessageResponse.yaml'
+    WishListResponse:
+      $ref: './components/schemas/WishListResponse.yaml'
+    PaginatedVoucherResponse:
+      $ref: './components/schemas/PaginatedVoucherResponse.yaml'
+
+    # --- Error Schemas ---
     ErrorValidationResponse:
       $ref: './components/schemas/ErrorValidationResponse.yaml'
     ErrorStatusResponse:
       $ref: './components/schemas/ErrorStatusResponse.yaml'
     ErrorServerResponse:
       $ref: './components/schemas/ErrorServerResponse.yaml'
-    GetMeSuccessResponse:
-      $ref: './components/schemas/GetMeSuccessResponse.yaml'
-    RefreshTokenSuccessResponse:
-      $ref: './components/schemas/RefreshTokenSuccessResponse.yaml'
 
-    #Schema cho Model
+    # --- Model Schemas ---
     User:
       $ref: './components/schemas/User.yaml'
+    Voucher:
+      $ref: './components/schemas/Voucher.yaml'
 
   securitySchemes:
     BearerAuth:
       $ref: './components/securitySchemes/BearerAuth.yaml'
-
-security:
-  - BearerAuth: []
+  parameters:
+    $ref: './parameters/all-parameters.yaml'

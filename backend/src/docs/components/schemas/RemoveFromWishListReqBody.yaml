@@ -1,0 +1,11 @@
+type: object
+properties:
+  productId:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    description: An array of product IDs to remove from the wishlist.
+    example: ['60c72b2f9b1d8e001f8e8e8e']
+required:
+  - productId

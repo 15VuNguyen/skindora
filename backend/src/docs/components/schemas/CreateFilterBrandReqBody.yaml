@@ -1,0 +1,19 @@
+type: object
+required:
+  - option_name
+  - category_name
+  - category_param
+properties:
+  option_name:
+    type: string
+    example: "La Roche-Posay"
+  category_name:
+    type: string
+    example: "Thương hiệu"
+  category_param:
+    type: string
+    example: "la-roche-posay"
+  state:
+    type: string
+    enum: [INACTIVE, ACTIVE, COLLABORATION, PARTNERSHIP, EXCLUSIVE, LIMITED_EDITION, SUSPENDED, DISCONTINUED]
+    default: "ACTIVE"

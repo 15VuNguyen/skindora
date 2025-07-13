@@ -1,0 +1,12 @@
+type: object
+description: "Only include the fields that need to be updated."
+properties:
+  option_name:
+    type: string
+    example: "La Roche-Posay (Official)"
+  category_name:
+    type: string
+    example: "Thương Hiệu Nổi Bật"
+  category_param:
+    type: string
+    example: "la-roche-posay-official"

@@ -1,0 +1,80 @@
+type: object
+required:
+  - name_on_list
+  - engName_on_list
+  - price_on_list
+  - image_on_list
+  - hover_image_on_list
+  - productName_detail
+  - engName_detail
+  - description_detail
+  - ingredients_detail
+  - guide_detail
+  - specification_detail
+  - main_images_detail
+  - sub_images_detail
+  - quantity
+properties:
+  name_on_list:
+    type: string
+  engName_on_list:
+    type: string
+  price_on_list:
+    type: string
+  image_on_list:
+    type: string
+    format: uri
+  hover_image_on_list:
+    type: string
+    format: uri
+  productName_detail:
+    type: string
+  engName_detail:
+    type: string
+  description_detail:
+    $ref: './DetailSection.yaml'
+  ingredients_detail:
+    $ref: './DetailSection.yaml'
+  guide_detail:
+    $ref: './DetailSection.yaml'
+  specification_detail:
+    $ref: './DetailSection.yaml'
+  main_images_detail:
+    type: array
+    items:
+      type: string
+      format: uri
+  sub_images_detail:
+    type: array
+    items:
+      type: string
+      format: uri
+  filter_brand:
+    type: string
+    format: mongoId
+  filter_dac_tinh:
+    type: string
+    format: mongoId
+  filter_hsk_ingredients:
+    type: string
+    format: mongoId
+  filter_hsk_product_type:
+    type: string
+    format: mongoId
+  filter_hsk_size:
+    type: string
+    format: mongoId
+  filter_hsk_skin_type:
+    type: string
+    format: mongoId
+  filter_hsk_uses:
+    type: string
+    format: mongoId
+  filter_origin:
+    type: string
+    format: mongoId
+  quantity:
+    type: integer
+  state:
+    type: string
+    enum: [INACTIVE, ACTIVE, OUT_OF_STOCK, DISCONTINUED]

@@ -1,5 +1,5 @@
 import type { DetailedUserFromApi } from "@/services/authService";
-import { RoleEnum, type User, UserVerifyStatus } from "@/types/auth";
+import { RoleEnum, type User, UserVerifyStatus } from "@/types";
 
 export const mapBackendUserToFrontendUser = (apiUser: DetailedUserFromApi): User => {
   let roleString: "USER" | "ADMIN" | "STAFF" = "USER";
@@ -17,14 +17,14 @@ export const mapBackendUserToFrontendUser = (apiUser: DetailedUserFromApi): User
     email: apiUser.email,
     firstName: apiUser.first_name || "",
     lastName: apiUser.last_name || "",
-    fullName: `${apiUser.first_name || "BUGGER"} ${apiUser.last_name || ""}`.trim() || apiUser.name || apiUser.email,
+    fullName: `${apiUser.first_name || ""} ${apiUser.last_name || ""}`.trim() || apiUser.name || apiUser.email,
     role: roleString,
     isVerified: verifyStatusAsNumber === UserVerifyStatus.Verified,
     username: apiUser.username,
     avatar: apiUser.avatar,
-    location: apiUser.location || "BUGGER",
-    createdAt: apiUser.created_at || "BUGGER",
-    updatedAt: apiUser.updated_at || "BUGGER",
-    phone: apiUser.phone_number || "BUGGER",
+    location: apiUser.location || "",
+    createdAt: apiUser.created_at || "",
+    updatedAt: apiUser.updated_at || "",
+    phone: apiUser.phone_number || "",
   };
 };

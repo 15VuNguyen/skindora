@@ -8,6 +8,7 @@ declare namespace API {
     refreshToken: string;
   }
   export interface IResponse<T> {
+    result: T;
     data: T;
     errorCode?: string;
     message?: string;
@@ -27,14 +28,16 @@ declare namespace API {
   export interface IListResponse<T> {
     data: T[];
   }
+
   export interface IChangePassword {
     userName: string;
     oldPassword: string;
     newPassword: string;
   }
   export interface IResponseAPI<T = any> {
+    result: T;
     data: T;
-    statusCode: number;
+    status: number;
     success: boolean;
     errors: [
       {
@@ -52,5 +55,10 @@ declare namespace API {
       totalPages: number;
       totalRecords: number;
     };
+  }
+  export interface IUpdateStatusOrder<T = any> {
+    result: T[];
+    message: string;
+    status: number;
   }
 }

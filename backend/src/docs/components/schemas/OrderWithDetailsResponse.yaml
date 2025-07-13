@@ -1,0 +1,33 @@
+type: object
+properties:
+  orderId:
+    type: string
+    format: mongoId
+  orderDetail:
+    type: array
+    items:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: mongoId
+        Quantity:
+          type: string
+        OrderDate:
+          type: string
+          format: date-time
+        UnitPrice:
+          type: string
+        Products:
+          type: object
+          properties:
+            productId:
+              type: string
+              format: mongoId
+            name:
+              type: string
+            image:
+              type: string
+              format: uri
+            price:
+              type: string

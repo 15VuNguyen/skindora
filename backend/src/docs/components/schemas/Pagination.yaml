@@ -1,0 +1,28 @@
+type: object
+properties:
+  limit:
+    type: integer
+    minimum: 1
+    maximum: 100
+    description: Number of items per page
+    example: 10
+  currentPage:
+    type: integer
+    minimum: 1
+    description: Current page number
+    example: 1
+  totalPages:
+    type: integer
+    minimum: 0
+    description: Total number of pages
+    example: 5
+  totalRecords:
+    type: integer
+    minimum: 0
+    description: Total number of records
+    example: 50
+required:
+  - limit
+  - currentPage
+  - totalPages
+  - totalRecords

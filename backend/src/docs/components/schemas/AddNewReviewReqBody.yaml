@@ -1,0 +1,28 @@
+type: object
+properties:
+  rating:
+    type: integer
+    description: 'Rating for the product, from 1 to 5.'
+    minimum: 1
+    maximum: 5
+    example: 5
+  comment:
+    type: string
+    description: 'A text comment for the review.'
+    example: 'Sản phẩm rất tuyệt vời!'
+  images:
+    type: array
+    items:
+      type: string
+      format: uri
+    description: 'An array of image URLs for the review.'
+    example: ['https://example.com/image1.jpg']
+  videos:
+    type: array
+    items:
+      type: string
+      format: uri
+    description: 'An array of video URLs for the review.'
+required:
+  - rating
+  - comment

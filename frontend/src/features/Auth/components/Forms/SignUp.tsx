@@ -14,7 +14,7 @@ import GoogleButton from "../GoogleButton";
 import Splitter from "../Splitter";
 
 export function RegisterForm() {
-  const { handleGoogleLogin, register, isLoading: isAuthLoading } = useAuth();
+  const { handleGoogleLogin, actions } = useAuth();
 
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -28,14 +28,14 @@ export function RegisterForm() {
   });
 
   async function onSubmit(values: RegisterFormData) {
-    await register(values);
+    await actions.register(values);
   }
 
   return (
     <Card className="w-full max-w-md border-0 shadow-none sm:shadow-lg">
       <CardHeader className="space-y-1 text-center">
-        <CardTitle className="text-2xl font-bold tracking-tight sm:text-3xl">Create an Account</CardTitle>
-        <CardDescription>Enter your details to get started</CardDescription>
+        <CardTitle className="text-2xl font-bold tracking-tight sm:text-3xl">Tạo tài khoản</CardTitle>
+        <CardDescription>Nhập thông tin của bạn để bắt đầu</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -46,15 +46,15 @@ export function RegisterForm() {
                 name="first_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>First Name</FormLabel>
+                    <FormLabel>Họ</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <UserIcon className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                         <Input
-                          placeholder="John"
+                          placeholder="Nguyễn"
                           className="pl-9 placeholder:text-gray-500"
                           {...field}
-                          disabled={isAuthLoading}
+                          disabled={actions.isRegistering}
                         />
                       </div>
                     </FormControl>
@@ -67,15 +67,15 @@ export function RegisterForm() {
                 name="last_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Last Name</FormLabel>
+                    <FormLabel>Tên</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <UserIcon className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
                         <Input
-                          placeholder="Doe"
+                          placeholder="Văn A"
                           className="pl-9 placeholder:text-gray-500"
                           {...field}
-                          disabled={isAuthLoading}
+                          disabled={actions.isRegistering}
                         />
                       </div>
                     </FormControl>
@@ -97,7 +97,7 @@ export function RegisterForm() {
                         placeholder="you@example.com"
                         className="pl-9 placeholder:text-gray-500"
                         {...field}
-                        disabled={isAuthLoading}
+                        disabled={actions.isRegistering}
                       />
                     </div>
                   </FormControl>
@@ -110,7 +110,7 @@ export function RegisterForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Mật khẩu</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <LockKeyhole className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -119,7 +119,7 @@ export function RegisterForm() {
                         placeholder="••••••••"
                         className="pl-9 placeholder:text-gray-500"
                         {...field}
-                        disabled={isAuthLoading}
+                        disabled={actions.isRegistering}
                       />
                     </div>
                   </FormControl>
@@ -132,7 +132,7 @@ export function RegisterForm() {
               name="confirm_password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel>Xác nhận mật khẩu</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <LockKeyhole className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
@@ -141,7 +141,7 @@ export function RegisterForm() {
                         placeholder="••••••••"
                         className="pl-9 placeholder:text-gray-500"
                         {...field}
-                        disabled={isAuthLoading}
+                        disabled={actions.isRegistering}
                       />
                     </div>
                   </FormControl>
@@ -149,20 +149,20 @@ export function RegisterForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit" className="w-full" disabled={isAuthLoading}>
-              {isAuthLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create Account
+            <Button type="submit" className="w-full" disabled={actions.isRegistering}>
+              {actions.isRegistering && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Tạo tài khoản
             </Button>
           </form>
         </Form>
       </CardContent>
       <CardFooter className="flex flex-col items-center space-y-4">
         <Splitter />
-        <GoogleButton handleGoogleLogin={handleGoogleLogin} isAuthLoading={isAuthLoading} />
+        <GoogleButton handleGoogleLogin={handleGoogleLogin} isAuthLoading={actions.isRegistering} />
         <p className="text-muted-foreground text-sm">
-          Already have an account?{" "}
+          Bạn đã có tài khoản?{" "}
           <Link to="/auth/login" className="text-primary font-medium hover:underline">
-            Sign in
+            Đăng nhập
           </Link>
         </p>
       </CardFooter>

@@ -1,0 +1,14 @@
+type: object
+properties:
+  productId:
+    type: string
+    format: mongoId
+    description: The ID of the product to buy now.
+    example: "60d5ec49e0f6e9001f8d6b1a"
+  quantity:
+    type: integer
+    description: The quantity of the product to buy.
+    example: 1
+required:
+  - productId
+  - quantity

@@ -1,0 +1,10 @@
+type: object
+properties:
+  # All properties from CreateProductReqBody are optional here
+  name_on_list:
+    type: string
+  engName_on_list:
+    type: string
+  price_on_list:
+    type: string
+  # ... and so on for all other properties

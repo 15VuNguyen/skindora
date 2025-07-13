@@ -42,13 +42,13 @@ const FeaturesList: React.FC<{ features: FeatureProps[] }> = ({ features }) => (
 const defaultFeatures: FeatureProps[] = [
   {
     icon: "✨",
-    title: "Premium Skincare",
-    description: "Access to high-quality skincare products",
+    title: "Chăm sóc da cao cấp",
+    description: "Tiếp cận các sản phẩm chăm sóc da chất lượng cao",
   },
   {
     icon: "🔍",
-    title: "AI Skin Analysis",
-    description: "Get personalized skin recommendations",
+    title: "Phân tích da bằng AI",
+    description: "Nhận gợi ý chăm sóc da cá nhân hóa",
   },
 ];
 
@@ -57,8 +57,8 @@ const LeftPanel: React.FC<MainTitleProps & SubTitleProps & { features?: FeatureP
     <div className="from-primary to-accent hidden items-center justify-center bg-gradient-to-br p-12 lg:flex lg:w-1/2">
       <div className="max-w-lg text-white">
         <LeftPanelHeader
-          title={props.title || "Welcome to Our Skincare App"}
-          subtitle={props.subtitle || "Your journey to better skincare starts here"}
+          title={props.title || "Chào mừng đến với ứng dụng chăm sóc da của chúng tôi"}
+          subtitle={props.subtitle || "Hành trình chăm sóc da tốt hơn bắt đầu từ đây"}
         />
         <FeaturesList features={props.features || defaultFeatures} />
       </div>

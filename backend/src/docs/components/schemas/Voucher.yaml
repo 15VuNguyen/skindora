@@ -1,0 +1,46 @@
+type: object
+description: "Represents a voucher object."
+properties:
+  _id:
+    type: string
+    format: mongoId
+  code:
+    type: string
+    example: "SUMMER25"
+  description:
+    type: string
+    example: "Summer sale discount"
+  discountType:
+    type: string
+    enum: [PERCENTAGE, FIXED]
+    example: "PERCENTAGE"
+  discountValue:
+    type: number
+    example: 15
+  maxDiscountAmount:
+    type: number
+    example: 50000
+  minOrderValue:
+    type: number
+    example: 200000
+  startDate:
+    type: string
+    format: date-time
+  endDate:
+    type: string
+    format: date-time
+  usageLimit:
+    type: integer
+  usedCount:
+    type: integer
+  userUsageLimit:
+    type: integer
+  isActive:
+    type: boolean
+    example: true
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time

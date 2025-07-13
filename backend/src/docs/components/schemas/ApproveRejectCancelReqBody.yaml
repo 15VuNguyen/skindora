@@ -1,0 +1,6 @@
+type: object
+properties:
+  staffNote:
+    type: string
+    description: "Optional note from the staff regarding the approval or rejection."
+    example: "Approved as per customer request."

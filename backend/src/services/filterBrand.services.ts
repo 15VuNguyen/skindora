@@ -1,6 +1,9 @@
 import { ObjectId } from 'mongodb'
 import { FilterBrandState } from '~/constants/enums'
-import { createNewFilterBrandReqBody } from '~/models/requests/Admin.requests'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { ADMIN_MESSAGES } from '~/constants/messages'
+import { ErrorWithStatus } from '~/models/Errors'
+import { createNewFilterBrandReqBody, updateFilterBrandReqBody } from '~/models/requests/Admin.requests'
 import FilterBrand from '~/models/schemas/FilterBrand.schema'
 import databaseService from '~/services/database.services'
 
@@ -11,7 +14,6 @@ class FilterBrandService {
     })
     return Boolean(brand)
   }
-
 
   async createNewFilterBrand(payload: createNewFilterBrandReqBody) {
     const filterBrandID = new ObjectId()
@@ -31,6 +33,33 @@ class FilterBrandService {
     console.log(payload)
     console.log(result)
     return result
+  }
+
+  async updateFilterBrand(_id: string, payload: updateFilterBrandReqBody) {
+    try {
+      const updatedPayload = { ...payload }
+      const currentDate = new Date()
+      const vietnamTimezoneOffset = 7 * 60
+      const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+      const result = await databaseService.filterBrand.findOneAndUpdate(
+        { _id: new ObjectId(_id) },
+        {
+          $set: {
+            ...updatedPayload,
+            updated_at: localTime
+          }
+        },
+        {
+          returnDocument: 'after'
+        }
+      )
+      return result
+    } catch (error) {
+      throw new ErrorWithStatus({
+        message: ADMIN_MESSAGES.UPDATE_FILTER_BRAND_FAILED,
+        status: HTTP_STATUS.INTERNAL_SERVER_ERROR
+      })
+    }
   }
 }
 const filterBrandService = new FilterBrandService()

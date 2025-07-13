@@ -1,0 +1,95 @@
+type: object
+description: Represents a full product object with all details.
+properties:
+  _id:
+    type: string
+    format: mongoId
+  name_on_list:
+    type: string
+  engName_on_list:
+    type: string
+  price_on_list:
+    type: string
+  image_on_list:
+    type: string
+    format: uri
+  hover_image_on_list:
+    type: string
+    format: uri
+  productName_detail:
+    type: string
+  engName_detail:
+    type: string
+  description_detail:
+    type: object
+    properties:
+      rawHtml:
+        type: string
+      plainText:
+        type: string
+  ingredients_detail:
+    type: object
+    properties:
+      rawHtml:
+        type: string
+      plainText:
+        type: string
+  guide_detail:
+    type: object
+    properties:
+      rawHtml:
+        type: string
+      plainText:
+        type: string
+  specification_detail:
+    type: object
+    properties:
+      rawHtml:
+        type: string
+      plainText:
+        type: string
+  main_images_detail:
+    type: array
+    items:
+      type: string
+      format: uri
+  sub_images_detail:
+    type: array
+    items:
+      type: string
+      format: uri
+  filter_brand:
+    type: string
+    format: mongoId
+  filter_dac_tinh:
+    type: string
+    format: mongoId
+  filter_hsk_ingredients:
+    type: string
+    format: mongoId
+  filter_hsk_product_type:
+    type: string
+    format: mongoId
+  filter_hsk_size:
+    type: string
+    format: mongoId
+  filter_hsk_skin_type:
+    type: string
+    format: mongoId
+  filter_hsk_uses:
+    type: string
+    format: mongoId
+  filter_origin:
+    type: string
+    format: mongoId
+  quantity:
+    type: integer
+  state:
+    type: string
+    enum: [INACTIVE, ACTIVE, OUT_OF_STOCK, DISCONTINUED]
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time

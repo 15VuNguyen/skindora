@@ -1,0 +1,15 @@
+type: object
+properties:
+  ProductID:
+    type: string
+    format: mongoId
+    description: "The ID of the product to add to the cart."
+    example: "60d5ec49e0f6e9001f8d6b1a"
+  Quantity:
+    type: integer
+    description: "The quantity of the product to add."
+    example: 2
+    minimum: 1
+required:
+  - ProductID
+  - Quantity

@@ -1,0 +1,18 @@
+type: object
+properties:
+  totalProducts:
+    type: integer
+    description: 'Tổng số sản phẩm trong hệ thống.'
+    example: 2299
+  onSale:
+    type: integer
+    description: 'Số lượng sản phẩm đang được bán (trạng thái ACTIVE).'
+    example: 2299
+  lowStock:
+    type: integer
+    description: 'Số lượng sản phẩm sắp hết hàng (số lượng > 0 và <= 10).'
+    example: 23
+  outOfStock:
+    type: integer
+    description: 'Số lượng sản phẩm đã hết hàng (số lượng = 0).'
+    example: 68

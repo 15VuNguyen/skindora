@@ -1,0 +1,40 @@
+type: object
+description: Represents a review object.
+properties:
+  _id:
+    type: string
+    format: mongoId
+  userID:
+    type: string
+    format: mongoId
+  productID:
+    type: string
+    format: mongoId
+  orderID:
+    type: string
+    format: mongoId
+  rating:
+    type: integer
+    example: 5
+  comment:
+    type: string
+    example: 'Chất lượng sản phẩm tuyệt vời.'
+  images:
+    type: array
+    items:
+      type: string
+      format: uri
+  videos:
+    type: array
+    items:
+      type: string
+      format: uri
+  createdAt:
+    type: string
+    format: date-time
+  modifiedAt:
+    type: string
+    format: date-time
+  isDeleted:
+    type: boolean
+    example: false

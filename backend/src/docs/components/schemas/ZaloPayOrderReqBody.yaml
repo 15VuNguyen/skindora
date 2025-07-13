@@ -1,0 +1,25 @@
+type: object
+properties:
+  orderDetails:
+    type: array
+    description: "List of items in the order."
+    items:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: mongoId
+        ProductID:
+          type: string
+          format: mongoId
+        Quantity:
+          type: integer
+        Discount:
+          type: number
+  total:
+    type: number
+    description: "The total amount of the order."
+    example: 500000
+required:
+  - orderDetails
+  - total

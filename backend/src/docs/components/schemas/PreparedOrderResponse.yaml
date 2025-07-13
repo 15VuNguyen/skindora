@@ -1,0 +1,30 @@
+type: object
+properties:
+  message:
+    type: string
+    example: "Order prepared successfully, expires in 30 minutes"
+  result:
+    type: object
+    properties:
+      UserID:
+        type: string
+        format: mongoId
+      Products:
+        type: array
+        items:
+          type: object
+          properties:
+            ProductID:
+              type: string
+              format: mongoId
+            Quantity:
+              type: integer
+            PricePerUnit:
+              type: number
+            TotalPrice:
+              type: number
+      TotalPrice:
+        type: number
+      CreatedAt:
+        type: string
+        format: date-time

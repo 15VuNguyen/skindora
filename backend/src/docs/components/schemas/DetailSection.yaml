@@ -1,0 +1,6 @@
+type: object
+properties:
+  rawHtml:
+    type: string
+  plainText:
+    type: string

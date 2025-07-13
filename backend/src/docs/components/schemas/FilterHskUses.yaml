@@ -1,0 +1,24 @@
+type: object
+description: 'Đại diện cho một đối tượng filter Công Dụng (Uses).'
+properties:
+  _id:
+    type: string
+    format: mongoId
+  option_name:
+    type: string
+    example: 'Phục Hồi Da'
+  category_name:
+    type: string
+    example: 'Công Dụng HSK'
+  category_param:
+    type: string
+    example: 'phuc-hoi-da'
+  state:
+    type: string
+    enum: [INACTIVE, ACTIVE]
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time

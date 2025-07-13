@@ -1,0 +1,11 @@
+type: object
+properties:
+  selectedProductIDs:
+    type: array
+    description: An array of product IDs selected from the cart for checkout.
+    items:
+      type: string
+      format: mongoId
+    example: ['60d5ec49e0f6e9001f8d6b1a', '60d5ec49e0f6e9001f8d6b1b']
+required:
+  - selectedProductIDs

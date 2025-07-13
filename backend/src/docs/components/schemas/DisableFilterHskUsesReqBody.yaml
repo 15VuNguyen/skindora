@@ -1,0 +1,9 @@
+type: object
+required:
+  - state
+properties:
+  state:
+    type: string
+    description: 'Trạng thái mới cho filter công dụng.'
+    enum: [INACTIVE, ACTIVE]
+    example: 'INACTIVE'

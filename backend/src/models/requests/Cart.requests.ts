@@ -6,6 +6,7 @@ export interface ProductInCart {
 export interface ProductInCache {
     _id: string,
     name: string,
+    quantity: number,
     image: string,
     price: string
 }

@@ -1,0 +1,9 @@
+type: object
+required:
+  - state
+properties:
+  state:
+    type: string
+    description: The new state for the product.
+    enum: [INACTIVE, ACTIVE, OUT_OF_STOCK, DISCONTINUED]
+    example: "INACTIVE"

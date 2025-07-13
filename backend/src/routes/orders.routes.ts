@@ -2,8 +2,12 @@ import { wrapAsync } from '~/utils/handler'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { Router } from 'express'
 import {
+  approveCancelRequestController,
   buyNowController,
+  cancelOrderController,
   checkOutController,
+  countOrderController,
+  getAllCancelledOrdersController,
   getAllOrdersByAuthUserController,
   getAllOrdersByUserIdController,
   getAllOrdersController,
@@ -11,14 +15,41 @@ import {
   getOrderByIdController,
   moveToNextStatusController,
   prepareOrderController,
+  rejectCancelRequestController,
+  requestCancelOrderController
 } from '~/controllers/orders.controllers'
-import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
-import { checkOutValidator, getAllOrdersValidator, getNextOrderStatusValidator, getOrderByIdValidator } from '~/middlewares/orders.middlewares'
-import { isStaffValidator } from '~/middlewares/staff.middlewares'
+import { isAdminOrStaffValidator, isAdminValidator } from '~/middlewares/admin.middlewares'
+import {
+  buyNowValidator,
+  cancelledOrderRequestedValidator,
+  cancelOrderValidator,
+  checkOutValidator,
+  getAllCancelledOrdersValidator,
+  getAllOrdersValidator,
+  getNextOrderStatusValidator,
+  getOrderByIdValidator,
+  prepareOrderValidator,
+  requestCancelOrderValidator
+} from '~/middlewares/orders.middlewares'
+import { filterMiddleware } from '~/middlewares/common.middlewares'
+import { OrderReqBody } from '~/models/requests/Orders.requests'
 
 const ordersRouter = Router()
 
-ordersRouter.route('/').get(accessTokenValidator, isAdminOrStaffValidator, getAllOrdersValidator, wrapAsync(getAllOrdersController))
+ordersRouter
+  .route('/')
+  .get(accessTokenValidator, isAdminOrStaffValidator, getAllOrdersValidator, wrapAsync(getAllOrdersController))
+
+ordersRouter.route('/counts').get(accessTokenValidator, isAdminOrStaffValidator, wrapAsync(countOrderController))
+
+ordersRouter
+  .route('/cancel')
+  .get(
+    accessTokenValidator,
+    isAdminValidator,
+    getAllCancelledOrdersValidator,
+    wrapAsync(getAllCancelledOrdersController)
+  )
 
 ordersRouter
   .route('/users/:userId')
@@ -28,14 +59,62 @@ ordersRouter.route('/current').get(accessTokenValidator, wrapAsync(getCurrentOrd
 
 ordersRouter.route('/me').get(accessTokenValidator, wrapAsync(getAllOrdersByAuthUserController))
 
-ordersRouter.route('/:orderId/next-status').patch(accessTokenValidator, isStaffValidator, getNextOrderStatusValidator, wrapAsync(moveToNextStatusController))
+ordersRouter
+  .route('/:orderId/next-status')
+  .patch(
+    accessTokenValidator,
+    isAdminOrStaffValidator,
+    getNextOrderStatusValidator,
+    wrapAsync(moveToNextStatusController)
+  )
+
+ordersRouter
+  .route('/:orderId/cancel-request')
+  .post(accessTokenValidator, requestCancelOrderValidator, wrapAsync(requestCancelOrderController))
+ordersRouter
+  .route('/:orderId/cancel-request/approve')
+  .patch(
+    accessTokenValidator,
+    isAdminValidator,
+    cancelledOrderRequestedValidator,
+    wrapAsync(approveCancelRequestController)
+  )
+ordersRouter
+  .route('/:orderId/cancel-request/reject')
+  .patch(
+    accessTokenValidator,
+    isAdminValidator,
+    cancelledOrderRequestedValidator,
+    wrapAsync(rejectCancelRequestController)
+  )
+
+ordersRouter
+  .route('/:orderId/cancel')
+  .patch(accessTokenValidator, isAdminValidator, cancelOrderValidator, wrapAsync(cancelOrderController))
 
 ordersRouter.route('/:orderId').get(accessTokenValidator, getOrderByIdValidator, wrapAsync(getOrderByIdController))
 
-ordersRouter.route('/cart').post(accessTokenValidator, wrapAsync(prepareOrderController))
+ordersRouter.route('/cart').post(accessTokenValidator, prepareOrderValidator, wrapAsync(prepareOrderController))
 
-ordersRouter.route('/buy-now').post(accessTokenValidator, wrapAsync(buyNowController))
+ordersRouter.route('/buy-now').post(accessTokenValidator, buyNowValidator, wrapAsync(buyNowController))
 
-ordersRouter.route('/checkout').post(accessTokenValidator, checkOutValidator, wrapAsync(checkOutController))
+ordersRouter
+  .route('/checkout')
+  .post(
+    accessTokenValidator,
+    filterMiddleware<OrderReqBody>([
+      'RecipientName',
+      'PhoneNumber',
+      'ShipAddress',
+      'Description',
+      'RequireDate',
+      'PaymentMethod',
+      'PaymentStatus',
+      'voucherCode',
+      'type'
+    ]),
+    checkOutValidator,
+    wrapAsync(checkOutController)
+  )
 
 export default ordersRouter

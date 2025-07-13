@@ -1,17 +1,17 @@
 {
-    "files.associations": {
-        "*.css": "tailwindcss",
-    },
-    "editor.formatOnSave": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": "explicit",
-    },
-    "yaml.schemas": {
-        "https://json.schemastore.org/traefik-v3.json": [
-            "../traefik/config.yaml",
-            "file:///home/nguyentuanan/Desktop/workspace/skindora/traefik/config.yaml"
-        ]
-    },
-    "caddyfile.executable": "../frontend/Caddyfile"
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+  },
+  "yaml.schemas": {
+    "https://json.schemastore.org/traefik-v3.json": [
+      "../traefik/config.yaml",
+      "file:///home/nguyentuanan/Desktop/workspace/skindora/traefik/config.yaml"
+    ]
+  },
+  "caddyfile.executable": "../frontend/Caddyfile"
 }

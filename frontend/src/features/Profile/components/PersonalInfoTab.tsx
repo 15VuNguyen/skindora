@@ -1,4 +1,4 @@
-import { CheckCircle, Loader2, XCircle } from "lucide-react";
+import { CheckCircle, Loader2, XCircle,Phone } from "lucide-react";
 import React from "react";
 import type { UseFormReturn } from "react-hook-form";
 
@@ -8,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { type ProfileUpdateFormData } from "@/schemas/authSchemas";
-import type { User } from "@/types/auth";
+import type { User } from "@/types/Auth";
 
 interface PersonalInfoTabProps {
   form: UseFormReturn<ProfileUpdateFormData>;
@@ -26,7 +26,7 @@ export const PersonalInfoTab = React.memo(
         <form onSubmit={form.handleSubmit(onSubmitHandler)} noValidate>
           <Card>
             <CardHeader>
-              <CardTitle>Personal Information</CardTitle>
+              <CardTitle>Thông tin cá nhân</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -35,7 +35,7 @@ export const PersonalInfoTab = React.memo(
                   name="first_name"
                   render={({ field }) => (
                     <FormItem className="space-y-1.5">
-                      <FormLabel>First Name</FormLabel>
+                      <FormLabel>Họ</FormLabel>
                       <FormControl>
                         <Input {...field} disabled={!isEditing || form.formState.isSubmitting} />
                       </FormControl>
@@ -48,7 +48,7 @@ export const PersonalInfoTab = React.memo(
                   name="last_name"
                   render={({ field }) => (
                     <FormItem className="space-y-1.5">
-                      <FormLabel>Last Name</FormLabel>
+                      <FormLabel>Tên</FormLabel>
                       <FormControl>
                         <Input {...field} disabled={!isEditing || form.formState.isSubmitting} />
                       </FormControl>
@@ -61,7 +61,7 @@ export const PersonalInfoTab = React.memo(
                   name="username"
                   render={({ field }) => (
                     <FormItem className="space-y-1.5">
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel>Tên người dùng</FormLabel>
                       <FormControl>
                         <Input {...field} disabled={!isEditing || form.formState.isSubmitting} />
                       </FormControl>
@@ -89,10 +89,31 @@ export const PersonalInfoTab = React.memo(
                 </div>
                 <FormField
                   control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem className="space-y-1.5 sm:col-span-2">
+                      <FormLabel>Số điện thoại</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Phone className="text-muted-foreground absolute top-2.5 left-2.5 h-4 w-4" />
+                          <Input
+                            {...field}
+                            placeholder="09..."
+                            disabled={!isEditing || form.formState.isSubmitting}
+                            className="pl-9"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="location"
                   render={({ field }) => (
                     <FormItem className="space-y-1.5 sm:col-span-2">
-                      <FormLabel>Location</FormLabel>
+                      <FormLabel>Địa chỉ</FormLabel>
                       <FormControl>
                         <Input {...field} disabled={!isEditing || form.formState.isSubmitting} />
                       </FormControl>
@@ -105,7 +126,7 @@ export const PersonalInfoTab = React.memo(
                   name="avatar"
                   render={({ field }) => (
                     <FormItem className="space-y-1.5 sm:col-span-2">
-                      <FormLabel>Avatar URL</FormLabel>
+                      <FormLabel>Liên kết ảnh đại diện</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -122,7 +143,7 @@ export const PersonalInfoTab = React.memo(
                 <div className="flex justify-end pt-4">
                   <Button type="submit" disabled={isSubmitting || !isDirty}>
                     {form.formState.isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Save Changes
+                    Lưu thay đổi
                   </Button>
                 </div>
               )}

@@ -1,0 +1,3762 @@
+/users/register:
+  post:
+    tags: [Users]
+    summary: Register a new user
+    description: Creates a new user account, sends a verification email, and returns access/refresh tokens.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/RegisterReqBody.yaml'
+    responses:
+      '201':
+        description: Registration successful.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/RegisterSuccessResponse.yaml'
+      '422':
+        description: Validation error (e.g., email exists, password mismatch).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/login:
+  post:
+    tags: [Users]
+    summary: Log in a user
+    description: Authenticates a user with email and password, returning access and refresh tokens.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/LoginReqBody.yaml'
+    responses:
+      '200':
+        description: Login successful.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/LoginSuccessResponse.yaml'
+      '422':
+        description: Validation error (e.g., incorrect email/password).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/logout:
+  post:
+    tags: [Users]
+    summary: Logout a user
+    description: Invalidates the provided refresh token, effectively logging the user out. Requires a valid access token for authentication.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/LogoutReqBody.yaml'
+    responses:
+      '200':
+        description: Logout successful.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        description: Unauthorized (invalid access token or refresh token).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Unprocessable Entity (missing refresh_token in body).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/forgot-password:
+  post:
+    tags: [Users]
+    summary: Request a password reset
+    description: Sends a forgot password token to the user's email if the email exists.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ForgotPasswordReqBody.yaml'
+    responses:
+      '200':
+        description: Request acknowledged.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '404':
+        description: User with the provided email not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Validation error (e.g., invalid email format).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/verify-forgot-password:
+  post:
+    tags: [Users]
+    summary: Verify forgot password token
+    description: Checks if the provided forgot password token is valid.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/VerifyForgotPasswordTokenReqBody.yaml'
+    responses:
+      '200':
+        description: Token is valid.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        description: Unauthorized (token is invalid or incorrect).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/reset-password:
+  post:
+    tags: [Users]
+    summary: Reset user password
+    description: Sets a new password for the user using a valid forgot password token.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ResetPasswordReqBody.yaml'
+    responses:
+      '200':
+        description: Password has been reset successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        description: Unauthorized (forgot password token is invalid).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Validation error (e.g., passwords don't match).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/verify-email:
+  post:
+    tags: [Users]
+    summary: Verify user email
+    description: Verifies a user's email with the provided token. Returns new tokens upon successful first-time verification.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/VerifyEmailReqBody.yaml'
+    responses:
+      '200':
+        description: Email verification status. Can be a success message or a new set of tokens.
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '../components/schemas/LoginSuccessResponse.yaml'
+                - $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        description: Unauthorized (email verify token is incorrect).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: User not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/resend-verify-email:
+  post:
+    tags: [Users]
+    summary: Resend email verification token
+    description: Resends a new email verification token to the authenticated user's email.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Resend email verification status.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        description: Unauthorized (invalid access token).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        description: Forbidden (user is banned or already verified).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: User not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/change-password:
+  put:
+    tags: [Users]
+    summary: Change user password
+    description: Allows an authenticated and verified user to change their password by providing the old and new password.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ChangePasswordReqBody.yaml'
+    responses:
+      '200':
+        description: Password changed successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        description: Unauthorized (invalid access token or old password does not match).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        description: Forbidden (user is not verified).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Validation error (e.g., new passwords don't match).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/me:
+  get:
+    tags: [Users]
+    summary: Get current user's profile
+    description: Retrieves the profile information of the currently authenticated user.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Successfully retrieved user profile.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/GetMeSuccessResponse.yaml'
+      '401':
+        description: Unauthorized (invalid access token).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+  patch:
+    tags: [Users]
+    summary: Update current user's profile
+    description: Partially updates the profile information of the authenticated user. Only include the fields to be changed.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateMeReqBody.yaml'
+    responses:
+      '200':
+        description: Profile updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/GetMeSuccessResponse.yaml'
+      '401':
+        description: Unauthorized (invalid access token).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Validation error (e.g., username already exists).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/refresh-token:
+  post:
+    tags: [Users]
+    summary: Refresh access token
+    description: Issues a new access token and refresh token in exchange for a valid refresh token.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/RefreshTokenReqBody.yaml'
+    responses:
+      '200':
+        description: Tokens refreshed successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/RefreshTokenSuccessResponse.yaml'
+      '401':
+        description: Unauthorized (refresh token is invalid, used, or non-existent).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Unprocessable Entity (missing refresh_token in body).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/oauth/google:
+  get:
+    tags: [Users]
+    summary: Google OAuth Callback
+    description: >
+      Callback endpoint for the Google OAuth 2.0 flow. This should not be called directly.
+      The user is redirected here by Google after authentication. The service then redirects the user
+      to the client application with tokens in the URL.
+    parameters:
+      - name: code
+        in: query
+        description: The authorization code provided by Google.
+        required: true
+        schema:
+          type: string
+    responses:
+      '302':
+        description: Redirect to the client application with tokens in the query parameters.
+        headers:
+          Location:
+            description: The URL to redirect the user's browser to.
+            schema:
+              type: string
+              format: uri
+      '400':
+        description: Bad Request (e.g., Google account's email is not verified).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/addToWishList:
+  post:
+    tags: [Users]
+    summary: Add products to wishlist
+    description: Adds one or more products to the authenticated user's wishlist.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/AddToWishListReqBody.yaml'
+    responses:
+      '200':
+        description: Products added to wishlist successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '400':
+        description: Bad Request (e.g., empty product list).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        description: Unauthorized.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: User or Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/removeFromWishList:
+  put:
+    tags: [Users]
+    summary: Remove products from wishlist
+    description: Removes one or more products from the authenticated user's wishlist.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/RemoveFromWishListReqBody.yaml'
+    responses:
+      '200':
+        description: Products removed from wishlist successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        description: Unauthorized.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Product not found in wishlist.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/getWishList:
+  get:
+    tags: [Users]
+    summary: Get user's wishlist
+    description: Retrieves the list of product IDs in the authenticated user's wishlist.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Wishlist fetched successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/WishListResponse.yaml'
+      '401':
+        description: Unauthorized.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/users/vouchers:
+  get:
+    tags: [Users]
+    summary: Get all active vouchers
+    description: Retrieves a paginated list of all active vouchers available for users.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: code
+        in: query
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A paginated list of active vouchers.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedVoucherResponse.yaml'
+      '401':
+        description: Unauthorized.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/staffs/manage-products/get-all:
+  get:
+    tags: [Staffs]
+    summary: (Staff) Get all products with pagination
+    description: >
+      Allows authenticated staff members to retrieve a paginated list of all products in the system.
+      This provides a comprehensive view of products for management purposes.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401':
+        description: Unauthorized. Access token is missing or invalid.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        description: Forbidden. The user is not a staff or admin.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/staffs/manage-products/stats:
+  get:
+    tags: [Staffs]
+    summary: (Staff) Get Product Statistics
+    description: Lấy 4 số liệu thống kê chính về sản phẩm cho dashboard của nhân viên.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về các số liệu thống kê thành công.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Get product statistics successfully'
+                result:
+                  $ref: '../components/schemas/ProductStatsResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/staffs/manage-products/search-by-name:
+  get:
+    tags: [Staffs]
+    summary: (Staff) Search Products by Name
+    description: Nhân viên tìm kiếm sản phẩm theo tên (name_on_list).
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A paginated list of matching products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/staffs/manage-products/on-sale:
+  get:
+    tags: [Staffs]
+    summary: (Staff) Get Paginated On-Sale Products
+    description: Lấy danh sách các sản phẩm đang bán (trạng thái ACTIVE) có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of on-sale products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/staffs/manage-products/low-stock:
+  get:
+    tags: [Staffs]
+    summary: (Staff) Get Paginated Low-Stock Products
+    description: Lấy danh sách các sản phẩm sắp hết hàng (số lượng > 0 và <= 10) có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of low-stock products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/staffs/manage-products/out-of-stock:
+  get:
+    tags: [Staffs]
+    summary: (Staff) Get Paginated Out-of-Stock Products
+    description: Lấy danh sách các sản phẩm đã hết hàng (số lượng = 0) có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of out-of-stock products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/staffs/manage-products/{_id}:
+  get:
+    tags: [Staffs]
+    summary: (Staff) Get Product Detail
+    description: Nhân viên lấy thông tin chi tiết của một sản phẩm bằng ID.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Product details retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/Product.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/review/{orderId}/products/{productId}/review:
+  post:
+    tags: [Reviews]
+    summary: Add a new review for a product
+    description: >
+      Allows an authenticated user to add a review (rating and comment) for a specific product
+      they have purchased in a delivered order.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the delivered order.
+        schema:
+          type: string
+          format: mongoId
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product within the order to be reviewed.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/AddNewReviewReqBody.yaml'
+    responses:
+      '201':
+        description: Review added successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ReviewSuccessResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        description: Forbidden. Order has not been delivered or has already been reviewed.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order or Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+  put:
+    tags: [Reviews]
+    summary: Update an existing review
+    description: Allows an authenticated user to update their existing review for a product.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order containing the product review.
+        schema:
+          type: string
+          format: mongoId
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product being reviewed.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateReviewReqBody.yaml'
+    responses:
+      '200':
+        description: Review updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ReviewSuccessResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Review, Order, or Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+  delete:
+    tags: [Reviews]
+    summary: Delete a review
+    description: Allows an authenticated user to delete their review for a product.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order containing the product review.
+        schema:
+          type: string
+          format: mongoId
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product being reviewed.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Review deleted successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Review not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/review/{productId}/review:
+  get:
+    tags: [Reviews]
+    summary: Get reviews for a product
+    description: Retrieves a paginated list of all reviews for a specific product. This is a public endpoint.
+    parameters:
+      - name: productId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: rating
+        in: query
+        schema:
+          type: integer
+          enum: [1, 2, 3, 4, 5]
+    responses:
+      '200':
+        description: A paginated list of reviews.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedReviewResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/products/search:
+  get:
+    tags: [Products]
+    summary: (Public) Search Products by Name
+    description: >
+      Tìm kiếm và trả về danh sách các sản phẩm đang hoạt động (state: ACTIVE) có phân trang
+      dựa trên từ khóa trùng khớp với `name_on_list`.
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa để tìm kiếm trong tên sản phẩm (không phân biệt chữ hoa/thường).
+        required: false
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A paginated list of matching products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '422':
+        description: Validation error (e.g., keyword is not a string).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/products/get-all:
+  get:
+    tags: [Products]
+    summary: (Public) Get all products with pagination
+    description: >
+      Retrieves a paginated list of all products for public viewing.
+      This endpoint returns a simplified version of the product object, suitable for list displays.
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/payment/zalopay:
+  post:
+    tags: [Payments]
+    summary: Create ZaloPay Payment Order
+    description: >
+      Allows an authenticated user to create a payment order with ZaloPay.
+      The endpoint receives order details and returns a ZaloPay payment URL.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ZaloPayOrderReqBody.yaml'
+    responses:
+      '200':
+        description: ZaloPay order created successfully, payment URL returned.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                return_code:
+                  type: integer
+                  example: 1
+                return_message:
+                  type: string
+                  example: 'Success'
+                order_url:
+                  type: string
+                  format: uri
+                  example: 'https://sbgateway.zalopay.vn/openinapp?order=...'
+                zp_trans_token:
+                  type: string
+                  example: '240624000000123_1a2b3c4d'
+      '400':
+        description: Bad Request (e.g., missing orderDetails).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        description: Unauthorized. Access token is missing or invalid.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        description: Internal Server Error.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/payment/vnpay:
+  post:
+    tags: [Payments]
+    summary: Create VNPay Payment URL
+    description: >
+      Allows an authenticated user to create a VNPay payment URL.
+      The endpoint receives payment details and returns a URL to redirect the user for payment.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/VNPayOrderReqBody.yaml'
+    responses:
+      '200':
+        description: VNPay payment URL created successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Success'
+                data:
+                  type: object
+                  properties:
+                    paymentUrl:
+                      type: string
+                      format: uri
+                      example: 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html?vnp_Amount=...'
+      '401':
+        description: Unauthorized. Access token is missing or invalid.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        description: Internal Server Error.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/payment/payments_return:
+  post:
+    tags: [Payments]
+    summary: Payment Return Callback
+    description: >
+      A callback endpoint for payment gateways to send return information.
+      This endpoint is typically called by the payment gateway service, not by the client directly.
+      Currently, it only logs the callback event.
+    responses:
+      '200':
+        description: Callback received.
+
+/orders:
+  get:
+    tags: [Orders]
+    summary: (Staff/Admin) Get All Orders
+    description: Retrieves a paginated list of all orders in the system. Available for staff and admin roles.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: status
+        in: query
+        description: Filter orders by status.
+        schema:
+          type: string
+          enum: [PENDING, CONFIRMED, PROCESSING, SHIPPING, DELIVERED, CANCELLED, RETURNED, FAILED]
+    responses:
+      '200':
+        description: A paginated list of orders.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedOrderResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/users/{userId}:
+  get:
+    tags: [Orders]
+    summary: (Staff/Admin) Get All Orders by User ID
+    description: Retrieves a paginated list of all orders for a specific user. Available for staff and admin roles.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: status
+        in: query
+        description: Filter orders by status.
+        schema:
+          type: string
+          enum: [PENDING, CONFIRMED, PROCESSING, SHIPPING, DELIVERED, CANCELLED, RETURNED, FAILED]
+    responses:
+      '200':
+        description: A paginated list of orders for the specified user.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedOrderResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: User not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/current:
+  get:
+    tags: [Orders]
+    summary: Get Current Prepared Order
+    description: Retrieves the temporary order that is being prepared for checkout from the user's session.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Successfully retrieved the prepared order.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PreparedOrderResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: No prepared order found or it has expired.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/me:
+  get:
+    tags: [Orders]
+    summary: Get My Orders
+    description: Retrieves a list of all past orders for the authenticated user.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: A list of the user's orders.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Get all your orders successfully'
+                result:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/OrderWithDetailsResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/{orderId}:
+  get:
+    tags: [Orders]
+    summary: Get Order by ID
+    description: Retrieves details of a specific order. Accessible by the order owner, staff, or admin.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order to retrieve.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Order details retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/OrderWithDetailsResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/{orderId}/next-status:
+  patch:
+    tags: [Orders]
+    summary: (Staff/Admin) Move Order to Next Status
+    description: Updates the status of an order to the next stage in the lifecycle (e.g., PENDING to CONFIRMED).
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order to update.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Order status updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/UpdateOrderStatusResponse.yaml'
+      '400':
+        description: Bad Request (e.g., cannot transition from the current status).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/{orderId}/cancel-request:
+  post:
+    tags: [Orders]
+    summary: Request to Cancel an Order
+    description: Allows an authenticated user to submit a request to cancel their order.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order to request cancellation for.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CancelOrderReqBody.yaml'
+    responses:
+      '200':
+        description: Cancellation request submitted successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/OrderWithDetailsResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        description: Forbidden (Order status is not PENDING or CONFIRMED).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/{orderId}/cancel-request/approve:
+  patch:
+    tags: [Orders]
+    summary: (Staff/Admin) Approve Order Cancellation
+    description: Allows a staff or admin to approve a user's request to cancel an order.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order whose cancellation request is to be approved.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ApproveRejectCancelReqBody.yaml'
+    responses:
+      '200':
+        description: Cancellation request approved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/OrderWithDetailsResponse.yaml'
+      '400':
+        description: Bad Request (e.g., no cancellation was requested).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/{orderId}/cancel-request/reject:
+  patch:
+    tags: [Orders]
+    summary: (Staff/Admin) Reject Order Cancellation
+    description: Allows a staff or admin to reject a user's request to cancel an order.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: orderId
+        in: path
+        required: true
+        description: The ID of the order whose cancellation request is to be rejected.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/ApproveRejectCancelReqBody.yaml'
+    responses:
+      '200':
+        description: Cancellation request rejected successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/OrderWithDetailsResponse.yaml'
+      '400':
+        description: Bad Request (e.g., no cancellation was requested).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Order not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/cart:
+  post:
+    tags: [Orders]
+    summary: Prepare Order from Cart
+    description: >
+      Prepares a temporary order based on selected items from the user's cart.
+      This temporary order is stored for 30 minutes and must be checked out within that time.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/PrepareOrderReqBody.yaml'
+    responses:
+      '200':
+        description: Order prepared successfully for checkout.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PreparedOrderResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Cart is empty or selected products are not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/buy-now:
+  post:
+    tags: [Orders]
+    summary: Prepare Order for Buy Now
+    description: >
+      Prepares a temporary order for a single product using the "Buy Now" feature.
+      This temporary order is stored for 30 minutes.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/BuyNowReqBody.yaml'
+    responses:
+      '200':
+        description: Order prepared successfully for checkout.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PreparedOrderResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/orders/checkout:
+  post:
+    tags: [Orders]
+    summary: Checkout Order
+    description: >
+      Finalizes and creates a permanent order from a prepared temporary order.
+      Requires shipping details and payment information.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CheckoutReqBody.yaml'
+    responses:
+      '201':
+        description: Order created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/OrderCreationResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Prepared order is not found or has expired.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Validation error for shipping details.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/carts:
+  get:
+    tags: [Carts]
+    summary: Get the current user's cart
+    description: Retrieves all items currently in the authenticated user's shopping cart.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Cart content retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/CartResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '500':
+        $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'
+  post:
+    tags: [Carts]
+    summary: Add a product to the cart
+    description: >
+      Adds a specified quantity of a product to the user's cart. If the product is already in the cart,
+      the quantity is updated.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/AddToCartReqBody'
+    responses:
+      '200':
+        description: Product added to cart successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/CartResponse'
+      '400':
+        description: Bad Request (e.g., product out of stock, invalid quantity).
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        description: Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+      '500':
+        $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'
+  delete:
+    tags: [Carts]
+    summary: Clear the entire cart
+    description: Removes all items from the authenticated user's shopping cart.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Cart cleared successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/MessageResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        description: Cart is already empty or does not exist.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '500':
+        $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'
+
+/carts/{productId}:
+  patch:
+    tags: [Carts]
+    summary: Update product quantity in cart
+    description: Updates the quantity of a specific product in the cart. Setting quantity to 0 removes the item.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product to update in the cart.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/UpdateCartReqBody'
+    responses:
+      '200':
+        description: Cart updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/CartResponse'
+      '400':
+        description: Bad Request (e.g., quantity exceeds stock).
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        description: Product not found in the database or in the cart.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+      '500':
+        $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'
+  delete:
+    tags: [Carts]
+    summary: Remove a product from the cart
+    description: Removes a single specific product from the authenticated user's cart, regardless of quantity.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: productId
+        in: path
+        required: true
+        description: The ID of the product to remove from the cart.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Product removed successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/CartResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        description: Product not found in the cart.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '500':
+        $ref: '../openapi.yaml#/components/schemas/ErrorServerResponse'
+
+# ======================== USER MANAGEMENT ========================
+/admin/manage-users/get-all:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get All Users
+    description: Retrieves a paginated list of all users. Requires admin privileges.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of users.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/PaginatedUserResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+
+/admin/manage-users/unverified:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Paginated Unverified Users
+    description: Lấy danh sách những người dùng chưa xác thực tài khoản có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of unverified users.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedUserResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-users/verified:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Paginated Verified Users
+    description: Lấy danh sách những người dùng đã xác thực tài khoản có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of verified users.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedUserResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-users/banned:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Paginated Banned Users
+    description: Lấy danh sách những người dùng đã bị cấm có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of banned users.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedUserResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-users/{_id}:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get User Detail
+    description: Retrieves detailed information for a specific user by their ID.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the user to retrieve.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: User details retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/GetMeSuccessResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+
+# ======================== VOUCHER MANAGEMENT =======================
+/admin/manage-vouchers/get-all:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get All Vouchers
+    description: Retrieves a paginated list of all vouchers, including inactive ones.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: code
+        in: query
+        description: Filter vouchers by code.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A paginated list of all vouchers.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/PaginatedVoucherResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+
+/admin/manage-vouchers:
+  post:
+    tags: [Admin]
+    summary: (Admin) Create a New Voucher
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/CreateVoucherReqBody'
+    responses:
+      '200':
+        description: Voucher created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/VoucherCreationResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+
+/admin/manage-vouchers/{voucherId}:
+  put:
+    tags: [Admin]
+    summary: (Admin) Update a Voucher
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: voucherId
+        in: path
+        required: true
+        description: The ID of the voucher to update.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/UpdateVoucherReqBody'
+    responses:
+      '200':
+        description: Voucher updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/VoucherCreationResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+
+/admin/manage-vouchers/{voucherId}/status:
+  put:
+    tags: [Admin]
+    summary: (Admin) Toggle Voucher Active Status
+    description: Activates or deactivates a voucher.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: voucherId
+        in: path
+        required: true
+        description: The ID of the voucher to activate/deactivate.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Voucher status toggled successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/VoucherCreationResponse'
+      '400':
+        description: Cannot reactivate an expired voucher.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+
+# ====================== PRODUCT MANAGEMENT =======================
+/admin/manage-products/get-all:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get All Products
+    description: Retrieves a paginated list of all products with full details.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of products.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/PaginatedProductResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+
+/admin/manage-products/create-new-product:
+  post:
+    tags: [Admin]
+    summary: (Admin) Create a New Product
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/CreateProductReqBody'
+    responses:
+      '200':
+        description: Product created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/MessageResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+
+/admin/manage-products/{_id}:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Product Detail
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the product.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Product details retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/Product'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+  put:
+    tags: [Admin]
+    summary: (Admin) Update a Product
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the product to update.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/UpdateProductReqBody'
+    responses:
+      '200':
+        description: Product updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/MessageResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '404':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+
+/admin/manage-products/search-by-name:
+  get:
+    tags: [Admin]
+    summary: (Admin) Search Products by Name Only
+    description: >
+      Tìm kiếm và trả về danh sách các sản phẩm có phân trang chỉ dựa trên từ khóa
+      trùng khớp với `name_on_list`. API này không nhận các tham số filter khác.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa để tìm kiếm trong tên sản phẩm (name_on_list).
+        required: false
+        schema:
+          type: string
+    responses:
+      '200':
+        description: A paginated list of matching products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+# ======================= FILTER MANAGEMENT =======================
+/admin/manage-filters/create-new-filter-brand:
+  post:
+    tags: [Admin - Filter Brand]
+    summary: (Admin) Create a New Filter Brand
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../openapi.yaml#/components/schemas/CreateFilterBrandReqBody'
+    responses:
+      '200':
+        description: Filter brand created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../openapi.yaml#/components/schemas/MessageResponse'
+      '401':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '403':
+        $ref: '../openapi.yaml#/components/schemas/ErrorStatusResponse'
+      '422':
+        $ref: '../openapi.yaml#/components/schemas/ErrorValidationResponse'
+
+/admin/manage-users/update-user-states/{id}:
+  put:
+    tags: [Admin]
+    summary: (Admin) Update a User's Verification Status
+    description: Allows an admin to update the verification status of a user (e.g., verify, ban, or unverify). An admin cannot update their own status.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the user to update.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateUserStateReqBody.yaml'
+    responses:
+      '200':
+        description: User state updated successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Update user state successfully'
+                data:
+                  $ref: '../components/schemas/User.yaml'
+      '400':
+        description: Bad Request (e.g., trying to update own status).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: User to be updated not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-products/update-state/{_id}:
+  put:
+    tags: [Admin]
+    summary: (Admin) Update Product State
+    description: Allows an admin to change the state of a product (e.g., set it to ACTIVE, INACTIVE, OUT_OF_STOCK, etc.).
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the product to update.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateProductStateReqBody.yaml'
+    responses:
+      '200':
+        description: Product state updated successfully.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Update product state successfully'
+                data:
+                  $ref: '../components/schemas/Product.yaml'
+      '401':
+        description: Unauthorized.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        description: Forbidden. User is not an admin.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        description: Product not found.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        description: Validation error.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-products/stats:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Product Statistics
+    description: Lấy 4 số liệu thống kê chính về sản phẩm cho dashboard.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về các số liệu thống kê thành công.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: 'Get product statistics successfully'
+                result:
+                  $ref: '../components/schemas/ProductStatsResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-products/on-sale:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Paginated On-Sale Products
+    description: Lấy danh sách các sản phẩm đang bán (trạng thái ACTIVE) có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of on-sale products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-products/low-stock:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Paginated Low-Stock Products
+    description: Lấy danh sách các sản phẩm sắp hết hàng (số lượng > 0 và <= 10) có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of low-stock products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-products/out-of-stock:
+  get:
+    tags: [Admin]
+    summary: (Admin) Get Paginated Out-of-Stock Products
+    description: Lấy danh sách các sản phẩm đã hết hàng (số lượng = 0) có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of out-of-stock products.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedProductResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-brands:
+  get:
+    tags: [Admin - Filter Brand]
+    summary: (Admin) Get All Filter Brands
+    description: Retrieves a paginated list of all filterable brands.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of filter brands.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterBrandResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/get-filter-brand-detail/{_id}:
+  get:
+    tags: [Admin - Filter Brand]
+    summary: (Admin) Get Filter Brand by ID
+    description: Retrieves the details of a specific filter brand by its ID.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the filter brand to retrieve.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Filter brand details retrieved successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterBrand.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/update-filter-brand/{_id}:
+  put:
+    tags: [Admin - Filter Brand]
+    summary: (Admin) Update a Filter Brand
+    description: Updates the details of an existing filter brand.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the filter brand to update.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterBrandReqBody.yaml'
+    responses:
+      '200':
+        description: Filter brand updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterBrand.yaml'
+      '400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/update-filter-brand-state/{_id}:
+  put:
+    tags: [Admin - Filter Brand]
+    summary: (Admin) Update Filter Brand State
+    description: Updates the state of a filter brand (e.g., from ACTIVE to INACTIVE).
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: The ID of the filter brand to update the state for.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterBrandReqBody.yaml'
+    responses:
+      '200':
+        description: Filter brand state updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterBrand.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/search-filter-brand:
+  get:
+    tags: [Admin - Filter Brand]
+    summary: (Admin) Search Filter Brands by Name
+    description: Tìm kiếm và trả về danh sách các filter thương hiệu theo `option_name`.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa để tìm kiếm trong tên thương hiệu (không phân biệt chữ hoa/thường).
+        required: false
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter thương hiệu phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterBrandResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+# ======================= FILTER DAC TINH MANAGEMENT =======================
+/admin/manage-filters/create-new-filter-dac-tinh:
+  post:
+    tags: [Admin - Filter Dac Tinh]
+    summary: (Admin) Create a New Filter Dac Tinh
+    description: Tạo một filter đặc tính mới (ví dụ:Chống lão hóa, làm trắng da).
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterDacTinhReqBody.yaml'
+    responses:
+      '200':
+        description: Filter đặc tính được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/get-all-filter-dac-tinhs:
+  get:
+    tags: [Admin - Filter Dac Tinh]
+    summary: (Admin) Get All Filter Dac Tinhs
+    description: Lấy danh sách tất cả các filter đặc tính có phân trang.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter đặc tính.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterDacTinhResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/get-filter-dac-tinh-detail/{_id}:
+  get:
+    tags: [Admin - Filter Dac Tinh]
+    summary: (Admin) Get Filter Dac Tinh by ID
+    description: Lấy thông tin chi tiết của một filter đặc tính bằng ID.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: ID của filter đặc tính cần lấy thông tin.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Thông tin chi tiết filter đặc tính.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterDacTinh.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/update-filter-dac-tinh/{_id}:
+  put:
+    tags: [Admin - Filter Dac Tinh]
+    summary: (Admin) Update a Filter Dac Tinh
+    description: Cập nhật thông tin của một filter đặc tính đã tồn tại.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: ID của filter đặc tính cần cập nhật.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterDacTinhReqBody.yaml'
+    responses:
+      '200':
+        description: Filter đặc tính được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterDacTinh.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/update-filter-dac-tinh-state/{_id}:
+  put:
+    tags: [Admin - Filter Dac Tinh]
+    summary: (Admin) Update Filter Dac Tinh State
+    description: Cập nhật trạng thái (ACTIVE/INACTIVE) của một filter đặc tính.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: ID của filter đặc tính cần cập nhật trạng thái.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterDacTinhReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter đặc tính được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterDacTinh.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/search-filter-dac-tinh:
+  get:
+    tags: [Admin - Filter Dac Tinh]
+    summary: (Admin) Search Filter Dac Tinhs by Name
+    description: Tìm kiếm và trả về danh sách các filter đặc tính theo `option_name`.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa để tìm kiếm trong tên đặc tính (không phân biệt chữ hoa/thường).
+        required: false
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter đặc tính phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterDacTinhResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/create-new-filter-hsk-ingredient:
+  post:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Create a New HSK Ingredient Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskIngredientReqBody.yaml'
+    responses:
+      '200':
+        description: Filter thành phần được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/get-all-filter-hsk-ingredients:
+  get:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Get All HSK Ingredient Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter thành phần.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskIngredientResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/get-filter-hsk-ingredient-detail/{_id}:
+  get:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Get HSK Ingredient Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: ID của filter thành phần cần lấy.
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter thành phần.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskIngredient.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/update-filter-hsk-ingredient/{_id}:
+  put:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Update an HSK Ingredient Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: ID của filter thành phần cần cập nhật.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskIngredientReqBody.yaml'
+    responses:
+      '200':
+        description: Filter thành phần được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskIngredient.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/update-filter-hsk-ingredient-state/{_id}:
+  put:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Update HSK Ingredient Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        description: ID của filter thành phần cần cập nhật trạng thái.
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskIngredientReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter thành phần được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskIngredient.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '422':
+        $ref: '../components/schemas/ErrorValidationResponse.yaml'
+
+/admin/manage-filters/search-filter-hsk-ingredient:
+  get:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Search HSK Ingredient Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên thành phần.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter thành phần phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskIngredientResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+
+/admin/manage-filters/create-new-filter-hsk-product-type:
+  post:
+    tags: [Admin - Filter Product Type]
+    summary: (Admin) Create a New HSK Product Type Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskProductTypeReqBody.yaml'
+    responses:
+      '200':
+        description: Filter loại sản phẩm được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-hsk-product-types:
+  get:
+    tags: [Admin - Filter Product Type]
+    summary: (Admin) Get All HSK Product Type Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter loại sản phẩm.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskProductTypeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-filter-hsk-product-type-detail/{_id}:
+  get:
+    tags: [Admin - Filter Product Type]
+    summary: (Admin) Get HSK Product Type Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter loại sản phẩm.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskProductType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-product-type/{_id}:
+  put:
+    tags: [Admin - Filter Product Type]
+    summary: (Admin) Update an HSK Product Type Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskProductTypeReqBody.yaml'
+    responses:
+      '200':
+        description: Filter loại sản phẩm được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskProductType.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-product-type-state/{_id}:
+  put:
+    tags: [Admin - Filter Product Type]
+    summary: (Admin) Update HSK Product Type Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskProductTypeReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter loại sản phẩm được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskProductType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/search-filter-hsk-product-type:
+  get:
+    tags: [Admin - Filter Product Type]
+    summary: (Admin) Search HSK Product Type Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên loại sản phẩm.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter loại sản phẩm phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskProductTypeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/create-new-filter-hsk-size:
+  post:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Create a New HSK Size Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskSizeReqBody.yaml'
+    responses:
+      '200':
+        description: Filter kích thước được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-hsk-sizes:
+  get:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Get All HSK Size Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter kích thước.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskSizeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-filter-hsk-size-detail/{_id}:
+  get:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Get HSK Size Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter kích thước.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSize.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-size/{_id}:
+  put:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Update an HSK Size Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskSizeReqBody.yaml'
+    responses:
+      '200':
+        description: Filter kích thước được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSize.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-size-state/{_id}:
+  put:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Update HSK Size Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskSizeReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter kích thước được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSize.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/search-filter-hsk-size:
+  get:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Search HSK Size Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên kích thước.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter kích thước phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskSizeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/create-new-filter-hsk-skin-type:
+  post:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Create a New HSK Skin Type Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskSkinTypeReqBody.yaml'
+    responses:
+      '200':
+        description: Filter loại da được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-hsk-skin-types:
+  get:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Get All HSK Skin Type Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter loại da.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskSkinTypeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-filter-hsk-skin-type-detail/{_id}:
+  get:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Get HSK Skin Type Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter loại da.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSkinType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-skin-type/{_id}:
+  put:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Update an HSK Skin Type Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskSkinTypeReqBody.yaml'
+    responses:
+      '200':
+        description: Filter loại da được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSkinType.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-skin-type-state/{_id}:
+  put:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Update HSK Skin Type Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskSkinTypeReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter loại da được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskSkinType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/search-filter-hsk-skin-type:
+  get:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Search HSK Skin Type Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên loại da.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter loại da phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskSkinTypeResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/create-new-filter-hsk-uses:
+  post:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Create a New HSK Uses Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskUsesReqBody.yaml'
+    responses:
+      '200':
+        description: Filter công dụng được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-hsk-uses:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Get All HSK Uses Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter công dụng.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskUsesResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-filter-hsk-uses-detail/{_id}:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Get HSK Uses Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter công dụng.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskUses.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-uses/{_id}:
+  put:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Update an HSK Uses Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskUsesReqBody.yaml'
+    responses:
+      '200':
+        description: Filter công dụng được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskUses.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-uses-state/{_id}:
+  put:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Update HSK Uses Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskUsesReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter công dụng được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskUses.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/search-filter-hsk-uses:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Search HSK Uses Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên công dụng.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter công dụng phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskUsesResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/create-new-filter-hsk-origin:
+  post:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Create a New HSK Origin Filter
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateFilterHskOriginReqBody.yaml'
+    responses:
+      '200':
+        description: Filter nguồn gốc được tạo thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/get-all-filter-hsk-origins:
+  get:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Get All HSK Origin Filters
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: Trả về danh sách các filter nguồn gốc.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskOriginResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-filter-hsk-origin-detail/{_id}:
+  get:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Get HSK Origin Filter by ID
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Chi tiết filter nguồn gốc.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskOrigin.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-origin/{_id}:
+  put:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Update an HSK Origin Filter
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdateFilterHskOriginReqBody.yaml'
+    responses:
+      '200':
+        description: Filter nguồn gốc được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskOrigin.yaml'
+      400':
+        description: Bad Request (VD:Cố gắng cập nhật một filter đang ở trạng thái không hoạt động).
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/ErrorStatusResponse.yaml'
+              example:
+                message: 'Cannot update an inactive filter. Please activate it first.'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/update-filter-hsk-origin-state/{_id}:
+  put:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Update HSK Origin Filter State
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: _id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/DisableFilterHskOriginReqBody.yaml'
+    responses:
+      '200':
+        description: Trạng thái filter nguồn gốc được cập nhật thành công.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/FilterHskOrigin.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '404': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '422': { $ref: '../components/schemas/ErrorValidationResponse.yaml' }
+
+/admin/manage-filters/search-filter-hsk-origin:
+  get:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Search HSK Origin Filters by Name
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: keyword
+        in: query
+        description: Từ khóa tìm kiếm trong tên nguồn gốc.
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Trả về danh sách các filter nguồn gốc phù hợp.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedFilterHskOriginResponse.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-brands:
+  get:
+    tags: [Admin - Filter Brand]
+    summary: (Admin) Get All Active Filter Brands
+    description: Lấy danh sách tất cả các filter thương hiệu đang hoạt động để sử dụng trong việc tạo/cập nhật sản phẩm.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter thương hiệu.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter brands successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterBrand.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-dac-tinhs:
+  get:
+    tags: [Admin - Filter Dac Tinh]
+    summary: (Admin) Get All Active Filter Dac Tinhs
+    description: Lấy danh sách tất cả các filter đặc tính đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter đặc tính.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter dac tinhs successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterDacTinh.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-ingredients:
+  get:
+    tags: [Admin - Filter Ingredient]
+    summary: (Admin) Get All Active HSK Ingredient Filters
+    description: Lấy danh sách tất cả các filter thành phần đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter thành phần.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter ingredients successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskIngredient.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-product-types:
+  get:
+    tags: [Admin - Filter Product Type]
+    summary: (Admin) Get All Active HSK Product Type Filters
+    description: Lấy danh sách tất cả các filter loại sản phẩm đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter loại sản phẩm.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter product types successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskProductType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-sizes:
+  get:
+    tags: [Admin - Filter Size]
+    summary: (Admin) Get All Active HSK Size Filters
+    description: Lấy danh sách tất cả các filter kích thước đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter kích thước.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter sizes successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskSize.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-skin-types:
+  get:
+    tags: [Admin - Filter Skin Type]
+    summary: (Admin) Get All Active HSK Skin Type Filters
+    description: Lấy danh sách tất cả các filter loại da đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter loại da.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter skin types successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskSkinType.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-uses:
+  get:
+    tags: [Admin - Filter Uses]
+    summary: (Admin) Get All Active HSK Uses Filters
+    description: Lấy danh sách tất cả các filter công dụng đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter công dụng.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter uses successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskUses.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/admin/manage-filters/get-active-filter-hsk-origins:
+  get:
+    tags: [Admin - Filter Origin]
+    summary: (Admin) Get All Active HSK Origin Filters
+    description: Lấy danh sách tất cả các filter nguồn gốc đang hoạt động.
+    security:
+      - BearerAuth: []
+    responses:
+      '200':
+        description: Trả về một mảng các đối tượng filter nguồn gốc.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message: { type: string, example: 'Get active filter origins successfully' }
+                data:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/FilterHskOrigin.yaml'
+      '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+      '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }

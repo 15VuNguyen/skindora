@@ -1,0 +1,50 @@
+type: object
+properties:
+  message:
+    type: string
+    example: "Order created successfully"
+  result:
+    # Đây là một cấu trúc phức hợp, ta sẽ định nghĩa nó trực tiếp ở đây
+    type: object
+    properties:
+      UserID:
+        type: string
+        format: mongoId
+      ShipAddress:
+        type: string
+      Description:
+        type: string
+      RequireDate:
+        type: string
+        format: date-time
+      Discount:
+        type: string
+      TotalPrice:
+        type: string
+      PaymentMethod:
+        type: string
+        enum: [COD, ZALOPAY, VNPAY]
+      PaymentStatus:
+        type: string
+        enum: [UNPAID, PAID]
+      Status:
+        type: string
+        enum: [PENDING, CONFIRMED, PROCESSING, SHIPPING, DELIVERED, CANCELLED, RETURNED, FAILED]
+      orderDetails:
+        type: array
+        items:
+          type: object
+          properties:
+            ProductID:
+              type: string
+              format: mongoId
+            OrderID:
+              type: string
+              format: mongoId
+            Quantity:
+              type: string
+            OrderDate:
+              type: string
+              format: date-time
+            UnitPrice:
+              type: string

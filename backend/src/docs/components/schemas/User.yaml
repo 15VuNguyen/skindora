@@ -1,53 +1,52 @@
 type: object
+description: "Represents a user object."
 properties:
   _id:
     type: string
-    format: objectId
-    description: User's unique identifier
-    example: '60d0fe4f5311236168a109ca'
+    format: mongoId
+    example: "60c72b2f9b1d8e001f8e8e8e"
   first_name:
     type: string
-    example: 'John'
+    example: "Van A"
   last_name:
     type: string
-    example: 'Doe'
+    example: "Nguyen"
   email:
     type: string
     format: email
-    example: 'john.doe@example.com'
+    example: "user@example.com"
+  username:
+    type: string
+    example: "user12345"
+  location:
+    type: string
+    example: "Hanoi, Vietnam"
+  phone_number:
+    type: string
+    example: "0987654321"
+  avatar:
+    type: string
+    format: uri
+    example: "https://example.com/avatar.png"
+  verify:
+    type: integer
+    description: "Verification status of the user."
+    enum:
+      - 0  # Unverified
+      - 1  # Verified
+      - 2  # Banned
+    example: 1
+  roleid:
+    type: integer
+    description: "Role of the user."
+    enum:
+      - 0  # User
+      - 1  # Staff
+      - 2  # Admin
+    example: 0
   created_at:
     type: string
     format: date-time
-    example: '2023-05-15T10:30:00Z'
   updated_at:
     type: string
     format: date-time
-    example: '2023-05-16T11:00:00Z'
-  verify:
-    type: integer
-    format: int32
-    description: 'User verification status. 0: Unverified, 1: Verified, 2: Banned'
-    enum: [0, 1, 2]
-    example: 0
-  location:
-    type: string
-    nullable: true
-    example: 'New York, USA'
-  username:
-    type: string
-    example: 'johndoe123'
-  phone_number:
-    type: string
-    nullable: true
-    example: '+11234567890'
-  avatar:
-    type: string
-    format: url
-    nullable: true
-    example: 'https://example.com/avatars/johndoe.jpg'
-  roleid:
-    type: integer
-    format: int32
-    description: 'User role. 0: User, 1: Staff, 2: Admin'
-    enum: [0, 1, 2]
-    example: 0

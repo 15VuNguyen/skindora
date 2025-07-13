@@ -1,0 +1,60 @@
+type: object
+description: Represents a full order object.
+properties:
+  _id:
+    type: string
+    format: mongoId
+  UserID:
+    type: string
+    format: mongoId
+  ShipAddress:
+    type: string
+  Description:
+    type: string
+  RequireDate:
+    type: string
+    format: date-time
+  ShippedDate:
+    type: string
+    format: date-time
+  Status:
+    type: string
+    enum: [PENDING, CONFIRMED, PROCESSING, SHIPPING, DELIVERED, CANCELLED, RETURNED, FAILED]
+  PaymentMethod:
+    type: string
+    enum: [COD, ZALOPAY, VNPAY]
+  PaymentStatus:
+    type: string
+    enum: [UNPAID, PAID]
+  CancelRequest:
+    type: object
+    properties:
+      status:
+        type: string
+        enum: [REQUESTED, APPROVED, REJECTED]
+      reason:
+        type: string
+      requestedAt:
+        type: string
+        format: date-time
+      staffId:
+        type: string
+        format: mongoId
+      staffNote:
+        type: string
+  RefundStatus:
+    type: string
+    enum: [NONE, REQUESTED, PROCESSING, REFUNDED, FAILED]
+  Discount:
+    type: string
+  TotalPrice:
+    type: string
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time
+  modified_by:
+    type: string
+    format: mongoId

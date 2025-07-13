@@ -4,6 +4,8 @@ import Product from './models/schemas/Products/Product.schema'
 import User from './models/schemas/User.schema'
 import { Request } from 'express'
 import { VoucherType } from './models/schemas/Voucher.schema'
+import { Cart } from './models/requests/Cart.requests'
+import { ObjectId } from 'mongodb'
 
 declare module 'express' {
   interface Request {
@@ -15,5 +17,8 @@ declare module 'express' {
     product?: Product
     order?: Order
     voucher?: VoucherType
+    cart?: Cart
+    products?: Array<Product>
+    redis_order_id?: ObjectId
   }
 }

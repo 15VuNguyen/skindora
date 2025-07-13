@@ -1,5 +1,6 @@
 import { ChevronRight, LoaderCircle } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -81,7 +82,13 @@ function CategoryCard({
   description: string;
   theme?: colorScheme;
 }): React.JSX.Element {
+  const navigate = useNavigate();
   const { base, hover } = colorMapping[theme];
+
+  const handleExploreClick = () => {
+    navigate("/products");
+  };
+
   return (
     <Card
       className={cn(
@@ -97,7 +104,7 @@ function CategoryCard({
         <p className="text-sm text-gray-600">{description}</p>
       </CardContent>
       <CardFooter className="flex items-center justify-between">
-        <Button variant={"link"} className="hover:cursor-pointer">
+        <Button variant={"link"} className="hover:cursor-pointer" onClick={handleExploreClick}>
           Khám phá ngay
           <ChevronRight className="text-primary" />
         </Button>

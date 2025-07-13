@@ -26,7 +26,7 @@ export const sendPaginatedResponse = async <T extends Document>(
 
     const [totalRecords, data] = await Promise.all([
       collection.countDocuments(filter),
-      collection.find(filter, { projection }).sort({ createdAt: -1 }).skip(skip).limit(limit).toArray()
+      collection.find(filter, { projection }).sort({ created_at: -1 }).skip(skip).limit(limit).toArray()
     ])
 
     const totalPages = Math.ceil(totalRecords / limit)
@@ -38,6 +38,35 @@ export const sendPaginatedResponse = async <T extends Document>(
         currentPage: page,
         totalPages,
         totalRecords
+      }
+    }
+
+    return res.status(200).json(responseBody)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const sendPaginatedResponseFromRedis = <T>(
+  res: Response,
+  next: NextFunction,
+  data: T[],
+  query: Record<string, any>
+) => {
+  try {
+    const page = parseInt(query.page as string) || 1
+    const limit = parseInt(query.limit as string) || 10
+    const start = (page - 1) * limit
+
+    const paginatedData = data.slice(start, start + limit)
+
+    const responseBody: IResponseSearch<any> = {
+      data: paginatedData,
+      pagination: {
+        limit,
+        currentPage: page,
+        totalPages: Math.ceil(data.length / limit),
+        totalRecords: data.length
       }
     }
 

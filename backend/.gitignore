@@ -147,5 +147,8 @@ certs/
 # Allow email templates
 !backend/src/utils/templates/*.html
 
-
+#my custom scripts
+copy_all.sh
+copy_code.sh
+copy_docs.sh
 # End of https://www.toptal.com/developers/gitignore/api/node

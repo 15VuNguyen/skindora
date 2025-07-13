@@ -1,0 +1,12 @@
+type: object
+properties:
+  message:
+    type: string
+    example: "Wishlist fetched successfully"
+  data:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    description: "An array of product IDs in the user's wishlist."
+    example: ["60c72b2f9b1d8e001f8e8e8e", "60c72b2f9b1d8e001f8e8e8f"]

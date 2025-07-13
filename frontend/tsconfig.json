@@ -25,7 +25,22 @@
       ],
       "@contexts": [
         "./src/contexts/*"
-      ]
+      ],
+      "@hooks": [
+        "./src/hooks/*"
+      ],
+      "@utils": [
+        "./src/utils/*"
+      ],
+      "@config": [
+        "./src/config/*"
+      ],
+      "@services": [
+        "./src/services/*"
+      ],
+      "@types": [
+        "./src/types/*"
+      ],
     }
   }
 }

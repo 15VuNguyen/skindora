@@ -7,6 +7,8 @@ import { app, server } from './lib/socket'
 import swaggerUi from 'swagger-ui-express'
 // import YAML from 'yamljs'
 // import path from 'path'
+import filtersRouter from './routes/filters.routes'
+import { aiRouter } from './routes/ai.routes'
 import paymentsRouter from './routes/payments.routes'
 import cors from 'cors'
 import reviewRouters from './routes/reviews.routes'
@@ -16,6 +18,9 @@ import { dailyReport } from './utils/cron/email.services'
 import adminRouter from './routes/admin.routes'
 import cartRouter from './routes/cart.routes'
 import ordersRouter from './routes/orders.routes'
+import staffRouter from './routes/staffs.routes'
+import { connectProducer, waitForKafkaReady } from './services/Kafka/kafka.services'
+import { startVoucherConsumer } from './services/Kafka/consumer'
 
 config()
 // const swaggerDocument = YAML.load(path.join(__dirname, './openapi.yml'))
@@ -27,12 +32,17 @@ app.use(
     origin: process.env.CORS_ORIGIN
   })
 ),
-  app.use(express.json())
+  app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true }))
 
-databaseService.connect().then(() => {
+databaseService.connect().then(async () => {
   databaseService.indexUsers()
   databaseService.indexVouchers()
+  // databaseService.indexProducts()
+
+  await waitForKafkaReady()
+  await connectProducer()
+  await startVoucherConsumer()
 })
 
 app.get('/', (req, res) => {
@@ -46,6 +56,9 @@ app.use('/payment', paymentsRouter)
 app.use('/review', reviewRouters)
 app.use('/products', productRouter)
 app.use('/admin', adminRouter)
+app.use('/staffs', staffRouter)
+app.use('/filters', filtersRouter) 
+app.use('/ai', aiRouter)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(defaultErrorHandler)

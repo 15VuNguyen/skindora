@@ -1,0 +1,10 @@
+type: object
+description: 'Chỉ bao gồm các trường cần cập nhật cho thành phần HSK.'
+properties:
+  option_name:
+    type: string
+    example: 'Niacinamide 10% + Zinc 1%'
+  category_name:
+    type: string
+  category_param:
+    type: string

@@ -1,0 +1,19 @@
+type: object
+required:
+  - option_name
+  - category_name
+  - category_param
+properties:
+  option_name:
+    type: string
+    example: 'BHA 2%'
+  category_name:
+    type: string
+    example: 'Thành Phần HSK'
+  category_param:
+    type: string
+    example: 'bha-2-phantram'
+  state:
+    type: string
+    enum: [INACTIVE, ACTIVE]
+    default: 'ACTIVE'

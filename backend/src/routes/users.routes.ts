@@ -12,7 +12,8 @@ import {
   resendEmailVerifyController,
   resetPasswordController,
   updateMeController,
-  verifyForgotPasswordTokenController
+  verifyForgotPasswordTokenController,
+  
 } from '~/controllers/users.controllers'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
@@ -33,14 +34,15 @@ import {
 import {
   addToWishListController,
   getWishListController,
-  removeFromWishListController
+  removeFromWishListController,getProductFromWishListController
 } from '~/controllers/products.controllers'
 import { UpdateMeReqBody } from '~/models/requests/Users.requests'
 import { wrapAsync } from '~/utils/handler'
+import { getAllVoucherController, getVoucherDetailController } from '~/controllers/voucher.controllers'
 
 const usersRouter = Router()
-usersRouter.route('/').get(loginController)
-usersRouter.route('/').get(loginController)
+// usersRouter.route('/').get(loginController)
+// usersRouter.route('/').get(loginController)
 
 usersRouter.post('/login', loginValidator, wrapAsync(loginController))
 usersRouter.post('/register', registerValidator, wrapAsync(registerController))
@@ -66,6 +68,7 @@ usersRouter.put(
   wrapAsync(removeFromWishListController)
 )
 usersRouter.get('/getWishList', accessTokenValidator, wrapAsync(getWishListController))
+usersRouter.get('/wishlist-products', accessTokenValidator, wrapAsync(getProductFromWishListController))
 usersRouter.post('/resend-verify-email', accessTokenValidator, wrapAsync(resendEmailVerifyController))
 usersRouter.put(
   '/change-password',
@@ -79,10 +82,12 @@ usersRouter.get('/me', accessTokenValidator, wrapAsync(getMeController))
 usersRouter.patch(
   '/me',
   accessTokenValidator,
-  filterMiddleware<UpdateMeReqBody>(['first_name', 'last_name', 'location', 'username', 'avatar']),
+  filterMiddleware<UpdateMeReqBody>(['first_name', 'last_name', 'location', 'username', 'avatar',"phone_number"]),
   updateMeValidator,
   wrapAsync(updateMeController)
 )
 usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshController))
 usersRouter.get('/oauth/google', wrapAsync(oAuthController))
+usersRouter.get('/vouchers', wrapAsync(getAllVoucherController))
+usersRouter.get('/vouchers/:voucherId', wrapAsync(getVoucherDetailController))
 export default usersRouter

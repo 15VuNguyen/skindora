@@ -12,14 +12,13 @@ const redisClient = createClient({
   socket: {
     host,
     port,
-
     servername: host
   },
   password: process.env.HOST_PASSWORD
 })
 
 redisClient.on('error', (err) => {
-  console.log('Redis connect error: ', err)
+  // console.log('Redis connect error: ', err)
 })
 ;(async () => {
   await redisClient.connect()

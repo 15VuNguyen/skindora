@@ -5,7 +5,7 @@ type TransitionMap = Record<OrderStatus, OrderStatus[]>
 const baseTransitions: TransitionMap = {
   [OrderStatus.PENDING]: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
   [OrderStatus.CONFIRMED]: [OrderStatus.PROCESSING, OrderStatus.CANCELLED],
-  [OrderStatus.PROCESSING]: [OrderStatus.SHIPPING],
+  [OrderStatus.PROCESSING]: [OrderStatus.SHIPPING, OrderStatus.CANCELLED],
   [OrderStatus.SHIPPING]: [OrderStatus.DELIVERED, OrderStatus.FAILED],
   [OrderStatus.DELIVERED]: [OrderStatus.RETURNED],
   [OrderStatus.FAILED]: [OrderStatus.RETURNED],
@@ -24,16 +24,7 @@ const roleTransitions: Record<Role, TransitionMap> = {
     [OrderStatus.RETURNED]: [],
     [OrderStatus.CANCELLED]: []
   },
-  1: {
-    [OrderStatus.PENDING]: [OrderStatus.CONFIRMED, OrderStatus.CANCELLED],
-    [OrderStatus.CONFIRMED]: [OrderStatus.PROCESSING, OrderStatus.CANCELLED],
-    [OrderStatus.PROCESSING]: [OrderStatus.SHIPPING],
-    [OrderStatus.SHIPPING]: [],
-    [OrderStatus.DELIVERED]: [],
-    [OrderStatus.CANCELLED]: [],
-    [OrderStatus.RETURNED]: [],
-    [OrderStatus.FAILED]: []
-  },
+  1: baseTransitions,
   2: baseTransitions
 }
 
@@ -45,10 +36,6 @@ export function canTransition(from: OrderStatus, to: OrderStatus): boolean {
   return baseTransitions[from]?.includes(to) ?? false
 }
 
-export function canRoleTransition(
-  role: Role,
-  from: OrderStatus,
-  to: OrderStatus
-): boolean {
+export function canRoleTransition(role: Role, from: OrderStatus, to: OrderStatus): boolean {
   return roleTransitions[role]?.[from]?.includes(to) ?? false
 }

@@ -1,9 +1,9 @@
 import AppSidebar from "@/components/Sidebar";
-import AppTable from "@/components/Table";
 import Typography from "@/components/Typography";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import AppTable from "@/features/Admin/components/Table";
 
-const Adminpage = () => {
+const ManageCustomer = () => {
   return (
     <div className="flex min-h-screen bg-white">
       <SidebarProvider>
@@ -12,7 +12,9 @@ const Adminpage = () => {
           <SidebarTrigger className="p-4" />
           <div className="p mx-auto bg-white px-8 py-15">
             <Typography className="text-3xl font-bold">Quản lý khách hàng</Typography>
-            <AppTable />
+            <div>
+              <AppTable />
+            </div>
           </div>
         </div>
       </SidebarProvider>
@@ -20,4 +22,4 @@ const Adminpage = () => {
   );
 };
 
-export default Adminpage;
+export default ManageCustomer;
