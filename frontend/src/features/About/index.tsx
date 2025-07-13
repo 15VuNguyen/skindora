@@ -130,23 +130,23 @@ function AboutValues() {
 }
 
 function AboutTeam() {
-  const members = [
-    {
-      name: "BS.Trần Anh Vỹ",
-      role: "Nhà sáng lập & Bác sĩ da liễu trưởng",
-      image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
-    },
-    {
-      name: "Trần Anh Vỹ",
-      role: "Trưởng phòng phát triển sản phẩm",
-      image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
-    },
-    {
-      name: "Trần Anh Vỹ",
-      role: "Quản lý kiểm soát chất lượng",
-      image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
-    },
-  ];
+  // const members = [
+  //   {
+  //     name: "BS.Trần Anh Vỹ",
+  //     role: "Nhà sáng lập & Bác sĩ da liễu trưởng",
+  //     image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
+  //   },
+  //   {
+  //     name: "Trần Anh Vỹ",
+  //     role: "Trưởng phòng phát triển sản phẩm",
+  //     image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
+  //   },
+  //   {
+  //     name: "Trần Anh Vỹ",
+  //     role: "Quản lý kiểm soát chất lượng",
+  //     image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
+  //   },
+  // ];
   return (
     <motion.div variants={itemVariants}>
       <Card className="from-card to-secondary/10 border border-gray-200 bg-gradient-to-br shadow-xl">
@@ -162,7 +162,7 @@ function AboutTeam() {
               Đội ngũ của chúng tôi
             </h2>
           </motion.div>
-          <div className="grid gap-8 md:grid-cols-3">
+          {/* <div className="grid gap-8 md:grid-cols-3">
             {members.map((member, index) => (
               <motion.div
                 key={index}
@@ -187,7 +187,7 @@ function AboutTeam() {
                 <p className="text-muted-foreground text-sm">{member.role}</p>
               </motion.div>
             ))}
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </motion.div>
