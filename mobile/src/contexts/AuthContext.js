@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
           console.log("Failed to fetch user", error);
           await clearTokens();
           setAccessToken(null);
+          setUser(null)
         }
       }
       setIsLoading(false);

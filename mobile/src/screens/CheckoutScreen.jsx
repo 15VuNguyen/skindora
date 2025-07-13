@@ -142,6 +142,7 @@ export default function CheckoutScreen() {
           navigation.navigate("VoucherApplication", {
             selectedVoucher,
             cart,
+            total,
             recipientInfo,
           })
         }
