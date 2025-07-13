@@ -49,7 +49,7 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: ProductType
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem>
+          {/* <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem> */}
           <DropdownMenuSeparator />
 
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/product-type-detail`)}>
@@ -136,7 +136,7 @@ export const productTypeColumn = (refetchData: () => void): ColumnDef<ProductTyp
         return <Badge className="bg-green-500 text-white hover:bg-green-600">Đang hoạt động</Badge>;
       }
       return <Badge variant="secondary">Không hoạt động</Badge>;
-    }
+    },
   },
   {
     accessorKey: "created_at",

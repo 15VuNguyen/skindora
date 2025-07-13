@@ -41,12 +41,12 @@ const Admin: React.FC = () => {
       <div>
         <div className="w-full">
           <div className="mb-3 flex justify-between">
-            <div>
+            {/* <div>
               <Typography className="text-lg font-medium">Đơn hàng gần đây</Typography>
             </div>
             <div className="mb-2">
               <Typography className="text-primary cursor-pointer text-sm font-bold">Xem tất cả</Typography>
-            </div>
+            </div> */}
           </div>
           <div>
             <ManageOrdersStaff />
