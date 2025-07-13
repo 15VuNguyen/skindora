@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
 import { getBrandByID } from "@/api/brand";
-import type { Brand } from "@/types/brand";
+import type { Brand } from "@/types/Filter/brand";
 
 export const useFetchBrandByID = (id: string) => {
   const [loading, setLoading] = useState<boolean>();

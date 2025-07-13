@@ -2,7 +2,7 @@ import { Response, Request, NextFunction } from 'express'
 import { pick } from 'lodash'
 import { checkSchema } from 'express-validator'
 import { validate } from '~/utils/validation'
-import { COMMON_MESSAGES } from '~/constants/messages'
+import { ADMIN_MESSAGES, COMMON_MESSAGES } from '~/constants/messages'
 
 type FilterKeys<T> = Array<keyof T>
 
@@ -49,6 +49,19 @@ export const paginationValidator = validate(
         errorMessage: `${COMMON_MESSAGES.LIMIT_MUST_BE_INTEGER_BETWEEN}: 1 and ${MAX_ITEMS_PER_PAGE}`
       },
       toInt: true
+    }
+  })
+)
+
+export const searchFilterOptionNameValidator = validate(
+  checkSchema({
+    keyword: {
+      in: ['query'],
+      optional: true,
+      isString: {
+        errorMessage: ADMIN_MESSAGES.OPTION_NAME_SEARCH_MUST_BE_STRING
+      },
+      trim: true
     }
   })
 )

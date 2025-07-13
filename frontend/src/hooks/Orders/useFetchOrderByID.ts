@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react";
 
 import { fetchOrderById } from "@/api/order";
-import type { Order } from "@/types/order";
+import type { OrderAPIResult } from "@/types/order";
 
 export const useFetchOrderByID = (id: string) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<Order>();
+  const [data, setData] = useState<OrderAPIResult>();
   const FetchProductByID = useCallback(async () => {
     try {
       console.log("ID ne", id);

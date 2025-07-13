@@ -25,14 +25,13 @@ const formatCurrency = (amount: number | string) => {
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("vi-VN");
 };
-export const ActionsCell = ({ row }: { row: { original: Voucher } }) => {
+export const ActionsCell = ({ row, refetchData }: { row: { original: Voucher }; refetchData: () => void }) => {
   const { _id, isActive, code } = row.original;
   const navigate = useNavigate();
   console.log(_id);
   const { updateStatusVoucher, loading } = useToggleStatusVoucher(String(_id));
   const handleUpdateStatus = () => {
-    updateStatusVoucher();
-    window.location.reload();
+    updateStatusVoucher(refetchData);
   };
   return (
     <div className="text-right">
@@ -72,7 +71,7 @@ export const ActionsCell = ({ row }: { row: { original: Voucher } }) => {
   );
 };
 
-export const vouchersColumns: ColumnDef<Voucher>[] = [
+export const vouchersColumns = (refetchData: () => void): ColumnDef<Voucher>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -201,6 +200,6 @@ export const vouchersColumns: ColumnDef<Voucher>[] = [
   // Cột Actions
   {
     id: "actions",
-    cell: ({ row }) => <ActionsCell row={row} />,
+    cell: ({ row }) => <ActionsCell row={row} refetchData={refetchData} />,
   },
 ];

@@ -68,6 +68,7 @@ class ProductsService {
   async cacheProductInfo(product: ProductInCache) {
     const key = this.getProductInfoKey(product._id)
     await redisClient.hSet(key, {
+      quantity: product.quantity,
       price: product.price.toString(),
       name: product.name,
       image: product.image
@@ -243,6 +244,26 @@ class ProductsService {
       }
     )
     return result
+  }
+
+  async getProductStats() {
+    const [totalProducts, onSale, lowStock, outOfStock] = await Promise.all([
+      // 1. Đếm tổng số sản phẩm
+      databaseService.products.countDocuments({}),
+      // 2. Đếm sản phẩm đang bán (state = ACTIVE)
+      databaseService.products.countDocuments({ state: ProductState.ACTIVE }),
+      // 3. Đếm sản phẩm sắp hết hàng (số lượng > 0 và <= 10)
+      databaseService.products.countDocuments({ quantity: { $gt: 0, $lte: 10 } }),
+      // 4. Đếm sản phẩm đã hết hàng (số lượng = 0)
+      databaseService.products.countDocuments({ quantity: 0 })
+    ]);
+
+    return {
+      totalProducts,
+      onSale,
+      lowStock,
+      outOfStock
+    };
   }
 }
 

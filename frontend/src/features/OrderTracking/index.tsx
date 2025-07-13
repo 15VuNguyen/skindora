@@ -23,30 +23,30 @@ import { ShippingProgressCard } from "./components/ShippingProgressCard";
 const generateShippingSteps = (status: string, orderDate: string, requireDate: string) => {
   const steps = [
     {
-      status: "confirmed",
-      title: "Order Confirmed",
-      description: "Your order has been confirmed and is being prepared.",
+      status: "CONFIRMED",
+      title: "Đã xác nhận đơn hàng",
+      description: "Đơn hàng của bạn đã được xác nhận và đang được chuẩn bị.",
     },
-    { status: "processing", title: "Processing", description: "The items are being carefully packaged." },
-    { status: "shipping", title: "In Transit", description: "The order is on its way to you." },
-    { status: "delivered", title: "Delivered", description: "Your order has been successfully delivered." },
+    { status: "PROCESSING", title: "Đang xử lý", description: "Sản phẩm đang được đóng gói cẩn thận." },
+    { status: "SHIPPING", title: "Đang vận chuyển", description: "Đơn hàng đang trên đường đến bạn." },
+    { status: "DELIVERED", title: "Đã giao hàng", description: "Đơn hàng đã được giao thành công." },
   ];
   const statusHierarchy = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPING", "DELIVERED", "CANCELLED", "FAILED"];
   const currentStatusIndex = statusHierarchy.indexOf(status);
-  const getStepDate = (index: number) => {
-    if (index === 0) return format(new Date(orderDate), "yyyy-MM-dd HH:mm");
-    if (index === 3 && status === "DELIVERED") return format(new Date(requireDate), "yyyy-MM-dd HH:mm");
-    if (index < currentStatusIndex)
-      return format(new Date(new Date(orderDate).getTime() + index * 24 * 60 * 60 * 1000), "yyyy-MM-dd HH:mm");
+
+  const getStepDate = (stepStatus: string) => {
+    if (stepStatus === "CONFIRMED") return format(new Date(orderDate), "yyyy-MM-dd HH:mm");
+    if (stepStatus === "DELIVERED" && status === "DELIVERED") return format(new Date(requireDate), "yyyy-MM-dd HH:mm");
     return "";
   };
-  return steps.map((step, index) => {
+
+  return steps.map((step) => {
     const stepIndexInHierarchy = statusHierarchy.indexOf(step.status.toUpperCase());
     return {
       ...step,
       completed: stepIndexInHierarchy < currentStatusIndex,
       current: stepIndexInHierarchy === currentStatusIndex,
-      date: stepIndexInHierarchy <= currentStatusIndex ? getStepDate(index) : "",
+      date: stepIndexInHierarchy <= currentStatusIndex ? getStepDate(step.status) : "",
     };
   });
 };
@@ -75,7 +75,7 @@ const OrderTracking = () => {
 
   const handleRequestCancellation = () => {
     if (!cancelReason.trim()) {
-      toast.error("Please provide a reason for cancellation.");
+      toast.error("Vui lòng nhập lý do hủy đơn hàng.");
       return;
     }
     if (orderId) {
@@ -112,43 +112,46 @@ const OrderTracking = () => {
     return (
       <div className="flex min-h-[80vh] flex-col items-center justify-center">
         <LoaderCircle className="text-primary h-12 w-12 animate-spin" />
-        <p className="text-muted-foreground mt-4">Loading order details...</p>
+        <p className="text-muted-foreground mt-4">Đang tải chi tiết đơn hàng...</p>
       </div>
     );
   }
 
-  if (isError || !orderResponse) {
+  if (isError || !orderResponse?.result?.order) {
     return (
       <div className="flex min-h-[80vh] flex-col items-center justify-center p-4 text-center">
         <AlertCircle className="text-destructive h-16 w-16" />
-        <h2 className="mt-4 text-2xl font-bold">Order Not Found</h2>
+        <h2 className="mt-4 text-2xl font-bold">Không tìm thấy đơn hàng</h2>
         <p className="text-muted-foreground mt-2">
-          {error?.message || "We couldn't find the order you're looking for."}
+          {error?.message || "Chúng tôi không tìm thấy đơn hàng bạn yêu cầu."}
         </p>
-        <Button onClick={() => navigate("/profile/orders")} variant="outline" className="mt-6">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to My Orders
+        <Button onClick={() => navigate("/profile")} variant="outline" className="mt-6">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Quay lại đơn hàng của tôi
         </Button>
       </div>
     );
   }
 
-  const order = orderResponse.result;
-  const shippingSteps = generateShippingSteps(order.Status, order.orderDetail[0].OrderDate, order.RequireDate);
-  const orderTotal = parseFloat(order.TotalPrice);
-  const shippingFee = orderTotal > 500000 ? 0 : 30000;
-  const grandTotal = orderTotal + shippingFee;
+  const { order, orderDetail } = orderResponse.result;
+
+  const shippingSteps = generateShippingSteps(order.Status, order.created_at, order.RequireDate);
+  const finalTotal = parseFloat(order.TotalPrice);
+  const discountAmount = parseFloat(order.DiscountValue || "0");
+  const subtotal = finalTotal + discountAmount;
+
+  const grandTotal = subtotal - discountAmount;
   const isCancelable = (order.Status === "PENDING" || order.Status === "CONFIRMED") && !order.CancelRequest;
 
   return (
     <>
       <div className="min-h-screen bg-gray-50 p-4 md:p-8">
         <div className="mx-auto max-w-4xl">
-          <PageHeader orderId={order._id} orderDate={order.orderDetail[0].OrderDate} />
+          <PageHeader orderId={order._id} orderDate={order.created_at} />
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
               <ShippingProgressCard steps={shippingSteps} />
               <OrderItemsCard
-                orderDetails={order.orderDetail}
+                orderDetails={orderDetail}
                 orderStatus={order.Status}
                 onOpenReviewModal={openReviewModal}
                 reviewedProductIds={reviewedProductIds}
@@ -157,11 +160,12 @@ const OrderTracking = () => {
             <div className="space-y-6 lg:col-span-1">
               <ShippingAddressCard address={order.ShipAddress} />
               <OrderSummaryCard
-                orderTotal={orderTotal}
-                shippingFee={shippingFee}
+                orderTotal={subtotal}
+                discount={discountAmount}
                 grandTotal={grandTotal}
                 paymentMethod={order.PaymentMethod}
                 requireDate={order.RequireDate}
+                voucherCode={order.VoucherSnapshot?.code}
               />
               <OrderActionsCard
                 isCancelable={isCancelable}

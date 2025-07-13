@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 import StaffSidebar from "@/components/StaffSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { HeaderProvider, useHeader } from "@/contexts/header.context";
-import HeaderAdmin from "@/features/Admin/components/Header";
+import HeaderStaff from "@/features/Admin/components/HeaderStaff";
 
 const LayoutContent = () => {
   const { headerName } = useHeader();
@@ -16,7 +16,7 @@ const LayoutContent = () => {
         <StaffSidebar />
         <div className="flex-1">
           <div className="relative">
-            <HeaderAdmin name={headerName} />
+            <HeaderStaff name={headerName} />
             <Outlet />
           </div>
         </div>

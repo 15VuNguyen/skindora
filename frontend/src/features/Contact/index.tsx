@@ -249,14 +249,10 @@ const Contact = () => {
       animate="visible"
     >
       <div className="mx-auto max-w-6xl">
-        <motion.div className="mb-12 rounded-3xl bg-white p-12 text-center shadow" variants={itemVariants}>
+        <motion.div className="mb-12 rounded-3xl bg-white p-12 text-center shadow bg-gradient-to-r from-primary to-accent" variants={itemVariants}>
           <motion.h1
-            className="mb-4 bg-clip-text text-4xl font-bold text-transparent"
-            style={{
-              background: "linear-gradient(to right, var(--primary), var(--accent))",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
+            className="mb-4 bg-clip-text text-4xl font-bold text-white"
+            
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 0.7 }}

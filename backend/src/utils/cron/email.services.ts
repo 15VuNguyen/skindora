@@ -24,7 +24,6 @@ const sendDailyEmail = async () => {
 
     if (staffs.length <= 0) return
 
-    // Tạo danh sách HTML sản phẩm
     const productItemsHtml = products
       .map(
         (p) => `
@@ -58,7 +57,7 @@ const sendDailyEmail = async () => {
 }
 
 export const dailyReport = new CronJob(
-  '* 7 * * *',
+  '0 7 * * *',
   () => {
     sendDailyEmail()
   },

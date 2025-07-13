@@ -1,84 +1,56 @@
-import { AlertTriangle, CheckCircle, LoaderCircle } from "lucide-react";
+import { LoaderCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { useVerifyVNPayMutation } from "@/hooks/mutations/useVerifyVNPayMutation";
+import { config } from "@/config/config";
 
 const PaymentReturnPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { mutate: verifyPayment, isPending, isSuccess, isError, data, error } = useVerifyVNPayMutation();
 
   useEffect(() => {
-    const vnpayData: { [key: string]: string } = {};
-    searchParams.forEach((value, key) => {
-      vnpayData[key] = value;
+    const paramsString = searchParams.toString();
+
+    const zaloPayStatus = searchParams.get("status");
+    if (zaloPayStatus) {
+      if (zaloPayStatus === "1") {
+        const backendVerificationUrl = `${config.apiBaseUrl}/payment/zalopay_callbacks?${paramsString}`;
+        window.location.href = backendVerificationUrl;
+      } else {
+        toast.error("Thanh toán thất bại", {
+          description: "Giao dịch qua ZaloPay không thành công. Vui lòng thử lại.",
+        });
+        navigate("/checkout");
+      }
+      return;
+    }
+
+    const vnp_ResponseCode = searchParams.get("vnp_ResponseCode");
+    if (vnp_ResponseCode) {
+      if (vnp_ResponseCode === "00") {
+        const backendVerificationUrl = `${config.apiBaseUrl}/payment/vnpay_return?${paramsString}`;
+        window.location.href = backendVerificationUrl;
+      } else {
+        toast.error("Thanh toán thất bại", {
+          description: "Giao dịch qua VNPay không thành công. Vui lòng thử lại.",
+        });
+        navigate("/checkout");
+      }
+      return;
+    }
+
+    toast.error("URL thanh toán không hợp lệ", {
+      description: "Không thể xác định được nhà cung cấp thanh toán.",
     });
-
-    
-    if (vnpayData["vnp_ResponseCode"] && vnpayData["vnp_TxnRef"]) {
-      verifyPayment(vnpayData);
-    } else {
-     
-      navigate("/error");
-    }
-  }, [searchParams, verifyPayment, navigate]);
-
-  const renderContent = () => {
-    if (isPending) {
-      return (
-        <>
-          <LoaderCircle className="text-primary h-16 w-16 animate-spin" />
-          <h1 className="mt-6 text-2xl font-bold">Verifying Payment...</h1>
-          <p className="text-muted-foreground mt-2">Please wait while we confirm your transaction.</p>
-        </>
-      );
-    }
-
-    if (isError) {
-      return (
-        <>
-          <AlertTriangle className="text-destructive h-16 w-16" />
-          <h1 className="mt-6 text-2xl font-bold">Payment Verification Failed</h1>
-          <p className="text-muted-foreground mt-2">{error?.message || "There was an issue verifying your payment."}</p>
-          <Button onClick={() => navigate("/profile")} className="mt-6">
-            Go to My Profile
-          </Button>
-        </>
-      );
-    }
-
-    if (isSuccess && data?.isOk() && data.value.data.code === "00") {
-      return (
-        <>
-          <CheckCircle className="h-16 w-16 text-green-500" />
-          <h1 className="mt-6 text-2xl font-bold">Payment Successful!</h1>
-          <p className="text-muted-foreground mt-2">Your order has been confirmed. You will be redirected shortly.</p>
-          <Button onClick={() => navigate("/profile/orders")} className="mt-6">
-            View My Orders
-          </Button>
-        </>
-      );
-    }
-
-    return (
-      <>
-        <AlertTriangle className="text-destructive h-16 w-16" />
-        <h1 className="mt-6 text-2xl font-bold">Payment Failed</h1>
-        <p className="text-muted-foreground mt-2">
-          {data?.isOk() ? data.value.data.message : "The transaction was not completed successfully."}
-        </p>
-        <Button onClick={() => navigate("/checkout")} variant="outline" className="mt-6">
-          Try Again
-        </Button>
-      </>
-    );
-  };
+    navigate("/error");
+  }, [searchParams, navigate]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4 text-center">
-      {renderContent()}
+      <LoaderCircle className="text-primary h-16 w-16 animate-spin" />
+      <h1 className="mt-6 text-2xl font-bold">Đang hoàn tất thanh toán...</h1>
+      <p className="text-muted-foreground mt-2">Vui lòng không đóng cửa sổ này. Quá trình này hoàn toàn tự động.</p>
     </div>
   );
 };

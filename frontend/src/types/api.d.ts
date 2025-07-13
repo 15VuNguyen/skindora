@@ -59,5 +59,6 @@ declare namespace API {
   export interface IUpdateStatusOrder<T = any> {
     result: T[];
     message: string;
+    status: number;
   }
 }

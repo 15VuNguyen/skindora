@@ -32,16 +32,16 @@ export const CancelDialog = ({
   <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Are you sure you want to cancel this order?</AlertDialogTitle>
-        <AlertDialogDescription>Please provide a reason for the cancellation.</AlertDialogDescription>
+        <AlertDialogTitle>Bạn có chắc muốn hủy đơn hàng này?</AlertDialogTitle>
+        <AlertDialogDescription>Vui lòng nhập lý do hủy đơn hàng.</AlertDialogDescription>
       </AlertDialogHeader>
-      <div className="py-2">
-        <Textarea placeholder="Type your reason here..." value={reason} onChange={(e) => setReason(e.target.value)} />
+      <div className="overflow-auto py-2">
+        <Textarea placeholder="Nhập lý do của bạn..." value={reason} onChange={(e) => setReason(e.target.value)} />
       </div>
       <AlertDialogFooter>
-        <AlertDialogCancel>Back</AlertDialogCancel>
+        <AlertDialogCancel>Quay lại</AlertDialogCancel>
         <AlertDialogAction onClick={onConfirm} disabled={!reason.trim() || isCancelling}>
-          {isCancelling ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : "Submit Cancellation"}
+          {isCancelling ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : "Xác nhận hủy đơn"}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>

@@ -1,9 +1,16 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { fetchListVoucher } from "@/api/voucher";
 import type { Voucher } from "@/types/voucher";
-import { logger } from "@/utils";
 
+const useDebounce = (value: string, delay: number) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+  return debouncedValue;
+};
 export const useFetchVoucher = () => {
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState({
@@ -12,14 +19,27 @@ export const useFetchVoucher = () => {
     totalPages: 1,
     totalRecords: 1,
   });
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const [data] = useState<Voucher[]>([]);
   const [voucher, setAllVoucher] = useState<Voucher[]>([]);
   const fetchAllVoucher = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchListVoucher({ limit: 10, page: params.page });
-      logger.debug(response);
-      logger.debug(response.pagination);
+      let response;
+      if (debouncedSearchTerm) {
+        response = await fetchListVoucher({
+          code: debouncedSearchTerm,
+          limit: params.limit,
+          page: params.page,
+        });
+      } else {
+        response = await fetchListVoucher({
+          // code: debouncedSearchTerm,
+          limit: params.limit,
+          page: params.page,
+        });
+      }
       setParams({
         ...response.pagination,
         page: response.pagination.currentPage,
@@ -31,7 +51,7 @@ export const useFetchVoucher = () => {
     } finally {
       setTimeout(() => setLoading(false), 1000);
     }
-  }, []);
+  }, [debouncedSearchTerm, params.page, params.limit]);
 
   return {
     loading,
@@ -39,6 +59,8 @@ export const useFetchVoucher = () => {
     params,
     setParams,
     voucher,
+    searchTerm,
+    setSearchTerm,
     fetchAllVoucher,
   };
 };

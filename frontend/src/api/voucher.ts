@@ -3,8 +3,11 @@ import httpClient from "@/lib/axios";
 import type { Voucher } from "@/types/voucher";
 
 export interface FetchVoucherListProps {
-  limit?: number | string;
-  page?: number | string;
+  limit?: string | number;
+  page?: string | number;
+  totalPages?: string | number;
+  totalRecords?: number;
+  code?: string;
 }
 export interface ToggleStatusProps {
   id: string;
@@ -20,6 +23,7 @@ export const fetchListVoucher = async (params: FetchVoucherListProps) => {
     .get<API.IResponseSearch<Voucher>>("/admin/manage-vouchers/get-all", {
       limit: params.limit,
       page: params.page,
+      code: params.code,
     })
     .then((res) => res.data);
 };

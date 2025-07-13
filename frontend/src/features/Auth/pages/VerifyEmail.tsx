@@ -21,8 +21,8 @@ const VerifyEmailPage = () => {
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-gray-50">
       <Loader2 className="text-primary h-16 w-16 animate-spin" />
-      <p className="text-lg text-gray-600">Verifying your email...</p>
-      <p className="text-sm text-gray-400">Please wait a moment.</p>
+      <p className="text-lg text-gray-600">Đang xác thực email của bạn...</p>
+      <p className="text-sm text-gray-400">Vui lòng chờ trong giây lát.</p>
     </div>
   );
 };

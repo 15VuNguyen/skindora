@@ -1,0 +1,19 @@
+type: object
+required:
+  - option_name
+  - category_name
+  - category_param
+properties:
+  option_name:
+    type: string
+    example: 'Da Hỗn Hợp'
+  category_name:
+    type: string
+    example: 'Loại Da HSK'
+  category_param:
+    type: string
+    example: 'da-hon-hop'
+  state:
+    type: string
+    enum: [INACTIVE, ACTIVE]
+    default: 'ACTIVE'

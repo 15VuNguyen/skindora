@@ -40,7 +40,7 @@ export function ProductImageGallery({
     return (
       <div className="overflow-hidden rounded-lg bg-white shadow-md">
         <div className="flex h-[400px] w-full items-center justify-center bg-gray-200 md:h-[500px]">
-          <span className="text-gray-400">No image available</span>
+          <span className="text-gray-400">Không có hình ảnh</span>
         </div>
       </div>
     );
@@ -91,7 +91,7 @@ export function ProductImageGallery({
                 <ChevronRight className="h-4 w-4" />
               </Button>
               <div className="absolute right-2 bottom-2 rounded bg-black/50 px-2 py-1 text-sm text-white">
-                {selectedImage + 1} / {images.length}
+                Hình {selectedImage + 1} / {images.length}
               </div>
             </>
           )}

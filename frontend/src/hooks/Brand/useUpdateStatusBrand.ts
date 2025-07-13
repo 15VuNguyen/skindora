@@ -14,11 +14,12 @@ export interface useUpdateStatusBrandProps {
 export const useUpdateStatusBrand = (params: useUpdateStatusBrandProps) => {
   const [loading, setLoading] = useState<boolean>(false);
 
-  const updateStateBrand = useCallback(async () => {
+  const updateStateBrand = useCallback(async (onSuccessCallback?: () => void) => {
     try {
-      console.log(params.id);
-      const response = await updateStatusBrand({ id: params.id }, params.payload);
-      console.log(response);
+      await updateStatusBrand({ id: params.id }, params.payload);
+      if (onSuccessCallback) {
+        onSuccessCallback();
+      }
     } catch (error) {
       console.error("Failed to update order status:", error);
     } finally {

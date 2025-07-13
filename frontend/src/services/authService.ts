@@ -15,6 +15,7 @@ export interface UpdateMePayload {
   username?: string;
   location?: string;
   avatar?: string;
+  phone_number?: string;
 }
 interface UpdateUserResponse {
   message: string;
@@ -75,13 +76,23 @@ export const authService = {
       skipAuth: true,
     });
   },
-
-  resetPassword: (token: string, data: Omit<ResetPasswordFormData, "confirmPassword">) => {
-    return apiClient.post<{ message: string }, { forgot_password_token: string; password: string }>(
+  changePassword: (oldPassword: string, newPassword: string,confirm_password:string) => {
+    return apiClient.put<{ message: string }, { old_password: string; password: string,confirm_password:string }>(
+      "/users/change-password",
+      {
+        old_password: oldPassword,
+        password: newPassword,
+        confirm_password:confirm_password
+      }
+    );
+  },
+  resetPassword: (token: string, data: ResetPasswordFormData) => {
+    return apiClient.post<{ message: string }, { forgot_password_token: string; password: string,confirm_password:string }>(
       "/users/reset-password",
       {
         forgot_password_token: token,
         password: data.password,
+        confirm_password:data.confirmPassword
       },
       { skipAuth: true }
     );

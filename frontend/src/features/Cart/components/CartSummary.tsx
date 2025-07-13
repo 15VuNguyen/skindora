@@ -1,85 +1,120 @@
-import { LoaderCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
-import type { Result } from "neverthrow";
+import { LoaderCircle, Ticket, X } from "lucide-react";
+import { useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { usePrepareOrderMutation } from "@/hooks/mutations/usePrepareOrderMutation";
-
-import type {  PreparedOrderResponse } from "@/services/orders.service";
-import type { ApiResponse } from "@/utils/axios/types";
-import type { ApiError} from "@/utils";
 
 interface CartSummaryProps {
   subtotal: number;
   shipping: number;
   total: number;
   discount?: {
-    code: string;
+    code?: string;
     amount: number;
   };
-  cartItems: Array<{ ProductID: string }>;
+  selectedItems: Array<{ ProductID: string }>;
+  onOpenVoucherDialog: () => void;
+  onClearVoucher?: () => void;
+  onApplyManualVoucher: (code: string) => void;
+  onCheckout: () => void;
+  isProcessingCheckout: boolean;
 }
 
-export function CartSummary({ subtotal, shipping, total, discount, cartItems }: CartSummaryProps) {
-  const navigate = useNavigate();
-  const { mutate: prepareOrder, isPending } = usePrepareOrderMutation();
+export function CartSummary({
+  subtotal,
+  shipping,
+  total,
+  discount,
+  selectedItems,
+  onOpenVoucherDialog,
+  onClearVoucher,
+  onApplyManualVoucher,
+  isProcessingCheckout,
+  onCheckout,
+}: CartSummaryProps) {
+  const [manualCode, setManualCode] = useState("");
 
-  const handleCheckout = () => {
-    if (!cartItems || cartItems.length === 0) {
-      toast.error("Your cart is empty.");
-      return;
-    }
-    const selectedProductIDs = cartItems.map((item) => item.ProductID);
-    prepareOrder(selectedProductIDs, {
-     
-      onSuccess: (result: Result<ApiResponse<PreparedOrderResponse>, ApiError>) => {
-        if (result.isOk()) {
-          navigate("/checkout"); 
-        } else {
-          toast.error("Could not prepare your order", {
-            description: result.error.message || "Please try again.",
-          });
-        }
-      },
-    });
+  const handleApplyClick = () => {
+    if (!manualCode.trim()) return;
+    onApplyManualVoucher(manualCode.trim());
+    setManualCode("");
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Order Summary</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex justify-between">
-          <span>Subtotal:</span>
-          <span>{subtotal.toLocaleString("vi-VN")}₫</span>
-        </div>
-        {discount && discount.amount > 0 && (
-          <div className="flex justify-between text-green-600">
-            <span>Discount ({discount.code}):</span>
-            <span>-{discount.amount.toLocaleString("vi-VN")}₫</span>
+    <div className="space-y-4">
+      <div className="rounded-lg bg-white p-6 shadow-sm">
+        <h2 className="mb-4 text-lg font-semibold">Thông tin đơn hàng</h2>
+        <div className="space-y-3">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Tạm tính ({selectedItems.length} sản phẩm):</span>
+            <span className="font-medium">{subtotal.toLocaleString("vi-VN")}₫</span>
           </div>
-        )}
-        <div className="flex justify-between">
-          <span>Shipping:</span>
-          <span>
-            {shipping === 0 ? <Badge variant="secondary">Free</Badge> : `${shipping.toLocaleString("vi-VN")}₫`}
-          </span>
+          {discount && discount.amount > 0 && (
+            <div className="flex justify-between text-sm text-green-600">
+              <span className="flex items-center gap-1 font-medium">Mã giảm giá ({discount.code})</span>
+              <span>-{discount.amount.toLocaleString("vi-VN")}₫</span>
+            </div>
+          )}
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Phí vận chuyển:</span>
+            <span className="font-medium">{shipping > 0 ? `${shipping.toLocaleString("vi-VN")}₫` : "Miễn phí"}</span>
+          </div>
+          <Separator />
+          <div className="flex justify-between text-base font-bold">
+            <span>Tổng cộng:</span>
+            <span>{total.toLocaleString("vi-VN")}₫</span>
+          </div>
         </div>
-        <Separator />
-        <div className="flex justify-between text-lg font-bold">
-          <span>Total:</span>
-          <span>{total.toLocaleString("vi-VN")}₫</span>
+      </div>
+
+      <div className="rounded-lg bg-white p-6 shadow-sm">
+        <div className="flex items-center justify-between">
+          <span className="font-medium">Mã giảm giá</span>
+          <Button
+            variant="link"
+            className="h-auto p-0 text-sm text-blue-600 hover:underline"
+            onClick={onOpenVoucherDialog}
+          >
+            {discount?.code ? "Thay đổi" : "Ưu đãi của tôi ›"}
+          </Button>
         </div>
-        <Button className="w-full" size="lg" onClick={handleCheckout} disabled={subtotal === 0 || isPending}>
-          {isPending && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />}
-          {isPending ? "Preparing..." : "Proceed to Checkout"}
-        </Button>
-      </CardContent>
-    </Card>
+        <div className="mt-4">
+          {discount?.code ? (
+            <div className="border-primary/50 bg-primary/5 flex items-center justify-between rounded-md border border-dashed p-3">
+              <span className="text-primary flex items-center gap-2 text-sm font-semibold">
+                <Ticket className="h-4 w-4" />
+                {discount.code}
+              </span>
+              <Button variant="ghost" size="icon" className="text-destructive h-6 w-6" onClick={onClearVoucher}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <Input
+                placeholder="Nhập mã giảm giá"
+                className="flex-1"
+                value={manualCode}
+                onChange={(e) => setManualCode(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleApplyClick()}
+              />
+              <Button variant="secondary" onClick={handleApplyClick}>
+                Áp dụng
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <Button
+        onClick={onCheckout}
+        disabled={selectedItems.length === 0 || isProcessingCheckout}
+        className="w-full"
+        size="lg"
+      >
+        {isProcessingCheckout ? <LoaderCircle className="mr-2 h-4 w-4 animate-spin" /> : "Tiến hành thanh toán"}
+      </Button>
+    </div>
   );
 }

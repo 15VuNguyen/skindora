@@ -5,7 +5,9 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { disableFilterBrandReqBody, updateFilterBrandReqBody } from '~/models/requests/Admin.requests'
 import filterBrandService from '~/services/filterBrand.services'
 import { ADMIN_MESSAGES } from '~/constants/messages'
-import { ObjectId } from 'mongodb'
+import { Filter, ObjectId } from 'mongodb'
+import FilterBrand from '~/models/schemas/FilterBrand.schema'
+import { FilterBrandState } from '~/constants/enums'
 
 export const getAllFilterBrandsController = async (req: Request, res: Response, next: NextFunction) => {
   await sendPaginatedResponse(res, next, databaseService.filterBrand, req.query)
@@ -61,7 +63,7 @@ export const disableFilterBrandController = async (
   )
 
   res.json({
-    message: ADMIN_MESSAGES.FILTER_BRAND_DISABLE_SUCCESS,
+    message: ADMIN_MESSAGES.UPDATE_FILTER_BRAND_STATE_SUCCESS,
     data: result
   })
 }
@@ -78,3 +80,36 @@ export const getFilterBrandByIdController = async (req: Request<{ _id: string }>
   }
   res.json({ data: filterBrand })
 }
+
+export const searchFilterBrandsController = async (req: Request, res: Response, next: NextFunction) => {
+  const { keyword } = req.query
+  const filter: Filter<FilterBrand> = {}
+
+  if (keyword) {
+    filter.option_name = {
+      $regex: keyword as string,
+      $options: 'i'
+    }
+  }
+
+  await sendPaginatedResponse(res, next, databaseService.filterBrand, req.query, filter)
+}
+
+export const getActiveFilterBrandsController = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const activeStates = [
+      FilterBrandState.ACTIVE,
+      FilterBrandState.COLLABORATION,
+      FilterBrandState.PARTNERSHIP,
+      FilterBrandState.EXCLUSIVE,
+      FilterBrandState.LIMITED_EDITION
+    ];
+    const result = await databaseService.filterBrand.find({ state: { $in: activeStates } }).toArray();
+    res.json({
+      message: ADMIN_MESSAGES.GET_ACTIVE_FILTER_BRANDS_SUCCESSFULLY,
+      data: result
+    });
+  } catch (error) {
+    next(error);
+  }
+};

@@ -11,7 +11,7 @@ const cardVariants = cva("group flex cursor-pointer flex-col overflow-hidden tra
     variant: {
       default: "h-full",
       carousel: "h-full hover:shadow-primary/25 hover:border-primary/40",
-      wishlist: "h-full",
+      wishlist: "h-full  p-0",
     },
   },
   defaultVariants: {
@@ -53,7 +53,7 @@ export function ProductCard({
           <img
             src={product.image_on_list}
             alt={product.name_on_list}
-            className="h-56 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            className="h-56 w-full object-contain transition-transform duration-300 group-hover:scale-105"
           />
           {variant === "wishlist" && onRemoveFromWishlist && (
             <Button
@@ -79,7 +79,7 @@ export function ProductCard({
           <span className="font-bold">{parseInt(product.price_on_list).toLocaleString("vi-VN")}₫</span>
           {product.quantity !== undefined && (
             <span className={`text-xs ${product.quantity > 0 ? "text-green-600" : "text-red-500"}`}>
-              {product.quantity > 0 ? "In Stock" : "Out of Stock"}
+              {product.quantity > 0 ? "Còn hàng" : "Hết hàng"}
             </span>
           )}
         </div>
@@ -96,7 +96,7 @@ export function ProductCard({
             ) : (
               <ShoppingCart className="mr-2 h-4 w-4" />
             )}
-            Add to Cart
+            Thêm vào giỏ hàng
           </Button>
         )}
       </CardFooter>

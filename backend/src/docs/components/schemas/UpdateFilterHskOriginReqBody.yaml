@@ -1,0 +1,9 @@
+type: object
+description: 'Chỉ bao gồm các trường cần cập nhật cho nguồn gốc.'
+properties:
+  option_name:
+    type: string
+  category_name:
+    type: string
+  category_param:
+    type: string

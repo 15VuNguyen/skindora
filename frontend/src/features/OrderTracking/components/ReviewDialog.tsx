@@ -25,13 +25,12 @@ export const ReviewDialog = ({ isOpen, onOpenChange, productName, onSubmit, isSu
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const handleSubmit = () => onSubmit(rating, comment);
-
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Write a review for {productName}</AlertDialogTitle>
-          <AlertDialogDescription>Share your thoughts about this product.</AlertDialogDescription>
+          <AlertDialogTitle>Viết đánh giá cho {productName}</AlertDialogTitle>
+          <AlertDialogDescription>Chia sẻ cảm nhận của bạn về sản phẩm này.</AlertDialogDescription>
         </AlertDialogHeader>
         <div className="space-y-4 py-2">
           <div className="flex items-center justify-center space-x-1">
@@ -44,16 +43,16 @@ export const ReviewDialog = ({ isOpen, onOpenChange, productName, onSubmit, isSu
             ))}
           </div>
           <Textarea
-            placeholder="Tell us more..."
+            placeholder="Hãy chia sẻ cảm nhận của bạn..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             rows={4}
           />
         </div>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel>Hủy</AlertDialogCancel>
           <AlertDialogAction onClick={handleSubmit} disabled={rating === 0 || !comment.trim() || isSubmitting}>
-            {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />} Submit Review
+            {isSubmitting && <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />} Gửi đánh giá
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

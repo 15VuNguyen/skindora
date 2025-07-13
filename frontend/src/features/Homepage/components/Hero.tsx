@@ -24,7 +24,7 @@ function HeroTitleAndSubtitle({ title, subtitle, paragraph }: { title: string; s
 function HeroCallToAction() {
   return (
     <div className="flex flex-col gap-4 sm:flex-row">
-      <Link to="/store">
+      <Link to="/products">
         <Button size="lg" className="px-6 font-semibold">
           Khám phá sản phẩm
           <ArrowRight className="ml-2 h-4 w-4" />

@@ -1,0 +1,27 @@
+type: object
+description: 'Đại diện cho một đối tượng filter Loại Sản Phẩm HSK.'
+properties:
+  _id:
+    type: string
+    format: mongoId
+  option_name:
+    type: string
+    example: 'Serum'
+  description:
+    type: string
+    example: 'Tinh chất đặc trị các vấn đề về da'
+  category_name:
+    type: string
+    example: 'Loại Sản Phẩm HSK'
+  category_param:
+    type: string
+    example: 'serum'
+  state:
+    type: string
+    enum: [INACTIVE, ACTIVE]
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time

@@ -33,8 +33,22 @@ tags:
     description: Operations for managing the user's shopping cart.
   - name: Admin
     description: Operations for managing the system.
-  - name: Admin - Filter Management
-    description: Operations for managing product filters, such as brands.
+  - name: Admin - Filter Brand
+    description: 'Quản lý bộ lọc Thương hiệu (filter_brand)'
+  - name: Admin - Filter Dac Tinh
+    description: 'Quản lý bộ lọc Đặc tính (filter_dac_tinh)'
+  - name: Admin - Filter Ingredient
+    description: 'Quản lý bộ lọc Thành phần (filter_hsk_ingredient)'
+  - name: Admin - Filter Product Type
+    description: 'Quản lý bộ lọc Loại sản phẩm (filter_hsk_product_type)'
+  - name: Admin - Filter Size
+    description: 'Quản lý bộ lọc Kích thước (filter_hsk_size)'
+  - name: Admin - Filter Skin Type
+    description: 'Quản lý bộ lọc Loại da (filter_hsk_skin_type)'
+  - name: Admin - Filter Uses
+    description: 'Quản lý bộ lọc Công dụng (filter_hsk_uses)'
+  - name: Admin - Filter Origin
+    description: 'Quản lý bộ lọc Nguồn gốc (filter_origin)'
 paths:
   $ref: './paths/all-paths.yaml'
 
@@ -147,8 +161,87 @@ components:
       $ref: './components/schemas/UpdateFilterBrandReqBody.yaml'
     DisableFilterBrandReqBody:
       $ref: './components/schemas/DisableFilterBrandReqBody.yaml'
+    # FilterDacTinh
+    FilterDacTinh:
+      $ref: './components/schemas/FilterDacTinh.yaml'
+    CreateFilterDacTinhReqBody:
+      $ref: './components/schemas/CreateFilterDacTinhReqBody.yaml'
+    UpdateFilterDacTinhReqBody:
+      $ref: './components/schemas/UpdateFilterDacTinhReqBody.yaml'
+    DisableFilterDacTinhReqBody:
+      $ref: './components/schemas/DisableFilterDacTinhReqBody.yaml'
+    PaginatedFilterDacTinhResponse:
+      $ref: './components/schemas/PaginatedFilterDacTinhResponse.yaml'
+    # FilterHskIngredient
+    FilterHskIngredient:
+      $ref: './components/schemas/FilterHskIngredient.yaml'
+    CreateFilterHskIngredientReqBody:
+      $ref: './components/schemas/CreateFilterHskIngredientReqBody.yaml'
+    UpdateFilterHskIngredientReqBody:
+      $ref: './components/schemas/UpdateFilterHskIngredientReqBody.yaml'
+    DisableFilterHskIngredientReqBody:
+      $ref: './components/schemas/DisableFilterHskIngredientReqBody.yaml'
+    PaginatedFilterHskIngredientResponse:
+      $ref: './components/schemas/PaginatedFilterHskIngredientResponse.yaml'
+    # FilterHskProductType
+    FilterHskProductType:
+      $ref: './components/schemas/FilterHskProductType.yaml'
+    CreateFilterHskProductTypeReqBody:
+      $ref: './components/schemas/CreateFilterHskProductTypeReqBody.yaml'
+    UpdateFilterHskProductTypeReqBody:
+      $ref: './components/schemas/UpdateFilterHskProductTypeReqBody.yaml'
+    DisableFilterHskProductTypeReqBody:
+      $ref: './components/schemas/DisableFilterHskProductTypeReqBody.yaml'
+    PaginatedFilterHskProductTypeResponse:
+      $ref: './components/schemas/PaginatedFilterHskProductTypeResponse.yaml'
+    # FilterHskSize
+    FilterHskSize:
+      $ref: './components/schemas/FilterHskSize.yaml'
+    CreateFilterHskSizeReqBody:
+      $ref: './components/schemas/CreateFilterHskSizeReqBody.yaml'
+    UpdateFilterHskSizeReqBody:
+      $ref: './components/schemas/UpdateFilterHskSizeReqBody.yaml'
+    DisableFilterHskSizeReqBody:
+      $ref: './components/schemas/DisableFilterHskSizeReqBody.yaml'
+    PaginatedFilterHskSizeResponse:
+      $ref: './components/schemas/PaginatedFilterHskSizeResponse.yaml'
+    # FilterHskSkinType
+    FilterHskSkinType:
+      $ref: './components/schemas/FilterHskSkinType.yaml'
+    CreateFilterHskSkinTypeReqBody:
+      $ref: './components/schemas/CreateFilterHskSkinTypeReqBody.yaml'
+    UpdateFilterHskSkinTypeReqBody:
+      $ref: './components/schemas/UpdateFilterHskSkinTypeReqBody.yaml'
+    DisableFilterHskSkinTypeReqBody:
+      $ref: './components/schemas/DisableFilterHskSkinTypeReqBody.yaml'
+    PaginatedFilterHskSkinTypeResponse:
+      $ref: './components/schemas/PaginatedFilterHskSkinTypeResponse.yaml'
+    # FilterHskUses
+    FilterHskUses:
+      $ref: './components/schemas/FilterHskUses.yaml'
+    CreateFilterHskUsesReqBody:
+      $ref: './components/schemas/CreateFilterHskUsesReqBody.yaml'
+    UpdateFilterHskUsesReqBody:
+      $ref: './components/schemas/UpdateFilterHskUsesReqBody.yaml'
+    DisableFilterHskUsesReqBody:
+      $ref: './components/schemas/DisableFilterHskUsesReqBody.yaml'
+    PaginatedFilterHskUsesResponse:
+      $ref: './components/schemas/PaginatedFilterHskUsesResponse.yaml'
+    # FilterHskOrigin
+    FilterHskOrigin:
+      $ref: './components/schemas/FilterHskOrigin.yaml'
+    CreateFilterHskOriginReqBody:
+      $ref: './components/schemas/CreateFilterHskOriginReqBody.yaml'
+    UpdateFilterHskOriginReqBody:
+      $ref: './components/schemas/UpdateFilterHskOriginReqBody.yaml'
+    DisableFilterHskOriginReqBody:
+      $ref: './components/schemas/DisableFilterHskOriginReqBody.yaml'
+    PaginatedFilterHskOriginResponse:
+      $ref: './components/schemas/PaginatedFilterHskOriginResponse.yaml'
 
     # --- Response Schemas ---
+    ProductStatsResponse:
+      $ref: './components/schemas/ProductStatsResponse.yaml'
     AuthSuccessResponse:
       $ref: './components/schemas/AuthSuccessResponse.yaml'
     LoginSuccessResponse:

@@ -1,22 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-
-import { PREPARED_ORDER_QUERY_KEY } from "@/hooks/queries/usePreparedOrderQuery";
 import { cartService } from "@/services/cartService";
+import { CART_QUERY_KEY } from "../queries/useCartQuery";
 import type { ApiError } from "@/utils";
 
-import { CART_QUERY_KEY } from "../queries/useCartQuery";
-
-export const useUpdateCartMutation = () => {
+export const useUpdateCartMutation = (setMutatingItemId: (id: string | null) => void) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: ({ productId, quantity }: { productId: string; quantity: number }) =>
       cartService.updateItemQuantity(productId, quantity),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY });
-      queryClient.invalidateQueries({ queryKey: PREPARED_ORDER_QUERY_KEY });
+
+   
+    onMutate: async (variables) => {
+      setMutatingItemId(variables.productId);
     },
+
+    
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: CART_QUERY_KEY });
+      setMutatingItemId(null);
+    },
+
     onError: (error: ApiError) => {
       toast.error("Update failed", { description: error.message });
     },

@@ -2,7 +2,7 @@ import React, { useCallback } from "react";
 
 import type { FetchProductProps } from "@/api/product";
 import { fetchProduct } from "@/api/product";
-import { fetchProductByStaff } from "@/api/product";
+import { fetchStaffProduct } from "@/api/product";
 import type { ProductFE } from "@/types/product";
 
 export const useFetchProduct = () => {
@@ -13,8 +13,8 @@ export const useFetchProduct = () => {
     totalPages: 1,
     totalRecords: 1,
     filter_brand: "",
-    filter_dactinh: "",
-    filter_hsk_ingredient: "",
+    filter_dac_tinh: "",
+    filter_hsk_ingredients: "",
     filter_hsk_product_type: "",
     filter_hsk_size: "",
     filter_hsk_skin_type: "",
@@ -31,11 +31,11 @@ export const useFetchProduct = () => {
   const changeBrand = React.useCallback((filter_brand: string) => {
     setParams((prev) => ({ ...prev, filter_brand }));
   }, []);
-  const changeDactinh = React.useCallback((filter_dactinh: string) => {
-    setParams((prev) => ({ ...prev, filter_dactinh }));
+  const changeDactinh = React.useCallback((filter_dac_tinh: string) => {
+    setParams((prev) => ({ ...prev, filter_dac_tinh }));
   }, []);
-  const changeIngredient = React.useCallback((filter_hsk_ingredient: string) => {
-    setParams((prev) => ({ ...prev, filter_hsk_ingredient }));
+  const changeIngredient = React.useCallback((filter_hsk_ingredients: string) => {
+    setParams((prev) => ({ ...prev, filter_hsk_ingredients }));
   }, []);
   const changeProductType = React.useCallback((filter_hsk_product_type: string) => {
     setParams((prev) => ({ ...prev, filter_hsk_product_type }));
@@ -60,8 +60,8 @@ export const useFetchProduct = () => {
         limit: params.limit,
         page: params.page,
         filter_brand: params.filter_brand,
-        filter_dactinh: params.filter_dactinh,
-        filter_hsk_ingredient: params.filter_hsk_ingredient,
+        filter_dac_tinh: params.filter_dac_tinh,
+        filter_hsk_ingredients: params.filter_hsk_ingredients,
         filter_hsk_product_type: params.filter_hsk_product_type,
         filter_hsk_size: params.filter_hsk_size,
         filter_hsk_skin_type: params.filter_hsk_skin_type,
@@ -85,8 +85,8 @@ export const useFetchProduct = () => {
     params.limit,
     params.page,
     params.filter_brand,
-    params.filter_dactinh,
-    params.filter_hsk_ingredient,
+    params.filter_dac_tinh,
+    params.filter_hsk_ingredients,
     params.filter_hsk_product_type,
     params.filter_hsk_size,
     params.filter_hsk_uses,
@@ -97,7 +97,7 @@ export const useFetchProduct = () => {
   const fetchListProductByStaff = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchProductByStaff({
+      const response = await fetchStaffProduct({
         limit: params.limit,
         page: params.page,
       });

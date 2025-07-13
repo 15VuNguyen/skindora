@@ -3,30 +3,56 @@ import type { Result } from "neverthrow";
 import { apiClient } from "@/lib/apiClient";
 import type { ApiError } from "@/utils";
 import type { ApiResponse } from "@/utils/axios/types";
+export interface UserInOrder {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  location: string;
+  username: string;
+  phone_number: string;
+  avatar: string;
+}
+
+export interface OrderData {
+  _id: string;
+  User: UserInOrder;
+  ShipAddress: string;
+
+    DiscountValue: string;
+  Description: string;
+  RequireDate: string;
+  PaymentMethod: string;
+  PaymentStatus: string;
+  Status: OrderStatus;
+  TotalPrice: string;
+  created_at: string;
+  updated_at: string;
+  CancelRequest?: {
+    status: "REQUESTED" | "APPROVED" | "REJECTED";
+    reason: string;
+    requestedAt: string;
+    staffId: string | null;
+  };
+  VoucherSnapshot?: {
+    code: string;
+    discountType: string;
+    discountValue: string;
+    maxDiscountAmount: string;
+  };
+}
 export interface OrderByIdResponse {
   message: string;
   result: {
-    _id: string;
-    UserID: string;
-    ShipAddress: string;
-    Description: string;
-    RequireDate: string;
-    Discount?: string;
-    TotalPrice: string;
-    PaymentMethod: string;
-    PaymentStatus: string;
-    Status: "PENDING" | "CONFIRMED" | "PROCESSING" | "SHIPPING" | "DELIVERED" | "CANCELLED" | "RETURNED" | "FAILED";
+    order: OrderData;
     orderDetail: MyOrderDetail[];
-    created_at: string;
-    updated_at: string;
-    CancelRequest?: {
-      status: "REQUESTED" | "APPROVED" | "REJECTED";
-      reason: string;
-      requestedAt: string;
-      staffId: string | null;
-    };
   };
 }
+export interface BuyNowPayload {
+  productId: string;
+  quantity: number;
+}
+
 export type OrderStatus =
   | "PENDING"
   | "CONFIRMED"
@@ -44,6 +70,7 @@ export interface CheckoutPayload {
   PaymentStatus: "UNPAID" | "PAID";
   Discount?: string;
   type: "cart" | "buy-now";
+voucherCode?: string; 
 }
 export interface MyOrderDetailProduct {
   productId: string;
@@ -62,6 +89,9 @@ export interface MyOrderDetail {
 
 export interface MyOrder {
   orderId: string;
+    TotalPrice: string; 
+  OrderDate: string; 
+  
   orderDetail: MyOrderDetail[];
   orderStatus: OrderStatus;
 }
@@ -75,7 +105,7 @@ export interface ProductInOrder {
   Quantity: number;
   PricePerUnit: number;
   TotalPrice: number;
-  name: string;
+  Name: string;
   image: string;
 }
 
@@ -117,6 +147,9 @@ export interface CreatedOrderResponse {
 }
 
 export const ordersService = {
+  buyNow: (payload: BuyNowPayload): Promise<Result<ApiResponse<PreparedOrderResponse>, ApiError>> => {
+    return apiClient.post<PreparedOrderResponse, BuyNowPayload>("/orders/buy-now", payload);
+  },
   getPreparedOrder: (): Promise<Result<ApiResponse<PreparedOrderResponse>, ApiError>> => {
     return apiClient.get<PreparedOrderResponse>("/orders/current");
   },

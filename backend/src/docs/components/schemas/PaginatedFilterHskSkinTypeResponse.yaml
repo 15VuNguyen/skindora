@@ -1,0 +1,8 @@
+type: object
+properties:
+  data:
+    type: array
+    items:
+      $ref: './FilterHskSkinType.yaml'
+  pagination:
+    $ref: './Pagination.yaml'

@@ -26,7 +26,7 @@ export const sendPaginatedResponse = async <T extends Document>(
 
     const [totalRecords, data] = await Promise.all([
       collection.countDocuments(filter),
-      collection.find(filter, { projection }).sort({ createdAt: -1 }).skip(skip).limit(limit).toArray()
+      collection.find(filter, { projection }).sort({ created_at: -1 }).skip(skip).limit(limit).toArray()
     ])
 
     const totalPages = Math.ceil(totalRecords / limit)

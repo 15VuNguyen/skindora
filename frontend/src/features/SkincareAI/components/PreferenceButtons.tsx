@@ -20,7 +20,7 @@ const PreferenceButtons = ({ selectedPreference, onPreferenceChange }: Preferenc
         onClick={() => onPreferenceChange("AM")}
       >
         <Clock className="mr-2 h-4 w-4" />
-        Morning
+        Buổi sáng
       </Button>
 
       <Button
@@ -31,7 +31,7 @@ const PreferenceButtons = ({ selectedPreference, onPreferenceChange }: Preferenc
         onClick={() => onPreferenceChange("PM")}
       >
         <Clock className="mr-2 h-4 w-4" />
-        Evening
+        Buổi tối
       </Button>
 
       <Button
@@ -42,7 +42,7 @@ const PreferenceButtons = ({ selectedPreference, onPreferenceChange }: Preferenc
         onClick={() => onPreferenceChange("AM/PM")}
       >
         <Calendar className="mr-2 h-4 w-4" />
-        All Day
+        Cả ngày
       </Button>
     </div>
   );

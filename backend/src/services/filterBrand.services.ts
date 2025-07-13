@@ -15,7 +15,6 @@ class FilterBrandService {
     return Boolean(brand)
   }
 
-
   async createNewFilterBrand(payload: createNewFilterBrandReqBody) {
     const filterBrandID = new ObjectId()
     const currentDate = new Date()
@@ -62,11 +61,6 @@ class FilterBrandService {
       })
     }
   }
-
-
-
-
-
 }
 const filterBrandService = new FilterBrandService()
 export default filterBrandService

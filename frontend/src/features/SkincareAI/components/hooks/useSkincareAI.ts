@@ -1,9 +1,10 @@
-import { useState, useCallback } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
 
 import { aiService } from "@/services/aiServicce";
-import type { Message, Preference, AllFilterOptions } from "../../types";
+
+import type { AllFilterOptions, Message, Preference } from "../../types";
 import type { SkincareAdvisorRequestBody } from "../../types";
 
 export const useSkincareAI = () => {
@@ -33,7 +34,10 @@ export const useSkincareAI = () => {
   const { mutate: getAdvice, isPending: isAnalyzing } = useMutation({
     mutationFn: (payload: SkincareAdvisorRequestBody) => aiService.getSkincareAdvice(payload),
     onSuccess: (recommendationData) => {
-      if (recommendationData && (recommendationData.routineRecommendation || recommendationData.error || recommendationData.info)) {
+      if (
+        recommendationData &&
+        (recommendationData.routineRecommendation || recommendationData.error || recommendationData.info)
+      ) {
         setMessages((prev) => [
           ...prev,
           {
@@ -43,15 +47,15 @@ export const useSkincareAI = () => {
           },
         ]);
       } else {
-        const unexpectedMsg = "Received an unexpected response format from the server.";
+        const unexpectedMsg = "Nhận được định dạng phản hồi không mong đợi từ máy chủ.";
         toast.error(unexpectedMsg);
         setMessages((prev) => [...prev, { id: Date.now().toString(), text: unexpectedMsg, isUser: false }]);
       }
     },
     onError: (error) => {
-      const errorMessage = error.message || "An unexpected error occurred.";
-      toast.error(`Failed to connect: ${errorMessage}`);
-      setMessages((prev) => [...prev, { id: Date.now().toString(), text: `Error: ${errorMessage}`, isUser: false }]);
+      const errorMessage = error.message || "Đã xảy ra lỗi không mong muốn.";
+      toast.error(`Kết nối thất bại: ${errorMessage}`);
+      setMessages((prev) => [...prev, { id: Date.now().toString(), text: `Lỗi: ${errorMessage}`, isUser: false }]);
     },
   });
 
@@ -60,11 +64,11 @@ export const useSkincareAI = () => {
 
   const handleSubmit = useCallback(() => {
     if (!uploadedImageBase64) {
-      toast.error("Please upload a photo of your face first");
+      toast.error("Vui lòng tải lên ảnh khuôn mặt của bạn trước");
       return;
     }
 
-    const userMessageSummary = `Looking for a ${preference} routine, budget around $${budget}.`;
+    const userMessageSummary = `Tìm quy trình ${preference === "AM" ? "buổi sáng" : preference === "PM" ? "buổi tối" : "cả ngày"}, ngân sách khoảng $${budget}.`;
     setMessages((prev) => [
       ...prev,
       { id: Date.now().toString(), text: userMessageSummary, isUser: true, imageUrl: uploadedImageBase64 },
@@ -106,7 +110,7 @@ export const useSkincareAI = () => {
     setSelectedUses([]);
     setSelectedCharacteristics([]);
     setSelectedSizes([]);
-    toast.info("All filters cleared!");
+    toast.info("Đã xóa tất cả bộ lọc!");
   };
 
   return {

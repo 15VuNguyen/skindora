@@ -1,0 +1,12 @@
+type: object
+description: 'Chỉ bao gồm các trường cần cập nhật.'
+properties:
+  option_name:
+    type: string
+    example: 'Làm Sáng Da & Mờ Thâm'
+  category_name:
+    type: string
+    example: 'Đặc Tính Sản Phẩm'
+  category_param:
+    type: string
+    example: 'lam-sang-da-mo-tham'

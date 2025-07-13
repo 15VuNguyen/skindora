@@ -1,7 +1,8 @@
+import type { Result } from "neverthrow";
+
 import { apiClient } from "@/lib/apiClient";
 import type { ApiError } from "@/utils";
 import type { ApiResponse } from "@/utils/axios/types";
-import type { Result } from "neverthrow";
 
 interface AddToCartPayload {
   ProductID: string;
@@ -22,7 +23,7 @@ interface CartData {
 
 export interface CartAPIResponse {
   message: string;
-  result: CartData;   
+  result: CartData;
 }
 export interface UpdateCartPayload {
   Quantity: number;
@@ -40,10 +41,10 @@ export interface AppliedVoucherResponse {
   };
 }
 export const cartService = {
- addToCart: (payload: AddToCartPayload): Promise<Result<ApiResponse<CartAPIResponse>, ApiError>> => {
+  addToCart: (payload: AddToCartPayload): Promise<Result<ApiResponse<CartAPIResponse>, ApiError>> => {
     return apiClient.post<CartAPIResponse, AddToCartPayload>("/carts", payload);
-  }, 
-  
+  },
+
   getCart: () => {
     return apiClient.get<CartAPIResponse>("/carts");
   },
@@ -59,5 +60,8 @@ export const cartService = {
   },
   clearVoucher: () => {
     return apiClient.post("/orders/clear-voucher");
-  }
+  },
+  clearCart: (): Promise<Result<ApiResponse<CartAPIResponse>, ApiError>> => {
+    return apiClient.delete<CartAPIResponse>("/carts");
+  },
 };

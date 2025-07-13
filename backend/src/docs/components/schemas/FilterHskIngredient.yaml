@@ -1,0 +1,24 @@
+type: object
+description: "Đại diện cho một đối tượng filter Thành phần HSK"
+properties:
+  _id:
+    type: string
+    format: mongoId
+  option_name:
+    type: string
+    example: "Niacinamide"
+  category_name:
+    type: string
+    example: "Thành Phần HSK"
+  category_param:
+    type: string
+    example: "niacinamide"
+  state:
+    type: string
+    enum: [INACTIVE, ACTIVE]
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time

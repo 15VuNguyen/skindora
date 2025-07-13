@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
-import { Link2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -12,68 +11,69 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useFetchBrand } from "@/hooks/Brand/useFetchBrand";
-import {
-  type filter_dac_tinh_type_props,
-  type filter_hsk_ingredient_props,
-  type filter_hsk_product_type_props,
-  type filter_hsk_size_props,
-  type filter_hsk_skin_type_props,
-  type filter_hsk_uses_props,
-  type filter_origin_props,
-  useFetchFilter,
-} from "@/hooks/Filter/useFetchFilter";
+import { useFetchFilter } from "@/hooks/Filter/useFetchActiveFilter";
 import httpClient from "@/lib/axios";
 import type { ProductFormValues } from "@/lib/productSchema";
 import { productSchema } from "@/lib/productSchema";
+import type { Brand } from "@/types/Filter/brand";
+import type { DacTinh } from "@/types/Filter/dactinh";
+import type { Ingredient } from "@/types/Filter/ingredient";
+import type { Origin } from "@/types/Filter/origin";
+import type { ProductType } from "@/types/Filter/productType";
+import type { Size } from "@/types/Filter/size";
+import type { SkinType } from "@/types/Filter/skinType";
 
 import TiptapEditor from "./TiptapEditor";
 
 export default function AddProductPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [uses, setUses] = useState<filter_hsk_uses_props[]>([]);
-  const [productType, setProductType] = useState<filter_hsk_product_type_props[]>([]);
-  const [dactinh, setDactinh] = useState<filter_dac_tinh_type_props[]>([]);
-  const [size, setSize] = useState<filter_hsk_size_props[]>([]);
-  const [ingredient, setIngredient] = useState<filter_hsk_ingredient_props[]>([]);
-  const [skinType, setSkinType] = useState<filter_hsk_skin_type_props[]>([]);
-  const [origin, setOrigin] = useState<filter_origin_props[]>([]);
+  const [uses, setUses] = useState<Brand[]>([]);
+  const [productType, setProductType] = useState<ProductType[]>([]);
+  const [dactinh, setDactinh] = useState<DacTinh[]>([]);
+  const [size, setSize] = useState<Size[]>([]);
+  const [ingredient, setIngredient] = useState<Ingredient[]>([]);
+  const [skinType, setSkinType] = useState<SkinType[]>([]);
+  const [origin, setOrigin] = useState<Origin[]>([]);
+  const [brand, setBrand] = useState<Brand[]>([]);
   const { data: filter, fetchFilter } = useFetchFilter();
-  const { fetchListBrand, data } = useFetchBrand();
+
   useEffect(() => {
-    fetchListBrand();
     fetchFilter();
-  }, [fetchListBrand, fetchFilter]);
+  }, [fetchFilter]);
   useEffect(() => {
-    console.log(filter);
+    if (filter?.filter_brand) {
+      // Access .data here
+      setBrand(filter.filter_brand);
+    }
     if (filter?.filter_hsk_uses) {
+      // Access .data here
       setUses(filter.filter_hsk_uses);
     }
     if (filter?.filter_hsk_product_type) {
+      // Access .data here
       setProductType(filter.filter_hsk_product_type);
     }
     if (filter?.filter_dac_tinh) {
+      // Access .data here
       setDactinh(filter.filter_dac_tinh);
     }
     if (filter?.filter_hsk_size) {
+      // Access .data here
       setSize(filter.filter_hsk_size);
     }
-    if (filter?.filter_hsk_ingredient) {
-      setIngredient(filter.filter_hsk_ingredient);
+    if (filter?.filter_hsk_ingredients) {
+      // Access .data here
+      setIngredient(filter.filter_hsk_ingredients);
     }
     if (filter?.filter_hsk_skin_type) {
+      // Access .data here - THIS IS THE PRIMARY FIX FOR YOUR ERROR
       setSkinType(filter.filter_hsk_skin_type);
     }
     if (filter?.filter_origin) {
+      // Access .data here
       setOrigin(filter.filter_origin);
     }
-    console.log("Skin", uses);
-    console.log("Skin", dactinh);
-    console.log("Skin", size);
-    console.log("Skin", uses);
-    console.log("Skin", ingredient);
-    console.log("Skin", skinType);
-  }, [filter, uses, productType]);
+  }, [filter]);
   const navigate = useNavigate();
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(productSchema),
@@ -81,10 +81,9 @@ export default function AddProductPage() {
       name_on_list: "",
       engName_on_list: "",
       price_on_list: "",
-      quantity: 0,
+      quantity: undefined,
       image_on_list: "",
       hover_image_on_list: "",
-      product_detail_url: "",
       productName_detail: "",
       engName_detail: "",
       description_detail: { rawHtml: "", plainText: "" },
@@ -98,9 +97,9 @@ export default function AddProductPage() {
       filter_hsk_uses: "",
       filter_hsk_product_type: "",
       filter_origin: "",
-      filter_hsk_ingredient: "",
+      filter_hsk_ingredients: "",
       filter_dac_tinh: "",
-      filter_size: "",
+      filter_hsk_size: "",
     },
   });
 
@@ -128,7 +127,21 @@ export default function AddProductPage() {
       main_images_detail: values.main_images_detail.map((img) => img.value),
       sub_images_detail: values.sub_images_detail.map((img) => img.value),
     };
-
+    const optionalFilters = [
+      "filter_brand",
+      "filter_hsk_skin_type",
+      "filter_hsk_uses",
+      "filter_hsk_product_type",
+      "filter_origin",
+      "filter_hsk_ingredient",
+      "filter_dac_tinh",
+      "filter_hsk_size",
+    ];
+    (optionalFilters as (keyof typeof payload)[]).forEach((key) => {
+      if (typeof payload[key] === "string" && payload[key] === "") {
+        delete payload[key];
+      }
+    });
     console.log("FINAL PAYLOAD TO SERVER:", payload);
 
     try {
@@ -140,10 +153,15 @@ export default function AddProductPage() {
         form.reset();
       }
     } catch (error: any) {
+      const errorResponse = error.response?.data;
       const errorMessage = error.response?.data?.message || error.message || "Có lỗi không xác định xảy ra.";
       console.log(error.response.data);
+      const errorDetails = Object.entries(errorResponse?.errors || {})
+        .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+        .join("\n");
+
       toast.error("Thất bại!", {
-        description: errorMessage,
+        description: `${errorMessage}\n${errorDetails}`,
       });
     } finally {
       setIsSubmitting(false);
@@ -188,7 +206,7 @@ export default function AddProductPage() {
   //     )}
   //   />
   // );
-  const EditorWithPreview = ({ control, name, label }: any) => {
+  const EditorWithPreview = ({ control, name, label, error }: any) => {
     return (
       <FormField
         control={control}
@@ -197,15 +215,13 @@ export default function AddProductPage() {
           <FormItem>
             <FormLabel>{label}</FormLabel>
             <div className="grid grid-cols-1 gap-4 rounded-lg border p-4 md:grid-cols-2">
-              {/* Cột 1: Trình soạn thảo */}
-              {/* ✅ SỬA DÒNG NÀY */}
               <TiptapEditor
-                // Chỉ truyền chuỗi HTML, không truyền cả object
                 value={field.value?.rawHtml || ""}
-                onChange={field.onChange}
+                onChange={(newContent: { rawHtml: string; plainText: string }) => {
+                  field.onChange(newContent);
+                }}
               />
 
-              {/* Cột 2: Khung xem trước (Giữ nguyên) */}
               <div className="prose bg-muted max-w-none rounded-md border p-3">
                 <h4 className="text-muted-foreground mb-2 text-sm font-semibold italic">Xem trước trực tiếp</h4>
                 {field.value && field.value.rawHtml ? (
@@ -215,7 +231,10 @@ export default function AddProductPage() {
                 )}
               </div>
             </div>
-            <FormMessage />
+
+            {error && <p className="text-destructive mt-2 text-sm font-medium">{error}</p>}
+
+            <br />
           </FormItem>
         )}
       />
@@ -253,7 +272,7 @@ export default function AddProductPage() {
                       name="name_on_list"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên (hiển thị danh sách)</FormLabel>
+                          <FormLabel>Tên danh sách (name_on_list):</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -261,12 +280,13 @@ export default function AddProductPage() {
                         </FormItem>
                       )}
                     />
+
                     <FormField
                       control={form.control}
                       name="productName_detail"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên (hiển thị chi tiết)</FormLabel>
+                          <FormLabel>Tên sản phẩm (productName_detail):</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -279,7 +299,7 @@ export default function AddProductPage() {
                       name="engName_on_list"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên tiếng Anh (danh sách)</FormLabel>
+                          <FormLabel>Tên tiếng Anh (engName_on_list):</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -292,7 +312,7 @@ export default function AddProductPage() {
                       name="engName_detail"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Tên tiếng Anh (chi tiết)</FormLabel>
+                          <FormLabel>Tên Tiếng Anh chi tiết(engName_detail):</FormLabel>
                           <FormControl>
                             <Input {...field} />
                           </FormControl>
@@ -311,7 +331,7 @@ export default function AddProductPage() {
                       name="price_on_list"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Giá bán</FormLabel>
+                          <FormLabel>Giá bán (price_on_list):</FormLabel>
                           <FormControl>
                             <Input type="number" {...field} />
                           </FormControl>
@@ -324,7 +344,7 @@ export default function AddProductPage() {
                       name="quantity"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Số lượng tồn kho</FormLabel>
+                          <FormLabel>Số lượng tồn kho(quantity):</FormLabel>
                           <FormControl>
                             <Input type="number" {...field} />
                           </FormControl>
@@ -338,31 +358,23 @@ export default function AddProductPage() {
                 <div className="md:col-span-2">
                   <h3 className="mb-4 text-lg font-medium">Hình ảnh</h3>
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                    {/* <ImageUrlInput
-                      control={form.control}
-                      name="image_on_list"
-                      label="URL Ảnh chính (danh sách)"
-                      placeholder="Dán URL ảnh chính..."
-                    /> */}
                     <FormField
                       control={form.control}
                       name="image_on_list"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>URL Ảnh chính (danh sách)</FormLabel>
+                          <FormLabel>URL Ảnh chính (image_on_list):</FormLabel>
                           <FormControl>
-                            {/* The Input component remains the same */}
                             <Input type="url" {...field} />
                           </FormControl>
                           <FormMessage />
 
-                          {/* Conditionally render the image preview below the input and message */}
                           {field.value && typeof field.value === "string" && (
                             <img
                               src={field.value}
                               alt="Image Preview"
                               className="mt-4 rounded-md border"
-                              style={{ maxWidth: "200px", maxHeight: "200px" }} // Optional styling
+                              style={{ maxWidth: "200px", maxHeight: "200px" }}
                             />
                           )}
                         </FormItem>
@@ -379,20 +391,18 @@ export default function AddProductPage() {
                       name="hover_image_on_list"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>URL Ảnh khi hover (danh sách)</FormLabel>
+                          <FormLabel>URL Ảnh khi hover (hover_image_on_list):</FormLabel>
                           <FormControl>
-                            {/* The Input component remains the same */}
                             <Input type="url" {...field} />
                           </FormControl>
                           <FormMessage />
 
-                          {/* Conditionally render the image preview below the input and message */}
                           {field.value && typeof field.value === "string" && (
                             <img
                               src={field.value}
                               alt="Image Preview"
                               className="mt-4 rounded-md border"
-                              style={{ maxWidth: "200px", maxHeight: "200px" }} // Optional styling
+                              style={{ maxWidth: "200px", maxHeight: "200px" }}
                             />
                           )}
                         </FormItem>
@@ -401,7 +411,7 @@ export default function AddProductPage() {
                   </div>
                 </div>
 
-                <div className="md:col-span-2">
+                {/* <div className="md:col-span-2">
                   <FormField
                     control={form.control}
                     name="product_detail_url"
@@ -434,7 +444,7 @@ export default function AddProductPage() {
                       </FormItem>
                     )}
                   />
-                </div>
+                </div> */}
               </CardContent>
             </Card>
 
@@ -446,10 +456,41 @@ export default function AddProductPage() {
               <CardContent className="space-y-8">
                 {" "}
                 {/* Tăng khoảng cách để thoáng hơn */}
-                <EditorWithPreview control={form.control} name="description_detail" label="Mô tả chi tiết" />
-                <EditorWithPreview control={form.control} name="ingredients_detail" label="Thành phần" />
-                <EditorWithPreview control={form.control} name="guide_detail" label="Hướng dẫn sử dụng" />
-                <EditorWithPreview control={form.control} name="specification_detail" label="Thông số sản phẩm" />
+                <EditorWithPreview
+                  control={form.control}
+                  name="description_detail"
+                  label="Mô tả chi tiết (description_detail):"
+                  error={
+                    form.formState.errors.description_detail?.rawHtml?.message ||
+                    form.formState.errors.description_detail?.message
+                  }
+                />
+                <EditorWithPreview
+                  control={form.control}
+                  name="ingredients_detail"
+                  label="Thành phần (ingredients_detail):"
+                  error={
+                    form.formState.errors.ingredients_detail?.rawHtml?.message ||
+                    form.formState.errors.ingredients_detail?.message
+                  }
+                />
+                <EditorWithPreview
+                  control={form.control}
+                  name="guide_detail"
+                  label="Hướng dẫn sử dụng(guide_detail):"
+                  error={
+                    form.formState.errors.guide_detail?.rawHtml?.message || form.formState.errors.guide_detail?.message
+                  }
+                />
+                <EditorWithPreview
+                  control={form.control}
+                  name="specification_detail"
+                  label="Thông số sản phẩm(specification_detail):"
+                  error={
+                    form.formState.errors.specification_detail?.rawHtml?.message ||
+                    form.formState.errors.specification_detail?.message
+                  }
+                />
               </CardContent>
             </Card>
 
@@ -459,7 +500,7 @@ export default function AddProductPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <h3 className="mb-2 font-semibold">Hình ảnh chính (Main Images)</h3>
+                  <h3 className="mb-2 font-semibold">Hình ảnh chính (main_images_detail):</h3>
                   {mainImageFields.map((field, index) => (
                     <FormField
                       key={field.id}
@@ -478,12 +519,17 @@ export default function AddProductPage() {
                       )}
                     />
                   ))}
+                  {form.formState.errors.main_images_detail && (
+                    <p className="text-destructive mt-2 text-sm font-medium">
+                      {form.formState.errors.main_images_detail.message}
+                    </p>
+                  )}
                   <Button type="button" variant="outline" size="sm" onClick={() => appendMainImage({ value: "" })}>
                     Thêm ảnh chính
                   </Button>
                 </div>
                 <div>
-                  <h3 className="mt-4 mb-2 font-semibold">Hình ảnh phụ (Sub Images)</h3>
+                  <h3 className="mt-4 mb-2 font-semibold">Hình ảnh phụ (sub_images_detail):</h3>
                   {subImageFields.map((field, index) => (
                     <FormField
                       key={field.id}
@@ -502,6 +548,11 @@ export default function AddProductPage() {
                       )}
                     />
                   ))}
+                  {form.formState.errors.sub_images_detail && (
+                    <p className="text-destructive mt-2 text-sm font-medium">
+                      {form.formState.errors.sub_images_detail.message}
+                    </p>
+                  )}
                   <Button type="button" variant="outline" size="sm" onClick={() => appendSubImage({ value: "" })}>
                     Thêm ảnh phụ
                   </Button>
@@ -514,13 +565,14 @@ export default function AddProductPage() {
                 <CardTitle>Filter Information (Filter IDs)</CardTitle>
               </CardHeader>
               <CardContent className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {/* Brand Filter */}
                 <FormField
                   control={form.control}
                   name="filter_brand"
                   render={({ field }) => (
                     <FormItem className="space-y-2">
-                      <FormLabel className="text-lg font-semibold text-blue-700">Brand</FormLabel>
+                      <FormLabel className="text-lg font-semibold text-blue-700">
+                        Thương hiệu-(filter_brand) <span className="text-sm text-gray-500">(Optional)</span>
+                      </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
@@ -528,7 +580,7 @@ export default function AddProductPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
-                          {data.map((brand) => (
+                          {brand.map((brand) => (
                             <SelectItem
                               key={brand._id}
                               value={brand._id}
@@ -544,13 +596,15 @@ export default function AddProductPage() {
                   )}
                 />
 
-                {/* Skin Type Filter */}
                 <FormField
                   control={form.control}
                   name="filter_hsk_skin_type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg font-semibold text-blue-700">Skin Type</FormLabel>
+                      <FormLabel className="text-lg font-semibold text-blue-700">
+                        Dành cho loại da-(filter_hsk_skin_type){" "}
+                        <span className="text-sm text-gray-500">(Optional)</span>
+                      </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
@@ -559,8 +613,8 @@ export default function AddProductPage() {
                         </FormControl>
                         <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
                           {skinType.map((skin) => (
-                            <SelectItem key={skin.filter_ID} value={skin.filter_ID}>
-                              {skin.name}
+                            <SelectItem key={skin._id} value={skin._id}>
+                              {skin.option_name}
                             </SelectItem>
                           ))}
                         </SelectContent>
@@ -570,13 +624,14 @@ export default function AddProductPage() {
                   )}
                 />
 
-                {/* Uses Filter */}
                 <FormField
                   control={form.control}
                   name="filter_hsk_uses"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg font-semibold text-blue-700">Uses</FormLabel>
+                      <FormLabel className="text-lg font-semibold text-blue-700">
+                        Tác dụng-(filter_hsk_uses) <span className="text-sm text-gray-500">(Optional)</span>
+                      </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
@@ -584,15 +639,11 @@ export default function AddProductPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
-                          {uses.map(
-                            (
-                              useItem // Renamed 'uses' to 'useItem' for clarity
-                            ) => (
-                              <SelectItem key={useItem.filter_ID} value={useItem.filter_ID}>
-                                {useItem.name}
-                              </SelectItem>
-                            )
-                          )}
+                          {uses.map((useItem) => (
+                            <SelectItem key={useItem._id} value={useItem._id}>
+                              {useItem.option_name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -600,13 +651,15 @@ export default function AddProductPage() {
                   )}
                 />
 
-                {/* Product Type Filter */}
                 <FormField
                   control={form.control}
                   name="filter_hsk_product_type"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg font-semibold text-blue-700">Product Type</FormLabel>
+                      <FormLabel className="text-lg font-semibold text-blue-700">
+                        Loại sản phẩm-(filter_hsk_product_type){" "}
+                        <span className="text-sm text-gray-500">(Optional)</span>
+                      </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
@@ -618,8 +671,8 @@ export default function AddProductPage() {
                             (
                               productTypeItem // Renamed 'productType' to 'productTypeItem'
                             ) => (
-                              <SelectItem key={productTypeItem.filter_ID} value={productTypeItem.filter_ID}>
-                                {productTypeItem.name}
+                              <SelectItem key={productTypeItem._id} value={productTypeItem._id}>
+                                {productTypeItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -630,13 +683,14 @@ export default function AddProductPage() {
                   )}
                 />
 
-                {/* Origin Filter */}
                 <FormField
                   control={form.control}
                   name="filter_origin"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg font-semibold text-blue-700">Origin</FormLabel>
+                      <FormLabel className="text-lg font-semibold text-blue-700">
+                        Xuất xứ-(filter_origin) <span className="text-sm text-gray-500">(Optional)</span>
+                      </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
@@ -648,8 +702,8 @@ export default function AddProductPage() {
                             (
                               originItem // Renamed 'temp' to 'originItem'
                             ) => (
-                              <SelectItem key={originItem.filter_ID} value={originItem.filter_ID}>
-                                {originItem.name}
+                              <SelectItem key={originItem._id} value={originItem._id}>
+                                {originItem.option_name}
                               </SelectItem>
                             )
                           )}
@@ -660,13 +714,14 @@ export default function AddProductPage() {
                   )}
                 />
 
-                {/* Size Filter */}
                 <FormField
                   control={form.control}
-                  name="filter_size"
+                  name="filter_hsk_size"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg font-semibold text-blue-700">Size</FormLabel>
+                      <FormLabel className="text-lg font-semibold text-blue-700">
+                        Size-(filter_hsk_size) <span className="text-sm text-gray-500">(Optional)</span>
+                      </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
@@ -674,15 +729,11 @@ export default function AddProductPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
-                          {size.map(
-                            (
-                              sizeItem // Renamed 'temp' to 'sizeItem'
-                            ) => (
-                              <SelectItem key={sizeItem.filter_ID} value={sizeItem.filter_ID}>
-                                {sizeItem.name}
-                              </SelectItem>
-                            )
-                          )}
+                          {size.map((sizeItem) => (
+                            <SelectItem key={sizeItem._id} value={sizeItem._id}>
+                              {sizeItem.option_name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -690,14 +741,14 @@ export default function AddProductPage() {
                   )}
                 />
 
-                {/* Đặc tính Filter (Characteristic) */}
                 <FormField
                   control={form.control}
                   name="filter_dac_tinh"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg font-semibold text-blue-700">Characteristic</FormLabel>{" "}
-                      {/* Changed "Đặc tính" to "Characteristic" for broader understanding */}
+                      <FormLabel className="text-lg font-semibold text-blue-700">
+                        Đặc tính-(filter_dac_tinh) <span className="text-sm text-gray-500">(Optional)</span>
+                      </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
@@ -705,15 +756,11 @@ export default function AddProductPage() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="max-h-60 overflow-y-auto rounded-lg border border-blue-300 bg-white shadow-lg">
-                          {dactinh.map(
-                            (
-                              dactinhItem // Renamed 'temp' to 'dactinhItem'
-                            ) => (
-                              <SelectItem key={dactinhItem.filter_ID} value={dactinhItem.filter_ID}>
-                                {dactinhItem.name}
-                              </SelectItem>
-                            )
-                          )}
+                          {dactinh.map((dactinhItem) => (
+                            <SelectItem key={dactinhItem._id} value={dactinhItem._id}>
+                              {dactinhItem.option_name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -724,10 +771,12 @@ export default function AddProductPage() {
                 {/* Ingredient Filter */}
                 <FormField
                   control={form.control}
-                  name="filter_hsk_ingredient"
+                  name="filter_hsk_ingredients"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg font-semibold text-blue-700">Ingredient</FormLabel>
+                      <FormLabel className="text-lg font-semibold text-blue-700">
+                        Thành phần-(filter_hsk_ingredients) <span className="text-sm text-gray-500">(Optional)</span>
+                      </FormLabel>
                       <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger className="rounded-xl border-blue-400 shadow-md transition duration-200 hover:border-blue-600 focus:ring-2 focus:ring-blue-600">
@@ -739,8 +788,8 @@ export default function AddProductPage() {
                             (
                               ingredientItem // Renamed 'temp' to 'ingredientItem'
                             ) => (
-                              <SelectItem key={ingredientItem.filter_ID} value={ingredientItem.filter_ID}>
-                                {ingredientItem.name}
+                              <SelectItem key={ingredientItem._id} value={ingredientItem._id}>
+                                {ingredientItem.option_name}
                               </SelectItem>
                             )
                           )}

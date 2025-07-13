@@ -3,6 +3,9 @@ import type { Result } from "neverthrow";
 import { apiClient } from "@/lib/apiClient";
 import { ApiError } from "@/utils";
 import type { ApiResponse } from "@/utils/axios/types";
+import { type RequestOptions } from "@/utils/axios/types";
+
+import type { CheckoutPayload } from "./orders.service";
 
 export interface ZaloPayOrderItem {
   _id: string;
@@ -15,7 +18,11 @@ export interface ZaloPayPayload {
   orderDetails: ZaloPayOrderItem[];
   total: number;
 }
-
+export interface PaymentRequestPayload extends CheckoutPayload {
+  orderDetails?: any[];
+  total?: number;
+  amount?: number;
+}
 export interface ZaloPayResponse {
   returncode: number;
   returnmessage: string;
@@ -43,17 +50,22 @@ export interface VNPayReturnData {
 
 export interface VerificationResponse {
   message: string;
-  code: string; 
+  code: string;
 }
 export const paymentService = {
-  createZaloPayOrder: (payload: ZaloPayPayload): Promise<Result<ApiResponse<ZaloPayResponse>, ApiError>> => {
-    return apiClient.post<ZaloPayResponse, ZaloPayPayload>("/payment/zalopay", payload);
+  createZaloPayOrder: (payload: PaymentRequestPayload): Promise<Result<ApiResponse<ZaloPayResponse>, ApiError>> => {
+    return apiClient.post<ZaloPayResponse, PaymentRequestPayload>("/payment/zalopay", payload);
   },
 
-  createVNPayUrl: (payload: VNPayPayload): Promise<Result<ApiResponse<VNPayResponse>, ApiError>> => {
-    return apiClient.post<VNPayResponse, VNPayPayload>("/payment/vnpay", payload);
+  createVNPayUrl: (payload: PaymentRequestPayload): Promise<Result<ApiResponse<VNPayResponse>, ApiError>> => {
+    return apiClient.post<VNPayResponse, PaymentRequestPayload>("/payment/vnpay", payload);
   },
   verifyVNPayReturn: (returnData: VNPayReturnData): Promise<Result<ApiResponse<VerificationResponse>, ApiError>> => {
-    return apiClient.post<VerificationResponse, VNPayReturnData>("/payment/vnpay_return", returnData);
+    const options: RequestOptions = {
+      params: returnData,
+      maxRedirects: 0,
+      validateStatus: (status) => status >= 200 && status < 400,
+    };
+    return apiClient.get<VerificationResponse>("/payment/vnpay_return", options);
   },
 };

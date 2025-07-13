@@ -1,0 +1,29 @@
+type: object
+description: 'Đại diện cho một đối tượng filter Đặc tính'
+properties:
+  _id:
+    type: string
+    format: mongoId
+    description: 'ID duy nhất của filter đặc tính.'
+  option_name:
+    type: string
+    description: 'Tên hiển thị của đặc tính.'
+    example: 'Chống Lão Hóa'
+  category_name:
+    type: string
+    description: 'Danh mục mà filter này thuộc về.'
+    example: 'Đặc Tính'
+  category_param:
+    type: string
+    description: 'Tên URL-friendly của đặc tính.'
+    example: 'chong-lao-hoa'
+  state:
+    type: string
+    description: 'Trạng thái hiện tại của đặc tính.'
+    enum: [INACTIVE, ACTIVE]
+  created_at:
+    type: string
+    format: date-time
+  updated_at:
+    type: string
+    format: date-time

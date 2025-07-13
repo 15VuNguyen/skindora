@@ -1,0 +1,11 @@
+type: object
+description: 'Chỉ bao gồm các trường cần cập nhật cho loại sản phẩm.'
+properties:
+  option_name:
+    type: string
+  description:
+    type: string
+  category_name:
+    type: string
+  category_param:
+    type: string

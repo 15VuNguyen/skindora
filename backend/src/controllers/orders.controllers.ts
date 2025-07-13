@@ -194,6 +194,24 @@ export const getAllOrdersController = async (req: Request, res: Response, next: 
   await sendPaginatedResponse(res, next, databaseService.orders, req.query, filter)
 }
 
+export const countOrderController = async (req:Request, res: Response) => {
+  try {
+    const result = await ordersService.countOrder()
+    res.json({
+      message: ORDER_MESSAGES.COUNT_SUCCESS,
+      result
+    })
+  } catch (error) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    const errorMessage = error instanceof ErrorWithStatus ? error.message : String(error)
+
+    res.status(statusCode).json({
+      message: ORDER_MESSAGES.COUNT_FAIL,
+      error: errorMessage
+    })
+  }
+}
+
 export const getAllCancelledOrdersController = async (req: Request, res: Response, next: NextFunction) => {
   const filter: Filter<Order> = {}
   filter['CancelRequest'] = { $exists: true }

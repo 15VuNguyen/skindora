@@ -69,6 +69,8 @@ class OrdersService {
 
         return {
           ProductID: p.ProductID,
+          Name: product.name_on_list,
+          Image: product.image_on_list,
           Quantity: p.Quantity,
           PricePerUnit: unitPrice,
           TotalPrice: totalPrice
@@ -155,8 +157,11 @@ class OrdersService {
     const status = OrderStatus.PENDING
     const paymentStatus = payload.PaymentStatus ?? PaymentStatus.UNPAID
 
+    console.log(payload)
     const order: Partial<Order> = {
       UserID: new ObjectId(userId),
+      RecipientName: payload.RecipientName || "",
+      PhoneNumber: payload.PhoneNumber || "",
       ShipAddress: payload.ShipAddress,
       Description: payload.Description || '',
       RequireDate: payload.RequireDate,
@@ -184,12 +189,13 @@ class OrdersService {
     }
 
     const totalPrice = tempOrder.TotalPrice - discount
-    order.TotalPrice = totalPrice.toString()
+    order.TotalPrice = Math.max(0, totalPrice).toString()
 
     const session = databaseService.getClient().startSession()
 
     let orderDetails: any[] = []
     try {
+      let orderId = null as ObjectId | null
       await session.withTransaction(async () => {
         const insertedOrder = await databaseService.orders.insertOne(
           {
@@ -199,7 +205,7 @@ class OrdersService {
           },
           { session }
         )
-        const orderId = insertedOrder.insertedId
+        orderId = insertedOrder.insertedId
 
         orderDetails = tempOrder.Products.map((p: ProductInOrder) => {
           return {
@@ -231,24 +237,23 @@ class OrdersService {
         }
       })
 
-      if (payload.type === OrderType.CART) {
-        const cartKey = cartService.getCartKey(userId)
-        const cart = await cartService.getCart(cartKey)
-        const remainingProducts = cart.Products.filter((p: ProductInCart) => {
-          const orderedProductIds = tempOrder.Products.map((p: ProductInOrder) => p.ProductID)
-          return !orderedProductIds.includes(p.ProductID)
-        })
+      const cartKey = cartService.getCartKey(userId)
+      const cart = await cartService.getCart(cartKey)
+      const remainingProducts = cart.Products.filter((p: ProductInCart) => {
+        const orderedProductIds = tempOrder.Products.map((p: ProductInOrder) => p.ProductID)
+        return !orderedProductIds.includes(p.ProductID)
+      })
 
-        if (remainingProducts.length <= 0) {
-          await redisClient.del(cartKey)
-        } else {
-          await cartService.saveCart(cartKey, { Products: remainingProducts })
-        }
+      if (remainingProducts.length <= 0) {
+        await redisClient.del(cartKey)
+      } else {
+        await cartService.saveCart(cartKey, { Products: remainingProducts })
       }
 
       await redisClient.del(tempOrderKey)
 
       return {
+        orderId,
         ...order,
         ...(discount > 0 && { PriceBeforeDiscount: priceBeforeDiscount.toString() }),
         orderDetails: orderDetails.map(({ OrderID, ...rest }) => rest)
@@ -305,16 +310,36 @@ class OrdersService {
     return orders.map((order) => ({
       orderId: order._id,
       orderDetail: detailMap.get(order._id.toString()) || [],
-      orderStatus : order.Status
+      orderStatus: order.Status
     }))
   }
 
   async getOrderById(order: Order) {
     const orderDetails = await this.getOrderDetailByOrderId(order._id!.toString())
     const enrichedDetails = await this.enrichOrderDetailsWithProducts(orderDetails)
+    const user = await databaseService.users.findOne(
+      { _id: order.UserID },
+      {
+        projection: {
+          _id: 1,
+          first_name: 1,
+          last_name: 1,
+          email: 1,
+          location: 1,
+          username: 1,
+          phone_number: 1,
+          avatar: 1
+        }
+      }
+    )
+    const { _id, UserID, ...restOrder } = order
 
     return {
-      ...order,
+      order: {
+        _id,
+        User: user,
+        ...restOrder
+      },
       orderDetail: enrichedDetails.map(({ ProductID, OrderID, ...rest }) => ({
         ...rest
       }))
@@ -325,7 +350,7 @@ class OrdersService {
     const productIds = [...new Set(orderDetails.map((od) => od.ProductID?.toString()))].map((id) => new ObjectId(id))
     const products = await databaseService.products
       .find({ _id: { $in: productIds } })
-      .project({ _id: 1, name_on_list: 1, image_on_list: 1, price_on_list: 1})
+      .project({ _id: 1, name_on_list: 1, image_on_list: 1, price_on_list: 1 })
       .toArray()
 
     const productInfoMap = new Map(
@@ -592,6 +617,31 @@ class OrdersService {
     })
 
     return dailyResult
+  }
+
+  async countOrder() {
+    const orders = await databaseService.orders
+      .aggregate([
+        {
+          $group: {
+            _id: '$Status',
+            count: { $sum: 1 }
+          }
+        }
+      ])
+      .toArray()
+
+    const countsByStatus = orders.reduce((acc, cur) => {
+      acc[cur._id] = cur.count
+      return acc
+    }, {})
+
+    const total = orders.reduce((sum, cur) => sum + cur.count, 0)
+
+    return {
+      total,
+      statusCounts: countsByStatus
+    }
   }
 
   async getOrderDetailByOrderId(id: string): Promise<Array<OrderDetail>> {

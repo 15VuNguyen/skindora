@@ -9,7 +9,7 @@ interface AccordionFilterProps {
   selectedFilters: Record<string, string[]>;
   onFilterChange: (filterType: string, filterId: string) => void;
   onClearFilters: () => void;
-  filterIdToNameMap: Map<string, string>; // New prop
+  filterIdToNameMap: Map<string, string>;
 }
 
 const filterTitles: Record<string, string> = {
@@ -39,7 +39,7 @@ export function AccordionFilter({
     return (
       <div className="flex h-96 w-full max-w-xs flex-col items-center justify-center rounded-lg border bg-white p-4">
         <LoaderCircle className="text-primary mb-2 h-8 w-8 animate-spin" />
-        <p className="text-muted-foreground text-sm">Loading Filters...</p>
+        <p className="text-muted-foreground text-sm">Đang tải bộ lọc...</p>
       </div>
     );
   }
@@ -48,8 +48,8 @@ export function AccordionFilter({
     return (
       <div className="border-destructive/50 flex h-96 w-full max-w-xs flex-col items-center justify-center rounded-lg border bg-white p-4 text-center">
         <AlertTriangle className="text-destructive mb-2 h-8 w-8" />
-        <p className="text-destructive font-semibold">Error</p>
-        <p className="text-muted-foreground text-sm">Could not load filters.</p>
+        <p className="text-destructive font-semibold">Lỗi</p>
+        <p className="text-muted-foreground text-sm">Không thể tải bộ lọc.</p>
         <p className="text-muted-foreground mt-1 text-xs">({error?.message})</p>
       </div>
     );
@@ -73,7 +73,7 @@ export function AccordionFilter({
             {Object.entries(selectedFilters).map(([filterType, filterIds]) =>
               filterIds.map((id) => (
                 <Badge key={`${filterType}-${id}`} variant="secondary" className="text-xs">
-                  {filterIdToNameMap.get(id) || id} {/* Display name, fallback to ID */}
+                  {filterIdToNameMap.get(id) || id}
                   <X className="ml-1 h-3 w-3 cursor-pointer" onClick={() => onFilterChange(filterType, id)} />
                 </Badge>
               ))
@@ -102,7 +102,9 @@ export function AccordionFilter({
                   <AccordionContent>
                     <div className="max-h-60 space-y-2 overflow-y-auto">
                       {options.map((option) => {
-                        const isSelected = selectedFilters[filterType]?.includes(option.filter_ID) || false;
+                        const correctedFilterType =
+                          filterType === "filter_hsk_ingredient" ? "filter_hsk_ingredients" : filterType;
+                        const isSelected = selectedFilters[correctedFilterType]?.includes(option.filter_ID) || false;
                         return (
                           <Button
                             key={option.filter_ID}
@@ -124,4 +126,3 @@ export function AccordionFilter({
     </div>
   );
 }
-  

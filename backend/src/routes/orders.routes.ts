@@ -6,6 +6,7 @@ import {
   buyNowController,
   cancelOrderController,
   checkOutController,
+  countOrderController,
   getAllCancelledOrdersController,
   getAllOrdersByAuthUserController,
   getAllOrdersByUserIdController,
@@ -17,7 +18,7 @@ import {
   rejectCancelRequestController,
   requestCancelOrderController
 } from '~/controllers/orders.controllers'
-import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
+import { isAdminOrStaffValidator, isAdminValidator } from '~/middlewares/admin.middlewares'
 import {
   buyNowValidator,
   cancelledOrderRequestedValidator,
@@ -30,7 +31,6 @@ import {
   prepareOrderValidator,
   requestCancelOrderValidator
 } from '~/middlewares/orders.middlewares'
-import { isStaffValidator } from '~/middlewares/staff.middlewares'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import { OrderReqBody } from '~/models/requests/Orders.requests'
 
@@ -40,9 +40,16 @@ ordersRouter
   .route('/')
   .get(accessTokenValidator, isAdminOrStaffValidator, getAllOrdersValidator, wrapAsync(getAllOrdersController))
 
+ordersRouter.route('/counts').get(accessTokenValidator, isAdminOrStaffValidator, wrapAsync(countOrderController))
+
 ordersRouter
   .route('/cancel')
-  .get(accessTokenValidator, isAdminOrStaffValidator, getAllCancelledOrdersValidator, wrapAsync(getAllCancelledOrdersController))
+  .get(
+    accessTokenValidator,
+    isAdminValidator,
+    getAllCancelledOrdersValidator,
+    wrapAsync(getAllCancelledOrdersController)
+  )
 
 ordersRouter
   .route('/users/:userId')
@@ -66,14 +73,24 @@ ordersRouter
   .post(accessTokenValidator, requestCancelOrderValidator, wrapAsync(requestCancelOrderController))
 ordersRouter
   .route('/:orderId/cancel-request/approve')
-  .patch(accessTokenValidator, isAdminOrStaffValidator, cancelledOrderRequestedValidator, wrapAsync(approveCancelRequestController))
+  .patch(
+    accessTokenValidator,
+    isAdminValidator,
+    cancelledOrderRequestedValidator,
+    wrapAsync(approveCancelRequestController)
+  )
 ordersRouter
   .route('/:orderId/cancel-request/reject')
-  .patch(accessTokenValidator, isAdminOrStaffValidator, cancelledOrderRequestedValidator, wrapAsync(rejectCancelRequestController))
+  .patch(
+    accessTokenValidator,
+    isAdminValidator,
+    cancelledOrderRequestedValidator,
+    wrapAsync(rejectCancelRequestController)
+  )
 
 ordersRouter
   .route('/:orderId/cancel')
-  .patch(accessTokenValidator, isAdminOrStaffValidator, cancelOrderValidator, wrapAsync(cancelOrderController))
+  .patch(accessTokenValidator, isAdminValidator, cancelOrderValidator, wrapAsync(cancelOrderController))
 
 ordersRouter.route('/:orderId').get(accessTokenValidator, getOrderByIdValidator, wrapAsync(getOrderByIdController))
 
@@ -86,6 +103,8 @@ ordersRouter
   .post(
     accessTokenValidator,
     filterMiddleware<OrderReqBody>([
+      'RecipientName',
+      'PhoneNumber',
       'ShipAddress',
       'Description',
       'RequireDate',

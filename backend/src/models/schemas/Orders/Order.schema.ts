@@ -29,6 +29,8 @@ export interface VoucherSnapshot {
 interface OrderType {
   _id?: ObjectId
   UserID?: ObjectId
+  RecipientName?: string
+  PhoneNumber?: string
   ShipAddress?: string
   Description?: string
   OrderDate?: string
@@ -50,6 +52,8 @@ interface OrderType {
 export default class Order {
   _id?: ObjectId
   UserID?: ObjectId
+  RecipientName?: string
+  PhoneNumber?: string
   ShipAddress?: string
   Description?: string
   OrderDate?: string
@@ -70,6 +74,8 @@ export default class Order {
   constructor(order: OrderType) {
     this._id = order._id || new ObjectId()
     this.UserID = order.UserID
+    this.RecipientName = order.RecipientName || ''
+    this.PhoneNumber = order.PhoneNumber || ''
     this.ShipAddress = order.ShipAddress || ''
     this.Description = order.Description || ''
     this.OrderDate = order.OrderDate || getLocalTime().toISOString()

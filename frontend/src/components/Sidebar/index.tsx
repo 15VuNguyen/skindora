@@ -1,16 +1,22 @@
 import {
-  BarChart4,
+  // For "Quản lý Product Type"
+  Droplet,
+  // For "Quản lý Skin Type" (distinct from 'Leaf' used for 'loại da')
+  FileX2,
+  // For "Quản lý đặc tính" (Features/Attributes)
+  FlaskConical,
   Globe2,
   Home,
-  // Lựa chọn thay thế: Award, Crown
+  // For "Quản lý Ingredient"
+  Layers,
   Leaf,
-  // Lựa chọn thay thế: Face, Droplets
   ListChecks,
   Package,
-  // Lựa chọn thay thế: LineChart, PieChart
   Shield,
   ShoppingCart,
-  TicketPercent, // Lựa chọn thay thế: Ticket, Gift, Tag
+  // New icons for the updated items
+  SlidersHorizontal,
+  TicketPercent,
   User2,
   UsersRound,
 } from "lucide-react";
@@ -31,41 +37,63 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
-  { title: "Tổng quan", url: "/admin", icon: Home },
-  { title: "Hồ sơ", url: "/admin/profile", icon: User2 },
+  { title: "Tổng quan", url: "/admin", icon: User2 },
+  { title: "Hồ sơ", url: "/admin/dashboard", icon: Home },
   { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
-  { title: "Quản lý sản phẩm", url: "/admin/products", icon: Package },
-  { title: "Quản lý đơn hàng", url: "/admin/orders", icon: ShoppingCart },
-  { title: "Quản lý công dụng", url: "/admin/use", icon: ListChecks },
-  { title: "Quản lý xuất xứ", url: "/admin/origin", icon: Globe2 },
-
-  // Các icon được đề xuất thay đổi hoặc có thêm lựa chọn
-  {
-    title: "Thống kê",
-    url: "/admin/statics",
-    icon: BarChart4, // BarChart4, LineChart, PieChart trực quan hơn cho thống kê.
-  },
-  {
-    title: "Quản lý thương hiệu",
-    url: "/admin/brand",
-    icon: Shield, // Shield (khiên) rất tốt, thể hiện sự bảo chứng. Award (phần thưởng) hoặc Crown (vương miện) cũng là lựa chọn hay để thể hiện thương hiệu hàng đầu.
-  },
-  {
-    title: "Quản lý loại da",
-    url: "/admin/typeskin",
-    icon: Leaf, // Leaf (chiếc lá) gợi ý về sự tự nhiên, chăm sóc. Face (khuôn mặt) hoặc Droplets (giọt nước - cho dưỡng ẩm) cũng là những lựa chọn phù hợp.
-  },
+  // {
+  //   title: "Thống kê",
+  //   url: "/admin/statics",
+  //   icon: BarChart4,
+  // },
   {
     title: "Quản lý voucher",
     url: "/admin/voucher",
-    icon: TicketPercent, // TicketPercent, Ticket (vé), Gift (quà tặng), hoặc Tag (nhãn) đều phù hợp hơn Globe2 (quả địa cầu) rất nhiều.
+    icon: TicketPercent,
+  },
+  {
+    title: "Quản lý đơn hủy",
+    url: "/admin/cancel-request",
+    icon: FileX2, // This icon is good for "cancel request"
+  },
+  { title: "Quản lý sản phẩm", url: "/admin/products", icon: Package },
+  { title: "Quản lý đơn hàng", url: "/admin/orders", icon: ShoppingCart },
+  { title: "Quản lý công dụng", url: "/admin/uses", icon: ListChecks },
+  { title: "Quản lý xuất xứ", url: "/admin/origin", icon: Globe2 },
+  {
+    title: "Quản lý thương hiệu",
+    url: "/admin/brand",
+    icon: Shield,
+  },
+  {
+    title: "Quản lý size",
+    url: "/admin/size",
+    icon: Leaf,
+  },
+
+  {
+    title: "Quản lý đặc tính",
+    url: "/admin/dac-tinh",
+    icon: SlidersHorizontal,
+  },
+  {
+    title: "Quản lý Ingredient",
+    url: "/admin/ingredient",
+    icon: FlaskConical,
+  },
+  {
+    title: "Quản lý Product Type",
+    url: "/admin/product-type",
+    icon: Layers,
+  },
+  {
+    title: "Quản lý loại da",
+    url: "/admin/skin-type",
+    icon: Droplet,
   },
 ];
-
 const AppSidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
   return (
     <Sidebar collapsible="icon">
       <SidebarContent>

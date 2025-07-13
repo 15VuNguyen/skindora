@@ -45,9 +45,9 @@ export enum PaymentStatus {
 }
 
 export enum CancelRequestStatus {
-  REQUESTED  = 'REQUESTED',
+  REQUESTED = 'REQUESTED',
   APPROVED = 'APPROVED',
-  REJECTED  = 'REJECTED'
+  REJECTED = 'REJECTED'
 }
 
 export enum RefundStatus {
@@ -65,22 +65,27 @@ export enum ProductState {
   DISCONTINUED = 'DISCONTINUED' //Ngừng kinh doanh
 }
 
+export enum GenericFilterState {
+  INACTIVE = 'INACTIVE', // Filter không được áp dụng hoặc bị ẩn
+  ACTIVE = 'ACTIVE' // Filter đang hoạt động và có thể sử dụng
+}
+
 export enum FilterBrandState {
   //trạng thái cơ bản
-  INACTIVE = 'INACTIVE',//0 - //Thương hiệu không hoạt động(chưa bắt đầu hoặc tạm thời không active)
-  ACTIVE = 'ACTIVE',//1 - //Thương hiệu độc lập đang hoạt động
+  INACTIVE = 'INACTIVE', //0 - //Thương hiệu không hoạt động(chưa bắt đầu hoặc tạm thời không active)
+  ACTIVE = 'ACTIVE', //1 - //Thương hiệu độc lập đang hoạt động
 
   //đối tác
-  COLLABORATION = 'COLLABORATION',//2 - //Đang collab với brand khác
-  PARTNERSHIP = 'PARTNERSHIP',//3 - //Quan hệ đối tác dài hạn
+  COLLABORATION = 'COLLABORATION', //2 - //Đang collab với brand khác
+  PARTNERSHIP = 'PARTNERSHIP', //3 - //Quan hệ đối tác dài hạn
 
   //đặc biệt
-  EXCLUSIVE = 'EXCLUSIVE',//4 - //Độc quyền phân phối
-  LIMITED_EDITION = 'LIMITED_EDITION',//5 - //Phiên bản giới hạn collab
+  EXCLUSIVE = 'EXCLUSIVE', //4 - //Độc quyền phân phối
+  LIMITED_EDITION = 'LIMITED_EDITION', //5 - //Phiên bản giới hạn collab
 
   //Inactive states
-  SUSPENDED = 'SUSPENDED',//6 - //Tạm ngưng hoạt động do vi phạm policy hoặc vấn đề tạm thờiTạm ngưng hoạt động
-  DISCONTINUED = 'DISCONTINUED'//7 - //Ngừng hợp tác/kinh doanh vĩnh viễn
+  SUSPENDED = 'SUSPENDED', //6 - //Tạm ngưng hoạt động do vi phạm policy hoặc vấn đề tạm thờiTạm ngưng hoạt động
+  DISCONTINUED = 'DISCONTINUED' //7 - //Ngừng hợp tác/kinh doanh vĩnh viễn
 }
 
 export enum DiscountType {

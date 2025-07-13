@@ -43,8 +43,13 @@ export const registerController = async (req: Request<ParamsDictionary, any, Reg
 }
 
 export const forgotPasswordController = async (req: Request, res: Response) => {
-  const { _id, verify } = req.user as User
-  const result = await usersService.forgotPassword({ user_id: (_id as ObjectId).toString(), verify })
+  const { _id, email, first_name, verify } = req.user as User
+  const result = await usersService.forgotPassword({
+    user_id: (_id as ObjectId).toString(),
+    email,
+    first_name,
+    verify
+  })
   res.json(result)
 }
 
