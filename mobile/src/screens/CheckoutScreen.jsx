@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,37 +8,25 @@ import {
   Image,
   Alert,
 } from "react-native";
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useAuth } from "../hooks/useAuth";
 import privateAxios from "../utils/axiosPrivate";
 import { DiscountType } from "../constants/enum";
 import RecipientInfoSection from "../components/RecipientInfoSection";
 import { useCart } from "../hooks/useCart";
 
-const paymentLabelMap = {
-  COD: "Thanh toán khi nhận hàng",
-  VNPAY: "Ví VNPAY",
-  ZALOPAY: "Ví ZaloPay",
-};
-
 export default function CheckoutScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { user } = useAuth();
-  const {setCart} = useCart()
+  const { setCart } = useCart();
+
   const {
     cart,
     selectedVoucher,
-    selectedPaymentMethod,
     recipientInfo: savedInfo,
   } = route.params || {};
-  const [appliedPaymentMethod, setAppliedPaymentMethod] = useState(
-    selectedPaymentMethod || undefined
-  );
+
   const [recipientInfo, setRecipientInfo] = useState(
     savedInfo || {
       name: user?.first_name || "",
@@ -84,48 +72,31 @@ export default function CheckoutScreen() {
     const { name, phone, address } = recipientInfo;
 
     if (!name || !phone || !address) {
-      Alert.alert(
-        "Thiếu thông tin",
-        "Vui lòng nhập đầy đủ thông tin người nhận."
-      );
+      Alert.alert("Thiếu thông tin", "Vui lòng nhập đầy đủ thông tin người nhận.");
       return;
     }
-    if (!appliedPaymentMethod) {
-      Alert.alert("Thiếu thông tin", "Vui lòng chọn phương thức thanh toán.");
-      return;
-    }
+
     try {
       const payload = {
         voucherCode: selectedVoucher?.code,
-        PaymentMethod: appliedPaymentMethod,
+        PaymentMethod: "COD",
         RecipientName: name,
         PhoneNumber: phone,
         ShipAddress: address,
       };
 
-      const {data} = await privateAxios.post("/orders/checkout", payload);
-      setCart([])
+      const { data } = await privateAxios.post("/orders/checkout", payload);
+      setCart([]);
       Alert.alert("Thành công", "Đơn hàng đã được tạo!");
-      navigation.navigate("OrderSuccessScreen", {orderId: data.result?.orderId});
+      navigation.navigate("OrderSuccessScreen", { orderId: data.result?.orderId });
     } catch (err) {
-      const message =
-        err?.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại sau.";
-
+      const message = err?.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại sau.";
       Alert.alert("Lỗi", message);
     }
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      if (selectedPaymentMethod !== undefined) {
-        setAppliedPaymentMethod(selectedPaymentMethod);
-      }
-    }, [route.params, setAppliedPaymentMethod])
-  );
-
   return (
     <ScrollView style={styles.container}>
-      {/* Thông tin người nhận */}
       <RecipientInfoSection
         recipientInfo={recipientInfo}
         setRecipientInfo={setRecipientInfo}
@@ -156,8 +127,7 @@ export default function CheckoutScreen() {
 
         <View style={styles.summaryRow}>
           <Text style={styles.summaryText}>
-            Tổng ({cart.Products.reduce((sum, p) => sum + p.Quantity, 0)} sản
-            phẩm):
+            Tổng ({cart.Products.reduce((sum, p) => sum + p.Quantity, 0)} sản phẩm):
           </Text>
           <Text style={styles.summaryText}>
             {cart.TotalPrice.toLocaleString()} đ
@@ -165,13 +135,12 @@ export default function CheckoutScreen() {
         </View>
       </View>
 
-      {/* Voucher */}
+      {/* Mã giảm giá */}
       <TouchableOpacity
         style={styles.section}
         onPress={() =>
           navigation.navigate("VoucherApplication", {
             selectedVoucher,
-            selectedPaymentMethod: appliedPaymentMethod,
             cart,
             recipientInfo,
           })
@@ -183,30 +152,10 @@ export default function CheckoutScreen() {
         </Text>
       </TouchableOpacity>
 
+      {/* Phương thức thanh toán (mặc định) */}
       <View style={styles.section}>
         <Text style={styles.label}>Phương thức thanh toán:</Text>
-        <View style={styles.paymentOptionsContainer}>
-          {["COD", "VNPAY", "ZALOPAY"].map((method) => (
-            <TouchableOpacity
-              key={method}
-              style={[
-                styles.paymentOption,
-                appliedPaymentMethod === method && styles.paymentOptionSelected,
-              ]}
-              onPress={() => setAppliedPaymentMethod(method)}
-            >
-              <Text
-                style={[
-                  styles.paymentOptionText,
-                  appliedPaymentMethod === method &&
-                    styles.paymentOptionTextSelected,
-                ]}
-              >
-                {paymentLabelMap[method]}
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <Text style={styles.voucherText}>Thanh toán khi nhận hàng</Text>
       </View>
 
       {/* Tổng tiền */}
@@ -232,9 +181,8 @@ export default function CheckoutScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-  recipientSection: {
+  section: {
     padding: 16,
-    backgroundColor: "#fef2f2",
     borderBottomWidth: 1,
     borderColor: "#eee",
   },
@@ -243,14 +191,6 @@ const styles = StyleSheet.create({
     color: "#333",
     marginBottom: 4,
     fontWeight: "500",
-  },
-  recipientName: { fontSize: 16, fontWeight: "bold", marginBottom: 4 },
-  recipientAddress: { fontSize: 14, color: "#666" },
-
-  section: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderColor: "#eee",
   },
   productRow: {
     flexDirection: "row",
@@ -270,12 +210,16 @@ const styles = StyleSheet.create({
   productDetailWrapper: {
     marginTop: 4,
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
   },
   productDetailText: {
     fontSize: 13,
     color: "#666",
+  },
+  productName: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#333",
   },
   summaryRow: {
     flexDirection: "row",
@@ -289,57 +233,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
   },
-  productQuantity: {
-    fontSize: 13,
-    color: "#666",
-    marginTop: 4,
-  },
-  productInfo: {
-    flex: 1,
-    justifyContent: "center",
-  },
-  productName: { fontSize: 14, fontWeight: "500", color: "#333" },
-  productDetails: { fontSize: 13, color: "#666", marginTop: 4 },
-  productTotal: { fontSize: 13, color: "#e11d48", marginTop: 4 },
-
   voucherText: { fontSize: 14, color: "#10b981", marginTop: 4 },
-  paymentOptionsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
-    gap: 8,
-  },
-
-  paymentOption: {
-    flex: 1,
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: "#f3f4f6",
-    borderWidth: 1,
-    borderColor: "#e5e7eb",
-    alignItems: "center",
-  },
-
-  paymentOptionSelected: {
-    borderColor: "#10b981",
-    backgroundColor: "#ecfdf5",
-  },
-
-  paymentOptionText: {
-    color: "#374151",
-    fontSize: 14,
-    fontWeight: "500",
-  },
-
-  paymentOptionTextSelected: {
-    color: "#059669",
-    fontWeight: "bold",
-  },
-
   totalText: { fontSize: 16, color: "#444" },
   discountText: { fontSize: 14, color: "#10b981" },
   finalText: { fontSize: 18, fontWeight: "bold", color: "#e11d48" },
-
   checkoutBtn: {
     backgroundColor: "#e11d48",
     margin: 16,

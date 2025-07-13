@@ -31,7 +31,7 @@ const paymentLabelMap = {
 const CartScreen = ({ navigation, route }) => {
   const [selectProductIds, setSelectProductIds] = useState([]);
   const [appliedVoucher, setAppliedVoucher] = useState(undefined);
-  const [appliedPaymentMethod, setAppliedPaymentMethod] = useState(undefined);
+  // const [appliedPaymentMethod, setAppliedPaymentMethod] = useState(undefined);
 
   const { cart, updateProductQuantityInCart, removeFromCart } = useCart();
 
@@ -107,7 +107,7 @@ const CartScreen = ({ navigation, route }) => {
       navigation.navigate("Checkout", {
         cart: data.result,
         selectedVoucher: appliedVoucher,
-        selectedPaymentMethod: appliedPaymentMethod,
+        // selectedPaymentMethod: appliedPaymentMethod,
       });
     } catch (error) {
       Toast.show({
@@ -121,17 +121,17 @@ const CartScreen = ({ navigation, route }) => {
 
   useFocusEffect(
     useCallback(() => {
-      const { selectedVoucher, selectedPaymentMethod } = route.params || {};
+      const { selectedVoucher } = route.params || {};
 
       if (selectedVoucher !== undefined) {
         setAppliedVoucher(selectedVoucher);
       }
-      if (selectedPaymentMethod !== undefined) {
-        setAppliedPaymentMethod(selectedPaymentMethod);
-      }
+      // if (selectedPaymentMethod !== undefined) {
+      //   setAppliedPaymentMethod(selectedPaymentMethod);
+      // }
 
       setSelectProductIds([]);
-    }, [route.params, setAppliedVoucher, setAppliedPaymentMethod])
+    }, [route.params, setAppliedVoucher])
   );
 
   if (!Array.isArray(cart.Products) || cart.Products.length === 0) {
@@ -183,7 +183,7 @@ const CartScreen = ({ navigation, route }) => {
             onPress={() =>
               navigation.navigate("VoucherApplication", {
                 selectedVoucher: appliedVoucher,
-                selectedPaymentMethod: appliedPaymentMethod,
+                // selectedPaymentMethod: appliedPaymentMethod,
               })
             }
           >
@@ -199,7 +199,7 @@ const CartScreen = ({ navigation, route }) => {
             <Ionicons name="chevron-forward-outline" size={20} color="#ccc" />
           </TouchableOpacity>
         </View>
-        <View style={[styles.stickyFooterSection]}>
+        {/* <View style={[styles.stickyFooterSection]}>
           <Text style={styles.label}>Phương thức thanh toán:</Text>
           <TouchableOpacity
             style={[styles.selectedSection]}
@@ -224,7 +224,7 @@ const CartScreen = ({ navigation, route }) => {
             </Text>
             <Ionicons name="chevron-forward-outline" size={20} color="#ccc" />
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View style={[styles.checkoutSection]}>
           <View style={styles.totalPrice}>
             <Text style={styles.totalText}>
