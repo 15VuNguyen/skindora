@@ -44,7 +44,6 @@ class CartService {
   async fetchCart(userId: string) {
     const cartKey = this.getCartKey(userId)
     const cart = await this.getCart(cartKey)
-
     return this.formatCart(cart)
   }
 
@@ -121,7 +120,7 @@ class CartService {
   }
 
   async saveCart(cartKey: string, cartData: Cart) {
-    await redisClient.set(cartKey, JSON.stringify(cartData), {EX: 60 * 60 * 24})
+    await redisClient.set(cartKey, JSON.stringify(cartData), { EX: 30 * 24 * 60 * 60 })
   }
 
   getCartKey(userId: ObjectId | string) {
@@ -158,6 +157,7 @@ class CartService {
         const productKey = productService.getProductInfoKey(productId)
         await redisClient.hSet(productKey, {
           name: product.name_on_list ?? '',
+          quantity: product.quantity ?? 0,
           image: product.image_on_list ?? '',
           price: product.price_on_list ?? '0'
         })
@@ -165,6 +165,7 @@ class CartService {
 
         productInfos[index] = {
           name: product.name_on_list ?? '',
+          quantity: product.quantity?.toString() ?? "0",
           image: product.image_on_list ?? '',
           price: product.price_on_list ?? '0'
         }
@@ -174,10 +175,12 @@ class CartService {
     const detailedCart = cart.Products.map((item: ProductInCart, index: number) => {
       const info = productInfos[index]
       const price = parseFloat(info.price || '0')
+      const quantity = parseInt(info.quantity || '0')
 
       return {
         ProductID: item.ProductID,
         Quantity: item.Quantity,
+        QuantityInStock: quantity,
         name: info.name,
         image: info.image,
         unitPrice: price,
@@ -193,7 +196,7 @@ class CartService {
   async clearCart(userId: string) {
     const cartKey = this.getCartKey(userId)
     const cart = await this.getCart(cartKey)
-    if(!cart || cart.Products && cart.Products.length <= 0){
+    if (!cart || (cart.Products && cart.Products.length <= 0)) {
       throw new ErrorWithStatus({
         message: CART_MESSAGES.EMPTY_OR_EXPIRED,
         status: HTTP_STATUS.NOT_FOUND

@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gửi lại xác nhận đăng ký - SKINDORA</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        background: linear-gradient(135deg, #fefeff 0%, #f1f1f1 100%);
+        color: #000000;
+      }
+      .email-container {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        border: 1px solid #ebebeb;
+      }
+      .email-header {
+        background: linear-gradient(135deg, #d6bcfa 0%, #7355cd 100%);
+        padding: 40px 30px;
+        text-align: center;
+        color: #000000;
+      }
+      .email-header h1 {
+        margin: 0;
+        font-size: 32px;
+        font-weight: 700;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        letter-spacing: -0.5px;
+      }
+      .email-header .subtitle {
+        margin: 15px 0 0 0;
+        font-size: 16px;
+        opacity: 0.9;
+        font-weight: 400;
+      }
+      .email-body {
+        padding: 40px 30px;
+        background: #ffffff;
+      }
+      .greeting {
+        font-size: 18px;
+        font-weight: 600;
+        color: #000000;
+        margin-bottom: 25px;
+      }
+      .content {
+        font-size: 16px;
+        color: #000000;
+        margin-bottom: 30px;
+        line-height: 1.7;
+      }
+      .alert-box {
+        background: linear-gradient(135deg, #d6bcfa 0%, rgba(214, 188, 250, 0.3) 100%);
+        padding: 25px;
+        border-radius: 8px;
+        border-left: 4px solid #7355cd;
+        margin: 30px 0;
+        font-size: 15px;
+        color: #000000;
+      }
+      .alert-box strong {
+        color: #000000;
+        font-weight: 700;
+      }
+      .cta-container {
+        text-align: center;
+        margin: 40px 0;
+      }
+      .cta-button {
+        display: inline-block;
+        padding: 18px 40px;
+        font-size: 16px;
+        font-weight: 600;
+        color: #fefeff;
+        background: linear-gradient(135deg, #7355cd 0%, #1eaedb 100%);
+        text-decoration: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(115, 85, 205, 0.3);
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+      }
+      .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(115, 85, 205, 0.4);
+      }
+      .note {
+        background: #f1f1f1;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 4px solid #1eaedb;
+        margin: 30px 0;
+        font-size: 14px;
+        color: #000000;
+      }
+      .footer {
+        background: #f1f1f1;
+        padding: 30px;
+        text-align: center;
+        border-top: 1px solid #ebebeb;
+      }
+      .footer .signature,
+      .footer .team {
+        font-size: 14px;
+        color: #000000;
+      }
+      /* .logo {
+        width: 70px;
+        height: 70px;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: bold;
+        backdrop-filter: blur(10px);
+      } */
+      .logo {
+        width: 70px;
+        height: 70px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        margin: 0 auto 20px;
+        display: block;
+        line-height: 63px;
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        backdrop-filter: blur(10px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <div class="email-header">
+        <div class="logo">🔄</div>
+        <h1>SKINDORA</h1>
+        <p class="subtitle">Nhắc nhở xác nhận tài khoản</p>
+      </div>
+      <div class="email-body">
+        <div class="greeting">Xin chào {{userName}},</div>
+        <div class="content">
+          Chúng tôi nhận thấy bạn chưa hoàn tất việc xác nhận tài khoản
+          <a href="https://www.skindora.site/" style="text-decoration: none"><strong>SKINDORA</strong></a
+          >. Đây là email nhắc nhở được gửi theo yêu cầu của bạn để kích hoạt trải nghiệm AI chăm sóc da đầy đủ.
+        </div>
+        <div class="alert-box">
+          <strong>⏰ Thông báo quan trọng:</strong> Tài khoản của bạn đang ở trạng thái chờ xác nhận. Vui lòng hoàn tất
+          bước này để truy cập đầy đủ các tính năng AI độc quyền của SKINDORA.
+        </div>
+        <div class="content">
+          Chỉ cần một cú nhấp chuột để mở khóa toàn bộ hệ sinh thái chăm sóc da thông minh của SKINDORA:
+        </div>
+        <div class="cta-container">
+          <a href="{{verifyURL}}" class="cta-button">🚀 Kích hoạt ngay bây giờ</a>
+        </div>
+        <div class="note">
+          <strong>💡 Lưu ý:</strong> Email xác nhận mới này sẽ có hiệu lực trong 24 giờ tới. Nếu bạn đã xác nhận hoặc
+          không thực hiện yêu cầu này, vui lòng bỏ qua email này.
+        </div>
+      </div>
+      <div class="footer">
+        <div class="signature">Trân trọng,</div>
+        <div class="team">Đội ngũ SKINDORA - Chuyên gia chăm sóc da AI</div>
+      </div>
+    </div>
+  </body>
+</html>

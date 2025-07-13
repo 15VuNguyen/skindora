@@ -16,7 +16,6 @@ export default function RootLayout() {
     // </div>
     <div className="min-h-screen bg-white">
       <AuthProvider>
-        <Outlet />
         <Toaster
           toastOptions={{
             classNames: {
@@ -35,6 +34,7 @@ export default function RootLayout() {
             },
           }}
         />
+        <Outlet />
       </AuthProvider>
     </div>
   );

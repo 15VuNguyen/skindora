@@ -6,7 +6,7 @@ export default function RegisterPage() {
     <>
       <LeftPanel
         title="Skindora"
-        subtitle="Welcome back to your skincare journey. Sign in to access your account and discover products tailored to your skin's needs."
+        subtitle="Chào mừng bạn đến với hành trình chăm sóc da. Đăng ký để tạo tài khoản và khám phá các sản phẩm phù hợp với làn da của bạn."
         features={RegisterFeatures}
       />
     </>
@@ -15,12 +15,12 @@ export default function RegisterPage() {
 const RegisterFeatures: FeatureProps[] = [
   {
     icon: "✨",
-    title: "Premium Skincare",
-    description: "Access to high-quality skincare products",
+    title: "Chăm sóc da cao cấp",
+    description: "Tiếp cận các sản phẩm chăm sóc da chất lượng cao",
   },
   {
     icon: "🔍",
-    title: "AI Skin Analysis",
-    description: "Get personalized skin recommendations",
+    title: "Phân tích da bằng AI",
+    description: "Nhận gợi ý chăm sóc da cá nhân hóa",
   },
 ];

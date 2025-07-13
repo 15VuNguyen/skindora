@@ -89,7 +89,9 @@ class DatabaseService {
   get orderDetails(): Collection<OrderDetail> {
     return this.db.collection(process.env.DB_ORDER_DETAIL_COLLECTION as string)
   }
-
+  collection(collectionName: string): Collection<any> {
+    return this.db.collection(collectionName)
+  }
   async indexUsers() {
     await this.users.createIndex({ email: 1 }, { unique: true })
     await this.users.createIndex({ username: 1 }, { unique: true })

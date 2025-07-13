@@ -12,7 +12,8 @@ import {
   resendEmailVerifyController,
   resetPasswordController,
   updateMeController,
-  verifyForgotPasswordTokenController
+  verifyForgotPasswordTokenController,
+  
 } from '~/controllers/users.controllers'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
@@ -33,7 +34,7 @@ import {
 import {
   addToWishListController,
   getWishListController,
-  removeFromWishListController
+  removeFromWishListController,getProductFromWishListController
 } from '~/controllers/products.controllers'
 import { UpdateMeReqBody } from '~/models/requests/Users.requests'
 import { wrapAsync } from '~/utils/handler'
@@ -67,6 +68,7 @@ usersRouter.put(
   wrapAsync(removeFromWishListController)
 )
 usersRouter.get('/getWishList', accessTokenValidator, wrapAsync(getWishListController))
+usersRouter.get('/wishlist-products', accessTokenValidator, wrapAsync(getProductFromWishListController))
 usersRouter.post('/resend-verify-email', accessTokenValidator, wrapAsync(resendEmailVerifyController))
 usersRouter.put(
   '/change-password',

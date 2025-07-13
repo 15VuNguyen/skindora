@@ -13,7 +13,19 @@ export const createNewFilterHskProductTypeValidator = validate(
       option_name: {
         notEmpty: { errorMessage: ADMIN_MESSAGES.FILTER_PRODUCT_TYPE_OPTION_NAME_IS_REQUIRED },
         isString: { errorMessage: ADMIN_MESSAGES.FILTER_PRODUCT_TYPE_OPTION_NAME_MUST_BE_STRING },
-        trim: true
+        trim: true,
+        custom: {
+          options: async (value) => {
+            const existing = await databaseService.filterHskProductType.findOne({
+              option_name: value,
+              state: GenericFilterState.ACTIVE
+            })
+            if (existing) {
+              throw new Error(ADMIN_MESSAGES.FILTER_OPTION_NAME_ALREADY_EXISTS.replace('{value}', value))
+            }
+            return true
+          }
+        }
       },
       description: {
         optional: true,
@@ -70,7 +82,20 @@ export const updateFilterHskProductTypeValidator = validate(
     option_name: {
       optional: true,
       isString: { errorMessage: ADMIN_MESSAGES.FILTER_PRODUCT_TYPE_OPTION_NAME_MUST_BE_STRING },
-      trim: true
+      trim: true,
+      custom: {
+        options: async (value, { req }) => {
+          const existing = await databaseService.filterHskProductType.findOne({
+            _id: { $ne: new ObjectId(req.params?._id) },
+            option_name: value,
+            state: GenericFilterState.ACTIVE
+          })
+          if (existing) {
+            throw new Error(ADMIN_MESSAGES.FILTER_OPTION_NAME_ALREADY_EXISTS.replace('{value}', value))
+          }
+          return true
+        }
+      }
     },
     description: {
       optional: true,

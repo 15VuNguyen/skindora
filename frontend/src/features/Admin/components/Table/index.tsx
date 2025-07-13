@@ -1,5 +1,3 @@
-"use client";
-
 import {
   flexRender,
   getCoreRowModel,
@@ -20,10 +18,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-import { Badge } from "../ui/badge";
+import { Badge } from "../../../../components/ui/badge";
 
 export type Order = {
   id: string;
@@ -38,9 +35,6 @@ const data: Order[] = [
   { id: "INV002", customer: "Trần Thị B", date: "2024-05-02", amount: "180", status: "ĐANG XỬ LÝ" },
   { id: "INV003", customer: "Lê Thị C", date: "2024-05-03", amount: "350", status: "HỦY" },
   { id: "INV004", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "ĐÃ GIAO" },
-  { id: "INV005", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "ĐÃ GIAO" },
-  { id: "INV006", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "ĐÃ GIAO" },
-  { id: "INV007", customer: "Phạm Văn D", date: "2024-05-04", amount: "420", status: "CHỜ XỬ LÝ" },
 ];
 
 export const columns: ColumnDef<Order>[] = [
@@ -149,7 +143,7 @@ export const columns: ColumnDef<Order>[] = [
                       ? "danger"
                       : "default"
             }
-            className="w-2/5 px-3 text-sm font-medium capitalize"
+            className="capitalize"
           >
             {status}
           </Badge>
@@ -213,7 +207,7 @@ export function AppTable() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      {/* <div className="flex items-center py-4">
         <Input
           placeholder="Tìm khách hàng..."
           value={(table.getColumn("customer")?.getFilterValue() as string) ?? ""}
@@ -244,7 +238,7 @@ export function AppTable() {
               ))}
           </DropdownMenuContent>
         </DropdownMenu> */}
-      </div>
+      {/* </div> */}
 
       <div className="rounded-md border">
         <Table>
@@ -259,7 +253,7 @@ export function AppTable() {
               </TableRow>
             ))}
           </TableHeader>
-          <TableBody>
+          <TableBody className="bg-white">
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
@@ -281,7 +275,7 @@ export function AppTable() {
         </Table>
       </div>
 
-      <div className="flex items-center justify-end space-x-2 py-4">
+      {/* <div className="flex items-center justify-end space-x-2 py-4">
         <div className="text-muted-foreground flex-1 text-sm">
           {table.getFilteredSelectedRowModel().rows.length} / {table.getFilteredRowModel().rows.length} đơn được chọn.
         </div>
@@ -298,7 +292,7 @@ export function AppTable() {
             Tiếp
           </Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import type { DetailedUserFromApi } from "@/services/authService";
-import { RoleEnum, type User, UserVerifyStatus } from "@/types/auth";
+import { RoleEnum, type User, UserVerifyStatus } from "@/types";
 
 export const mapBackendUserToFrontendUser = (apiUser: DetailedUserFromApi): User => {
   let roleString: "USER" | "ADMIN" | "STAFF" = "USER";

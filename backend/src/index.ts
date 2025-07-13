@@ -7,6 +7,8 @@ import { app, server } from './lib/socket'
 import swaggerUi from 'swagger-ui-express'
 // import YAML from 'yamljs'
 // import path from 'path'
+import filtersRouter from './routes/filters.routes'
+import { aiRouter } from './routes/ai.routes'
 import paymentsRouter from './routes/payments.routes'
 import cors from 'cors'
 import reviewRouters from './routes/reviews.routes'
@@ -30,7 +32,7 @@ app.use(
     origin: process.env.CORS_ORIGIN
   })
 ),
-  app.use(express.json())
+  app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true }))
 
 databaseService.connect().then(async () => {
@@ -55,6 +57,8 @@ app.use('/review', reviewRouters)
 app.use('/products', productRouter)
 app.use('/admin', adminRouter)
 app.use('/staffs', staffRouter)
+app.use('/filters', filtersRouter) 
+app.use('/ai', aiRouter)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 app.use(defaultErrorHandler)

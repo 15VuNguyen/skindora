@@ -36,10 +36,6 @@ export function canTransition(from: OrderStatus, to: OrderStatus): boolean {
   return baseTransitions[from]?.includes(to) ?? false
 }
 
-export function canRoleTransition(
-  role: Role,
-  from: OrderStatus,
-  to: OrderStatus
-): boolean {
+export function canRoleTransition(role: Role, from: OrderStatus, to: OrderStatus): boolean {
   return roleTransitions[role]?.[from]?.includes(to) ?? false
 }

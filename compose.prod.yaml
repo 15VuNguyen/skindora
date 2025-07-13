@@ -8,9 +8,13 @@ networks:
   redis-network:
     driver: bridge
     name: redis-network
+  kafka-network:
+    driver: bridge
 volumes:
   portainer_data:
   redis_data:
+  kafka_data:
+  zookeeper_data:
 services:
   traefik:
     image: traefik:v3.4.1
@@ -74,38 +78,12 @@ services:
     networks:
       - redis-network
       - traefik-public
+      - kafka-network
+
     depends_on:
       - redis
-    environment:
-      - DB_USERNAME=${DB_USERNAME}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME}
-      - DB_USERS_COLLECTION=${DB_USERS_COLLECTION}
-      - DB_PRODUCTS_COLLECTION=${DB_PRODUCTS_COLLECTION}
-      - DB_ORDERS_COLLECTION=${DB_ORDERS_COLLECTION}
-      - DB_ORDER_DETAIL_COLLECTION=${DB_ORDER_DETAIL_COLLECTION}
-      - DB_REFRESH_TOKENS_COLLECTION=${DB_REFRESH_TOKENS_COLLECTION}
-      - PASSWORD_SECRET=${PASSWORD_SECRET}
-      - JWT_SECRET_EMAIL_VERIFY_TOKEN=${JWT_SECRET_EMAIL_VERIFY_TOKEN}
-      - JWT_SECRET_ACCESS_TOKEN=${JWT_SECRET_ACCESS_TOKEN}
-      - JWT_SECRET_REFRESH_TOKEN=${JWT_SECRET_REFRESH_TOKEN}
-      - JWT_SECRET_FORGOT_PASSWORD_TOKEN=${JWT_SECRET_FORGOT_PASSWORD_TOKEN}
-      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - CLIENT_REDIRECT_CALLBACK_LOGIN_GOOGLE=${CLIENT_REDIRECT_CALLBACK_LOGIN_GOOGLE}
-      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
-      - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
-      - ACCESS_TOKEN_EXPIRE_IN=${ACCESS_TOKEN_EXPIRE_IN}
-      - EMAIL_VERIFY_TOKEN_EXPIRE_IN=${EMAIL_VERIFY_TOKEN_EXPIRE_IN}
-      - REFRESH_TOKEN_EXPIRE_IN=${REFRESH_TOKEN_EXPIRE_IN}
-      - ACCOUNT_SID=${ACCOUNT_SID}
-      - AUTH_TOKEN=${AUTH_TOKEN}
-      - TWILIO_PHONE=${TWILIO_PHONE}
-      - PORT=${PORT:-4000}
-      - HOST_NAME=${HOST_NAME}
-      - HOST_REDIS_PORT=${HOST_REDIS_PORT}
-      - HOST_PASSWORD=${HOST_PASSWORD}
-      - CORS_ORIGIN=${CORS_ORIGIN}
-      - FRONTEND_URL=${FRONTEND_URL}
+    env_file:
+      - .env
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.backend.rule=Host(`${BACKEND_HOST}`)"
@@ -151,3 +129,32 @@ services:
       - "traefik.tcp.routers.redis-tcp.entrypoints=websecure"
     depends_on:
       - traefik
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.0
+    networks:
+      - kafka-network
+    volumes:
+      - zookeeper_data:/var/lib/zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    depends_on:
+      - zookeeper
+    networks:
+      - kafka-network
+   
+    volumes:
+      - kafka_data:/var/lib/kafka
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_INTERNAL://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_NUM_PARTITIONS: "3"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"

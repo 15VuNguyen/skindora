@@ -68,6 +68,7 @@ class ProductsService {
   async cacheProductInfo(product: ProductInCache) {
     const key = this.getProductInfoKey(product._id)
     await redisClient.hSet(key, {
+      quantity: product.quantity,
       price: product.price.toString(),
       name: product.name,
       image: product.image
@@ -202,7 +203,25 @@ class ProductsService {
       })
     }
   }
-
+  async getProductsFromWishList(productID: string[]) {
+    const projection = {
+      name_on_list: 1,
+      engName_on_list: 1,
+      price_on_list: 1,
+      image_on_list: 1,
+      hover_image_on_list: 1,
+      product_detail_url: 1,
+      productName_detail: 1,
+      engName_detail: 1,
+      filter_brand: 1,
+      _id: 1
+    }
+    const objectIds = productID.map(id => new ObjectId(id))
+    const products = await databaseService.products
+      .find({ _id: { $in: objectIds } }, { projection })
+      .toArray()
+    return products
+  }
   async updateProductState(productId: string, newState: ProductState, adminId: string) {
     const currentDate = new Date()
     const vietnamTimezoneOffset = 7 * 60

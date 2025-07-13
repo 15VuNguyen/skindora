@@ -11,6 +11,9 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { sendPaginatedResponse } from '~/utils/pagination.helper'
 import { CreateNewProductReqBody } from '~/models/requests/Product.requests'
 import Review from '~/models/schemas/Reviewschema'
+import logger from '~/utils/logger'
+import Product from '~/models/schemas/Product.schema'
+import { ProductState } from '~/constants/enums'
 
 export const addToWishListController = async (req: Request, res: Response): Promise<void> => {
   const { productId } = req.body
@@ -75,7 +78,23 @@ export const removeFromWishListController = async (req: Request, res: Response):
     res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
   }
 }
+export const getProductFromWishListController = async (req: Request, res: Response): Promise<void> => {
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+  const productID = await productService.getWishList(user_id)
 
+  if (!user_id || typeof user_id !== 'string') {
+    res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
+    return
+  }
+
+  try {
+    const wishList = await productService.getProductsFromWishList(productID)
+    res.status(200).json({ status: 200, data: wishList })
+  } catch (error: any) {
+    const statusCode = error instanceof ErrorWithStatus ? error.status : 500
+    res.status(statusCode).json({ status: statusCode, message: error.message ?? 'Internal Server Error' })
+  }
+}
 export const addNewReviewController = async (req: Request, res: Response) => {
   const { user_id } = req.decoded_authorization as TokenPayLoad
 
@@ -169,7 +188,33 @@ export const getReviewController = async (req: Request, res: Response, next: Nex
 }
 
 export const getAllProductController = async (req: Request, res: Response, next: NextFunction) => {
-  await sendPaginatedResponse(res, next, databaseService.products, req.query)
+  const filter: Filter<Product> = {}
+  const filterFields = [
+    'filter_brand',
+    'filter_dac_tinh',
+    'filter_hsk_ingredients',
+    'filter_hsk_product_type',
+    'filter_hsk_size',
+    'filter_hsk_skin_type',
+    'filter_hsk_uses',
+    'filter_origin'
+  ]
+  filterFields.forEach((field) => {
+    if (req.query[field]) {
+      //Gán giá trị filter vào object, chuyển đổi sang ObjectId
+      filter[field as keyof Filter<Product>] = new ObjectId(req.query[field] as string)
+    }
+  })
+
+  //Thêm logic tìm kiếm theo tên nếu có keyword
+  if (req.query.keyword) {
+    filter.name_on_list = {
+      $regex: req.query.keyword as string,
+      $options: 'i'
+    }
+  }
+
+  await sendPaginatedResponse(res, next, databaseService.products, req.query, filter)
 }
 
 export const userGetAllProductController = async (req: Request, res: Response, next: NextFunction) => {
@@ -184,8 +229,76 @@ export const userGetAllProductController = async (req: Request, res: Response, n
     engName_detail: 1,
     _id: 1
   }
-  const filter = {}
+  const filter: Filter<Product> = {}
+  const filterFields = [
+    'filter_brand',
+    'filter_dac_tinh',
+    'filter_hsk_ingredients',
+    'filter_hsk_product_type',
+    'filter_hsk_size',
+    'filter_hsk_skin_type',
+    'filter_hsk_uses',
+    'filter_origin'
+  ]
+  filterFields.forEach((field) => {
+    if (req.query[field]) {
+      //Gán giá trị filter vào object, chuyển đổi sang ObjectId
+      filter[field as keyof Filter<Product>] = new ObjectId(req.query[field] as string)
+    }
+  })
+
+  //Thêm logic tìm kiếm theo tên nếu có keyword
+  if (req.query.keyword) {
+    filter.name_on_list = {
+      $regex: req.query.keyword as string,
+      $options: 'i'
+    }
+  }
   await sendPaginatedResponse(res, next, databaseService.products, req.query, filter, projection)
+  // await sendPaginatedResponse(res, next, databaseService.products, req.query, filter)
+}
+export const userGetAllProductControllerWithQ = async (req: Request, res: Response, next: NextFunction) => {
+  const projection = {
+    name_on_list: 1,
+    engName_on_list: 1,
+    price_on_list: 1,
+    image_on_list: 1,
+    hover_image_on_list: 1,
+    product_detail_url: 1,
+    productName_detail: 1,
+    engName_detail: 1,
+    filter_brand: 1,
+    quantity: 1,
+    _id: 1
+  }
+  // const filter = {} as any
+  const filter: Filter<any> = {}
+  if (req.query.q) {
+    const searchQuery = req.query.q as string
+    filter.name_on_list = { $regex: searchQuery, $options: 'i' }
+  }
+  const validFilterKeys = [
+    'filter_brand',
+    'filter_hsk_skin_type',
+    'filter_hsk_uses',
+    'filter_hsk_product_type',
+    'filter_dac_tinh',
+    'filter_hsk_ingredients',
+    'filter_hsk_size',
+    'filter_origin'
+  ]
+  for (const key of validFilterKeys) {
+    if (req.query[key]) {
+      const filterValues = (req.query[key] as string).split(',')
+      const objectIds = filterValues.map((id) => new ObjectId(id))
+      if (objectIds.length > 0) {
+        filter[key] = { $in: objectIds }
+      }
+    }
+  }
+  logger.info(filter)
+  await sendPaginatedResponse(res, next, databaseService.products, req.query, filter, projection)
+  // await sendPaginatedResponse(res, next, databaseService.products, req.query, filter)
 }
 
 export const createNewProductController = async (
@@ -223,4 +336,20 @@ export const getProductStatsController = async (req: Request, res: Response, nex
   } catch (error) {
     next(error)
   }
+}
+
+export const userSearchProductsController = async (req: Request, res: Response, next: NextFunction) => {
+  const { keyword } = req.query
+  const filter: Filter<Product> = {}
+
+  filter.state = ProductState.ACTIVE
+
+  if (keyword) {
+    filter.name_on_list = {
+      $regex: keyword as string,
+      $options: 'i'
+    }
+  }
+
+  await sendPaginatedResponse(res, next, databaseService.products, req.query, filter)
 }

@@ -98,7 +98,7 @@ class UsersService {
   private signForgotPasswordToken({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
     return signToken({
       payload: { user_id, token_type: TokenType.ForgotPasswordToken, verify },
-      options: { expiresIn: '7d' },
+      options: { expiresIn: '1d' },
       privateKey: process.env.JWT_SECRET_FORGOT_PASSWORD_TOKEN as string
     })
   }
@@ -147,7 +147,7 @@ class UsersService {
           pass: process.env.EMAIL_PASSWORD_APP
         }
       })
-      const verifyURL = `http://localhost:${process.env.PORT}/users/verify-email?email_verify_token=${email_verify_token}` // Đường dẫn xác nhận email
+      const verifyURL = `${process.env.FRONTEND_URL}/auth/verify-email?email_verify_token=${email_verify_token}` // Đường dẫn xác nhận email
 
       const htmlContent = readEmailTemplate('verify-email.html', {
         first_name: payload.first_name,
@@ -187,7 +187,17 @@ class UsersService {
     return { access_token, refresh_token }
   }
 
-  async forgotPassword({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+  async forgotPassword({
+    user_id,
+    verify,
+    email,
+    first_name
+  }: {
+    user_id: string
+    verify: UserVerifyStatus
+    email: string
+    first_name: string
+  }) {
     const forgot_password_token = await this.signForgotPasswordToken({
       user_id,
       verify
@@ -200,9 +210,39 @@ class UsersService {
         }
       }
     ])
-    console.log(forgot_password_token)
+
+    //mail
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_APP,
+          pass: process.env.EMAIL_PASSWORD_APP
+        }
+      })
+
+      // const resetURL = `${process.env.FRONTEND_URL}/reset-password?token=${forgot_password_token}`
+      const resetURL = `${process.env.FRONTEND_URL}/auth/reset-password?token=${forgot_password_token}`
+
+
+      const htmlContent = readEmailTemplate('forgot-password.html', {
+        userName: first_name,
+        resetURL: resetURL
+      })
+
+      const mailOptions = {
+        from: `"SKINDORA" <${process.env.EMAIL_APP}>`,
+        to: email,
+        subject: 'Yêu cầu đặt lại mật khẩu cho tài khoản SKINDORA',
+        html: htmlContent
+      }
+
+      transporter.sendMail(mailOptions)
+      console.log('Forgot password email sent successfully to:', email)
+    } catch (error) {
+      console.error('Error sending forgot-password email:', error)
+    }
     return { message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD }
-    //chỗ này làm email to reset password
   }
 
   async resetPassword({ user_id, password }: { user_id: string; password: string }) {
@@ -245,6 +285,13 @@ class UsersService {
   }
 
   async resendEmailVerify(user_id: string) {
+    const user = await databaseService.users.findOne({ _id: new ObjectId(user_id) })
+    if (!user) {
+      throw new ErrorWithStatus({
+        message: USERS_MESSAGES.USER_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
     const email_verify_token = await this.signEmailVerifyToken({
       user_id,
       verify: UserVerifyStatus.Unverified
@@ -257,8 +304,35 @@ class UsersService {
         }
       }
     ])
-    //chỗ này sau này sẽ gửi mail
-    console.log(email_verify_token)
+    //mail
+    try {
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: process.env.EMAIL_APP,
+          pass: process.env.EMAIL_PASSWORD_APP
+        }
+      })
+      const verifyURL = `${process.env.FRONTEND_URL}/auth/verify-email?email_verify_token=${email_verify_token}`
+
+      // Sử dụng template 'resend-verify-email.html'
+      const htmlContent = readEmailTemplate('resend-verify-email.html', {
+        userName: user.first_name, //Truyền tên người dùng vào template
+        verifyURL: verifyURL
+      })
+
+      const mailOptions = {
+        from: `"SKINDORA" <${process.env.EMAIL_APP}>`,
+        to: user.email, //Gửi đến email của người dùng
+        subject: 'Yêu cầu gửi lại email xác thực tài khoản SKINDORA',
+        html: htmlContent
+      }
+
+      transporter.sendMail(mailOptions)
+      console.log('Resend verification email sent successfully to:', user.email)
+    } catch (error) {
+      console.error('Error sending resend-verification email:', error)
+    }
     return { message: USERS_MESSAGES.RESEND_EMAIL_VERIFY_SUCCESS }
   }
 
@@ -444,3 +518,4 @@ class UsersService {
 
 const usersService = new UsersService()
 export default usersService
+

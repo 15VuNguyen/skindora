@@ -133,3 +133,104 @@
 @source "./components/**/*.{ts,tsx}";
 @source "./app/**/*.{ts,tsx}";
 @source "./src/**/*.{ts,tsx}";
+.dot-typing {
+  position: relative;
+  left: -9999px;
+  width: 6px;
+  height: 6px;
+  border-radius: 5px;
+  background-color: #33c3f0;
+  color: #33c3f0;
+  box-shadow:
+    9984px 0 0 0 #33c3f0,
+    9994px 0 0 0 #33c3f0,
+    10004px 0 0 0 #33c3f0;
+  animation: dot-typing 1.5s infinite linear;
+}
+
+@keyframes dot-typing {
+  0% {
+    box-shadow:
+      9984px 0 0 0 #33c3f0,
+      9994px 0 0 0 #33c3f0,
+      10004px 0 0 0 #33c3f0;
+  }
+  16.667% {
+    box-shadow:
+      9984px -5px 0 0 #33c3f0,
+      9994px 0 0 0 #33c3f0,
+      10004px 0 0 0 #33c3f0;
+  }
+  33.333% {
+    box-shadow:
+      9984px 0 0 0 #33c3f0,
+      9994px 0 0 0 #33c3f0,
+      10004px 0 0 0 #33c3f0;
+  }
+  50% {
+    box-shadow:
+      9984px 0 0 0 #33c3f0,
+      9994px -5px 0 0 #33c3f0,
+      10004px 0 0 0 #33c3f0;
+  }
+  66.667% {
+    box-shadow:
+      9984px 0 0 0 #33c3f0,
+      9994px 0 0 0 #33c3f0,
+      10004px 0 0 0 #33c3f0;
+  }
+  83.333% {
+    box-shadow:
+      9984px 0 0 0 #33c3f0,
+      9994px 0 0 0 #33c3f0,
+      10004px -5px 0 0 #33c3f0;
+  }
+  100% {
+    box-shadow:
+      9984px 0 0 0 #33c3f0,
+      9994px 0 0 0 #33c3f0,
+      10004px 0 0 0 #33c3f0;
+  }
+}
+.react-resizable {
+  position: relative;
+}
+
+.react-resizable-handle {
+  position: absolute;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  box-sizing: border-box;
+  background-position: bottom right;
+  padding: 0;
+}
+
+.react-resizable-handle-s {
+  height: 23px;
+  width: 100%;
+  cursor: ns-resize;
+  bottom: -5px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: rgba(0, 0, 0, 0.05); */
+}
+
+.react-resizable-handle-s::after {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 4px;
+  background-color: #cbd5e1;
+  border-radius: 2px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.react-resizable-handle-s:hover::after {
+  background-color: #94a3b8;
+}
+.prose p[style*="text-align: center"] {
+  display: flex;
+  justify-content: center;
+}
