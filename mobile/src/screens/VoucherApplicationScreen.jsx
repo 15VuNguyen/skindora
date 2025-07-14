@@ -9,12 +9,10 @@ import {
 import privateAxios from "../utils/axiosPrivate";
 import { voucherEndpoints } from "../config/api";
 import { useEffect, useState } from "react";
-import {
-  CommonActions,
-} from "@react-navigation/native";
+import { CommonActions } from "@react-navigation/native";
 
 const VoucherApplicationScreen = ({ navigation, route }) => {
-  const { selectedVoucher, selectedPaymentMethod, cart, recipientInfo } = route.params || {};
+  const { selectedVoucher, cart, total, recipientInfo } = route.params || {};
   const [vouchers, setVouchers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,7 +43,11 @@ const VoucherApplicationScreen = ({ navigation, route }) => {
   };
 
   const handleSelectVoucher = (voucher) => {
+    const isCurrentlySelected = selectedVoucher?._id === voucher._id;
     const previousScreen = getPreviousScreen();
+
+    const updatedVoucher = isCurrentlySelected ? null : voucher;
+
     if (previousScreen === "Cart") {
       navigation.dispatch(
         CommonActions.reset({
@@ -54,8 +56,7 @@ const VoucherApplicationScreen = ({ navigation, route }) => {
             {
               name: previousScreen,
               params: {
-                selectedVoucher: voucher,
-                selectedPaymentMethod,
+                selectedVoucher: updatedVoucher,
                 cart,
               },
             },
@@ -72,10 +73,9 @@ const VoucherApplicationScreen = ({ navigation, route }) => {
             {
               name: previousScreen,
               params: {
-                selectedVoucher: voucher,
-                selectedPaymentMethod,
+                selectedVoucher: updatedVoucher,
                 cart,
-                recipientInfo
+                recipientInfo,
               },
             },
           ],
@@ -95,11 +95,15 @@ const VoucherApplicationScreen = ({ navigation, route }) => {
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => {
             const isSelected = selectedVoucher?._id === item._id;
+            const isDisabled = item.minOrderValue && total < item.minOrderValue;
+
             return (
               <TouchableOpacity
+                disabled={isDisabled}
                 style={[
                   styles.voucherItem,
                   isSelected && styles.voucherItemSelected,
+                  isDisabled && styles.voucherItemDisabled,
                 ]}
                 onPress={() => handleSelectVoucher(item)}
               >
@@ -107,6 +111,7 @@ const VoucherApplicationScreen = ({ navigation, route }) => {
                   style={[
                     styles.voucherCode,
                     isSelected && styles.voucherTextSelected,
+                    isDisabled && styles.voucherTextDisabled,
                   ]}
                 >
                   {item.code}
@@ -115,6 +120,7 @@ const VoucherApplicationScreen = ({ navigation, route }) => {
                   style={[
                     styles.voucherName,
                     isSelected && styles.voucherTextSelected,
+                    isDisabled && styles.voucherTextDisabled,
                   ]}
                 >
                   {item.description}
@@ -123,6 +129,7 @@ const VoucherApplicationScreen = ({ navigation, route }) => {
                   style={[
                     styles.conditionText,
                     isSelected && styles.voucherTextSelected,
+                    isDisabled && styles.voucherTextDisabled,
                   ]}
                 >
                   {item.minOrderValue
@@ -158,6 +165,14 @@ const styles = StyleSheet.create({
 
   voucherTextSelected: {
     color: "#fff",
+  },
+
+  voucherItemDisabled: {
+    opacity: 0.5,
+  },
+
+  voucherTextDisabled: {
+    color: "#9ca3af",
   },
 });
 

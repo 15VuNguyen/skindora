@@ -51,8 +51,6 @@ export default function ProductListScreen({ searchFromParam }) {
     }
   );
 
-  console.log(selectedCategoryId);
-
   useEffect(() => {
     if (searchFromParam) {
       setSearch(searchFromParam);

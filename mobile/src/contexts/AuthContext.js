@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from "react";
-import axios from "../utils/axiosPrivate";
 import { authEndpoints, userEndpoints } from "../config/api";
 import {
   clearTokens,
@@ -7,6 +6,8 @@ import {
   getRefreshToken,
   saveTokens,
 } from "../utils/tokenStorage";
+import privateAxios from "../utils/axiosPrivate";
+import publicAxios from "../utils/axiosPublic";
 
 export const AuthContext = createContext();
 
@@ -22,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         setAccessToken(token);
         try {
-          const { data } = await axios.get(userEndpoints.me, {
+          const { data } = await privateAxios.get(userEndpoints.me, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }) => {
           console.log("Failed to fetch user", error);
           await clearTokens();
           setAccessToken(null);
+          setUser(null);
         }
       }
       setIsLoading(false);
@@ -45,7 +47,7 @@ export const AuthProvider = ({ children }) => {
       refreshToken: tokens.refresh_token,
     });
     setAccessToken(tokens.access_token);
-    const { data } = await axios.get(userEndpoints.me, {
+    const { data } = await privateAxios.get(userEndpoints.me, {
       headers: {
         Authorization: `Bearer ${tokens.access_token}`,
       },
@@ -55,19 +57,22 @@ export const AuthProvider = ({ children }) => {
 
   // Đăng nhập
   const login = async (loginData) => {
-    const { data } = await axios.post(authEndpoints.login, loginData);
-    console.log(data)
+    const { data } = await publicAxios.post(authEndpoints.login, loginData);
+    console.log(data);
     await handleAuthSuccess(data.result);
   };
 
   const register = async (registerData) => {
-    const { data } = await axios.post(authEndpoints.register, registerData);
-    console.log(data)
+    const { data } = await publicAxios.post(
+      authEndpoints.register,
+      registerData
+    );
+    console.log(data);
     await handleAuthSuccess(data.result);
   };
 
   const googleLogin = async (code) => {
-    const { data } = await axios.get(authEndpoints.loginGoogle(code));
+    const { data } = await publicAxios.get(authEndpoints.loginGoogle(code));
     await handleAuthSuccess(data);
   };
 
@@ -75,7 +80,9 @@ export const AuthProvider = ({ children }) => {
     const refreshToken = await getRefreshToken();
     if (refreshToken) {
       try {
-        await axios.post(authEndpoints.logout, { refresh_token: refreshToken });
+        await privateAxios.post(authEndpoints.logout, {
+          refresh_token: refreshToken,
+        });
       } catch (error) {
         console.error("Logout failed on server:", error);
       }
@@ -83,6 +90,11 @@ export const AuthProvider = ({ children }) => {
     await clearTokens();
     setAccessToken(null);
     setUser(null);
+    Toast.show({
+      type: "success",
+      text1: "Đăng xuất thành công.",
+      visibilityTime: 2000,
+    });
   };
 
   return (

@@ -17,6 +17,7 @@ import * as Google from "expo-auth-session/providers/google";
 import { Ionicons } from "@expo/vector-icons";
 import FloatingLabelInput from "../components/FloatingLabelInput";
 import { useAuth } from "../hooks/useAuth";
+import Toast from "react-native-toast-message";
 
 WebBrowser.maybeCompleteAuthSession();
 const androidClientId = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID;
@@ -58,8 +59,13 @@ export default function LoginScreen() {
     try {
       setErrors({});
       await login({ email, password });
+      Toast.show({
+        type: "success",
+        text1: "Đăng nhập thành công.",
+        visibilityTime: 2000,
+      });
     } catch (error) {
-      console.log("login error: ", error.response)
+      console.log("login error: ", error);
       const serverErrors = error.response?.data?.errors;
       if (serverErrors) {
         const extractedErrors = {};
@@ -109,7 +115,7 @@ export default function LoginScreen() {
               <Text style={styles.loginButtonText}>Đăng nhập</Text>
             </TouchableOpacity>
 
-            <View style={styles.separator}>
+            {/* <View style={styles.separator}>
               <View style={styles.line} />
               <Text style={styles.separatorText}>hoặc</Text>
               <View style={styles.line} />
@@ -121,7 +127,7 @@ export default function LoginScreen() {
               disabled={!request}
             >
               <Text style={styles.googleButtonText}>Đăng nhập với Google</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
 
             <View style={styles.footer}>
               <Text>Chưa có tài khoản?</Text>

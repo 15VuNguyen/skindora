@@ -15,6 +15,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../hooks/useAuth";
 import FloatingLabelInput from "../components/FloatingLabelInput";
+import Toast from "react-native-toast-message";
 
 export default function RegisterScreen() {
   const [firstName, setFirstName] = useState("");
@@ -34,13 +35,18 @@ export default function RegisterScreen() {
     }
 
     try {
-      setErrors({}); 
+      setErrors({});
       await register({
         first_name: firstName,
         last_name: lastName,
         email,
         password,
         confirm_password: confirmPassword,
+      });
+      Toast.show({
+        type: "success",
+        text1: "Đăng kí thành công.",
+        visibilityTime: 2000,
       });
     } catch (error) {
       const serverErrors = error.response?.data?.errors;
@@ -107,14 +113,18 @@ export default function RegisterScreen() {
               error={errors.confirm_password}
             />
 
-            <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+            <TouchableOpacity
+              style={styles.registerButton}
+              onPress={handleRegister}
+            >
               <Text style={styles.registerButtonText}>Đăng ký</Text>
             </TouchableOpacity>
 
             <View style={styles.footer}>
               <Text>Đã có tài khoản?</Text>
               <Text style={styles.link} onPress={() => navigation.goBack()}>
-                {" "}Đăng nhập
+                {" "}
+                Đăng nhập
               </Text>
             </View>
           </View>
@@ -123,7 +133,6 @@ export default function RegisterScreen() {
     </KeyboardAvoidingView>
   );
 }
-
 
 const styles = StyleSheet.create({
   scrollContainer: {
