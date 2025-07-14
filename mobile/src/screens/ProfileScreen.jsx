@@ -24,12 +24,8 @@ import {
 } from "lucide-react-native";
 import { useNavigation } from "@react-navigation/native";
 import useFetch from "../hooks/common/useFetch";
-import {
-  clearTokens,
-  getRefreshToken,
-  getAccessToken,
-} from "../utils/tokenStorage";
-import usePost from "../hooks/common/usePost";
+import { getAccessToken } from "../utils/tokenStorage";
+import { useAuth } from "../hooks/useAuth";
 
 const defaultAvatar =
   "https://s3.amazonaws.com/37assets/svn/765-default-avatar.png";
@@ -38,21 +34,10 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   const { data: user, setData: setUser } = useFetch("/users/me", true, false);
-  const { post: postLogout } = usePost("/users/logout");
+  const { logout } = useAuth();
 
   const handleLogout = async () => {
-    try {
-      const refreshToken = await getRefreshToken();
-      if (refreshToken) {
-        await postLogout({ refresh_token: refreshToken });
-      }
-      await clearTokens();
-      setUser(null);
-      alert("Đăng xuất thành công!");
-    } catch (err) {
-      console.error("Lỗi khi đăng xuất:", err?.response?.data || err.message);
-      alert("Đăng xuất thất bại!");
-    }
+    await logout();
   };
 
   const handleProtectedNavigation = async (screenName) => {

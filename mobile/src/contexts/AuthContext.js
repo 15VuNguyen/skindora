@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
           console.log("Failed to fetch user", error);
           await clearTokens();
           setAccessToken(null);
-          setUser(null)
+          setUser(null);
         }
       }
       setIsLoading(false);
@@ -90,6 +90,11 @@ export const AuthProvider = ({ children }) => {
     await clearTokens();
     setAccessToken(null);
     setUser(null);
+    Toast.show({
+      type: "success",
+      text1: "Đăng xuất thành công.",
+      visibilityTime: 2000,
+    });
   };
 
   return (
