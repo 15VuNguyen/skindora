@@ -132,7 +132,7 @@ export function applyClientSideFilters(
         product.Detail?.ingredients?.toLowerCase() || "";
 
       logsForThisProduct.push(`  Checking Product: "${product.name}"`);
-
+      // if bad nasty ingredirent then simplly throw that out
       if (aiSuggestions.ingredientsToAvoid?.length) {
         aiSuggestions.ingredientsToAvoid.forEach((avoidIng) => {
           const avoidIngLower = avoidIng.toLowerCase();

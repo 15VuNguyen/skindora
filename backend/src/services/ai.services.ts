@@ -1,4 +1,3 @@
-
 import { ObjectId } from 'mongodb'
 import {
   APPROX_USD_TO_VND_RATE,
@@ -6,13 +5,10 @@ import {
   USER_BUDGET_USD as DEFAULT_BUDGET_USD,
   USER_SCHEDULE_PREFERENCE as DEFAULT_SCHEDULE
 } from '~/constants/ai.constants'
-import { MODEL_NAME } from '~/constants/config' 
+import { MODEL_NAME } from '~/constants/config'
 import { ErrorWithStatus } from '~/models/Errors'
 import { SkincareAdvisorRequestBody } from '~/models/requests/Ai.requests'
-import {
-  AiSuggestedFilterCriteria,
-  MongoProduct,
-} from '~/models/types/Ai.types'
+import { AiSuggestedFilterCriteria, MongoProduct } from '~/models/types/Ai.types'
 import { applyClientSideFilters } from '~/utils/ai/clientFiltering'
 import {
   createDiagnosisPrompt,
@@ -42,12 +38,12 @@ class SkincareAdvisorService {
     }
   }
 
-  private async _fetchProductByNameNative(productName: string): Promise<MongoProduct | null> {
-    const product = await databaseService.products.findOne({
-      $or: [{ name_on_list: productName }, { productName_detail: productName }]
-    })
-    return product as MongoProduct | null
-  }
+  // private async _fetchProductByNameNative(productName: string): Promise<MongoProduct | null> {
+  //   const product = await databaseService.products.findOne({
+  //     $or: [{ name_on_list: productName }, { productName_detail: productName }]
+  //   })
+  //   return product as MongoProduct | null
+  // }
 
   private async _fetchAndPopulateProductsNative(conditions: any): Promise<MongoProduct[]> {
     const pipeline = [
@@ -65,7 +61,7 @@ class SkincareAdvisorService {
       {
         $lookup: {
           from: 'filter_hsk_ingredient',
-          localField: 'filter_hsk_ingredient',
+          localField: 'filter_hsk_ingredients',
           foreignField: '_id',
           as: 'populated_ingredient'
         }
@@ -131,7 +127,6 @@ class SkincareAdvisorService {
     return (await databaseService.products.aggregate(pipeline).toArray()) as MongoProduct[]
   }
 
-  
   public async generateRoutine(request: SkincareAdvisorRequestBody) {
     logger.info('--- Starting Skincare Advisor Service ---')
     const {
@@ -141,12 +136,10 @@ class SkincareAdvisorService {
     } = request
     const userBudgetVND = userBudgetUSD * APPROX_USD_TO_VND_RATE
 
-    
     if (!request.base64Image || !request.base64Image.startsWith('data:image')) {
       throw new ErrorWithStatus({ message: 'Invalid or missing base64 image data.', status: 400 })
     }
 
-    
     const diagnosisPrompt = createDiagnosisPrompt(
       request.base64Image,
       userBudgetVND,
@@ -154,22 +147,26 @@ class SkincareAdvisorService {
       KNOWN_SKIN_CONCERNS,
       userLanguage
     )
-    const diagnosisResult = await getAICompletion(diagnosisPrompt, MODEL_NAME, true)
+    //..........................................DIAGNOSIS..........................................
+    const diagnosisResult = await getAICompletion(diagnosisPrompt, MODEL_NAME, true, '1. Diagnosis')
 
     if (diagnosisResult.isSuitableImage === false) {
       throw new ErrorWithStatus({ message: diagnosisResult.rejectionReason, status: 400 })
     }
     const primaryConcern = request.userPreferredSkinType || diagnosisResult.diagnosedSkinConcerns?.[0] || ''
     const { diagnosedSkinConcerns: diagnosedSkinConcernsList = [], generalObservations = [] } = diagnosisResult
-
-    
+    //..........................................FILTER SUGGESTION..........................................
     const filterSuggestionPrompt = createFilterSuggestionPrompt(diagnosedSkinConcernsList, generalObservations)
-    const aiFilterCriteria: AiSuggestedFilterCriteria = await getAICompletion(filterSuggestionPrompt, MODEL_NAME, true)
+    const aiFilterCriteria: AiSuggestedFilterCriteria = await getAICompletion(
+      filterSuggestionPrompt,
+      MODEL_NAME,
+      true,
+      '2. FilterSuggestion'
+    )
 
-   
     const toObjectIds = (ids: (string | null)[]) => ids.filter(Boolean).map((id) => new ObjectId(id!))
     const [skinConcernTypeId, brandIds, ingredientIds] = await Promise.all([
-      this._findFilterObjectIdByName(primaryConcern, 'filter_hsk_skin_type'),
+      this._findFilterObjectIdByName(primaryConcern, '  '),
       Promise.all((request.preferredBrands || []).map((name) => this._findFilterObjectIdByName(name, 'filter_brand'))),
       Promise.all(
         (request.preferredIngredients || []).map((name) =>
@@ -190,10 +187,9 @@ class SkincareAdvisorService {
     )
     if (priceFilteredProducts.length === 0)
       return { info: 'No products found matching the initial criteria and budget.', status: 200 }
-
+    // Populate dung no MOAR OBJECTID
     const productsFromDB = priceFilteredProducts.map((p) => transformMongoToAISchema(p, primaryConcern))
 
-    
     let candidateProducts = applyClientSideFilters(
       productsFromDB,
       { preferredIngredients: request.preferredIngredients },
@@ -203,7 +199,6 @@ class SkincareAdvisorService {
       return { info: 'No products remained after applying complementary filters.', status: 200 }
     candidateProducts = candidateProducts.slice(0, 100)
 
-   
     const productSummaries = candidateProducts.map((p) => ({
       name: p.name,
       price: p.price,
@@ -216,12 +211,14 @@ class SkincareAdvisorService {
       userSchedulePreference,
       { aiSuggestions: aiFilterCriteria }
     )
-    const aiSelectResult = await getAICompletion(routineSelectionPrompt, MODEL_NAME, true)
+
+    //..........................................ROUTINE SELECTION..........................................
+
+    const aiSelectResult = await getAICompletion(routineSelectionPrompt, MODEL_NAME, true, '3. RoutineSelection')
     const { selectedProductNames = [] } = aiSelectResult
     if (selectedProductNames.length === 0)
       return { info: 'AI could not select a suitable routine from the filtered products.', status: 200 }
 
-    
     const populatedProducts = await this._fetchAndPopulateProductsNative({
       name_on_list: { $in: selectedProductNames }
     })
@@ -237,7 +234,14 @@ class SkincareAdvisorService {
       userSchedulePreference,
       userLanguage
     )
-    const finalJsonResponse = await getAICompletion(finalRecommendationPrompt, MODEL_NAME, true)
+
+    //..........................................FINAL RECOMMENDATION..........................................
+    const finalJsonResponse = await getAICompletion(
+      finalRecommendationPrompt,
+      MODEL_NAME,
+      true,
+      '4. FinalRecommendation'
+    )
 
     logger.info('Workflow completed successfully.')
     return finalJsonResponse

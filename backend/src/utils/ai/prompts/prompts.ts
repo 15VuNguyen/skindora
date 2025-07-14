@@ -13,7 +13,7 @@ import {
   getFilterSuggestionUserContent,
   getRoutineSelectionUserContent,
   getFullRoutineRecommendationUserContent
-} from './userPrompts' 
+} from './userPrompts'
 
 export function createDiagnosisPrompt(
   base64OrDataUrl: string,
@@ -25,6 +25,7 @@ export function createDiagnosisPrompt(
   const finalImageUrl: string = base64OrDataUrl.startsWith('data:image')
     ? base64OrDataUrl
     : `data:image/jpeg;base64,${base64OrDataUrl}`
+  //Prommmpeter
   const systemContent = getDiagnosisSystemContent(availableConcerns, budgetVND, schedulePreference, language)
   const userText = getDiagnosisUserText(budgetVND, schedulePreference, availableConcerns)
   return [
@@ -59,11 +60,11 @@ export function createRoutineSelectionPrompt(
     name: string
     price: string
     description?: string
-  }>, 
-  diagnosedConcernOrConcerns: string | string[], 
+  }>,
+  diagnosedConcernOrConcerns: string | string[],
   budgetVND: number,
-  schedulePreference: string, 
-  filterCriteria?: RoutineSelectionFilterCriteria 
+  schedulePreference: string,
+  filterCriteria?: RoutineSelectionFilterCriteria
 ): OpenAI.Chat.Completions.ChatCompletionMessageParam[] {
   const productListingForPrompt = potentialProductsSummary
     .map(
@@ -88,7 +89,7 @@ export function createRoutineSelectionPrompt(
     budgetVND,
     diagnosedConcernOrConcerns,
     schedulePreference,
-    filterCriteria 
+    filterCriteria
   )
   const userContent = getRoutineSelectionUserContent(
     diagnosedConcernOrConcerns,
