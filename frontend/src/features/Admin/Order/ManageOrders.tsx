@@ -1,6 +1,7 @@
 import { Loader2, Package, Star } from "lucide-react";
 import React, { useEffect } from "react";
 
+import Typography from "@/components/Typography";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchOrderStatics } from "@/hooks/Orders/useFetchOrderStatis";
@@ -12,7 +13,7 @@ import type { FilterOptionsProps } from "../components/TableCustom";
 import { DataTable } from "../components/TableCustom";
 
 const ManageOrdersStaff: React.FC = () => {
-  const { setHeaderName } = useHeader();
+  const { setHeaderName, headerName } = useHeader();
   const { fetchOrder, data, params, changePage, changeStatus, loading } = useFetchOrder();
   const { data: orderStatics, fetchOrder: fetchOrderStatics } = useFetchOrderStatics();
   useEffect(() => {
@@ -52,8 +53,10 @@ const ManageOrdersStaff: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 p-5">
       <div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Card: Tổng đơn hàng */}
+        <div className="mb-3">
+          <Typography className="text-2xl font-bold">{headerName}</Typography>
+        </div>
+        <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-4">
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">

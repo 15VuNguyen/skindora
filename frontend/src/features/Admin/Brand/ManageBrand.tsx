@@ -39,7 +39,7 @@ const ManageBrand: React.FC = () => {
     }));
   };
   useEffect(() => {
-    setHeaderName("Quản Lý Voucher");
+    setHeaderName("Quản Lý Thương Hiệu");
   }, [setHeaderName]);
   useEffect(() => {
     const pageFromURL = Number(searchParams.get("page") || "1");
