@@ -15,6 +15,8 @@ import BulkActionsBar from "../components/BulkActionsBar";
 import ProductInCart from "../components/ProductInCart";
 import { DiscountType } from "../constants/enum";
 import privateAxios from "../utils/axiosPrivate";
+import { useAuth } from "../hooks/useAuth";
+import Toast from "react-native-toast-message";
 
 const paymentLabelStyles = {
   COD: { color: "#4b5563", textAlign: "right" },
@@ -31,9 +33,11 @@ const paymentLabelMap = {
 const CartScreen = ({ navigation, route }) => {
   const [selectProductIds, setSelectProductIds] = useState([]);
   const [appliedVoucher, setAppliedVoucher] = useState(undefined);
-  const [appliedPaymentMethod, setAppliedPaymentMethod] = useState(undefined);
+  // const [appliedPaymentMethod, setAppliedPaymentMethod] = useState(undefined);
 
-  const { cart, updateProductQuantityInCart, removeFromCart } = useCart();
+  const { cart, setCart, updateProductQuantityInCart, removeFromCart } =
+    useCart();
+  const { accessToken } = useAuth();
 
   const total = useMemo(() => {
     return Array.isArray(cart.Products)
@@ -99,7 +103,7 @@ const CartScreen = ({ navigation, route }) => {
       const { data } = await privateAxios.post("/orders/cart", {
         selectedProductIDs: productIds,
       });
-
+      console.log(data.result);
       navigation.setParams({
         selectedVoucher: undefined,
         selectedPaymentMethod: undefined,
@@ -107,7 +111,7 @@ const CartScreen = ({ navigation, route }) => {
       navigation.navigate("Checkout", {
         cart: data.result,
         selectedVoucher: appliedVoucher,
-        selectedPaymentMethod: appliedPaymentMethod,
+        // selectedPaymentMethod: appliedPaymentMethod,
       });
     } catch (error) {
       Toast.show({
@@ -121,18 +125,50 @@ const CartScreen = ({ navigation, route }) => {
 
   useFocusEffect(
     useCallback(() => {
-      const { selectedVoucher, selectedPaymentMethod } = route.params || {};
-
-      if (selectedVoucher !== undefined) {
-        setAppliedVoucher(selectedVoucher);
+      if (!accessToken) {
+        setCart([]);
       }
-      if (selectedPaymentMethod !== undefined) {
-        setAppliedPaymentMethod(selectedPaymentMethod);
+      const { selectedVoucher } = route.params || {};
+
+      if (
+        selectedVoucher &&
+        selectedVoucher.minOrderValue &&
+        total < selectedVoucher.minOrderValue
+      ) {
+        setAppliedVoucher(undefined);
+
+        Toast.show({
+          type: "info",
+          text1: "Voucher không còn hợp lệ",
+          text2: `Đơn hàng phải từ ${selectedVoucher.minOrderValue.toLocaleString()}đ`,
+          visibilityTime: 2000,
+        });
+
+        navigation.setParams({ selectedVoucher: undefined });
+      } else {
+        setAppliedVoucher(selectedVoucher);
       }
 
       setSelectProductIds([]);
-    }, [route.params, setAppliedVoucher, setAppliedPaymentMethod])
+    }, [route.params, total, accessToken])
   );
+
+  if (!accessToken) {
+    return (
+      <SafeAreaView style={styles.emptyContainer}>
+        <Ionicons name="cart-outline" size={64} color="#ccc" />
+        <Text style={styles.emptyText}>
+          Vui lòng đăng nhập để sử dụng giỏ hàng
+        </Text>
+        <TouchableOpacity
+          style={styles.emptyButton}
+          onPress={() => navigation.navigate("Login")}
+        >
+          <Text style={styles.emptyButtonText}>Đăng nhập</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    );
+  }
 
   if (!Array.isArray(cart.Products) || cart.Products.length === 0) {
     return (
@@ -183,7 +219,9 @@ const CartScreen = ({ navigation, route }) => {
             onPress={() =>
               navigation.navigate("VoucherApplication", {
                 selectedVoucher: appliedVoucher,
-                selectedPaymentMethod: appliedPaymentMethod,
+                cart,
+                total,
+                // selectedPaymentMethod: appliedPaymentMethod,
               })
             }
           >
@@ -199,7 +237,7 @@ const CartScreen = ({ navigation, route }) => {
             <Ionicons name="chevron-forward-outline" size={20} color="#ccc" />
           </TouchableOpacity>
         </View>
-        <View style={[styles.stickyFooterSection]}>
+        {/* <View style={[styles.stickyFooterSection]}>
           <Text style={styles.label}>Phương thức thanh toán:</Text>
           <TouchableOpacity
             style={[styles.selectedSection]}
@@ -224,7 +262,7 @@ const CartScreen = ({ navigation, route }) => {
             </Text>
             <Ionicons name="chevron-forward-outline" size={20} color="#ccc" />
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View style={[styles.checkoutSection]}>
           <View style={styles.totalPrice}>
             <Text style={styles.totalText}>

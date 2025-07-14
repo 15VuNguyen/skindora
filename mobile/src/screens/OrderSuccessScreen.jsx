@@ -7,7 +7,12 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { CommonActions, useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
+import {
+  CommonActions,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 
 const OrderSuccessScreen = () => {
   const navigation = useNavigation();
@@ -55,7 +60,19 @@ const OrderSuccessScreen = () => {
         <TouchableOpacity
           style={styles.secondaryButton}
           onPress={() =>
-            navigation.navigate("ProfileTab", { screen: "Orders" })
+            navigation.navigate("ProfileTab", {
+              screen: "Orders",
+              params: {
+                screen: "Orders",
+              },
+              state: {
+                routes: [
+                  { name: "Profile" }, 
+                  { name: "Orders" },
+                ],
+                index: 1, 
+              },
+            })
           }
         >
           <Text style={styles.secondaryText}>Xem đơn hàng</Text>

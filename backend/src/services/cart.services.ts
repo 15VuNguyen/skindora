@@ -131,9 +131,9 @@ class CartService {
     return cart.Products.findIndex((p: ProductInCart) => p.ProductID === productId)
   }
 
-  private async formatCart(cart: Cart | null): Promise<{ Products: any[]}> {
+  private async formatCart(cart: Cart | null): Promise<{ Products: any[] }> {
     if (!cart || !cart.Products || cart.Products.length === 0) {
-      return { Products: []}
+      return { Products: [] }
     }
 
     const productKeys = cart.Products.map((p: ProductInCart) => productService.getProductInfoKey(p.ProductID))
@@ -155,17 +155,16 @@ class CartService {
         }
 
         const productKey = productService.getProductInfoKey(productId)
-        await redisClient.hSet(productKey, {
-          name: product.name_on_list ?? '',
-          quantity: product.quantity ?? 0,
-          image: product.image_on_list ?? '',
-          price: product.price_on_list ?? '0'
-        })
-        await redisClient.expire(productKey, 24 * 60 * 60)
+        await redisClient.hSet(productKey, 'name', product.name_on_list ?? '')
+        await redisClient.hSet(productKey, 'quantity', product.quantity?.toString() ?? '0')
+        await redisClient.hSet(productKey, 'image', product.image_on_list ?? '')
+        await redisClient.hSet(productKey, 'price', product.price_on_list ?? '0')
+        const expirationTime = Math.floor(Date.now() / 1000) + 24 * 60 * 60
+        await redisClient.expireAt(productKey, expirationTime)
 
         productInfos[index] = {
           name: product.name_on_list ?? '',
-          quantity: product.quantity?.toString() ?? "0",
+          quantity: product.quantity?.toString() ?? '0',
           image: product.image_on_list ?? '',
           price: product.price_on_list ?? '0'
         }
@@ -187,6 +186,7 @@ class CartService {
         totalPrice: price * item.Quantity
       }
     })
+    console.log(detailedCart)
 
     return {
       Products: detailedCart
