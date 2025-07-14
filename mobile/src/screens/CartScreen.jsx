@@ -83,6 +83,7 @@ const CartScreen = ({ navigation, route }) => {
       [
         { text: "Huỷ", style: "cancel" },
         {
+          text: "Xóa",
           style: "destructive",
           onPress: () => handleDelete(selectProductIds),
         },

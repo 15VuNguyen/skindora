@@ -54,7 +54,7 @@ const OrderSuccessScreen = () => {
           style={styles.primaryButton}
           onPress={() => navigation.navigate("HomeTab")}
         >
-          <Text style={styles.primaryText}>Về trang chủ</Text>
+          <Text style={styles.primaryText}>Trở về</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -66,11 +66,8 @@ const OrderSuccessScreen = () => {
                 screen: "Orders",
               },
               state: {
-                routes: [
-                  { name: "Profile" }, 
-                  { name: "Orders" },
-                ],
-                index: 1, 
+                routes: [{ name: "Profile" }, { name: "Orders" }],
+                index: 1,
               },
             })
           }
@@ -111,7 +108,7 @@ const styles = StyleSheet.create({
   },
   buttonGroup: {
     marginTop: 32,
-    width: "100%",
+    width: 200,
     gap: 12,
   },
   primaryButton: {

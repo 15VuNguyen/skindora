@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import * as Location from "expo-location";
 
 export default function EditRecipientScreen({ route, navigation }) {
   const { recipientInfo, setRecipientInfo } = route.params;
@@ -14,13 +15,63 @@ export default function EditRecipientScreen({ route, navigation }) {
   const [name, setName] = useState(recipientInfo?.name || "");
   const [phone, setPhone] = useState(recipientInfo?.phone || "");
   const [address, setAddress] = useState(recipientInfo?.address || "");
+  const [loading, setLoading] = useState(false);
+
+  // Hàm lấy vị trí hiện tại và chuyển đổi thành địa chỉ
+  const getCurrentLocation = async () => {
+    setLoading(true);
+    try {
+      let location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+      const { latitude, longitude } = location.coords;
+
+      let addressResponse = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
+
+      if (addressResponse.length > 0) {
+        const { streetNumber, street, city, region, country, postalCode } =
+          addressResponse[0];
+        const formattedAddress = [
+          streetNumber,
+          street,
+          city,
+          region,
+          country,
+          postalCode,
+        ]
+          .filter(Boolean)
+          .join(", ")
+          .trim();
+        setAddress(formattedAddress || "Không thể xác định địa chỉ cụ thể");
+      } else {
+        Alert.alert("Lỗi", "Không thể lấy địa chỉ từ vị trí hiện tại.");
+      }
+    } catch (error) {
+      Alert.alert(
+        "Lỗi",
+        "Không thể lấy vị trí hiện tại. Vui lòng kiểm tra cài đặt vị trí."
+      );
+      console.error("Lỗi khi lấy vị trí:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Tự động lấy vị trí khi màn hình được load
+  useEffect(() => {
+    if (!recipientInfo?.address) {
+      getCurrentLocation();
+    }
+  }, []);
 
   const handleSave = () => {
     if (!name || !phone || !address) {
       Alert.alert("Lỗi", "Vui lòng nhập đầy đủ thông tin.");
       return;
     }
-    console.log({ name, phone, address })
     setRecipientInfo({ name, phone, address });
     navigation.goBack();
   };
@@ -48,11 +99,12 @@ export default function EditRecipientScreen({ route, navigation }) {
 
       <Text style={styles.label}>Địa chỉ</Text>
       <TextInput
-        value={address}
+        value={loading ? "Đang lấy vị trí..." : address}
         onChangeText={setAddress}
         style={[styles.input, { height: 80 }]}
         multiline
         placeholder="Nhập địa chỉ nhận hàng"
+        editable={!loading} // Vô hiệu hóa khi đang tải
       />
 
       <TouchableOpacity style={styles.saveButton} onPress={handleSave}>

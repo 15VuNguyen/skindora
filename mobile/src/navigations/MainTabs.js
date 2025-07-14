@@ -3,10 +3,17 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeStack from "./HomeStack";
 import ProfileStack from "./ProfileStack";
 import CartStack from "./CartStack";
+import { useCart } from "../hooks/useCart";
 
 const Tab = createBottomTabNavigator();
 
 export default function MainTabs() {
+  const { cart } = useCart();
+
+  const cartItemCount = cart?.Products
+    ? cart.Products.reduce((sum, item) => sum + item.Quantity, 0)
+    : 0;
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -42,7 +49,11 @@ export default function MainTabs() {
       <Tab.Screen
         name="CartTab"
         component={CartStack}
-        options={{ title: "Giỏ hàng" }}
+        options={{
+          title: "Giỏ hàng",
+          tabBarBadge: cartItemCount > 0 ? cartItemCount : null,
+          tabBarBadgeStyle: { backgroundColor: "#e11d48", color: "#fff" },
+        }}
       />
       <Tab.Screen
         name="ProfileTab"

@@ -171,147 +171,162 @@ export default function ProductDetailScreen() {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.searchRow}>
-          <TouchableOpacity
-            style={styles.searchInput}
-            activeOpacity={0.8}
-            onPress={() => navigation.navigate("SearchScreen")}
-          >
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Search size={18} color="#888" />
-              <Text style={[styles.searchText, { marginLeft: 8 }]}>
-                Tìm kiếm sản phẩm hoặc cửa hàng...
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <ScrollView
-          ref={scrollRef}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          style={styles.carousel}
-        >
-          {images.map((img, idx) => (
-            <View key={idx} style={styles.productImage}>
-              <Image
-                source={{ uri: img }}
-                style={styles.carouselImage}
-                resizeMode="contain"
-              />
-            </View>
-          ))}
-        </ScrollView>
-
-        <View style={styles.infoContainer}>
-          <View style={styles.row}>
-            <Text style={styles.title}>{product.name_on_list}</Text>
+        <View style={{ marginBottom: 60 }}>
+          <View style={styles.searchRow}>
             <TouchableOpacity
-              onPress={handleAddToWishList}
-              disabled={wishlistLoading || removingWishlist}
+              style={styles.searchInput}
+              activeOpacity={0.8}
+              onPress={() => navigation.navigate("SearchScreen")}
             >
-              <Heart
-                size={22}
-                color={isInWishlist ? "#e91e63" : "#999"}
-                fill={isInWishlist ? "#e91e63" : "none"}
-              />
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Search size={18} color="#888" />
+                <Text style={[styles.searchText, { marginLeft: 8 }]}>
+                  Tìm kiếm sản phẩm hoặc cửa hàng...
+                </Text>
+              </View>
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.subText}>
-            {product.substance || "acetylsalicylic acid."}
-          </Text>
-          <Text style={styles.category}>{product.category}</Text>
-          <Text style={styles.price}>
-            {Number(product.price_on_list).toLocaleString("vi-VN")} ₫
-          </Text>
-
-          <View style={styles.row}>
-            {reviewStats.total === 0 ? (
-              <Text style={styles.ratingCount}>Chưa có đánh giá nào</Text>
-            ) : (
-              <View style={styles.row}>
-                <Text style={styles.ratingText}>
-                  {reviewStats.average.toFixed(1)} ★
-                </Text>
-                <Text style={styles.ratingCount}>
-                  ({reviewStats.total} đánh giá)
-                </Text>
+          <ScrollView
+            ref={scrollRef}
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            style={styles.carousel}
+          >
+            {images.map((img, idx) => (
+              <View key={idx} style={styles.productImage}>
+                <Image
+                  source={{ uri: img }}
+                  style={styles.carouselImage}
+                  resizeMode="contain"
+                />
               </View>
-            )}
-          </View>
+            ))}
+          </ScrollView>
 
-          {reviewStats.total > 0 && (
-            <View style={{ marginTop: 12 }}>
-              {[5, 4, 3, 2, 1].map((star) => {
-                const count = reviewStats.grouped[star] || 0;
-                const percentage = ((count / reviewStats.total) * 100).toFixed(
-                  0
-                );
-                return (
-                  <TouchableOpacity
-                    key={star}
-                    onPress={() => {
-                      setFilteredRating(star);
-                      refetchReviews();
-                    }}
-                    style={styles.groupedRowShopee}
-                  >
-                    <Text style={{ width: 40 }}>{star} ★</Text>
-                    <View style={styles.progressBarWrapper}>
-                      <View
-                        style={[
-                          styles.progressBar,
-                          { width: `${percentage}%` },
-                        ]}
-                      />
-                    </View>
-                    <Text style={{ width: 30, textAlign: "right" }}>
-                      {count}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-              {filteredRating && (
-                <TouchableOpacity
-                  onPress={() => {
-                    setFilteredRating(null);
-                    refetchReviews();
-                  }}
-                >
-                  <Text style={{ color: "#00C897", marginTop: 8 }}>
-                    Xóa lọc ({filteredRating} ★)
+          <View style={styles.infoContainer}>
+            <View style={styles.row}>
+              <Text style={styles.title}>{product.name_on_list}</Text>
+              <TouchableOpacity
+                onPress={handleAddToWishList}
+                disabled={wishlistLoading || removingWishlist}
+              >
+                <Heart
+                  size={22}
+                  color={isInWishlist ? "#e91e63" : "#999"}
+                  fill={isInWishlist ? "#e91e63" : "none"}
+                />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.subText}>
+              {product.substance || "acetylsalicylic acid."}
+            </Text>
+            <Text style={styles.category}>{product.category}</Text>
+            <Text style={styles.price}>
+              {Number(product.price_on_list).toLocaleString("vi-VN")} ₫
+            </Text>
+
+            <View style={styles.row}>
+              {reviewStats.total === 0 ? (
+                <Text style={styles.ratingCount}>Chưa có đánh giá nào</Text>
+              ) : (
+                <View style={styles.row}>
+                  <Text style={styles.ratingText}>
+                    {reviewStats.average.toFixed(1)} ★
                   </Text>
-                </TouchableOpacity>
+                  <Text style={styles.ratingCount}>
+                    ({reviewStats.total} đánh giá)
+                  </Text>
+                </View>
               )}
             </View>
-          )}
 
-          {/* Stock */}
-          <View style={styles.stockBadge}>
-            <Text style={styles.stockText}>Còn hàng</Text>
-          </View>
-        </View>
-
-        <View style={{ paddingHorizontal: 16, marginTop: 12 }}>
-          <Text style={{ fontWeight: "bold", fontSize: 16, marginBottom: 8 }}>
-            Đánh giá sản phẩm
-          </Text>
-          {loadingReviews ? (
-            <ActivityIndicator size="small" color="#00C897" />
-          ) : reviews.length === 0 ? (
-            <Text style={{ marginBottom: 20 }}>Chưa có đánh giá nào.</Text>
-          ) : (
-            reviews.map((review) => (
-              <View key={review._id} style={styles.reviewCard}>
-                <Text style={{ fontWeight: "bold" }}>{review.rating} ★</Text>
-                <Text style={{ color: "#333", marginTop: 4 }}>
-                  {review.comment}
-                </Text>
+            {reviewStats.total > 0 && (
+              <View style={{ marginTop: 12 }}>
+                {[5, 4, 3, 2, 1].map((star) => {
+                  const count = reviewStats.grouped[star] || 0;
+                  const percentage = (
+                    (count / reviewStats.total) *
+                    100
+                  ).toFixed(0);
+                  return (
+                    <TouchableOpacity
+                      key={star}
+                      onPress={() => {
+                        setFilteredRating(star);
+                        refetchReviews();
+                      }}
+                      style={styles.groupedRowShopee}
+                    >
+                      <Text style={{ width: 40 }}>{star} ★</Text>
+                      <View style={styles.progressBarWrapper}>
+                        <View
+                          style={[
+                            styles.progressBar,
+                            { width: `${percentage}%` },
+                          ]}
+                        />
+                      </View>
+                      <Text style={{ width: 30, textAlign: "right" }}>
+                        {count}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+                {filteredRating && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setFilteredRating(null);
+                      refetchReviews();
+                    }}
+                  >
+                    <Text style={{ color: "#00C897", marginTop: 8 }}>
+                      Xóa lọc ({filteredRating} ★)
+                    </Text>
+                  </TouchableOpacity>
+                )}
               </View>
-            ))
-          )}
+            )}
+
+            {/* Stock */}
+            <View
+              style={[
+                styles.stockBadge,
+                product.quantity <= 0 && styles.outOfStock,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.stockText,
+                  product.quantity <= 0 && styles.outOfStockText,
+                ]}
+              >
+                {product.quantity > 0 ? "Còn hàng" : "Hết hàng"}
+              </Text>
+            </View>
+          </View>
+
+          <View style={{ paddingHorizontal: 16, marginTop: 12 }}>
+            <Text style={{ fontWeight: "bold", fontSize: 16, marginBottom: 8 }}>
+              Đánh giá sản phẩm
+            </Text>
+            {loadingReviews ? (
+              <ActivityIndicator size="small" color="#00C897" />
+            ) : reviews.length === 0 ? (
+              <Text style={{ marginBottom: 20 }}>Chưa có đánh giá nào.</Text>
+            ) : (
+              reviews.map((review) => (
+                <View key={review._id} style={styles.reviewCard}>
+                  <Text style={{ fontWeight: "bold" }}>{review.rating} ★</Text>
+                  <Text style={{ color: "#333", marginTop: 4 }}>
+                    {review.comment}
+                  </Text>
+                </View>
+              ))
+            )}
+          </View>
         </View>
       </ScrollView>
       <TouchableOpacity style={styles.addToCartBtn} onPress={handleAddToCart}>
@@ -387,6 +402,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignSelf: "flex-start",
     marginTop: 10,
+  },
+  outOfStock: {
+    backgroundColor: "red",
+  },
+  outOfStockText: {
+    color: "white",
   },
   stockText: { color: "#00C897", fontWeight: "600" },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },

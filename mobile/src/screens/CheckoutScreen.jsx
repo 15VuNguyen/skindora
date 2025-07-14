@@ -72,7 +72,10 @@ export default function CheckoutScreen() {
     const { name, phone, address } = recipientInfo;
 
     if (!name || !phone || !address) {
-      Alert.alert("Thiếu thông tin", "Vui lòng nhập đầy đủ thông tin người nhận.");
+      Alert.alert(
+        "Thiếu thông tin",
+        "Vui lòng nhập đầy đủ thông tin người nhận."
+      );
       return;
     }
 
@@ -88,9 +91,12 @@ export default function CheckoutScreen() {
       const { data } = await privateAxios.post("/orders/checkout", payload);
       setCart([]);
       Alert.alert("Thành công", "Đơn hàng đã được tạo!");
-      navigation.navigate("OrderSuccessScreen", { orderId: data.result?.orderId });
+      navigation.navigate("OrderSuccessScreen", {
+        orderId: data.result?.orderId,
+      });
     } catch (err) {
-      const message = err?.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại sau.";
+      const message =
+        err?.response?.data?.message || "Có lỗi xảy ra. Vui lòng thử lại sau.";
       Alert.alert("Lỗi", message);
     }
   };
@@ -127,7 +133,8 @@ export default function CheckoutScreen() {
 
         <View style={styles.summaryRow}>
           <Text style={styles.summaryText}>
-            Tổng ({cart.Products.reduce((sum, p) => sum + p.Quantity, 0)} sản phẩm):
+            Tổng ({cart.Products.reduce((sum, p) => sum + p.Quantity, 0)} sản
+            phẩm):
           </Text>
           <Text style={styles.summaryText}>
             {cart.TotalPrice.toLocaleString()} đ
