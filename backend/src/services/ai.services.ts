@@ -166,7 +166,7 @@ class SkincareAdvisorService {
 
     const toObjectIds = (ids: (string | null)[]) => ids.filter(Boolean).map((id) => new ObjectId(id!))
     const [skinConcernTypeId, brandIds, ingredientIds] = await Promise.all([
-      this._findFilterObjectIdByName(primaryConcern, '  '),
+      this._findFilterObjectIdByName(primaryConcern, 'filter_hsk_skin_type'),
       Promise.all((request.preferredBrands || []).map((name) => this._findFilterObjectIdByName(name, 'filter_brand'))),
       Promise.all(
         (request.preferredIngredients || []).map((name) =>
