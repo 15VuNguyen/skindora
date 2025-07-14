@@ -10,7 +10,7 @@ import ManageOrdersStaff from "./Order/ManageOrders";
 import { CardIcon } from "./components/CardIcon";
 
 const Admin: React.FC = () => {
-  const { setHeaderName } = useHeader();
+  const { setHeaderName, headerName } = useHeader();
   useEffect(() => {
     setHeaderName("Tổng quan");
   }, []);
@@ -32,12 +32,7 @@ const Admin: React.FC = () => {
           </Button>
         </div>
       </div> */}
-      {/* <div className="mb-4 flex gap-4">
-        <CardDemo title="Tổng doanh thu" amount="128,430,000₫" change="+20.1% so với tháng trước" />
-        <CardDemo title="Đơn hàng" amount="+573" change="+20.1% so với tháng trước" icon={<ShoppingCart size={15} />} />
-        <CardDemo title="Sản phẩm" amount="850" change="+24 sản phẩm mới" icon={<Package size={15} />} />
-        <CardDemo title="Khách hàng" amount="+2,340" change="+180 khách hàng mới" icon={<User2 size={15} />} />
-      </div> */}
+      <Typography className="text-2xl font-bold">{headerName}</Typography>
       <div>
         <div className="w-full">
           <div className="mb-3 flex justify-between">
