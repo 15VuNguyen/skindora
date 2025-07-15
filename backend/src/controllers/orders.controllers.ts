@@ -119,8 +119,12 @@ export const getAllOrdersByAuthUserController = async (req: Request, res: Respon
     res.status(401).json({ status: 401, message: USERS_MESSAGES.ACCESS_TOKEN_IS_REQUIRED })
     return
   }
+  const filter:Filter<Order> = {}
+  if(req.query.status){
+    filter.Status = req.query.status as OrderStatus
+  }
   try {
-    const result = await ordersService.getAllOrdersByUserId(user_id)
+    const result = await ordersService.getAllOrdersByUserId(user_id, filter)
     res.json({
       message: ORDER_MESSAGES.GET_ORDER_BY_USER_SUCCESS,
       result

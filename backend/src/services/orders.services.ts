@@ -11,7 +11,7 @@ import {
   ProductState,
   RefundStatus
 } from '~/constants/enums'
-import { ClientSession, ObjectId } from 'mongodb'
+import { ClientSession, Filter, ObjectId } from 'mongodb'
 import {
   BuyNowReqBody,
   OrderReqBody,
@@ -286,8 +286,8 @@ class OrdersService {
     }
   }
 
-  async getAllOrdersByUserId(userId: string) {
-    const orders = await databaseService.orders.find({ UserID: new ObjectId(userId) }).toArray()
+  async getAllOrdersByUserId(userId: string, filter: Filter<Order>) {
+    const orders = await databaseService.orders.find({ UserID: new ObjectId(userId), ...filter }).toArray()
     if (orders.length === 0) return []
 
     const orderIds = orders.map((order) => order._id)

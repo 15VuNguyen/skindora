@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,16 +7,40 @@ import {
   Image,
   ActivityIndicator,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
-import useFetch from "../hooks/common/useFetch";
+import privateAxios from "../utils/axiosPrivate";
+
+const statusMapping = {
+  PENDING: "Chờ xác nhận",
+  CONFIRMED: "Đã xác nhận",
+  PROCESSING: "Đang chuẩn bị hàng",
+  SHIPPING: "Đang giao hàng",
+  DELIVERED: "Đã giao thành công",
+  CANCELLED: "Đã huỷ",
+};
 
 export default function OrderListScreen() {
-  const {
-    data: orders = [],
-    loading,
-    error,
-    refetch,
-  } = useFetch("/orders/me", true, false);
+  const [status, setStatus] = useState("PENDING");
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const fetchOrder = async (params) => {
+    try {
+      const { data } = await privateAxios.get("/orders/me", { params });
+      setOrders(data.result);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setError(true);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrder(status ? { status } : {});
+  }, [status]);
 
   const renderOrder = ({ item }) => {
     let totalAmount = 0;
@@ -87,8 +111,24 @@ export default function OrderListScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Tất cả đơn hàng</Text>
-      {orders.length === 0 ? (
+      <View style={styles.statusTabContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {Object.entries(statusMapping).map(([key, label]) => (
+            <TouchableOpacity key={key} onPress={() => setStatus(key)}>
+              <Text
+                style={[
+                  styles.statusTabText,
+                  status === key && styles.activeStatusTabText,
+                ]}
+              >
+                {label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
+      {orders?.length === 0 ? (
         <Text style={styles.empty}>Bạn chưa có đơn hàng nào.</Text>
       ) : (
         <FlatList
@@ -183,4 +223,27 @@ const styles = StyleSheet.create({
     color: "#10b981",
     fontSize: 16,
   },
+
+  statusTabContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 12,
+    marginBottom: 16,
+  },
+
+  statusTabText: {
+    fontSize: 15,
+    color: "#666",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginRight: 8,
+    borderBottomWidth: 2,
+    borderColor: "transparent",
+  },
+
+  activeStatusTabText: {
+    color: "#00C897",
+    fontWeight: "bold",
+    borderColor: "#00C897",
+  },
+
 });
