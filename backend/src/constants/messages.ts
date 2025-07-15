@@ -347,7 +347,8 @@ export const ADMIN_MESSAGES = {
   CANNOT_CREATE_INACTIVE_FILTER: 'Không thể tạo một {filter} với trạng thái không hoạt động',
   FILTER_DAC_TINH_OPTION_NAME_MUST_BE_A_STRING: 'Tên tùy chọn của đặc tính phải là chuỗi',
   FILTER_DAC_TINH_CATEGORY_NAME_MUST_BE_A_STRING: 'Tên danh mục của đặc tính phải là chuỗi',
-  FILTER_DAC_TINH_CATEGORY_PARAM_MUST_BE_A_STRING: 'Tham số danh mục của đặc tính phải là chuỗi'
+  FILTER_DAC_TINH_CATEGORY_PARAM_MUST_BE_A_STRING: 'Tham số danh mục của đặc tính phải là chuỗi',
+  START_DATE_MUST_BE_AFTER_TODAY: 'Vui lòng chọn ngày bắt đầu sau hôm nay.'
 } as const
 
 export const CART_MESSAGES = {
@@ -422,7 +423,7 @@ export const ORDER_MESSAGES = {
   CANCEL_REQUESTING: 'Đơn hàng này đang được yêu cầu hủy, không thể cập nhật sang trạng thái tiếp theo',
   COUNT_SUCCESS: 'Lấy số lượng đơn hàng thành công',
   COUNT_FAIL: 'Lấy số lượng đơn hàng thất bại',
-  INVALID_PHONE_NUMBER: "Số điện thoại không hợp lệ"
+  INVALID_PHONE_NUMBER: 'Số điện thoại không hợp lệ'
 } as const
 
 export const VOUCHER_MESSAGES = {
