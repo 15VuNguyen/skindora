@@ -68,6 +68,27 @@ const FALLBACK_TEMPLATES: Record<string, (data: TemplateData) => string> = {
       </div>
     </body>
     </html>
+  `,
+
+  'google-register-success.html': (data) => `
+    <!DOCTYPE html>
+    <html lang="vi">
+    <head>
+      <meta charset="UTF-8">
+      <title>Chào mừng bạn đến với SKINDORA</title>
+    </head>
+    <body>
+      <p>Xin chào ${data.userName || 'bạn'},</p>
+      <p>Cảm ơn bạn đã đăng ký qua Google. Tài khoản của bạn đã được tạo.</p>
+      <p>Đây là thông tin đăng nhập của bạn:</p>
+      <ul>
+        <li><strong>Email:</strong> ${data.email || ''}</li>
+        <li><strong>Mật khẩu tạm thời:</strong> ${data.password || ''}</li>
+      </ul>
+      <p>Vui lòng đổi mật khẩu sau khi đăng nhập. Một email xác thực cũng đã được gửi đến bạn.</p>
+      <a href="${data.loginURL || '#'}">Đăng nhập ngay</a>
+    </body>
+    </html>
   `
 }
 

@@ -108,7 +108,7 @@ class UsersService {
     return Boolean(user)
   }
 
-  async register(payload: RegisterReqBody) {
+  async register(payload: RegisterReqBody, randomPassword?: string) {
     const user_id = new ObjectId()
     const email_verify_token = await this.signEmailVerifyToken({
       user_id: user_id.toString(),
@@ -147,6 +147,25 @@ class UsersService {
           pass: process.env.EMAIL_PASSWORD_APP
         }
       })
+
+      if (randomPassword) {
+        const htmlContent = readEmailTemplate('google-register-success.html', {
+          userName: payload.first_name,
+          email: payload.email,
+          password: randomPassword,
+          loginURL: `${process.env.FRONTEND_URL}/login`
+        })
+
+        const mailOptions = {
+          from: `"SKINDORA" <${process.env.EMAIL_APP}>`,
+          to: payload.email,
+          subject: 'Chào mừng bạn đến với SKINDORA - Thông tin tài khoản của bạn',
+          html: htmlContent
+        }
+        transporter.sendMail(mailOptions)
+        console.log('Google registration success email sent to:', payload.email)
+      }
+
       const verifyURL = `${process.env.FRONTEND_URL}/auth/verify-email?email_verify_token=${email_verify_token}` // Đường dẫn xác nhận email
 
       const htmlContent = readEmailTemplate('verify-email.html', {
@@ -223,7 +242,6 @@ class UsersService {
 
       // const resetURL = `${process.env.FRONTEND_URL}/reset-password?token=${forgot_password_token}`
       const resetURL = `${process.env.FRONTEND_URL}/auth/reset-password?token=${forgot_password_token}`
-
 
       const htmlContent = readEmailTemplate('forgot-password.html', {
         userName: first_name,
@@ -458,7 +476,7 @@ class UsersService {
         password: password,
         confirm_password: password,
         avatar: userInfor.picture
-      })
+      },  password)
       return {
         ...data,
         new_user: 1,
@@ -518,4 +536,3 @@ class UsersService {
 
 const usersService = new UsersService()
 export default usersService
-
