@@ -10,9 +10,7 @@ const Tab = createBottomTabNavigator();
 export default function MainTabs() {
   const { cart } = useCart();
 
-  const cartItemCount = cart?.Products
-    ? cart.Products.reduce((sum, item) => sum + item.Quantity, 0)
-    : 0;
+  const cartItemCount = cart?.Products?.length ?? 0;
 
   return (
     <Tab.Navigator

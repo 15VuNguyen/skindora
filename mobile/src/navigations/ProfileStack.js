@@ -8,6 +8,8 @@ import ChangePasswordScreen from "../screens/ChangePasswordScreen";
 import WishlistScreen from "../screens/WishListScreen";
 import OrderListScreen from "../screens/OrderScreen";
 import ProductDetailScreen from "../screens/ProductDetailScreen";
+import OrderHistoryStack from "./OrderStack";
+import OrderDetailScreen from "../screens/OrderDetailScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +45,11 @@ export default function ProfileStack() {
         name="Orders"
         component={OrderListScreen}
         options={{ title: "Đơn hàng của bạn" }}
+      />
+      <Stack.Screen
+        name="OrderDetail"
+        component={OrderDetailScreen}
+        options={{ title: "Chi tiết đơn hàng" }}
       />
       <Stack.Screen
         name="Login"

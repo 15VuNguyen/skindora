@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import privateAxios from "../utils/axiosPrivate";
+import { useNavigation } from "@react-navigation/native";
 
 const statusMapping = {
   PENDING: "Chờ xác nhận",
@@ -25,6 +26,7 @@ export default function OrderListScreen() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const navigation = useNavigation()
 
   const fetchOrder = async (params) => {
     try {
@@ -80,13 +82,19 @@ export default function OrderListScreen() {
     });
 
     return (
-      <View style={styles.orderCard}>
-        <Text style={styles.orderId}>Mã đơn hàng: {item.orderId}</Text>
-        {orderItems}
-        <Text style={styles.totalAmount}>
-          Tổng tiền: {totalAmount.toLocaleString("vi-VN")} ₫
-        </Text>
-      </View>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("OrderDetail", { orderId: item.orderId })
+        }
+      >
+        <View style={styles.orderCard}>
+          <Text style={styles.orderId}>Mã đơn hàng: {item.orderId}</Text>
+          {orderItems}
+          <Text style={styles.totalAmount}>
+            Tổng tiền: {totalAmount.toLocaleString("vi-VN")} ₫
+          </Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -245,5 +253,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     borderColor: "#00C897",
   },
-
 });

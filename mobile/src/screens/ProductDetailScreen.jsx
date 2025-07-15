@@ -165,9 +165,6 @@ export default function ProductDetailScreen() {
           <ArrowLeft size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Chi tiết sản phẩm</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("CartTab")}>
-          <ShoppingCart size={24} />
-        </TouchableOpacity>
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -342,10 +339,9 @@ const styles = StyleSheet.create({
     marginTop: 48,
     paddingHorizontal: 16,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
   },
-  headerTitle: { fontSize: 18, fontWeight: "bold" },
+  headerTitle: { fontSize: 18, fontWeight: "bold", marginLeft: 10 },
   searchRow: {
     flexDirection: "row",
     alignItems: "center",
