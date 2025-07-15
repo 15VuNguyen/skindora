@@ -174,8 +174,21 @@ export const refreshController = async (
 }
 
 export const oAuthController = async (req: Request, res: Response, next: NextFunction) => {
-  const { code } = req.query
-  const { access_token, refresh_token, new_user } = await usersService.oAuth(code as string)
-  const urlRedirect = `${process.env.CLIENT_REDIRECT_CALLBACK_LOGIN_GOOGLE}?access_token=${access_token}&refresh_token=${refresh_token}&new_user=${new_user}`
-  return res.redirect(urlRedirect)
+  const { code, error } = req.query // Lấy cả 'code' và 'error' từ query params
+  if (error) {
+    return res.redirect(`${process.env.FRONTEND_URL}/auth/login`)
+  }
+  if (!code) {
+    return res.status(400).redirect(`${process.env.FRONTEND_URL}/login?error=invalid_request`)
+  }
+
+  try {
+    const result = await usersService.oAuth(code as string)
+
+    const { access_token, refresh_token, new_user, verify } = result
+    const url = `${process.env.FRONTEND_URL}/login-success?access_token=${access_token}&refresh_token=${refresh_token}&new_user=${new_user}&verify=${verify}`
+    return res.redirect(url)
+  } catch (err) {
+    return res.status(500).redirect(`${process.env.FRONTEND_URL}/login?error=authentication_failed`)
+  }
 }
