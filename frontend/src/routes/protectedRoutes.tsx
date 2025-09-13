@@ -4,6 +4,7 @@ import type { RouteObject } from "react-router-dom";
 import PublicLayout from "@/layouts/publicLayout";
 
 const CheckoutPage = lazy(() => import("@/features/Checkout"));
+const PremiumChatPage = lazy(() => import("@/features/PremiumChat/PremiumChatPage"));
 
 const CartPage = lazy(() => import("@/features/Cart"));
 const ProfilePage = lazy(() => import("@/features/Profile"));
@@ -20,6 +21,10 @@ const protectedRoutes: RouteObject[] = [
           { index: true, element: <ProfilePage /> },
           { path: "wishlist", element: <WishListPage /> },
         ],
+      },
+      {
+        path: "premium-support/chat",
+        element: <PremiumChatPage />,
       },
       {
         path: "cart",
