@@ -22,19 +22,13 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
 
     const userMessage: Message = { id: Date.now().toString(), text: input, isUser: true };
 
-    // We add the user message to a new array to calculate the correct count
     const updatedMessages = [...messages, userMessage];
     setMessages(updatedMessages);
     setInput("");
     setIsTyping(true);
 
-    // Count how many messages the user has sent so far
     const userMessageCount = updatedMessages.filter((m) => m.isUser).length;
-
-    // Call the service with the current count
     const expertResponses = await getExpertResponse(userMessageCount);
-
-    // Add the array of new messages from the expert
     setMessages((prev) => [...prev, ...expertResponses]);
     setIsTyping(false);
   };
@@ -55,7 +49,7 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
           <DialogTitle>Tư Vấn 1-1 Cùng Chuyên Gia</DialogTitle>
         </DialogHeader>
         <div className="flex-1 overflow-y-auto">
-          <ScrollArea className="h-full" viewportRef={viewportRef}>
+          <ScrollArea className="h-full" ref={viewportRef}>
             <div className="space-y-6 p-6">
               {messages.map((msg) => (
                 <ChatMessage key={msg.id} message={msg} />

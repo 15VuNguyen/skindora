@@ -1,6 +1,3 @@
-// src/features/PremiumChat/mockChatService.ts
-
-// The interface definitions remain the same
 export interface MockProductRecommendation {
   productName: string;
   brand: string;
@@ -23,7 +20,6 @@ export type Message = {
   routine?: MockRoutine;
 };
 
-// We will keep the script, but change how we access it.
 const conversationScript = {
   responseToProblem: {
     id: "exp1",
@@ -76,24 +72,22 @@ const conversationScript = {
   },
 };
 
-// The NEW, smarter service function
 export const getExpertResponse = (userMessageCount: number): Promise<Message[]> => {
   return new Promise((resolve) => {
     let responses: Message[] = [];
 
-    // Decide which response to send based on how many messages the user has sent
     switch (userMessageCount) {
-      case 1: // After user's first message (the problem)
+      case 1:
         responses = [conversationScript.responseToProblem];
         break;
-      case 2: // After user's second message (the routine)
+      case 2:
         responses = conversationScript.responseToRoutine;
         break;
-      case 3: // After user's third message (the acknowledgement)
+      case 3:
         responses = [conversationScript.responseToAcknowledgement];
         break;
       default:
-        responses = []; // No more scripted responses
+        responses = [];
     }
 
     setTimeout(

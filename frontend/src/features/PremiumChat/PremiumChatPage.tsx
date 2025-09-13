@@ -17,16 +17,20 @@ const PremiumChatPage: React.FC = () => {
     if (!input.trim()) return;
 
     const userMessage: Message = { id: Date.now().toString(), text: input, isUser: true };
-    setMessages((prev) => [...prev, userMessage]);
+
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput("");
     setIsTyping(true);
 
-    const expertResponse = await getExpertResponse();
-    setMessages((prev) => [...prev, expertResponse]);
+    const userMessageCount = updatedMessages.filter((m) => m.isUser).length;
+
+    const expertResponses = await getExpertResponse(userMessageCount);
+
+    setMessages((prev) => [...prev, ...expertResponses]);
     setIsTyping(false);
   };
 
-  // Auto-scroll to bottom
   useEffect(() => {
     const scrollViewport = scrollAreaRef.current?.querySelector("[data-radix-scroll-area-viewport]");
     if (scrollViewport) {
