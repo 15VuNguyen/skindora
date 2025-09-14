@@ -157,7 +157,6 @@ class OrdersService {
     const status = OrderStatus.PENDING
     const paymentStatus = payload.PaymentStatus ?? PaymentStatus.UNPAID
 
-    console.log(payload)
     const order: Partial<Order> = {
       UserID: new ObjectId(userId),
       RecipientName: payload.RecipientName || '',

@@ -28,6 +28,8 @@ export const getAllVoucherController = async (req: Request, res: Response, next:
     }
 
     filter.isActive = true
+    filter.startDate = { $lte: new Date() }
+    filter.endDate = { $gte: new Date() }
 
     const key = process.env.VOUCHER_KEY ?? ''
     const voucherList = await redisClient.get(key)
