@@ -437,3 +437,8 @@ export const COMMON_MESSAGES = {
   PAGE_MUST_BE_INTEGER_BETWEEN: 'Trang phải là số nguyên trong khoảng',
   LIMIT_MUST_BE_INTEGER_BETWEEN: 'Giới hạn phải là số nguyên trong khoảng'
 } as const
+
+export const BLOG_MESSAGES = {
+  CREATE_NEW_POST_SUCCESS: 'Tạo bài viết mới thành công',
+  GET_POST_DETAIL_SUCCESS: 'Xem chi tiết bài viết thành công'
+}

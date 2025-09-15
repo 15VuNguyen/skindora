@@ -6,7 +6,7 @@ interface BlogCategoryType {
   slug: string
 }
 
-export default class BlogCategoriy {
+export default class BlogCategory {
   _id?: ObjectId
   name: string
   slug: string

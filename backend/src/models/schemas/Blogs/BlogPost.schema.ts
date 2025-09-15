@@ -33,7 +33,7 @@ export default class BlogPost {
     this.title = post.title
     this.slug = post.slug
     this.content = post.content
-    this.status = post.status || BlogPostState.draft
+    this.status = post.status || BlogPostState.DRAFT
     this.publishedAt = post.publishedAt || localTime
     this.authorId = post.authorId
     this.created_at = post.created_at || localTime
