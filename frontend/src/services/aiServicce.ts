@@ -14,7 +14,7 @@ export const aiService = {
     const result = await apiClient.post<SkinRecommendation, SkincareAdvisorRequestBody>(
       "/ai/skincare-advice",
       payload,
-      { timeout: 190000 }
+      { timeout: 400000 }
     );
 
     if (result.isErr()) {

@@ -1,24 +1,22 @@
-
 import { ObjectId } from 'mongodb'
+import { getLocalTime } from '~/utils/date'
 import {
   APPROX_USD_TO_VND_RATE,
   KNOWN_SKIN_CONCERNS,
   USER_BUDGET_USD as DEFAULT_BUDGET_USD,
   USER_SCHEDULE_PREFERENCE as DEFAULT_SCHEDULE
 } from '~/constants/ai.constants'
-import { MODEL_NAME } from '~/constants/config' 
+import { MODEL_NAME } from '~/constants/config'
 import { ErrorWithStatus } from '~/models/Errors'
 import { SkincareAdvisorRequestBody } from '~/models/requests/Ai.requests'
-import {
-  AiSuggestedFilterCriteria,
-  MongoProduct,
-} from '~/models/types/Ai.types'
+import { AiSuggestedFilterCriteria, DetailTextHtml, MongoProduct } from '~/models/types/Ai.types'
 import { applyClientSideFilters } from '~/utils/ai/clientFiltering'
 import {
   createDiagnosisPrompt,
   createFilterSuggestionPrompt,
   createFullRoutineRecommendationJsonPrompt,
-  createRoutineSelectionPrompt
+  createRoutineSelectionPrompt,
+  createWeeklyScheduleGenerationPrompt
 } from '~/utils/ai/prompts/prompts'
 import { getAICompletion } from '~/utils/ai/aiService'
 import { transformMongoToAISchema } from '~/utils/ai/transform'
@@ -131,7 +129,6 @@ class SkincareAdvisorService {
     return (await databaseService.products.aggregate(pipeline).toArray()) as MongoProduct[]
   }
 
-  
   public async generateRoutine(request: SkincareAdvisorRequestBody) {
     logger.info('--- Starting Skincare Advisor Service ---')
     const {
@@ -141,12 +138,10 @@ class SkincareAdvisorService {
     } = request
     const userBudgetVND = userBudgetUSD * APPROX_USD_TO_VND_RATE
 
-    
     if (!request.base64Image || !request.base64Image.startsWith('data:image')) {
       throw new ErrorWithStatus({ message: 'Invalid or missing base64 image data.', status: 400 })
     }
 
-    
     const diagnosisPrompt = createDiagnosisPrompt(
       request.base64Image,
       userBudgetVND,
@@ -162,11 +157,9 @@ class SkincareAdvisorService {
     const primaryConcern = request.userPreferredSkinType || diagnosisResult.diagnosedSkinConcerns?.[0] || ''
     const { diagnosedSkinConcerns: diagnosedSkinConcernsList = [], generalObservations = [] } = diagnosisResult
 
-    
     const filterSuggestionPrompt = createFilterSuggestionPrompt(diagnosedSkinConcernsList, generalObservations)
     const aiFilterCriteria: AiSuggestedFilterCriteria = await getAICompletion(filterSuggestionPrompt, MODEL_NAME, true)
 
-   
     const toObjectIds = (ids: (string | null)[]) => ids.filter(Boolean).map((id) => new ObjectId(id!))
     const [skinConcernTypeId, brandIds, ingredientIds] = await Promise.all([
       this._findFilterObjectIdByName(primaryConcern, 'filter_hsk_skin_type'),
@@ -193,7 +186,6 @@ class SkincareAdvisorService {
 
     const productsFromDB = priceFilteredProducts.map((p) => transformMongoToAISchema(p, primaryConcern))
 
-    
     let candidateProducts = applyClientSideFilters(
       productsFromDB,
       { preferredIngredients: request.preferredIngredients },
@@ -203,7 +195,6 @@ class SkincareAdvisorService {
       return { info: 'No products remained after applying complementary filters.', status: 200 }
     candidateProducts = candidateProducts.slice(0, 100)
 
-   
     const productSummaries = candidateProducts.map((p) => ({
       name: p.name,
       price: p.price,
@@ -221,7 +212,6 @@ class SkincareAdvisorService {
     if (selectedProductNames.length === 0)
       return { info: 'AI could not select a suitable routine from the filtered products.', status: 200 }
 
-    
     const populatedProducts = await this._fetchAndPopulateProductsNative({
       name_on_list: { $in: selectedProductNames }
     })
@@ -238,7 +228,47 @@ class SkincareAdvisorService {
       userLanguage
     )
     const finalJsonResponse = await getAICompletion(finalRecommendationPrompt, MODEL_NAME, true)
+    if (
+      finalJsonResponse.routineRecommendation &&
+      finalJsonResponse.routineRecommendation.productsInRoutine.length > 0
+    ) {
+      // We need product IDs for the schedule, let's fetch them
+      const productDetailsForSchedule = await Promise.all(
+        finalJsonResponse.routineRecommendation.productsInRoutine.map(async (p: any) => {
+          // The productUrl is `/product/{id}`
+          const productId = p.productUrl.split('/').pop()
+          const productFromDb = await databaseService.products.findOne({ _id: new ObjectId(productId) })
+          const guideDetail = productFromDb?.guide_detail as DetailTextHtml | undefined
 
+          return {
+            id: productId,
+            name: p.productName,
+            howToUse: guideDetail?.plainText || 'Use as directed.'
+          }
+        })
+      )
+
+      const scheduleGenerationPrompt = createWeeklyScheduleGenerationPrompt(
+        productDetailsForSchedule,
+        userSchedulePreference as 'AM' | 'PM' | 'AM/PM',
+        userLanguage
+      )
+
+      const scheduleResult = await getAICompletion(scheduleGenerationPrompt, MODEL_NAME, true)
+
+      // Add the generated schedule and date range to the final response
+      if (scheduleResult.schedule) {
+        const startDate = getLocalTime()
+        const endDate = new Date(startDate)
+        endDate.setDate(startDate.getDate() + 90) // Default 90-day routine
+
+        finalJsonResponse.routineDetailsForSaving = {
+          startDate: startDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
+          endDate: endDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
+          schedule: scheduleResult.schedule
+        }
+      }
+    }
     logger.info('Workflow completed successfully.')
     return finalJsonResponse
   }
