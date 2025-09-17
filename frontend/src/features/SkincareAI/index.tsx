@@ -1,5 +1,6 @@
 import { Tooltip } from "@radix-ui/react-tooltip";
 import { BadgeCheck, Building2, FlaskConical, Info, Ruler, ShoppingBag, Sparkles, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 import { Accordion } from "@/components/ui/accordion";
@@ -13,6 +14,8 @@ import FilterAccordionItem from "./components/FilterAccordionItem";
 import ImageUpload from "./components/ImageUpload";
 import PreferenceButtons from "./components/PreferenceButtons";
 import { useSkincareAI } from "./components/hooks/useSkincareAI";
+import { useAuth } from "@/contexts/auth.context"; 
+import type{ RoutineDetailsForSaving } from "./types";
 
 const SkincareAI = () => {
   const {
@@ -45,11 +48,18 @@ const SkincareAI = () => {
     handleSubmit,
     handleClearAllFilters,
   } = useSkincareAI();
-
+  
+  const navigate = useNavigate();
   if (filterOptionsError) {
     toast.error(filterOptionsError.message || "Không thể tải các tùy chọn bộ lọc.");
   }
-
+const handleApplyRoutine = (routineData: RoutineDetailsForSaving) => {
+    if (!routineData) return;
+    navigate("/confirm-routine", {
+      state: { routine: routineData },
+    });
+  };
+  const { isAuthenticated } = useAuth();
   return (
     <section id="ai-section" className="pt-16">
       <div className="bg-gradient-to-br from-sky-100 via-indigo-50 to-purple-100 px-4 py-8 sm:px-6 lg:px-8">
@@ -235,7 +245,7 @@ const SkincareAI = () => {
 
             {}
             <div className="lg:col-span-6 xl:col-span-8">
-              <ChatContainer messages={messages} isAnalyzing={isAnalyzing} />
+              <ChatContainer messages={messages} isAnalyzing={isAnalyzing} onApplyRoutine={handleApplyRoutine} isAuthenticated={isAuthenticated}  />
             </div>
           </div>
         </div>

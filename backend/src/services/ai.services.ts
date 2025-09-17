@@ -232,10 +232,8 @@ class SkincareAdvisorService {
       finalJsonResponse.routineRecommendation &&
       finalJsonResponse.routineRecommendation.productsInRoutine.length > 0
     ) {
-      // We need product IDs for the schedule, let's fetch them
       const productDetailsForSchedule = await Promise.all(
         finalJsonResponse.routineRecommendation.productsInRoutine.map(async (p: any) => {
-          // The productUrl is `/product/{id}`
           const productId = p.productUrl.split('/').pop()
           const productFromDb = await databaseService.products.findOne({ _id: new ObjectId(productId) })
           const guideDetail = productFromDb?.guide_detail as DetailTextHtml | undefined
@@ -256,15 +254,14 @@ class SkincareAdvisorService {
 
       const scheduleResult = await getAICompletion(scheduleGenerationPrompt, MODEL_NAME, true)
 
-      // Add the generated schedule and date range to the final response
       if (scheduleResult.schedule) {
         const startDate = getLocalTime()
         const endDate = new Date(startDate)
-        endDate.setDate(startDate.getDate() + 90) // Default 90-day routine
+        endDate.setDate(startDate.getDate() + 90) 
 
         finalJsonResponse.routineDetailsForSaving = {
-          startDate: startDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
-          endDate: endDate.toISOString().split('T')[0], // Format as YYYY-MM-DD
+          startDate: startDate.toISOString().split('T')[0], 
+          endDate: endDate.toISOString().split('T')[0], 
           schedule: scheduleResult.schedule
         }
       }
