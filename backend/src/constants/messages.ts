@@ -438,3 +438,18 @@ export const COMMON_MESSAGES = {
   PAGE_MUST_BE_INTEGER_BETWEEN: 'Trang phải là số nguyên trong khoảng',
   LIMIT_MUST_BE_INTEGER_BETWEEN: 'Giới hạn phải là số nguyên trong khoảng'
 } as const
+export const ROUTINE_MESSAGES = {
+  SAVE_ROUTINE_SUCCESS: 'Lưu chu trình chăm sóc da thành công',
+  SAVE_ROUTINE_FAILED: 'Lưu chu trình chăm sóc da thất bại',
+  GET_ROUTINE_SUCCESS: 'Lấy chu trình chăm sóc da thành công',
+  ROUTINE_NOT_FOUND: 'Không tìm thấy chu trình chăm sóc da cho người dùng này',
+  START_DATE_REQUIRED: 'Ngày bắt đầu là bắt buộc',
+  END_DATE_REQUIRED: 'Ngày kết thúc là bắt buộc',
+  INVALID_DATE_FORMAT: 'Ngày phải theo định dạng ISO8601 (YYYY-MM-DD)',
+  END_DATE_MUST_BE_AFTER_START_DATE: 'Ngày kết thúc phải sau ngày bắt đầu',
+  SCHEDULE_REQUIRED: 'Lịch trình là bắt buộc',
+  SCHEDULE_MUST_BE_OBJECT: 'Lịch trình phải là một đối tượng',
+  INVALID_SCHEDULE_DAY: 'Lịch trình chứa ngày không hợp lệ',
+  INVALID_SCHEDULE_TIME: 'Lịch trình chứa thời gian không hợp lệ (chỉ chấp nhận "AM" hoặc "PM")',
+  INVALID_PRODUCT_ID_IN_SCHEDULE: 'Lịch trình chứa ID sản phẩm không hợp lệ'
+} as const
