@@ -267,6 +267,25 @@ class ProductsService {
       outOfStock
     };
   }
+async getProductsByIds(ids: ObjectId[]) {
+    const projection = {
+      name_on_list: 1,
+      price_on_list: 1,
+      image_on_list: 1,
+      _id: 1
+    }
+    const products = await databaseService.products
+      .find(
+        {
+          _id: { $in: ids }
+        },
+        { projection }
+      )
+      .toArray()
+
+    return products
+  }
+
 }
 
 const productService = new ProductsService()
