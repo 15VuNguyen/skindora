@@ -7,12 +7,12 @@ import { wrapAsync } from '~/utils/handler'
 const blogRouter = Router()
 
 blogRouter
-  .route('/posts')
+  .route('/')
   .get(getAllPostsController)
   .post(accessTokenValidator, isStaffValidator, wrapAsync(createNewPostController))
 
 blogRouter
-  .route('/posts/:id')
+  .route('/:id')
   .get(getPostDetailController)
   .put(accessTokenValidator, isStaffValidator, wrapAsync(updatePostController))
   .delete(accessTokenValidator, isStaffValidator, wrapAsync(deletePostController)) //soft delete(set status = archived)

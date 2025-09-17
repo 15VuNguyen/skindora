@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb'
 import { CreateNewPostReqBody, UpdatePostReqBody } from '~/models/requests/Blog.requests'
 import databaseService from './database.services'
-import BlogPost from '~/models/schemas/Blogs/BlogPost.schema'
-import { BlogPostState } from '~/constants/enums'
+import BlogPost from '~/models/schemas/Blog.schema'
+import { BlogState } from '~/constants/enums'
 
 class BlogService {
   async createNewPost(payload: CreateNewPostReqBody) {
@@ -15,7 +15,7 @@ class BlogService {
       new BlogPost({
         ...payload,
         _id: postId,
-        status: payload.status || BlogPostState.DRAFT,
+        status: payload.status || BlogState.DRAFT,
         created_at: localTime,
         updated_at: localTime
       })
@@ -38,7 +38,7 @@ class BlogService {
   async deletePost(postId: string) {
     return await databaseService.blogPosts.findOneAndUpdate(
       { _id: new ObjectId(postId) },
-      { $set: {status: BlogPostState.ARCHIVED} },
+      { $set: { status: BlogState.ARCHIVED } },
       { returnDocument: 'after' }
     )
   }

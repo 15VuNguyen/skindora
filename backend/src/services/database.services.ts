@@ -15,7 +15,7 @@ import FilterHskSkinType from '~/models/schemas/FilterHskSkinType.schema'
 import FilterHskUses from '~/models/schemas/FilterHskUses.schema'
 import FilterOrigin from '~/models/schemas/FilterHskOrigin.schema'
 import Voucher from '~/models/schemas/Voucher.schema'
-import BlogPost from '~/models/schemas/Blogs/BlogPost.schema'
+import BlogPost from '~/models/schemas/Blog.schema'
 import BlogCategory from '~/models/schemas/Blogs/BlogCategory.schema'
 
 config()
@@ -40,7 +40,7 @@ class DatabaseService {
     }
   }
 
-  getClient(){
+  getClient() {
     return this.client
   }
 
@@ -107,10 +107,8 @@ class DatabaseService {
   async indexProducts() {
     //Index để tối ưu tìm kiếm theo tên sản phẩm `text` index cho phép dùng toán tử $text và $search
     //await this.products.createIndex({ name_on_list: 'text', engName_on_list: 'text' });
-    
     //Index để tối ưu sắp xếp cho việc phân trang -1 là sắp xếp giảm dần (mới nhất trước)
     // await this.products.createIndex({ created_at: -1 });
-
     //Index cho các trường filter phổ biến
     //await this.products.createIndex({ filter_brand: 1 });
     //await this.products.createIndex({ state: 1 });
@@ -129,11 +127,11 @@ class DatabaseService {
   }
 
   get blogPosts(): Collection<BlogPost> {
-    return this.db.collection(process.env.DB_BLOG_POST_COLLECTION as string) 
+    return this.db.collection(process.env.DB_BLOG_POST_COLLECTION as string)
   }
 
   get blogCategories(): Collection<BlogCategory> {
-    return this.db.collection(process.env.DB_BLOG_CATEGORY_COLLECTION as string) 
+    return this.db.collection(process.env.DB_BLOG_CATEGORY_COLLECTION as string)
   }
 }
 
