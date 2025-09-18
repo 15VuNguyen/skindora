@@ -67,7 +67,6 @@ export function TopbarActions() {
     <div className="flex items-center space-x-4">
       {/* {user ? ( */}
       <div className="flex items-center gap-4">
-        <NotificationButton />
         <ProfileDropdown logout={actions.logout} isLoading={actions.isLoggingOut} />
       </div>
       {/* // ) : (

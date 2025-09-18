@@ -118,7 +118,12 @@ export const sizeColumn = (refetchData: () => void): ColumnDef<Size>[] => [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),
-    cell: ({ row }) => <div className="pl-2 font-medium text-blue-600">{row.getValue("_id")}</div>,
+    cell: ({ row }) => {
+      const id = row.getValue("_id");
+      const idStr = String(id);
+      const shortenedId = `${idStr.slice(0, 6)}...${idStr.slice(-4)}`;
+      return <div className="pl-2 font-medium text-blue-600">{shortenedId}</div>;
+    },
   },
   {
     accessorKey: "option_name",

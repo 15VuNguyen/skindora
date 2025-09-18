@@ -79,18 +79,12 @@ const ManageVoucher: React.FC = () => {
                 <div className="mt-6 w-5/5">
                   <Card className="w-full">
                     <div className="p-3">
-                      <DataTable
-                        columns={vouchersColumns(fetchAllVoucher)}
-                        data={voucher}
-                        onSearchChange={setSearchTerm}
-                        searchValue={searchTerm}
-                        filterPlaceholder="Tìm brand theo tên..."
-                      />
+                      <DataTable columns={vouchersColumns(fetchAllVoucher)} data={voucher} />
                       <div className="mt-4">
                         <PaginationDemo
                           totalPages={params.totalPages ?? 1}
                           currentPage={params.page ?? 1}
-                          onPageChange={handlePageChange}
+                        onPageChange={handlePageChange}
                         />
                       </div>
                     </div>
