@@ -53,9 +53,6 @@ const ManageOrdersStaff: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 p-5">
       <div>
-        <div className="mb-3">
-          <Typography className="text-2xl font-bold">{headerName}</Typography>
-        </div>
         <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-4">
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md">
             <CardContent className="p-5">

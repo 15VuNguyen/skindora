@@ -20,15 +20,6 @@ interface ProfileDropdownProps {
   isLoading?: boolean;
 }
 
-function NotificationButton() {
-  return (
-    <Button variant="ghost" size="icon" className="relative">
-      <Bell className="h-5 w-5" />
-      <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-    </Button>
-  );
-}
-
 function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
   return (
     <DropdownMenu>
@@ -67,7 +58,6 @@ export function TopbarActions() {
     <div className="flex items-center space-x-4">
       {/* {user ? ( */}
       <div className="flex items-center gap-4">
-        <NotificationButton />
         <ProfileDropdown logout={actions.logout} isLoading={actions.isLoggingOut} />
       </div>
       {/* // ) : (
@@ -88,12 +78,8 @@ const HeaderStaff: React.FC<HeaderAdminProps> = () => {
       <div className="top-0 left-0 box-border w-full border-b bg-white px-6 py-5">
         <div className="flex items-center justify-between">
           <div className="flex">
-            {/* <div>
-              <SidebarTrigger />
-            </div> */}
             <div>
               <SidebarTrigger />
-              {/* <Typography className="text-primary text-2xl font-bold">{name}</Typography> */}
             </div>
           </div>
           <div className="flex items-center gap-4">
