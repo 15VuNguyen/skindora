@@ -17,7 +17,7 @@ import { DataTable } from "../components/TableCustom";
 const ManageVoucher: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
 
-  const { loading, params, setParams, voucher, fetchAllVoucher, searchTerm, setSearchTerm } = useFetchVoucher();
+  const { loading, params, setParams, voucher, fetchAllVoucher } = useFetchVoucher();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
@@ -84,7 +84,7 @@ const ManageVoucher: React.FC = () => {
                         <PaginationDemo
                           totalPages={params.totalPages ?? 1}
                           currentPage={params.page ?? 1}
-                        onPageChange={handlePageChange}
+                          onPageChange={handlePageChange}
                         />
                       </div>
                     </div>
