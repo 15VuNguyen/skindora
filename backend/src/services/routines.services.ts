@@ -30,6 +30,13 @@ class RoutineService {
     )
     return result
   }
+
+  public async getUserRoutine(user_id: string) {
+    const routine = await databaseService.userRoutines.findOne({
+      user_id: new ObjectId(user_id)
+    })
+    return routine
+  }
 }
 
 const routineService = new RoutineService()
