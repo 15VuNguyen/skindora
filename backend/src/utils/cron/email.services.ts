@@ -111,7 +111,6 @@ export const checkVoucherJob = new CronJob(
             }
           })
         )
-        console.log(`Updated ${voucherList.length} voucher(s)`)
       }
     } catch (err) {
       console.error('Error inactive voucher expire', err)
