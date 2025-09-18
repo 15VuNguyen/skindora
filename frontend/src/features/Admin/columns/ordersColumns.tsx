@@ -2,7 +2,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -17,6 +16,9 @@ import {
 import { useUpdateStatus } from "@/hooks/Orders/useUpdateStatus";
 import type { Order } from "@/types/order";
 
+const formatDate = (dateString: string) => {
+  return new Date(dateString).toLocaleDateString("vi-VN");
+};
 export const ActionsCell = ({ row, refechData }: { row: { original: Order }; refechData: () => void }) => {
   const navigate = useNavigate();
   const { _id } = row.original;
@@ -36,7 +38,7 @@ export const ActionsCell = ({ row, refechData }: { row: { original: Order }; ref
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(_id)}>Copy mã voucher</DropdownMenuItem>
+          {/* <DropdownMenuItem onClick={() => navigator.clipboard.writeText(_id)}>Copy mã voucher</DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/order-detail/${_id}`)}>Xem chi tiết</DropdownMenuItem>
           <DropdownMenuItem onClick={() => handleUpdateStatus()}>Cập nhật</DropdownMenuItem>
@@ -105,7 +107,7 @@ export const orderColumn = (refechData: () => void): ColumnDef<Order, unknown>[]
     accessorKey: "RequireDate",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Ngày yêu cầu <ArrowUpDown className="h-4 w-4" />
+        Ngày nhận hàng <ArrowUpDown className="h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
@@ -124,39 +126,52 @@ export const orderColumn = (refechData: () => void): ColumnDef<Order, unknown>[]
     accessorKey: "Status",
     header: "Trạng thái đơn hàng",
     cell: ({ row }) => {
-      const status = row.getValue("Status") as Order["Status"];
-
+      // const status = row.getValue("Status") as Order["Status"];
+      const { Status } = row.original;
       const variant =
-        status === "DELIVERED"
-          ? "complete"
-          : status === "CANCELLED"
+        Status === "DELIVERED"
+          ? "delievered"
+          : Status === "CANCELLED"
             ? "danger"
-            : status === "RETURNED"
+            : Status === "RETURNED"
               ? "default"
-              : status === "SHIPPING"
+              : Status === "SHIPPING"
                 ? "waiting"
-                : "secondary";
+                : Status === "PROCESSING"
+                  ? "processing"
+                  : Status === "PENDING"
+                    ? "pending"
+                    : Status === "CONFIRMED"
+                      ? "confirmed"
+                      : "outline";
 
-      return <Badge variant={variant}>{status}</Badge>;
+      return (
+        <Badge variant={variant} className="w-3/5 p-2">
+          {Status}
+        </Badge>
+      );
     },
 
     filterFn: (row, id, value) => {
       return value.includes(row.getValue(id));
     },
   },
+  {
+    accessorKey: "createdAt",
+    header: "Ngày tạo đơn hàng",
+    cell: ({ row }) => {
+      const { created_at } = row.original;
 
+      return <div>{`${formatDate(created_at)}`}</div>;
+    },
+  },
   {
     accessorKey: "updatedAt",
-    header: ({ column }) => (
-      <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        <Typography>Cập nhật</Typography>
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
+    header: "Ngày đơn hàng được cập nhật",
     cell: ({ row }) => {
-      const dateString = row.getValue("updatedAt") as string;
+      const { updated_at } = row.original;
 
-      return <Typography className="ml-3">{new Date(dateString).toLocaleString("vi-VN")}</Typography>;
+      return <div>{`${formatDate(updated_at)}`}</div>;
     },
   },
 

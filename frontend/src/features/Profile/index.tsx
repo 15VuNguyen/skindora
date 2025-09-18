@@ -1,4 +1,4 @@
-import { ArrowLeft, CheckCircle, Loader2, Mail, XCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle, Loader2, Mail, Star, XCircle } from "lucide-react";
 import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
@@ -6,9 +6,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { User } from "@/types";
 
+import { PremiumChatWidget } from "../PremiumChat/PremiumChatWidget";
 import { OrderHistoryTab } from "./components/OrderHistoryTab";
 import { PersonalInfoTab } from "./components/PersonalInfoTab";
 import { SecurityTab } from "./components/SecurityTab";
@@ -184,6 +186,23 @@ const ProfilePage = () => {
           handleVerifyEmail={handleVerifyEmail}
           toggleEditMode={toggleEditMode}
         />
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Star className="text-yellow-500" />
+              Gói Hội Viên Premium
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="mb-4">
+              Bạn đang là hội viên Premium. Tận hưởng các quyền lợi độc quyền, bao gồm tư vấn 1-1 không giới hạn cùng
+              chuyên gia.
+            </p>
+            <PremiumChatWidget>
+              <Button>Bắt đầu Chat với Chuyên Gia</Button>
+            </PremiumChatWidget>
+          </CardContent>
+        </Card>
         <ProfileTabs user={user} isEditing={isEditing} />
       </div>
     </div>

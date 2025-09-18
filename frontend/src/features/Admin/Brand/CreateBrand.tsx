@@ -109,11 +109,7 @@ const CreateBrand: React.FC = () => {
                         <FormItem>
                           <FormLabel>Tên thương hiệu</FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="Nhập tên thương hiệu (ví dụ: Nike, Adidas)"
-                              {...field}
-                              value={field.value || ""}
-                            />
+                            <Input placeholder="Nhập tên thương hiệu:" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -126,11 +122,7 @@ const CreateBrand: React.FC = () => {
                         <FormItem>
                           <FormLabel>Tên danh mục</FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="Nhập tên danh mục (ví dụ: Giày, Quần áo)"
-                              {...field}
-                              value={field.value || ""}
-                            />
+                            <Input placeholder="Nhập tên danh mục:" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -143,11 +135,7 @@ const CreateBrand: React.FC = () => {
                         <FormItem>
                           <FormLabel>Tham số danh mục</FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="Nhập tham số danh mục (ví dụ: giay, quan-ao)"
-                              {...field}
-                              value={field.value || ""}
-                            />
+                            <Input placeholder="Nhập tham số danh mục:" {...field} value={field.value || ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

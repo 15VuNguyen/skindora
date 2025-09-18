@@ -10,8 +10,8 @@ interface ChartRadialTextProps {
   description: string;
   value: number;
   label: string; // Nhãn hiển thị dưới con số chính (ví dụ: "Khách hàng")
-  footerContent: React.ReactNode; // Cho phép truyền cả text và icon vào footer
-  footerDescription: string;
+  footerContent?: React.ReactNode; // Cho phép truyền cả text và icon vào footer
+  footerDescription?: string;
 }
 
 // Config của biểu đồ có thể giữ nguyên hoặc tùy chỉnh nếu cần

@@ -89,7 +89,7 @@ const ManageOrigin: React.FC = () => {
                         data={data}
                         onSearchChange={setSearchTerm}
                         searchValue={searchTerm}
-                        filterPlaceholder="Tìm brand theo tên..."
+                        filterPlaceholder="Tìm xuất xứ theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

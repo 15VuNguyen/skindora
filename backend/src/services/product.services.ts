@@ -76,6 +76,7 @@ class ProductsService {
     await redisClient.expire(key, 60 * 60 * 24)
   }
 
+
   getProductInfoKey(productId: string) {
     return `${process.env.PRODUCT_INFO_KEY}${productId}`
   }
@@ -214,7 +215,8 @@ class ProductsService {
       productName_detail: 1,
       engName_detail: 1,
       filter_brand: 1,
-      _id: 1
+      _id: 1,
+      quantity: 1,
     }
     const objectIds = productID.map(id => new ObjectId(id))
     const products = await databaseService.products
@@ -265,6 +267,25 @@ class ProductsService {
       outOfStock
     };
   }
+async getProductsByIds(ids: ObjectId[]) {
+    const projection = {
+      name_on_list: 1,
+      price_on_list: 1,
+      image_on_list: 1,
+      _id: 1
+    }
+    const products = await databaseService.products
+      .find(
+        {
+          _id: { $in: ids }
+        },
+        { projection }
+      )
+      .toArray()
+
+    return products
+  }
+
 }
 
 const productService = new ProductsService()

@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 
 interface CartSummaryProps {
   subtotal: number;
-  shipping: number;
   total: number;
   discount?: {
     code?: string;
@@ -23,7 +22,6 @@ interface CartSummaryProps {
 
 export function CartSummary({
   subtotal,
-  shipping,
   total,
   discount,
   selectedItems,
@@ -56,10 +54,6 @@ export function CartSummary({
               <span>-{discount.amount.toLocaleString("vi-VN")}₫</span>
             </div>
           )}
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Phí vận chuyển:</span>
-            <span className="font-medium">{shipping > 0 ? `${shipping.toLocaleString("vi-VN")}₫` : "Miễn phí"}</span>
-          </div>
           <Separator />
           <div className="flex justify-between text-base font-bold">
             <span>Tổng cộng:</span>

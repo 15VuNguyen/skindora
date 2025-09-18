@@ -115,6 +115,17 @@ export const createVoucherValidator = validate(
       },
       isISO8601: {
         errorMessage: ADMIN_MESSAGES.START_DATE_INVALID
+      },
+      custom: {
+        options: (value) => {
+          const inputDate = new Date(value)
+          const today = new Date()
+
+          today.setHours(0, 0, 0, 0)
+
+          return inputDate > today
+        },
+        errorMessage: ADMIN_MESSAGES.START_DATE_MUST_BE_AFTER_TODAY
       }
     },
     endDate: {

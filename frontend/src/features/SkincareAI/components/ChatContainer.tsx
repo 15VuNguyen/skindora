@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { ResizableBox } from "react-resizable";
 import type { ResizableBoxProps } from "react-resizable";
-
+import type { RoutineDetailsForSaving } from "../types";
 import type { Message } from "../types";
 import ChatMessage from "./ChatMessage";
 
 interface ChatContainerProps {
   messages: Message[];
   isAnalyzing: boolean;
+  onApplyRoutine: (routineData: RoutineDetailsForSaving) => void; 
+    isAuthenticated: boolean; 
 }
 
-const ChatContainer = ({ messages, isAnalyzing }: ChatContainerProps) => {
+const ChatContainer = ({ messages, isAnalyzing, onApplyRoutine, isAuthenticated }: ChatContainerProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContentRef = useRef<HTMLDivElement>(null);
 
@@ -60,7 +62,7 @@ const ChatContainer = ({ messages, isAnalyzing }: ChatContainerProps) => {
             {messages.length > 0 ? (
               <>
                 {messages.map((msg, index) => (
-                  <ChatMessage key={msg.id || index} message={msg} />
+                  <ChatMessage key={msg.id || index} message={msg}  onApplyRoutine={onApplyRoutine}  isAuthenticated={isAuthenticated}  />
                 ))}
                 <div ref={messagesEndRef} />
               </>

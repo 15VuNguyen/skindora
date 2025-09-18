@@ -347,7 +347,8 @@ export const ADMIN_MESSAGES = {
   CANNOT_CREATE_INACTIVE_FILTER: 'Không thể tạo một {filter} với trạng thái không hoạt động',
   FILTER_DAC_TINH_OPTION_NAME_MUST_BE_A_STRING: 'Tên tùy chọn của đặc tính phải là chuỗi',
   FILTER_DAC_TINH_CATEGORY_NAME_MUST_BE_A_STRING: 'Tên danh mục của đặc tính phải là chuỗi',
-  FILTER_DAC_TINH_CATEGORY_PARAM_MUST_BE_A_STRING: 'Tham số danh mục của đặc tính phải là chuỗi'
+  FILTER_DAC_TINH_CATEGORY_PARAM_MUST_BE_A_STRING: 'Tham số danh mục của đặc tính phải là chuỗi',
+  START_DATE_MUST_BE_AFTER_TODAY: 'Vui lòng chọn ngày bắt đầu sau hôm nay.'
 } as const
 
 export const CART_MESSAGES = {
@@ -422,7 +423,7 @@ export const ORDER_MESSAGES = {
   CANCEL_REQUESTING: 'Đơn hàng này đang được yêu cầu hủy, không thể cập nhật sang trạng thái tiếp theo',
   COUNT_SUCCESS: 'Lấy số lượng đơn hàng thành công',
   COUNT_FAIL: 'Lấy số lượng đơn hàng thất bại',
-  INVALID_PHONE_NUMBER: "Số điện thoại không hợp lệ"
+  INVALID_PHONE_NUMBER: 'Số điện thoại không hợp lệ'
 } as const
 
 export const VOUCHER_MESSAGES = {
@@ -436,4 +437,19 @@ export const VOUCHER_MESSAGES = {
 export const COMMON_MESSAGES = {
   PAGE_MUST_BE_INTEGER_BETWEEN: 'Trang phải là số nguyên trong khoảng',
   LIMIT_MUST_BE_INTEGER_BETWEEN: 'Giới hạn phải là số nguyên trong khoảng'
+} as const
+export const ROUTINE_MESSAGES = {
+  SAVE_ROUTINE_SUCCESS: 'Lưu chu trình chăm sóc da thành công',
+  SAVE_ROUTINE_FAILED: 'Lưu chu trình chăm sóc da thất bại',
+  GET_ROUTINE_SUCCESS: 'Lấy chu trình chăm sóc da thành công',
+  ROUTINE_NOT_FOUND: 'Không tìm thấy chu trình chăm sóc da cho người dùng này',
+  START_DATE_REQUIRED: 'Ngày bắt đầu là bắt buộc',
+  END_DATE_REQUIRED: 'Ngày kết thúc là bắt buộc',
+  INVALID_DATE_FORMAT: 'Ngày phải theo định dạng ISO8601 (YYYY-MM-DD)',
+  END_DATE_MUST_BE_AFTER_START_DATE: 'Ngày kết thúc phải sau ngày bắt đầu',
+  SCHEDULE_REQUIRED: 'Lịch trình là bắt buộc',
+  SCHEDULE_MUST_BE_OBJECT: 'Lịch trình phải là một đối tượng',
+  INVALID_SCHEDULE_DAY: 'Lịch trình chứa ngày không hợp lệ',
+  INVALID_SCHEDULE_TIME: 'Lịch trình chứa thời gian không hợp lệ (chỉ chấp nhận "AM" hoặc "PM")',
+  INVALID_PRODUCT_ID_IN_SCHEDULE: 'Lịch trình chứa ID sản phẩm không hợp lệ'
 } as const

@@ -284,11 +284,11 @@ export function ProductOverview() {
                 <div
                   key={item.filter_ID}
                   className={`cursor-pointer rounded-md px-2 py-1 text-sm transition-colors duration-200 ${
-                    selectedSkinType === item.filter_ID
+                    selectedBrand === item.filter_ID
                       ? "bg-blue-100 font-medium text-blue-800"
                       : "text-gray-700 hover:bg-gray-50"
                   }`}
-                  onClick={() => setSelectedSkinType(selectedSkinType === item.filter_ID ? "" : item.filter_ID)}
+                  onClick={() => setSelectedBrand(selectedBrand === item.filter_ID ? "" : item.filter_ID)}
                 >
                   {item.name}
                 </div>

@@ -1,4 +1,5 @@
 import { ArrowLeft, Heart, LoaderCircle, ShoppingBag } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { ProductCard } from "@/components/ui/ProductCard";
@@ -11,19 +12,27 @@ import { useWishlistProductsQuery } from "@/hooks/queries/useWishlistProductsQue
 const WishlistPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
 
   const { data: wishlistItems, isLoading, isError } = useWishlistProductsQuery(isAuthenticated);
   const { mutate: removeFromWishlist, isPending: isRemoving } = useRemoveFromWishlistMutation();
-  const { mutate: addToCart, isPending: isAddingToCart } = useAddToCartMutation();
+  const { mutate: addToCart } = useAddToCartMutation();
 
   const handleRemove = (id: string) => {
     removeFromWishlist([id]);
   };
 
   const handleAddToCart = (id: string) => {
-    addToCart({ ProductID: id, Quantity: 1 });
+    setLoadingProductId(id);
+    addToCart(
+      { ProductID: id, Quantity: 1 },
+      {
+        onSettled: () => {
+          setLoadingProductId(null);
+        },
+      }
+    );
   };
-
   const handleProductClick = (id: string) => {
     navigate(`/product/${id}`);
   };
@@ -78,7 +87,7 @@ const WishlistPage = () => {
             onAddToCart={handleAddToCart}
             onCardClick={handleProductClick}
             isRemovingFromWishlist={isRemoving}
-            isAddingToCart={isAddingToCart}
+            isAddingToCart={loadingProductId === item._id}
           />
         ))}
       </div>

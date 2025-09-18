@@ -12,6 +12,7 @@ import {
   Leaf,
   ListChecks,
   Package,
+  PoundSterling,
   Shield,
   ShoppingCart,
   // New icons for the updated items
@@ -37,9 +38,10 @@ import {
 } from "@/components/ui/sidebar";
 
 const items = [
-  { title: "Tổng quan", url: "/admin", icon: User2 },
-  { title: "Hồ sơ", url: "/admin/dashboard", icon: Home },
+  { title: "Hồ sơ", url: "/admin", icon: User2 },
+  { title: "Tổng quan", url: "/admin/dashboard", icon: Home },
   { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
+  { title: "Doanh thu", url: "/admin/money", icon: PoundSterling },
   // {
   //   title: "Thống kê",
   //   url: "/admin/statics",

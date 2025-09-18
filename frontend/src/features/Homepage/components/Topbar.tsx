@@ -38,7 +38,7 @@ function NavigationItems({ navItems }: { navItems: AppHeaderProps["navItems"] })
           <Link
             key={index}
             to={path}
-            className={`text-sm font-medium transition-colors ${isActive ? "text-primary font-semibold" : "hover:text-primary/80 text-gray-600"}`}
+            className={`text-sm font-medium transition-colors ${isActive ? "text-black font-semibold" : "text-gray-600"}`}
           >
             {item.displayText}
           </Link>
@@ -162,7 +162,7 @@ export default function Topbar({ branding, navItems = [] }: AppHeaderProps = {})
   const onProductsPage = location.pathname.startsWith("/products");
 
   return (
-    <header className="sticky top-0 z-40 bg-white shadow-sm">
+    <header className="sticky top-0 z-40 bg-[#E8F9FF] shadow-sm">
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
