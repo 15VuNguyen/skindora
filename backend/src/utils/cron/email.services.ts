@@ -4,6 +4,9 @@ import Product from '~/models/schemas/Product.schema'
 import databaseService from '~/services/database.services'
 import { readEmailTemplate } from '~/utils/email-templates'
 import { CronJob } from 'cron'
+import voucherService from '~/services/voucher.services'
+import { ObjectId } from 'mongodb'
+import { sendMessage } from '~/services/Kafka/kafka.services'
 
 // Tạo transporter từ biến môi trường
 const transporter = nodemailer.createTransport({
@@ -60,6 +63,59 @@ export const dailyReport = new CronJob(
   '0 7 * * *',
   () => {
     sendDailyEmail()
+  },
+  null,
+  true,
+  'Asia/Ho_Chi_Minh'
+)
+
+export const checkVoucherJob = new CronJob(
+  '0 0 * * *',
+  async () => {
+    try {
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+
+      const voucherList = await databaseService.vouchers
+        .find({
+          endDate: { $lt: today },
+          isActive: true
+        })
+        .toArray()
+
+      if (voucherList.length > 0) {
+        await Promise.all(
+          voucherList.map(async (v) => {
+            const result = await databaseService.vouchers.findOneAndUpdate(
+              { _id: new ObjectId(v._id) },
+              {
+                $set: {
+                  isActive: false,
+                  updatedAt: new Date()
+                }
+              },
+              { returnDocument: 'after' }
+            )
+
+            const voucher = result
+            if (voucher) {
+              const topic = process.env.VOUCHER_UPDATED ?? 'voucher_updated'
+              await sendMessage(
+                topic,
+                voucher._id.toHexString(),
+                JSON.stringify({
+                  ...voucher,
+                  _id: voucher._id.toHexString()
+                })
+              )
+            }
+          })
+        )
+        console.log(`Updated ${voucherList.length} voucher(s)`)
+      }
+    } catch (err) {
+      console.error('Error inactive voucher expire', err)
+    }
   },
   null,
   true,
