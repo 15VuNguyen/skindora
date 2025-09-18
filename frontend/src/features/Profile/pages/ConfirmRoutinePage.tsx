@@ -32,10 +32,14 @@ const ProductInfo = ({ productId }: { productId: string }) => {
   if (isError) return <li className="text-red-500">Error loading product</li>;
 
   return (
-    <div className="flex items-center space-x-3">
-      <img src={product?.image_on_list} alt={product?.name_on_list} className="h-10 w-10 rounded object-cover" />
-      <span className="text-sm text-gray-700">{product?.name_on_list}</span>
-    </div>
+    <button
+      onClick={() => navigator.clipboard.writeText(product?._id || "")}
+      className="group relative inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-2.5 py-1 font-mono text-xs text-gray-700 hover:border-gray-300 hover:bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+    >
+      <img src={product?.image_on_list} alt={product?.name_on_list} className="h-8 w-8 rounded object-cover" />
+      <span>{product?.name_on_list}</span>
+      <span className="text-[10px] text-indigo-600 opacity-0 transition group-hover:opacity-100">Copy</span>
+    </button>
   );
 };
 
@@ -75,59 +79,90 @@ export function ConfirmRoutinePage() {
   }
 
   return (
-    <div className="container mx-auto max-w-4xl p-4 md:p-8">
-      <h1 className="mb-2 text-3xl font-bold">Confirm Your New Skincare Routine</h1>
-      <p className="text-muted-foreground mb-6">
-        Review the weekly schedule suggested by the AI, active from{" "}
-        <strong>{new Date(pendingRoutine.startDate).toLocaleDateString("vi-VN")}</strong> to{" "}
-        <strong>{new Date(pendingRoutine.endDate).toLocaleDateString("vi-VN")}</strong>.
-      </p>
+    <div className="min-h-dvh bg-gray-50 text-gray-900 antialiased">
+      <header className="sticky top-0 z-30 border-b border-gray-200 bg-white/75 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-indigo-600 font-bold text-white shadow">
+              WS
+            </div>
+            <div>
+              <h1 className="text-xl font-semibold sm:text-2xl">Weekly Routine</h1>
+              <p className="text-sm text-gray-500">
+                {`Range ${new Date(pendingRoutine.startDate).toLocaleDateString("vi-VN")}`} –{" "}
+                {`
+                ${new Date(pendingRoutine.endDate).toLocaleDateString("vi-VN")}`}
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
 
-      <div className="space-y-4">
-        {DAYS_OF_WEEK.map((day) => (
-          <Card key={day}>
-            <CardHeader>
-              <CardTitle className="text-primary text-lg">{day}</CardTitle>
-            </CardHeader>
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <section className="mb-4 flex flex-wrap items-center gap-2 text-sm text-gray-600">
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-emerald-500"></span> AM
+          </span>
+          <span className="inline-flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-sky-500"></span> PM
+          </span>
+        </section>
 
-            <CardContent className="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
-              <div>
-                <h4 className="mb-3 font-semibold">AM ☀️</h4>
-                <div className="space-y-3">
-                  {pendingRoutine.schedule[day]?.AM.length > 0 ? (
-                    pendingRoutine.schedule[day].AM.map((id: string) => (
-                      <ProductInfo key={`${day}-am-${id}`} productId={id} />
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-400">No products for this time.</p>
-                  )}
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {DAYS_OF_WEEK.map((day) => (
+            <Card key={day} className="rounded-2xl border border-gray-200 bg-white shadow">
+              <CardHeader>
+                <CardTitle className="text-lg font-semibold">{day}</CardTitle>
+              </CardHeader>
+              <CardContent className="grid grid-cols-1 gap-3">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="inline-flex items-center gap-2 text-sm font-medium">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500"></span> AM
+                    </h4>
+                    <span className="text-xs text-gray-500">{pendingRoutine.schedule[day]?.AM.length || 0} items</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {pendingRoutine.schedule[day]?.AM.length > 0 ? (
+                      pendingRoutine.schedule[day].AM.map((id: string) => (
+                        <ProductInfo key={`${day}-am-${id}`} productId={id} />
+                      ))
+                    ) : (
+                      <p className="text-xs text-gray-400">No entries</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div>
-                <h4 className="mb-3 font-semibold">PM 🌙</h4>
-                <div className="space-y-3">
-                  {pendingRoutine.schedule[day]?.PM.length > 0 ? (
-                    pendingRoutine.schedule[day].PM.map((id: string) => (
-                      <ProductInfo key={`${day}-pm-${id}`} productId={id} />
-                    ))
-                  ) : (
-                    <p className="text-sm text-gray-400">No products for this time.</p>
-                  )}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="inline-flex items-center gap-2 text-sm font-medium">
+                      <span className="h-2 w-2 rounded-full bg-sky-500"></span> PM
+                    </h4>
+                    <span className="text-xs text-gray-500">{pendingRoutine.schedule[day]?.PM.length || 0} items</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {pendingRoutine.schedule[day]?.PM.length > 0 ? (
+                      pendingRoutine.schedule[day].PM.map((id: string) => (
+                        <ProductInfo key={`${day}-pm-${id}`} productId={id} />
+                      ))
+                    ) : (
+                      <p className="text-xs text-gray-400">No entries</p>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
 
-      <div className="mt-8 flex justify-end gap-4">
-        <Button variant="outline" onClick={() => navigate("/skincare-ai")} disabled={isPending}>
-          Cancel
-        </Button>
-        <Button onClick={handleSave} disabled={isPending}>
-          {isPending ? "Saving..." : "Save and Activate Routine"}
-        </Button>
-      </div>
+        <div className="mt-8 flex justify-end gap-4">
+          <Button variant="outline" onClick={() => navigate("/skincare-ai")} disabled={isPending}>
+            Cancel
+          </Button>
+          <Button onClick={handleSave} disabled={isPending}>
+            {isPending ? "Saving..." : "Save and Activate Routine"}
+          </Button>
+        </div>
+      </main>
     </div>
   );
 }
