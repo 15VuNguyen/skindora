@@ -6,8 +6,14 @@ import { BLOG_MESSAGES } from '~/constants/messages'
 import { blogService } from '~/services/blog.services'
 import databaseService from '~/services/database.services'
 import { sendPaginatedResponse } from '~/utils/pagination.helper'
-import { CreateNewPostReqBody, PostParam, UpdatePostReqBody } from '~/models/requests/Blog.requests'
+import {
+  CreateNewPostReqBody,
+  PostByIdParam,
+  PostBySlugParam,
+  UpdatePostReqBody
+} from '~/models/requests/Blog.requests'
 import Blog from '~/models/schemas/Blog.schema'
+import { TokenPayLoad } from '~/models/requests/Users.requests'
 
 export const getAllPostsController = async (req: Request, res: Response, next: NextFunction) => {
   const filter: Filter<Blog> = {}
@@ -30,21 +36,22 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
       filter[field as keyof Filter<Blog>] = new ObjectId(req.query[field] as string)
     }
   })
-  await sendPaginatedResponse(res, next, databaseService.blogPosts, req.query, filter)
+  await sendPaginatedResponse(res, next, databaseService.blogs, req.query, filter)
 }
 
 export const createNewPostController = async (
   req: Request<ParamsDictionary, any, CreateNewPostReqBody>,
   res: Response
 ) => {
-  const result = await blogService.createNewPost(req.body)
+  const { user_id } = req.decoded_authorization as TokenPayLoad
+  const result = await blogService.createNewPost(req.body, user_id)
   res.json({
-    message: BLOG_MESSAGES.CREATE_NEW_POST_SUCCESS,
+    message: BLOG_MESSAGES.CREATE_NEW_POST_SUCCESS, 
     result
   })
 }
 
-export const getPostDetailController = async (req: Request<PostParam>, res: Response) => {
+export const getPostDetailController = async (req: Request<PostByIdParam>, res: Response) => {
   const { id } = req.params
   const result = await blogService.getPostDetail(id)
   res.json({
@@ -53,20 +60,29 @@ export const getPostDetailController = async (req: Request<PostParam>, res: Resp
   })
 }
 
-export const updatePostController = async (req: Request<PostParam, any, UpdatePostReqBody>, res: Response) => {
-  const { id } = req.params
-  const result = await blogService.updatePost(id, req.body)
+export const getPostBySlugController = async (req: Request<PostBySlugParam>, res: Response) => {
+  const { slug } = req.params
+  const result = await blogService.getPostBySlug(slug)
   res.json({
     message: BLOG_MESSAGES.GET_POST_DETAIL_SUCCESS,
     result
   })
 }
 
-export const deletePostController = async (req: Request<PostParam>, res: Response) => {
+export const updatePostController = async (req: Request<PostByIdParam, any, UpdatePostReqBody>, res: Response) => {
+  const { id } = req.params
+  const result = await blogService.updatePost(id, req.body)
+  res.json({
+    message: BLOG_MESSAGES.UPDATE_POST_SUCCESS,
+    result
+  })
+}
+
+export const deletePostController = async (req: Request<PostByIdParam>, res: Response) => {
   const { id } = req.params
   const result = await blogService.deletePost(id)
   res.json({
-    message: BLOG_MESSAGES.GET_POST_DETAIL_SUCCESS,
+    message: BLOG_MESSAGES.DELETE_POST_SUCCESS,
     result
   })
 }

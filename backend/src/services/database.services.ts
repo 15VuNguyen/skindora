@@ -15,8 +15,7 @@ import FilterHskSkinType from '~/models/schemas/FilterHskSkinType.schema'
 import FilterHskUses from '~/models/schemas/FilterHskUses.schema'
 import FilterOrigin from '~/models/schemas/FilterHskOrigin.schema'
 import Voucher from '~/models/schemas/Voucher.schema'
-import BlogPost from '~/models/schemas/Blog.schema'
-import BlogCategory from '~/models/schemas/Blogs/BlogCategory.schema'
+import Blog from '~/models/schemas/Blog.schema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@skindora.rbbhqia.mongodb.net/?retryWrites=true&w=majority&appName=skindora`
@@ -126,13 +125,10 @@ class DatabaseService {
     return this.db.collection(process.env.DB_VOUCHER_COLLECTION as string)
   }
 
-  get blogPosts(): Collection<BlogPost> {
-    return this.db.collection(process.env.DB_BLOG_POST_COLLECTION as string)
+  get blogs(): Collection<Blog> {
+    return this.db.collection(process.env.DB_BLOG_COLLECTION as string)
   }
 
-  get blogCategories(): Collection<BlogCategory> {
-    return this.db.collection(process.env.DB_BLOG_CATEGORY_COLLECTION as string)
-  }
 }
 
 const databaseService = new DatabaseService()

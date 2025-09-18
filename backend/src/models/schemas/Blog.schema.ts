@@ -9,14 +9,14 @@ interface BlogType {
   status: BlogState
   publishedAt?: Date
   authorId: ObjectId
-  filter_brand?: ObjectId
-  filter_dac_tinh?: ObjectId
-  filter_hsk_ingredients?: ObjectId
-  filter_hsk_product_type?: ObjectId
-  filter_hsk_size?: ObjectId
-  filter_hsk_skin_type?: ObjectId
-  filter_hsk_uses?: ObjectId
-  filter_origin?: ObjectId
+  filter_brand?: ObjectId[]
+  filter_dac_tinh?: ObjectId[]
+  filter_hsk_ingredients?: ObjectId[]
+  filter_hsk_product_type?: ObjectId[]
+  filter_hsk_size?: ObjectId[]
+  filter_hsk_skin_type?: ObjectId[]
+  filter_hsk_uses?: ObjectId[]
+  filter_origin?: ObjectId[]
   created_at?: Date
   updated_at?: Date
 }
@@ -29,14 +29,14 @@ export default class Blog {
   status: BlogState
   publishedAt?: Date
   authorId: ObjectId
-  filter_brand?: ObjectId
-  filter_dac_tinh?: ObjectId
-  filter_hsk_ingredients?: ObjectId
-  filter_hsk_product_type?: ObjectId
-  filter_hsk_size?: ObjectId
-  filter_hsk_skin_type?: ObjectId
-  filter_hsk_uses?: ObjectId
-  filter_origin?: ObjectId
+  filter_brand?: ObjectId[]
+  filter_dac_tinh?: ObjectId[]
+  filter_hsk_ingredients?: ObjectId[]
+  filter_hsk_product_type?: ObjectId[]
+  filter_hsk_size?: ObjectId[]
+  filter_hsk_skin_type?: ObjectId[]
+  filter_hsk_uses?: ObjectId[]
+  filter_origin?: ObjectId[]
   created_at: Date
   updated_at: Date
 
@@ -50,32 +50,18 @@ export default class Blog {
     this.slug = blog.slug
     this.content = blog.content
     this.status = blog.status || BlogState.DRAFT
-    this.publishedAt = blog.publishedAt || localTime
+    this.publishedAt = blog.status === BlogState.PUBLISHED ? blog.publishedAt || localTime : undefined
     this.authorId = blog.authorId
-    if (blog.filter_brand) {
-      this.filter_brand = blog.filter_brand
-    }
-    if (blog.filter_dac_tinh) {
-      this.filter_dac_tinh = blog.filter_dac_tinh
-    }
-    if (blog.filter_hsk_ingredients) {
-      this.filter_hsk_ingredients = blog.filter_hsk_ingredients
-    }
-    if (blog.filter_hsk_product_type) {
-      this.filter_hsk_product_type = blog.filter_hsk_product_type
-    }
-    if (blog.filter_hsk_size) {
-      this.filter_hsk_size = blog.filter_hsk_size
-    }
-    if (blog.filter_hsk_skin_type) {
-      this.filter_hsk_skin_type = blog.filter_hsk_skin_type
-    }
-    if (blog.filter_hsk_uses) {
-      this.filter_hsk_uses = blog.filter_hsk_uses
-    }
-    if (blog.filter_origin) {
-      this.filter_origin = blog.filter_origin
-    }
+
+    // filters
+    this.filter_brand = blog.filter_brand ?? []
+    this.filter_dac_tinh = blog.filter_dac_tinh ?? []
+    this.filter_hsk_ingredients = blog.filter_hsk_ingredients ?? []
+    this.filter_hsk_product_type = blog.filter_hsk_product_type ?? []
+    this.filter_hsk_size = blog.filter_hsk_size ?? []
+    this.filter_hsk_skin_type = blog.filter_hsk_skin_type ?? []
+    this.filter_hsk_uses = blog.filter_hsk_uses ?? []
+    this.filter_origin = blog.filter_origin ?? []
     this.created_at = blog.created_at || localTime
     this.updated_at = blog.updated_at || localTime
   }

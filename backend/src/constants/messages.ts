@@ -422,7 +422,7 @@ export const ORDER_MESSAGES = {
   CANCEL_REQUESTING: 'Đơn hàng này đang được yêu cầu hủy, không thể cập nhật sang trạng thái tiếp theo',
   COUNT_SUCCESS: 'Lấy số lượng đơn hàng thành công',
   COUNT_FAIL: 'Lấy số lượng đơn hàng thất bại',
-  INVALID_PHONE_NUMBER: "Số điện thoại không hợp lệ"
+  INVALID_PHONE_NUMBER: 'Số điện thoại không hợp lệ'
 } as const
 
 export const VOUCHER_MESSAGES = {
@@ -440,5 +440,28 @@ export const COMMON_MESSAGES = {
 
 export const BLOG_MESSAGES = {
   CREATE_NEW_POST_SUCCESS: 'Tạo bài viết mới thành công',
-  GET_POST_DETAIL_SUCCESS: 'Xem chi tiết bài viết thành công'
+  GET_POST_DETAIL_SUCCESS: 'Xem chi tiết bài viết thành công',
+  UPDATE_POST_SUCCESS: 'Cập nhật bài viết thành công',
+  DELETE_POST_SUCCESS: 'Lưu trữ bài viết thành công',
+  TITLE_REQUIRED: 'Vui lòng nhập tiêu đề',
+  CONTENT_REQUIRED: 'Vui lòng nhập nội dung',
+  STATUS_REQUIRED: 'Vui lòng chọn trạng thái',
+  EXISTED_POST_WITH_SLUG: 'Tồn tại bài viết với đường dẫn này',
+  INVALID_BLOG_STATE: 'Trạng thái của bài viết không hợp lệ(DRAFT, PUBLISHED hoặc ARCHIVED)',
+  INVALID_AUTHOR_ID: 'Id tác giả không hợp lệ',
+  INVALID_BRAND_ID: 'Id thương hiệu không hợp lệ',
+  INVALID_ORIGIN_ID: 'Id nguồn gốc không hợp lệ',
+  INVALID_USES_ID: 'Id công dụng không hợp lệ',
+  INVALID_SKIN_TYPE_ID: 'Id loại da không hợp lệ',
+  INVALID_SIZE_ID: 'Id kích thước không hợp lệ',
+  INVALID_PRODUCT_TYPE_ID: 'Id loại sản phẩm không hợp lệ',
+  INVALID_INGREDIENT_ID: 'Id thành phần không hợp lệ',
+  INVALID_DAC_TINH_ID: 'Id đặc tính không hợp lệ',
+  INVALID_TITLE_LENGTH: 'Độ dài của tiêu đề phải từ 10 đến 150 kí tự',
+  INVALID_CONTENT_LENGTH: 'Độ dài của nội dung phải từ 50 đến 5000 kí tự',
+  INVALID_ARRAY: 'Đối tượng phải là 1 mảng hợp lệ',
+  INVALID_OBJECT_ID: 'Id của đối tượng phải là 1 ObjectId hợp lệ',
+  POST_NOT_FOUND: 'Bài viết không tồn tại',
+  POST_ALREADY_ARCHIVED: 'Bài viết đã ở kho lưu trữ',
+  CANNOT_UPDATE_ARCHIVED_POST: 'Không thể cập nhật bài viết đang ở kho lưu trữ'
 }
