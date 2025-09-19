@@ -95,6 +95,5 @@ export enum DiscountType {
 
 export enum BlogState {
   DRAFT = 'DRAFT',
-  PUBLISHED = 'PUBLISHED',
-  ARCHIVED = 'ARCHIVED'
+  PUBLISHED = 'PUBLISHED'
 }

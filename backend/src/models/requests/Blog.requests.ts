@@ -47,8 +47,8 @@ export interface UpdatePostData {
   updated_at: Date
 }
 
-export interface PostBySlugParam {
-  slug: string
+export interface PostBySlugIdParam {
+  slugAndId: string
 }
 
 export interface PostByIdParam {

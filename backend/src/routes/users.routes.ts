@@ -39,6 +39,7 @@ import {
 import { UpdateMeReqBody } from '~/models/requests/Users.requests'
 import { wrapAsync } from '~/utils/handler'
 import { getAllVoucherController, getVoucherDetailController } from '~/controllers/voucher.controllers'
+import { getAllPostsController, getAllPublishPostsController } from '~/controllers/blog.controllers'
 
 const usersRouter = Router()
 // usersRouter.route('/').get(loginController)
@@ -90,4 +91,7 @@ usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshContr
 usersRouter.get('/oauth/google', wrapAsync(oAuthController))
 usersRouter.get('/vouchers', wrapAsync(getAllVoucherController))
 usersRouter.get('/vouchers/:voucherId', wrapAsync(getVoucherDetailController))
+
+usersRouter.get('/blogs', wrapAsync(getAllPublishPostsController))
 export default usersRouter
+

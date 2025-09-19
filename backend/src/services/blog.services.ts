@@ -8,7 +8,6 @@ import { ErrorWithStatus } from '~/models/Errors'
 import { BLOG_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import User from '~/models/schemas/User.schema'
-import { title } from 'process'
 
 class BlogService {
   async createNewPost(payload: CreateNewPostReqBody, userId: string) {
@@ -57,18 +56,9 @@ class BlogService {
     return newPost
   }
 
-  getPostDetail(postId: string) {
-    return databaseService.blogs.findOne({ _id: new ObjectId(postId) })
-  }
-
-  async getPostBySlug(slug: string) {
-    const post = await databaseService.blogs.findOne({ slug })
-    if (!post) {
-      throw new ErrorWithStatus({
-        message: BLOG_MESSAGES.POST_NOT_FOUND,
-        status: HTTP_STATUS.NOT_FOUND
-      })
-    }
+  async getPostById(id: string) {
+    const post = await databaseService.blogs.findOne({ _id: new ObjectId(id) })
+    if (!post) return null
 
     const user = await databaseService.users.findOne({ _id: post?.authorId })
     if (!user) {
@@ -140,10 +130,6 @@ class BlogService {
   }
 
   async deletePost(postId: string) {
-    const currentDate = new Date()
-    const vietnamTimezoneOffset = 7 * 60
-    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
-
     const post = await databaseService.blogs.findOne({ _id: new ObjectId(postId) })
     if (!post) {
       throw new ErrorWithStatus({
@@ -152,18 +138,7 @@ class BlogService {
       })
     }
 
-    if (post.status === BlogState.ARCHIVED) {
-      throw new ErrorWithStatus({
-        message: BLOG_MESSAGES.POST_ALREADY_ARCHIVED,
-        status: HTTP_STATUS.BAD_REQUEST
-      })
-    }
-
-    return await databaseService.blogs.findOneAndUpdate(
-      { _id: post._id },
-      { $set: { status: BlogState.ARCHIVED, updated_at: localTime } },
-      { returnDocument: 'after' }
-    )
+    await databaseService.blogs.deleteOne({_id: new ObjectId(postId)})
   }
 
   private generateSlug(title: string) {

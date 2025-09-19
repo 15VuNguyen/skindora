@@ -107,12 +107,6 @@ export const updateBlogValidator = validate(
               })
             }
 
-            if(blog.status === BlogState.ARCHIVED){
-              throw new ErrorWithStatus({
-                message: BLOG_MESSAGES.CANNOT_UPDATE_ARCHIVED_POST,
-                status: HTTP_STATUS.BAD_REQUEST
-              })
-            }
             return true
           }
         }

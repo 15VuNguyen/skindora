@@ -442,7 +442,7 @@ export const BLOG_MESSAGES = {
   CREATE_NEW_POST_SUCCESS: 'Tạo bài viết mới thành công',
   GET_POST_DETAIL_SUCCESS: 'Xem chi tiết bài viết thành công',
   UPDATE_POST_SUCCESS: 'Cập nhật bài viết thành công',
-  DELETE_POST_SUCCESS: 'Lưu trữ bài viết thành công',
+  DELETE_POST_SUCCESS: 'Xoá bài viết thành công',
   TITLE_REQUIRED: 'Vui lòng nhập tiêu đề',
   CONTENT_REQUIRED: 'Vui lòng nhập nội dung',
   STATUS_REQUIRED: 'Vui lòng chọn trạng thái',
@@ -463,5 +463,8 @@ export const BLOG_MESSAGES = {
   INVALID_OBJECT_ID: 'Id của đối tượng phải là 1 ObjectId hợp lệ',
   POST_NOT_FOUND: 'Bài viết không tồn tại',
   POST_ALREADY_ARCHIVED: 'Bài viết đã ở kho lưu trữ',
-  CANNOT_UPDATE_ARCHIVED_POST: 'Không thể cập nhật bài viết đang ở kho lưu trữ'
+  CANNOT_UPDATE_ARCHIVED_POST: 'Không thể cập nhật bài viết đang ở kho lưu trữ',
+  SLUG_NOT_MATCH: 'Đường dẫn không khớp',
+  ADMIN_STAFF_ONLY: 'Tài nguyên này chỉ dành cho staff và admin, bạn không có quyền truy cập'
+
 }
