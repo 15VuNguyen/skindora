@@ -1,9 +1,7 @@
 import { Loader2, Package, Star } from "lucide-react";
 import React, { useEffect } from "react";
 
-import Typography from "@/components/Typography";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useHeader } from "@/contexts/header.context";
 import { useFetchOrderStatics } from "@/hooks/Orders/useFetchOrderStatis";
 import { useFetchOrder } from "@/hooks/Orders/useFetchOrders";
 
