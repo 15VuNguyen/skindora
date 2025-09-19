@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 const API_KEY = process.env.API_KEY;
-export const MODEL_NAME = "gemini-2.5-flash-preview-05-20";
+export const MODEL_NAME = "gemini-2.5-flash";
 
 export const geminiClient = new OpenAI({
   apiKey: API_KEY,

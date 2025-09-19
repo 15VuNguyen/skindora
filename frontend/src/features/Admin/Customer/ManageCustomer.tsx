@@ -1,4 +1,4 @@
-import { Loader2, TrendingDown, TrendingUp } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import React, { useEffect, useMemo } from "react";
 
 import { Card } from "@/components/ui/card";
@@ -87,20 +87,14 @@ const ManageCustomer: React.FC = () => {
           <div className="flex-1">
             <div className="mx-auto bg-white px-8 py-15 pt-4">
               <div className="mt-2 mb-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <CardDemo
-                  title="Tổng số người dùng"
-                  amount={`${params.totalRecords ?? 0}`}
-                  change="+20.1% so với tháng trước"
-                />
+                <CardDemo title="Tổng số người dùng" amount={`${params.totalRecords ?? 0}`} />
                 <CardDemo
                   title="Số lượng khách hàng chưa xác thực tài khoản"
                   amount={`${paramsForUserIsNotVerified.totalRecords ?? 0}`}
-                  change="+20.1% so với tháng trước"
                 />
                 <CardDemo
                   title="Số lượng khách hàng đã xác thực tài khoản"
                   amount={`${paramsForUserIsVerified.totalRecords ?? 0}`}
-                  change="+20.1% so với tháng trước"
                 />
                 {/* Các CardDemo khác */}
               </div>
@@ -111,11 +105,6 @@ const ManageCustomer: React.FC = () => {
                     description=""
                     value={params.totalRecords}
                     label="Khách hàng"
-                    footerContent={
-                      <>
-                        Tăng 5.2% so với tháng trước <TrendingUp className="h-4 w-4 text-green-500" />
-                      </>
-                    }
                     footerDescription="Dữ liệu cập nhật hàng ngày"
                   />
                 </div>
@@ -125,11 +114,6 @@ const ManageCustomer: React.FC = () => {
                     description=""
                     value={paramsForUserIsVerified.totalRecords}
                     label="Tài khoản"
-                    footerContent={
-                      <>
-                        Giảm 2.1% so với tháng trước <TrendingDown className="h-4 w-4 text-red-500" />
-                      </>
-                    }
                     footerDescription="Tổng số tài khoản đăng ký mới"
                   />
                 </div>

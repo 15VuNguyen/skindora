@@ -347,7 +347,8 @@ export const ADMIN_MESSAGES = {
   CANNOT_CREATE_INACTIVE_FILTER: 'Không thể tạo một {filter} với trạng thái không hoạt động',
   FILTER_DAC_TINH_OPTION_NAME_MUST_BE_A_STRING: 'Tên tùy chọn của đặc tính phải là chuỗi',
   FILTER_DAC_TINH_CATEGORY_NAME_MUST_BE_A_STRING: 'Tên danh mục của đặc tính phải là chuỗi',
-  FILTER_DAC_TINH_CATEGORY_PARAM_MUST_BE_A_STRING: 'Tham số danh mục của đặc tính phải là chuỗi'
+  FILTER_DAC_TINH_CATEGORY_PARAM_MUST_BE_A_STRING: 'Tham số danh mục của đặc tính phải là chuỗi',
+  START_DATE_MUST_BE_AFTER_TODAY: 'Vui lòng chọn ngày bắt đầu sau hôm nay.'
 } as const
 
 export const CART_MESSAGES = {

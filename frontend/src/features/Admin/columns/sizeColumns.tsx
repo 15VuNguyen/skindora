@@ -19,7 +19,7 @@ import { useUpdateStatusSize } from "@/hooks/Size/useUpdateSkin";
 import type { Size } from "@/types/Filter/size";
 
 export const ActionsCell = ({ row, refetchData }: { row: { original: Size }; refetchData: () => void }) => {
-  const { _id, option_name, state } = row.original;
+  const { _id, state } = row.original;
   const navigate = useNavigate();
 
   const payload = {
@@ -46,9 +46,9 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Size }; ref
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>
+          {/* <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>
             Copy tên kích thước
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/size-detail`)}>Xem chi tiết</DropdownMenuItem>
 

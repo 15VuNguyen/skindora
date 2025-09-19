@@ -40,7 +40,7 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Origin }; r
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(_id)}>Copy mã voucher</DropdownMenuItem>
+          {/* <DropdownMenuItem onClick={() => navigator.clipboard.writeText(_id)}>Copy mã voucher</DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/origin-detail`)}>Xem chi tiết</DropdownMenuItem>
           {state === "ACTIVE" ? (

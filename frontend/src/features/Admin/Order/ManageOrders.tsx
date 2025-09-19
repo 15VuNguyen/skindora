@@ -1,6 +1,7 @@
 import { Loader2, Package, Star } from "lucide-react";
 import React, { useEffect } from "react";
 
+import Typography from "@/components/Typography";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchOrderStatics } from "@/hooks/Orders/useFetchOrderStatis";
@@ -12,7 +13,7 @@ import type { FilterOptionsProps } from "../components/TableCustom";
 import { DataTable } from "../components/TableCustom";
 
 const ManageOrdersStaff: React.FC = () => {
-  const { setHeaderName } = useHeader();
+  const { setHeaderName, headerName } = useHeader();
   const { fetchOrder, data, params, changePage, changeStatus, loading } = useFetchOrder();
   const { data: orderStatics, fetchOrder: fetchOrderStatics } = useFetchOrderStatics();
   useEffect(() => {
@@ -30,13 +31,12 @@ const ManageOrdersStaff: React.FC = () => {
   };
   const filterOptions: FilterOptionsProps[] = [
     { value: "", status: "ALL" as const, label: "Tất cả" },
-    { value: "pending", status: "PENDING" as const, label: "Đang chờ" },
-    { value: "confirmed", status: "CONFIRMED" as const, label: "Đã đồng ý" },
-    { value: "shipping", status: "SHIPPING" as const, label: "Đang giao" },
-    { value: "delivered", status: "DELIVERED" as const, label: "Đã giao" },
+    { value: "pending", status: "PENDING" as const, label: "Chờ xử lý" },
+    { value: "confirmed", status: "CONFIRMED" as const, label: "Đã xác nhận" },
+    { value: "processing", status: "PROCESSING" as const, label: "Đang xử lý" },
+    { value: "shipping", status: "SHIPPING" as const, label: "Đang vận chuyển" },
+    { value: "delivered", status: "DELIVERED" as const, label: "Đã giao hàng" },
     { value: "cancelled", status: "CANCELLED" as const, label: "Đã hủy" },
-    { value: "returned", status: "RETURNED" as const, label: "Hoàn hàng" },
-    { value: "failed", status: "FAILED" as const, label: "Thất bại" },
   ];
 
   if (loading) {
@@ -53,8 +53,10 @@ const ManageOrdersStaff: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 p-5">
       <div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
-          {/* Card: Tổng đơn hàng */}
+        <div className="mb-3">
+          <Typography className="text-2xl font-bold">{headerName}</Typography>
+        </div>
+        <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-4">
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
@@ -102,32 +104,6 @@ const ManageOrdersStaff: React.FC = () => {
                   <p className="text-3xl font-bold">{orderStatics?.statusCounts.DELIVERED || 0}</p>
                 </div>
                 <Package className="h-8 w-8 text-green-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Card: Bị trả lại (Returned) */}
-          <Card className="bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-orange-100">Bị Trả Lại</p>
-                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.RETURNED || 0}</p>
-                </div>
-                <Package className="h-8 w-8 text-orange-200" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Card: Đã hủy (Cancelled) */}
-          <Card className="bg-gradient-to-r from-red-500 to-red-600 text-white shadow-md">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-red-100">Đã Hủy</p>
-                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.CANCELLED || 0}</p>
-                </div>
-                <Package className="h-8 w-8 text-red-200" />
               </div>
             </CardContent>
           </Card>

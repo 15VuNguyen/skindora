@@ -1,5 +1,5 @@
 import { easeOut, motion } from "framer-motion";
-import { Award, CheckCircle, Heart, Users } from "lucide-react";
+import { Award, CheckCircle, Heart} from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -129,70 +129,70 @@ function AboutValues() {
   );
 }
 
-function AboutTeam() {
-  const members = [
-    {
-      name: "BS.Trần Anh Vỹ",
-      role: "Nhà sáng lập & Bác sĩ da liễu trưởng",
-      image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
-    },
-    {
-      name: "Trần Anh Vỹ",
-      role: "Trưởng phòng phát triển sản phẩm",
-      image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
-    },
-    {
-      name: "Trần Anh Vỹ",
-      role: "Quản lý kiểm soát chất lượng",
-      image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
-    },
-  ];
-  return (
-    <motion.div variants={itemVariants}>
-      <Card className="from-card to-secondary/10 border border-gray-200 bg-gradient-to-br shadow-xl">
-        <CardContent className="p-8">
-          <motion.div
-            className="mb-8 flex items-center justify-center"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1, duration: 0.5 }}
-          >
-            <Users className="text-primary mr-3 h-8 w-8" />
-            <h2 className="from-primary to-accent bg-gradient-to-r bg-clip-text text-center text-3xl font-bold text-transparent">
-              Đội ngũ của chúng tôi
-            </h2>
-          </motion.div>
-          <div className="grid gap-8 md:grid-cols-3">
-            {members.map((member, index) => (
-              <motion.div
-                key={index}
-                className="group text-center"
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.2 + index * 0.2, duration: 0.5 }}
-              >
-                <motion.div
-                  className="relative mx-auto mb-4 h-32 w-32"
-                  whileHover={{ scale: 1.1, y: -20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="ring-primary/20 group-hover:ring-primary/40 h-full w-full rounded-full object-cover shadow-lg ring-4 transition-all duration-300"
-                  />
-                  <div className="from-primary/20 absolute inset-0 rounded-full bg-gradient-to-t to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                </motion.div>
-                <h3 className="text-foreground mb-1 font-bold">{member.name}</h3>
-                <p className="text-muted-foreground text-sm">{member.role}</p>
-              </motion.div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-}
+// function AboutTeam() {
+//   const members = [
+//     {
+//       name: "BS.Trần Anh Vỹ",
+//       role: "Nhà sáng lập & Bác sĩ da liễu trưởng",
+//       image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
+//     },
+//     {
+//       name: "Trần Anh Vỹ",
+//       role: "Trưởng phòng phát triển sản phẩm",
+//       image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
+//     },
+//     {
+//       name: "Trần Anh Vỹ",
+//       role: "Quản lý kiểm soát chất lượng",
+//       image: "https://i.ibb.co/JwjhdV39/2d6b83ced511614f3800.jpg",
+//     },
+//   ];
+//   return (
+//     <motion.div variants={itemVariants}>
+//       <Card className="from-card to-secondary/10 border border-gray-200 bg-gradient-to-br shadow-xl">
+//         <CardContent className="p-8">
+//           <motion.div
+//             className="mb-8 flex items-center justify-center"
+//             initial={{ opacity: 0, scale: 0.8 }}
+//             animate={{ opacity: 1, scale: 1 }}
+//             transition={{ delay: 1, duration: 0.5 }}
+//           >
+//             <Users className="text-primary mr-3 h-8 w-8" />
+//             <h2 className="from-primary to-accent bg-gradient-to-r bg-clip-text text-center text-3xl font-bold text-transparent">
+//               Đội ngũ của chúng tôi
+//             </h2>
+//           </motion.div>
+//           <div className="grid gap-8 md:grid-cols-3">
+//             {members.map((member, index) => (
+//               <motion.div
+//                 key={index}
+//                 className="group text-center"
+//                 initial={{ opacity: 0, y: 30 }}
+//                 animate={{ opacity: 1, y: 0 }}
+//                 transition={{ delay: 1.2 + index * 0.2, duration: 0.5 }}
+//               >
+//                 <motion.div
+//                   className="relative mx-auto mb-4 h-32 w-32"
+//                   whileHover={{ scale: 1.1, y: -20 }}
+//                   transition={{ duration: 0.3 }}
+//                 >
+//                   <img
+//                     src={member.image}
+//                     alt={member.name}
+//                     className="ring-primary/20 group-hover:ring-primary/40 h-full w-full rounded-full object-cover shadow-lg ring-4 transition-all duration-300"
+//                   />
+//                   <div className="from-primary/20 absolute inset-0 rounded-full bg-gradient-to-t to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+//                 </motion.div>
+//                 <h3 className="text-foreground mb-1 font-bold">{member.name}</h3>
+//                 <p className="text-muted-foreground text-sm">{member.role}</p>
+//               </motion.div>
+//             ))}
+//           </div>
+//         </CardContent>
+//       </Card>
+//     </motion.div>
+//   );
+// }
 
 function AboutCerts() {
   const certs = ["ISO 9001", "GMP", "HALAL", "ORGANIC"];
@@ -252,7 +252,7 @@ const AboutUs = () => {
         <AboutHeader />
         <AboutStory />
         <AboutValues />
-        <AboutTeam />
+        {/* <AboutTeam /> */}
         <AboutCerts />
       </motion.div>
     </div>

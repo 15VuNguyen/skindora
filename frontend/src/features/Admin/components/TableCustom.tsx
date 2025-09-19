@@ -16,26 +16,19 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export interface FilterOptionsProps {
   value: string;
-  status?:
-    | "SHIPPING"
-    | "FAILED"
-    | "CANCELLED"
-    | "RETURNED"
-    | "DELIVERED"
-    | "PROCESSING"
-    | "ALL"
-    | "CONFIRMED"
-    | "PENDING";
+  status?: "SHIPPING" | "CANCELLED" | "DELIVERED" | "PROCESSING" | "ALL" | "CONFIRMED" | "PENDING";
   label?:
     | "Đang giao"
-    | "Thất bại"
     | "Đã hủy"
-    | "Hoàn hàng"
     | "Đã giao"
     | "Đang xử lý"
     | "Tất cả"
     | "Đã đồng ý"
-    | "Đang chờ";
+    | "Đang chờ"
+    | "Chờ xử lý"
+    | "Đã xác nhận"
+    | "Đang vận chuyển"
+    | "Đã giao hàng";
 }
 
 interface DataTableProps<TData, TValue> {
@@ -82,6 +75,29 @@ export function DataTable<TData, TValue>({
   });
 
   const showSearchBar = onSearchChange !== undefined;
+  // Định nghĩa lại kiểu cho các variant có thể có để code an toàn hơn
+
+  // Hàm ánh xạ status sang variant
+  const getVariantFromStatus = (status: FilterOptionsProps["status"]) => {
+    switch (status) {
+      case "CANCELLED":
+        return "destructive";
+      case "DELIVERED":
+        return "complete";
+      case "SHIPPING":
+        return "shipping";
+      case "PROCESSING":
+        return "processing";
+      case "CONFIRMED":
+        return "confirmed";
+      case "PENDING":
+        return "pending";
+      case "ALL":
+        return "secondary";
+      default:
+        return "outline";
+    }
+  };
 
   return (
     <div className="w-full">
@@ -109,7 +125,11 @@ export function DataTable<TData, TValue>({
             };
             return (
               <div key={option.value}>
-                <Button variant={status === option.status ? "default" : "secondary"} onClick={handleClick}>
+                <Button
+                  // Đây là phần logic đã được cập nhật
+                  variant={status === option.status ? "default" : getVariantFromStatus(option.status)}
+                  onClick={handleClick}
+                >
                   {option.label}
                 </Button>
               </div>

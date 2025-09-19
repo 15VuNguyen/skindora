@@ -23,7 +23,7 @@ const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString("vi-VN");
 };
 export const ActionsCell = ({ row, refetchData }: { row: { original: Uses }; refetchData: () => void }) => {
-  const { _id, option_name, state } = row.original;
+  const { _id, state } = row.original;
   const navigate = useNavigate();
   const payload = {
     state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",
@@ -47,7 +47,7 @@ export const ActionsCell = ({ row, refetchData }: { row: { original: Uses }; ref
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem>
+          {/* <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>Copy tên hãng</DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/uses-detail`)}>Xem chi tiết</DropdownMenuItem>
 

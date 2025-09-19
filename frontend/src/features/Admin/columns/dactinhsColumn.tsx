@@ -21,7 +21,7 @@ const formatDate = (dateString: string) => {
 };
 
 export const DacTinhActionsCell = ({ row, refetchData }: { row: { original: DacTinh }; refetchData: () => void }) => {
-  const { _id, option_name, state } = row.original;
+  const { _id, state } = row.original;
 
   const navigate = useNavigate();
   const payload = {
@@ -46,9 +46,9 @@ export const DacTinhActionsCell = ({ row, refetchData }: { row: { original: DacT
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>
+          {/* <DropdownMenuItem onClick={() => navigator.clipboard.writeText(option_name)}>
             Copy tên đặc tính
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate(`/admin/${_id}/dac-tinh-detail`)}>Xem chi tiết</DropdownMenuItem>
 

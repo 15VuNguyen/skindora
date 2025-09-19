@@ -35,6 +35,7 @@ export const useFetchOrder = () => {
         page: params.page,
         ...(params.status !== "ALL" && { status: params.status }),
       });
+      console.log(response);
       setData(response.data);
       console.log(params);
       setParams((prevParams) => ({

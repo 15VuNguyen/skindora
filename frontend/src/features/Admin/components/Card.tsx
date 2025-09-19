@@ -5,7 +5,7 @@ import { Card, CardContent, CardTitle } from "@/components/ui/card";
 interface CardDemoProps {
   title: string;
   amount: string;
-  change: string;
+  change?: string;
   icon?: React.ReactNode;
 }
 
