@@ -86,7 +86,7 @@ const ManageBrand: React.FC = () => {
                         data={data}
                         onSearchChange={setSearchTerm}
                         searchValue={searchTerm}
-                        filterPlaceholder="Tìm brand theo tên..."
+                        filterPlaceholder="Tìm thương hiệu theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

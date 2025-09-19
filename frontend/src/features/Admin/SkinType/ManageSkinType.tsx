@@ -39,7 +39,7 @@ const ManageSkinType: React.FC = () => {
     }));
   };
   useEffect(() => {
-    setHeaderName("Quản Lý Loại da");
+    setHeaderName("Quản Lý Loại Da");
   }, [setHeaderName]);
   useEffect(() => {
     const pageFromURL = Number(searchParams.get("page") || "1");
@@ -87,7 +87,7 @@ const ManageSkinType: React.FC = () => {
                         data={data}
                         onSearchChange={setSearchTerm}
                         searchValue={searchTerm}
-                        filterPlaceholder="Tìm Loại da"
+                        filterPlaceholder="Tìm tên loại da theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

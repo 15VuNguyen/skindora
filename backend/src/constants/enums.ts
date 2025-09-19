@@ -92,3 +92,8 @@ export enum DiscountType {
   Percentage = 'PERCENTAGE', // giảm giá theo %
   Fixed = 'FIXED' // giảm giá số tiền ví dụ giảm thẳng 50k
 }
+
+export enum PostState {
+  DRAFT = 'DRAFT',
+  PUBLISHED = 'PUBLISHED'
+}

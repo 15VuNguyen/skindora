@@ -16,8 +16,8 @@ import CreateIngredient from "@/features/Admin/Ingredient/CreateIngredient";
 import IngredientDetail from "@/features/Admin/Ingredient/IngredientDetail";
 import ManageIngredient from "@/features/Admin/Ingredient/ManageIngredient";
 import UpdateIngredient from "@/features/Admin/Ingredient/UpdateIngredient";
-import ManageOrders from "@/features/Admin/Order/ManageOrders";
 import OrderDetailPage from "@/features/Admin/Order/OrderDetailPage";
+import ManageOrdersPage from "@/features/Admin/Order/page";
 import CreateOrigin from "@/features/Admin/Origin/CreateOrigin";
 import ManageOrigin from "@/features/Admin/Origin/ManageOrigin";
 import OriginDetail from "@/features/Admin/Origin/OriginDetail";
@@ -126,7 +126,7 @@ const adminRoutes: RouteObject[] = [
       },
       {
         path: "orders",
-        element: <ManageOrders />,
+        element: <ManageOrdersPage />,
       },
       {
         path: "order-detail/:orderId",

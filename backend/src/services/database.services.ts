@@ -15,6 +15,7 @@ import FilterHskSkinType from '~/models/schemas/FilterHskSkinType.schema'
 import FilterHskUses from '~/models/schemas/FilterHskUses.schema'
 import FilterOrigin from '~/models/schemas/FilterHskOrigin.schema'
 import Voucher from '~/models/schemas/Voucher.schema'
+import Blog from '~/models/schemas/Blog.schema'
 import UserRoutine from '~/models/schemas/UserRoutine.schema'
 
 config()
@@ -126,6 +127,11 @@ class DatabaseService {
   get vouchers(): Collection<Voucher> {
     return this.db.collection(process.env.DB_VOUCHER_COLLECTION as string)
   }
+
+  get posts(): Collection<Blog> {
+    return this.db.collection(process.env.DB_POST_COLLECTION as string)
+  }
+
 }
 
 const databaseService = new DatabaseService()

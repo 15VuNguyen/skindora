@@ -178,22 +178,20 @@ export const cancelRequestColumns: ColumnDef<CancelRequest>[] = [
     accessorKey: "_id",
     header: "Mã Đơn Hàng",
     cell: ({ row }) => {
-      return (
-        <div>
-          <span className="font-medium text-blue-600 hover:text-blue-800">{row.getValue("_id")}</span>
-        </div>
-      );
+      const id = row.getValue("_id");
+      const idStr = String(id);
+      const shortenedId = `${idStr.slice(0, 6)}...${idStr.slice(-4)}`;
+      return <div className="pl-2 font-medium text-blue-600">{shortenedId}</div>;
     },
   },
   {
     accessorKey: "UserID",
     header: "Mã Người Dùng ",
     cell: ({ row }) => {
-      return (
-        <div>
-          <span className="font-medium text-indigo-600 hover:text-indigo-800">{row.getValue("UserID")}</span>
-        </div>
-      );
+      const id = row.getValue("UserID");
+      const idStr = String(id);
+      const shortenedId = `${idStr.slice(0, 6)}...${idStr.slice(-4)}`;
+      return <div className="pl-2 font-medium text-blue-600">{shortenedId}</div>;
     },
   },
   {

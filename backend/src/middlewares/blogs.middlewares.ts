@@ -1,0 +1,165 @@
+import { checkSchema } from 'express-validator'
+import { ObjectId } from 'mongodb'
+import { PostState } from '~/constants/enums'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { ADMIN_MESSAGES, BLOG_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
+import { ErrorWithStatus } from '~/models/Errors'
+import databaseService from '~/services/database.services'
+import { validate } from '~/utils/validation'
+
+const createArrayObjectIdValidator = (collection: keyof typeof databaseService, notFoundMessage: string) => ({
+  optional: true,
+  isArray: {
+    errorMessage: BLOG_MESSAGES.INVALID_ARRAY
+  },
+  custom: {
+    options: async (values: string[]) => {
+      if (!values) return true
+      for (const value of values) {
+        if (!ObjectId.isValid(value)) {
+          throw new Error(BLOG_MESSAGES.INVALID_OBJECT_ID)
+        }
+        const doc = await (databaseService[collection] as any).findOne({ _id: new ObjectId(value) })
+        if (!doc) {
+          throw new Error(notFoundMessage)
+        }
+      }
+      return true
+    }
+  }
+})
+
+export const createBlogValidator = validate(
+  checkSchema(
+    {
+      title: {
+        notEmpty: {
+          errorMessage: BLOG_MESSAGES.TITLE_REQUIRED
+        },
+        isLength: {
+          options: { min: 10, max: 150 },
+          errorMessage: BLOG_MESSAGES.INVALID_TITLE_LENGTH
+        }
+      },
+      content: {
+        notEmpty: {
+          errorMessage: BLOG_MESSAGES.CONTENT_REQUIRED
+        },
+        isLength: {
+          options: { min: 50, max: 20000  },
+          errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
+        }
+      },
+      status: {
+        optional: true,
+        isIn: {
+          options: [Object.values(PostState)],
+          errorMessage: BLOG_MESSAGES.INVALID_BLOG_STATE
+        }
+      },
+      authorId: {
+        optional: true,
+        isMongoId: {
+          errorMessage: BLOG_MESSAGES.INVALID_AUTHOR_ID
+        },
+        custom: {
+          options: async (value) => {
+            if (!value) return true
+            const user = await databaseService.users.findOne({ _id: new ObjectId(value) })
+            if (!user) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.USER_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+            return true
+          }
+        }
+      },
+      filter_brand: createArrayObjectIdValidator('filterBrand', ADMIN_MESSAGES.BRAND_ID_NOT_FOUND),
+      filter_dac_tinh: createArrayObjectIdValidator('filterDacTinh', ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND),
+      filter_hsk_ingredients: createArrayObjectIdValidator('filterHskIngredient', ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND),
+      filter_hsk_product_type: createArrayObjectIdValidator('filterHskProductType', ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND),
+      filter_hsk_size: createArrayObjectIdValidator('filterHskSize', ADMIN_MESSAGES.SIZE_ID_NOT_FOUND),
+      filter_hsk_skin_type: createArrayObjectIdValidator('filterHskSkinType', ADMIN_MESSAGES.SKIN_TYPE_ID_NOT_FOUND),
+      filter_hsk_uses: createArrayObjectIdValidator('filterHskUses', ADMIN_MESSAGES.USES_ID_NOT_FOUND),
+      filter_origin: createArrayObjectIdValidator('filterOrigin', ADMIN_MESSAGES.ORIGIN_ID_NOT_FOUND)
+    },
+    ['body']
+  )
+)
+
+export const updateBlogValidator = validate(
+  checkSchema(
+    {
+      id: {
+        in: ['params'],
+        isMongoId: {
+          errorMessage: BLOG_MESSAGES.INVALID_OBJECT_ID
+        },
+        custom: {
+          options: async(value) => {
+            const post = await databaseService.posts.findOne({_id: new ObjectId(value)})
+            if(!post){
+              throw new ErrorWithStatus({
+                message: BLOG_MESSAGES.POST_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+
+            return true
+          }
+        }
+      },
+      title: {
+        optional: true,
+        isLength: {
+          options: { min: 10, max: 150 },
+          errorMessage: BLOG_MESSAGES.INVALID_TITLE_LENGTH
+        }
+      },
+      content: {
+        optional: true,
+        isLength: {
+          options: { min: 50, max: 20000 },
+          errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
+        }
+      },
+      status: {
+        optional: true,
+        isIn: {
+          options: [Object.values(PostState)],
+          errorMessage: BLOG_MESSAGES.INVALID_BLOG_STATE
+        }
+      },
+      authorId: {
+        optional: true,
+        isMongoId: {
+          errorMessage: BLOG_MESSAGES.INVALID_AUTHOR_ID
+        },
+        custom: {
+          options: async (value) => {
+            if (!value) return true
+            const user = await databaseService.users.findOne({ _id: new ObjectId(value) })
+            if (!user) {
+              throw new ErrorWithStatus({
+                message: USERS_MESSAGES.USER_NOT_FOUND,
+                status: HTTP_STATUS.NOT_FOUND
+              })
+            }
+            return true
+          }
+        }
+      },
+      filter_brand: createArrayObjectIdValidator('filterBrand', ADMIN_MESSAGES.BRAND_ID_NOT_FOUND),
+      filter_dac_tinh: createArrayObjectIdValidator('filterDacTinh', ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND),
+      filter_hsk_ingredients: createArrayObjectIdValidator('filterHskIngredient', ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND),
+      filter_hsk_product_type: createArrayObjectIdValidator('filterHskProductType', ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND),
+      filter_hsk_size: createArrayObjectIdValidator('filterHskSize', ADMIN_MESSAGES.SIZE_ID_NOT_FOUND),
+      filter_hsk_skin_type: createArrayObjectIdValidator('filterHskSkinType', ADMIN_MESSAGES.SKIN_TYPE_ID_NOT_FOUND),
+      filter_hsk_uses: createArrayObjectIdValidator('filterHskUses', ADMIN_MESSAGES.USES_ID_NOT_FOUND),
+      filter_origin: createArrayObjectIdValidator('filterOrigin', ADMIN_MESSAGES.ORIGIN_ID_NOT_FOUND)
+    },
+    ['body']
+  )
+)

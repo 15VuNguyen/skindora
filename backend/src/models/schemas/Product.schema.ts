@@ -91,7 +91,7 @@ export default class Product {
       this.filter_hsk_product_type = product.filter_hsk_product_type
     }
     if (product.filter_hsk_size) {
-      this.filter_hsk_size = product.filter_hsk_size
+      this.filter_hsk_size = product.filter_hsk_size   
     }
     if (product.filter_hsk_skin_type) {
       this.filter_hsk_skin_type = product.filter_hsk_skin_type
@@ -102,7 +102,7 @@ export default class Product {
     if (product.filter_origin) {
       this.filter_origin = product.filter_origin
     }
-    this.quantity = product.quantity || 0
+    this.quantity = product.quantity || 0 
     this.state = product.state || ProductState.ACTIVE
     this.created_at = product.created_at || localTime
     this.updated_at = product.updated_at || localTime

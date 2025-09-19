@@ -3,7 +3,6 @@ import { Eye, Loader2, Package, Star, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type {
@@ -154,8 +153,6 @@ export function ProductOverview() {
     params.filter_hsk_uses,
     params.filter_origin,
   ]);
-
-  // Update product list based on filter changes
   useEffect(() => {
     changeBrand(selectedBrand);
     changeSkinType(selectedSkinType);
@@ -235,7 +232,6 @@ export function ProductOverview() {
                 Xóa tất cả bộ lọc
               </Button>
             </div>
-            {/* Brand Filter (still a select as it's a long list usually) */}
             <FilterSection title="Thương hiệu" sectionName="brand" count={selectedBrand ? 1 : 0}>
               <div className="space-y-1">
                 {brand.map((item) => (
@@ -450,7 +446,6 @@ export function ProductOverview() {
                           <h3 className="line-clamp-2 font-medium text-gray-900">{product.name_on_list}</h3>
                           <p className="text-sm text-gray-600">{product.engName_on_list}</p>
                           <div className="mt-2 flex flex-wrap items-center gap-2">
-                            <Badge variant="secondary">{product.filter_origin}</Badge>
                             <span className="text-lg font-semibold text-green-600">
                               {formatPrice(product.price_on_list)}
                             </span>
@@ -466,13 +461,6 @@ export function ProductOverview() {
                           >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          {/* <Button
-                            variant="outline"
-                            size="icon"
-                            onClick={() => navigate(`/staff/${product._id}/update-product`)}
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button> */}
                         </div>
                       </div>
                     ))
