@@ -15,14 +15,14 @@ import { PaginationDemo } from "../components/Pagination";
 import { DataTable } from "../components/TableCustom";
 
 const ManageVoucher: React.FC = () => {
-  const { setHeaderName } = useHeader();
+  const { setHeaderName, headerName } = useHeader();
 
   const { loading, params, setParams, voucher, fetchAllVoucher, searchTerm, setSearchTerm } = useFetchVoucher();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
   useEffect(() => {
-    setHeaderName("Quản Lý Voucher");
+    setHeaderName("Quản Lý Mã Giảm Giá");
   }, [setHeaderName]);
   useEffect(() => {
     fetchAllVoucher();
@@ -60,7 +60,7 @@ const ManageVoucher: React.FC = () => {
           <div className="flex-1">
             <div className="mx-auto bg-white px-8 py-15 pt-4">
               <div className="mt-3 mb-6 flex justify-between">
-                <Typography className="text-2xl font-bold">Quản lý mã giảm giá</Typography>
+                <Typography className="text-2xl font-bold">{headerName}</Typography>
                 <div className="bg-primary hover:bg-primary/90 r rounded-lg text-white">
                   <Button className="cursor-pointer p-5" onClick={() => navigate("/admin/createVoucher")}>
                     <div className="flex items-center gap-4">

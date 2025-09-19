@@ -44,7 +44,7 @@ const ManageProductType: React.FC = () => {
   };
 
   useEffect(() => {
-    setHeaderName("Quản Lý Loại Sản phẩm");
+    setHeaderName("Quản Lý Loại Sản Phẩm");
   }, [setHeaderName]);
   useEffect(() => {
     const pageFromURL = Number(searchParams.get("page") || "1");

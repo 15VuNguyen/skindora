@@ -12,7 +12,7 @@ import { CardIcon } from "./components/CardIcon";
 const Admin: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
   useEffect(() => {
-    setHeaderName("Tổng quan");
+    setHeaderName("Tổng Quan");
   }, []);
 
   return (
@@ -20,9 +20,7 @@ const Admin: React.FC = () => {
       <Typography className="text-2xl font-bold">{headerName}</Typography>
       <div>
         <div className="w-full">
-          <div className="mb-3 flex justify-between">
-           
-          </div>
+          <div className="mb-3 flex justify-between"></div>
           <div>
             <ManageOrdersStaff />
           </div>

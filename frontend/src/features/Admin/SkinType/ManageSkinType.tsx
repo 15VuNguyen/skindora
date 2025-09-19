@@ -39,7 +39,7 @@ const ManageSkinType: React.FC = () => {
     }));
   };
   useEffect(() => {
-    setHeaderName("Quản Lý Loại da");
+    setHeaderName("Quản Lý Loại Da");
   }, [setHeaderName]);
   useEffect(() => {
     const pageFromURL = Number(searchParams.get("page") || "1");
