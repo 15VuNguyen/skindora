@@ -1,6 +1,6 @@
 import { checkSchema } from 'express-validator'
 import { ObjectId } from 'mongodb'
-import { BlogState } from '~/constants/enums'
+import { PostState } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { ADMIN_MESSAGES, BLOG_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
@@ -46,14 +46,14 @@ export const createBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.CONTENT_REQUIRED
         },
         isLength: {
-          options: { min: 50, max: 5000 },
+          options: { min: 50, max: 20000  },
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
       status: {
         optional: true,
         isIn: {
-          options: [Object.values(BlogState)],
+          options: [Object.values(PostState)],
           errorMessage: BLOG_MESSAGES.INVALID_BLOG_STATE
         }
       },
@@ -99,8 +99,8 @@ export const updateBlogValidator = validate(
         },
         custom: {
           options: async(value) => {
-            const blog = await databaseService.blogs.findOne({_id: new ObjectId(value)})
-            if(!blog){
+            const post = await databaseService.posts.findOne({_id: new ObjectId(value)})
+            if(!post){
               throw new ErrorWithStatus({
                 message: BLOG_MESSAGES.POST_NOT_FOUND,
                 status: HTTP_STATUS.NOT_FOUND
@@ -121,14 +121,14 @@ export const updateBlogValidator = validate(
       content: {
         optional: true,
         isLength: {
-          options: { min: 50, max: 5000 },
+          options: { min: 50, max: 20000 },
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
       status: {
         optional: true,
         isIn: {
-          options: [Object.values(BlogState)],
+          options: [Object.values(PostState)],
           errorMessage: BLOG_MESSAGES.INVALID_BLOG_STATE
         }
       },

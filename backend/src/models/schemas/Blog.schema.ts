@@ -1,12 +1,12 @@
 import { ObjectId } from 'mongodb'
-import { BlogState } from '~/constants/enums'
+import { PostState } from '~/constants/enums'
 
-interface BlogType {
+interface PostType {
   _id?: ObjectId
   title: string
   slug: string
   content: string
-  status: BlogState
+  status: PostState
   publishedAt?: Date
   authorId: ObjectId
   filter_brand?: ObjectId[]
@@ -21,12 +21,12 @@ interface BlogType {
   updated_at?: Date
 }
 
-export default class Blog {
+export default class Post {
   _id?: ObjectId
   title: string
   slug: string
   content: string
-  status: BlogState
+  status: PostState
   publishedAt?: Date
   authorId: ObjectId
   filter_brand?: ObjectId[]
@@ -40,7 +40,7 @@ export default class Blog {
   created_at: Date
   updated_at: Date
 
-  constructor(blog: BlogType) {
+  constructor(blog: PostType) {
     const currentDate = new Date()
     const vietnamTimezoneOffset = 7 * 60
     const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
@@ -49,8 +49,8 @@ export default class Blog {
     this.title = blog.title
     this.slug = blog.slug
     this.content = blog.content
-    this.status = blog.status || BlogState.DRAFT
-    this.publishedAt = blog.status === BlogState.PUBLISHED ? blog.publishedAt || localTime : undefined
+    this.status = blog.status || PostState.DRAFT
+    this.publishedAt = blog.status === PostState.PUBLISHED ? blog.publishedAt || localTime : undefined
     this.authorId = blog.authorId
 
     // filters

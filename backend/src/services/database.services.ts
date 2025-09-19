@@ -125,8 +125,8 @@ class DatabaseService {
     return this.db.collection(process.env.DB_VOUCHER_COLLECTION as string)
   }
 
-  get blogs(): Collection<Blog> {
-    return this.db.collection(process.env.DB_BLOG_COLLECTION as string)
+  get posts(): Collection<Blog> {
+    return this.db.collection(process.env.DB_POST_COLLECTION as string)
   }
 
 }
