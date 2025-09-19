@@ -1,7 +1,6 @@
 import { Loader2, Package, Star } from "lucide-react";
 import React, { useEffect } from "react";
 
-import Typography from "@/components/Typography";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchOrderStatics } from "@/hooks/Orders/useFetchOrderStatis";
@@ -13,7 +12,7 @@ import type { FilterOptionsProps } from "../components/TableCustom";
 import { DataTable } from "../components/TableCustom";
 
 const ManageOrdersStaff: React.FC = () => {
-  const { setHeaderName, headerName } = useHeader();
+  const { setHeaderName } = useHeader();
   const { fetchOrder, data, params, changePage, changeStatus, loading } = useFetchOrder();
   const { data: orderStatics, fetchOrder: fetchOrderStatics } = useFetchOrderStatics();
   useEffect(() => {

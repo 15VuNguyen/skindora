@@ -1,4 +1,4 @@
-import { Bell, UserIcon } from "lucide-react";
+import { UserIcon } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 
@@ -38,7 +38,7 @@ function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
           <Link to={"/"}>
             <DropdownMenuItem>Home Page</DropdownMenuItem>
           </Link>
-          {/* <DropdownMenuItem>Settings</DropdownMenuItem> */}
+
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem disabled={isLoading} onClick={logout}>
@@ -50,21 +50,12 @@ function ProfileDropdown({ logout, isLoading }: ProfileDropdownProps) {
 }
 export function TopbarActions() {
   const { actions } = useAuth();
-  // const navigate = useNavigate();
-  // if (!user) {
-  //   navigate("/auth/login");
-  // }
   return (
     <div className="flex items-center space-x-4">
-      {/* {user ? ( */}
+
       <div className="flex items-center gap-4">
         <ProfileDropdown logout={actions.logout} isLoading={actions.isLoggingOut} />
       </div>
-      {/* // ) : (
-      //   <Link to="/auth/login">
-      //     <Button variant="outline">Đăng nhập</Button>
-      //   </Link>
-      // )} */}
     </div>
   );
 }
