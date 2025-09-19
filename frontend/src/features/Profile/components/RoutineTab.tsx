@@ -437,7 +437,7 @@ export const RoutineTab = () => {
           <div className="text-sm text-muted-foreground">
             Muốn điều chỉnh routine? Hãy trò chuyện lại với Skincare AI để nhận gợi ý mới.
           </div>
-          <Button variant="outline" onClick={() => navigate("/skincare-ai")}>Tư vấn lại với AI</Button>
+          <Button variant="outline" onClick={() => navigate("/")}>Tư vấn lại với AI</Button>
         </CardContent>
       </Card>
     </div>
