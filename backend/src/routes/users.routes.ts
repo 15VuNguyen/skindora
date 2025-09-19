@@ -92,6 +92,6 @@ usersRouter.get('/oauth/google', wrapAsync(oAuthController))
 usersRouter.get('/vouchers', wrapAsync(getAllVoucherController))
 usersRouter.get('/vouchers/:voucherId', wrapAsync(getVoucherDetailController))
 
-usersRouter.get('/blogs', wrapAsync(getAllPublishPostsController))
+usersRouter.get('/posts', wrapAsync(getAllPublishPostsController))
 export default usersRouter
 

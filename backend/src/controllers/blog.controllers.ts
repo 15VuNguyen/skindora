@@ -17,17 +17,17 @@ import { TokenPayLoad } from '~/models/requests/Users.requests'
 import HTTP_STATUS from '~/constants/httpStatus'
 
 export const getAllPostsController = async (req: Request, res: Response, next: NextFunction) => {
-  const filter = buildBlogFilter(req)
+  const filter = buildPostFilter(req)
   await sendPaginatedResponse(res, next, databaseService.blogs, req.query, filter)
 }
 
 export const getAllPublishPostsController = async (req: Request, res: Response, next: NextFunction) => {
-  const filter = buildBlogFilter(req, BlogState.PUBLISHED)
+  const filter = buildPostFilter(req, BlogState.PUBLISHED)
   await sendPaginatedResponse(res, next, databaseService.blogs, req.query, filter)
 }
 
 
-function buildBlogFilter(req: Request, forceStatus?: BlogState): Filter<Blog> {
+function buildPostFilter(req: Request, forceStatus?: BlogState): Filter<Blog> {
   const filter: Filter<Blog> = {}
 
   if (forceStatus) {

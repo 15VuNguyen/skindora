@@ -4,8 +4,6 @@ import {
   userGetAllProductControllerWithQ,
   userSearchProductsController
 } from '~/controllers/products.controllers'
-import { isAdminValidator } from '~/middlewares/admin.middlewares'
-import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handler'
 import { getProductDetailController } from '~/controllers/products.controllers'
 import { getAllFilterHskProductTypesController } from '~/controllers/filterHskProductType.controllers'
