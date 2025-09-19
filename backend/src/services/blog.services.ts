@@ -18,7 +18,7 @@ class BlogService {
 
     const slug = this.generateSlug(payload.title)
     const post = await databaseService.blogs.findOne({ slug })
-    if (post) {
+    if (payload.status === BlogState.PUBLISHED && post) {
       throw new ErrorWithStatus({
         message: BLOG_MESSAGES.EXISTED_POST_WITH_SLUG,
         status: HTTP_STATUS.BAD_REQUEST
@@ -103,23 +103,32 @@ class BlogService {
       ...data,
       updated_at: localTime
     }
-    if (updatedData.title) {
-      const slug = this.generateSlug(updatedData.title)
-      updatedData.slug = slug
-      const post = await databaseService.blogs.findOne({ slug })
-      if (post) {
-        throw new ErrorWithStatus({
-          message: BLOG_MESSAGES.EXISTED_POST_WITH_SLUG,
-          status: HTTP_STATUS.BAD_REQUEST
-        })
-      }
-    }
-
     const post = await databaseService.blogs.findOne({ _id: new ObjectId(postId) })
 
-    if (post?.status !== BlogState.PUBLISHED && updatedData.status === BlogState.PUBLISHED) {
+    if (updatedData.title) {
+      updatedData.slug = this.generateSlug(updatedData.title)
+    } else {
+      updatedData.slug = post?.slug
+    }
+
+    if (post!.status !== BlogState.PUBLISHED && updatedData.status === BlogState.PUBLISHED) {
+      //Check slug whenever publish
+      if (updatedData.slug) {
+        const existed = await databaseService.blogs.findOne({
+          slug: updatedData.slug,
+          status: BlogState.PUBLISHED,
+          _id: { $ne: post!._id } //avoid current post case
+        })
+        if (existed) {
+          throw new ErrorWithStatus({
+            message: BLOG_MESSAGES.EXISTED_POST_WITH_SLUG,
+            status: HTTP_STATUS.BAD_REQUEST
+          })
+        }
+      }
+
       updatedData.publishedAt = localTime
-    } else if (data.status === BlogState.DRAFT) {
+    } else if (updatedData.status === BlogState.DRAFT) {
       updatedData.publishedAt = undefined
     }
     return await databaseService.blogs.findOneAndUpdate(
@@ -138,7 +147,7 @@ class BlogService {
       })
     }
 
-    await databaseService.blogs.deleteOne({_id: new ObjectId(postId)})
+    await databaseService.blogs.deleteOne({ _id: new ObjectId(postId) })
   }
 
   private generateSlug(title: string) {
