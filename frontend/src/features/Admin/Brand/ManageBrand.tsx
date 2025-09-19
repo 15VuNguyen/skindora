@@ -32,7 +32,7 @@ const ManageBrand: React.FC = () => {
 
       return newParams;
     });
-
+ 
     setParams((prevParams) => ({
       ...prevParams,
       page: page,

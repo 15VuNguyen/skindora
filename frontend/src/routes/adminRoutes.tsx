@@ -1,6 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 
 import Admin from "@/features/Admin";
+import ManageBlogs from "@/features/Admin/Blog/ManageBlogs";
 import BrandDetail from "@/features/Admin/Brand/BrandDetail";
 import CreateBrand from "@/features/Admin/Brand/CreateBrand";
 import ManageBrand from "@/features/Admin/Brand/ManageBrand";
@@ -259,6 +260,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: ":id/size-detail",
         element: <SizeDetail />,
+      },
+      {
+        path: "posts",
+        element: <ManageBlogs />,
       },
     ],
   },

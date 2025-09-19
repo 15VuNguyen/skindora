@@ -37,7 +37,6 @@ export const useFetchBrand = () => {
     setLoading(true);
     try {
       let response;
-
       if (debouncedSearchTerm) {
         response = await searchByNameFilterBrand({
           option_name: debouncedSearchTerm,
