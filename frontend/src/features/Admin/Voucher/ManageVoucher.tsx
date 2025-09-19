@@ -22,7 +22,7 @@ const ManageVoucher: React.FC = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    setHeaderName("Quản Lý Voucher");
+    setHeaderName("Quản Lý Mã Giảm Giá");
   }, [setHeaderName]);
   useEffect(() => {
     fetchAllVoucher();
@@ -84,7 +84,7 @@ const ManageVoucher: React.FC = () => {
                         data={voucher}
                         onSearchChange={setSearchTerm}
                         searchValue={searchTerm}
-                        filterPlaceholder="Tìm brand theo tên..."
+                        filterPlaceholder="Tìm kiếm mã giảm giá theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

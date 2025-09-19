@@ -42,7 +42,7 @@ const ManageOrigin: React.FC = () => {
   };
 
   useEffect(() => {
-    setHeaderName("Quản Lý Xuất xứ");
+    setHeaderName("Quản Lý Xuất Xứ");
   }, [setHeaderName]);
   useEffect(() => {
     const pageFromURL = Number(searchParams.get("page") || "1");

@@ -44,7 +44,7 @@ const ManageProductType: React.FC = () => {
   };
 
   useEffect(() => {
-    setHeaderName("Quản Lý Loại Sản phẩm");
+    setHeaderName("Quản Lý Loại Sản Phẩm");
   }, [setHeaderName]);
   useEffect(() => {
     const pageFromURL = Number(searchParams.get("page") || "1");
@@ -92,7 +92,7 @@ const ManageProductType: React.FC = () => {
                         data={data}
                         onSearchChange={setSearchTerm}
                         searchValue={searchTerm}
-                        filterPlaceholder="Tìm product-type theo tên..."
+                        filterPlaceholder="Tìm loại sản phẩm theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

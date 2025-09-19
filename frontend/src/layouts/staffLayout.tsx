@@ -9,7 +9,6 @@ import HeaderStaff from "@/features/Admin/components/HeaderStaff";
 
 const LayoutContent = () => {
   const { headerName } = useHeader();
-
   return (
     <div className="flex min-h-screen bg-white">
       <SidebarProvider>

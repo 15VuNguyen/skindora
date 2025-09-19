@@ -40,22 +40,17 @@ import {
 const items = [
   { title: "Hồ sơ", url: "/admin", icon: User2 },
   { title: "Tổng quan", url: "/admin/dashboard", icon: Home },
-  { title: "Khách hàng", url: "/admin/customers", icon: UsersRound },
-  { title: "Doanh thu", url: "/admin/money", icon: PoundSterling },
-  // {
-  //   title: "Thống kê",
-  //   url: "/admin/statics",
-  //   icon: BarChart4,
-  // },
+  { title: "Quản lý khách hàng", url: "/admin/customers", icon: UsersRound },
+  { title: "Quản lý doanh thu", url: "/admin/money", icon: PoundSterling },
   {
-    title: "Quản lý voucher",
+    title: "Quản lý mã giảm giá",
     url: "/admin/voucher",
     icon: TicketPercent,
   },
   {
     title: "Quản lý đơn hủy",
     url: "/admin/cancel-request",
-    icon: FileX2, // This icon is good for "cancel request"
+    icon: FileX2,
   },
   { title: "Quản lý sản phẩm", url: "/admin/products", icon: Package },
   { title: "Quản lý đơn hàng", url: "/admin/orders", icon: ShoppingCart },
@@ -67,7 +62,7 @@ const items = [
     icon: Shield,
   },
   {
-    title: "Quản lý size",
+    title: "Quản lý kích thước",
     url: "/admin/size",
     icon: Leaf,
   },
@@ -78,12 +73,12 @@ const items = [
     icon: SlidersHorizontal,
   },
   {
-    title: "Quản lý Ingredient",
+    title: "Quản lý thành phần",
     url: "/admin/ingredient",
     icon: FlaskConical,
   },
   {
-    title: "Quản lý Product Type",
+    title: "Quản lý loại sản phẩm",
     url: "/admin/product-type",
     icon: Layers,
   },

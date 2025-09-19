@@ -16,7 +16,7 @@ import { DataTable } from "../components/TableCustom";
 import { UserChart } from "../components/UserChart";
 
 const ManageCustomer: React.FC = () => {
-  const { setHeaderName } = useHeader();
+  const { setHeaderName, headerName } = useHeader();
 
   const { fetchUser, data, params, setParams, allUser, fetchAllUser, loading } = useFetchUser();
   const { fetchNotVerifiedUser, params: paramsForUserIsNotVerified } = useFetchUserIsNotVerified();
@@ -84,8 +84,12 @@ const ManageCustomer: React.FC = () => {
         </div>
       ) : (
         <>
-          <div className="flex-1">
-            <div className="mx-auto bg-white px-8 py-15 pt-4">
+          <div className="gap-8 p-4 md:p-8">
+            <div>
+              {" "}
+              <h1 className="text-3xl font-bold tracking-tight">{headerName}</h1>
+            </div>
+            <div className="mx-auto bg-white py-15 pt-4">
               <div className="mt-2 mb-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <CardDemo title="Tổng số người dùng" amount={`${params.totalRecords ?? 0}`} />
                 <CardDemo
