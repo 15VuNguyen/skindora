@@ -193,7 +193,7 @@ class SkincareAdvisorService {
     )
     if (candidateProducts.length === 0)
       return { info: 'No products remained after applying complementary filters.', status: 200 }
-    candidateProducts = candidateProducts.slice(0, 100)
+    candidateProducts = candidateProducts.slice(0, 50)
 
     const productSummaries = candidateProducts.map((p) => ({
       name: p.name,

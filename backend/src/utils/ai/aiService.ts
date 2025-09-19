@@ -10,9 +10,11 @@ export async function getAICompletion(
   try {
     const response = await geminiClient.chat.completions.create({
       model: model,
-      reasoning_effort: "medium",
+      reasoning_effort: "low",
       messages: messages,
-      response_format :{type:"json_object"} 
+      response_format :{type:"json_object"}, 
+      max_completion_tokens: 1290
+      
     });
 
     let content = response.choices[0]?.message?.content;
