@@ -21,6 +21,7 @@ import ordersRouter from './routes/orders.routes'
 import staffRouter from './routes/staffs.routes'
 import { connectProducer, waitForKafkaReady } from './services/Kafka/kafka.services'
 import { startVoucherConsumer } from './services/Kafka/consumer'
+import blogRouter from './routes/blogs.routes'
 
 config()
 // const swaggerDocument = YAML.load(path.join(__dirname, './openapi.yml'))
@@ -58,7 +59,8 @@ app.use('/review', reviewRouters)
 app.use('/products', productRouter)
 app.use('/admin', adminRouter)
 app.use('/staffs', staffRouter)
-app.use('/filters', filtersRouter)
+app.use('/posts', blogRouter)
+app.use('/filters', filtersRouter) 
 app.use('/ai', aiRouter)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 

@@ -1,15 +1,17 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "../utils/axiosPrivate";
+import { useAuth } from "../hooks/useAuth";
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const { accessToken } = useAuth();
 
   const fetchCart = async () => {
+    if (!accessToken) return;
     try {
-      const {data} = await axios.get("/carts");
-      console.log(data.result)
+      const { data } = await axios.get("/carts");
       setCart(data.result);
     } catch (err) {
       console.error("Lỗi fetch cart:", err);
@@ -32,8 +34,12 @@ export const CartProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    fetchCart();
-  }, []);
+    if (accessToken) {
+      fetchCart();
+    }else{
+      setCart([])
+    }
+  }, [accessToken]);
 
   return (
     <CartContext.Provider
