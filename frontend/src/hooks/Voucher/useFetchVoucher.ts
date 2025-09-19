@@ -35,7 +35,7 @@ export const useFetchVoucher = () => {
         });
       } else {
         response = await fetchListVoucher({
-          // code: debouncedSearchTerm,
+          code: debouncedSearchTerm,
           limit: params.limit,
           page: params.page,
         });

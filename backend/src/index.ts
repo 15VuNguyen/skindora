@@ -14,7 +14,7 @@ import cors from 'cors'
 import reviewRouters from './routes/reviews.routes'
 import swaggerDocument from '../public/openapi.json'
 import productRouter from './routes/products.routes'
-import { dailyReport } from './utils/cron/email.services'
+import { checkVoucherJob, dailyReport } from './utils/cron/email.services'
 import adminRouter from './routes/admin.routes'
 import cartRouter from './routes/cart.routes'
 import ordersRouter from './routes/orders.routes'
@@ -27,13 +27,14 @@ config()
 // const swaggerDocument = YAML.load(path.join(__dirname, './openapi.yml'))
 // const swaggerDocument = require(path.join(__dirname, '../public/openapi.json'));
 dailyReport.start()
+checkVoucherJob.start()
 const port = process.env.PORT
-app.use(
+;(app.use(
   cors({
     origin: process.env.CORS_ORIGIN
   })
 ),
-  app.use(express.json({ limit: '50mb' }))
+  app.use(express.json({ limit: '50mb' })))
 app.use(express.urlencoded({ extended: true }))
 
 databaseService.connect().then(async () => {

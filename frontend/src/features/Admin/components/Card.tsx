@@ -11,7 +11,7 @@ interface CardDemoProps {
 
 export function CardDemo({ title, amount, change, icon }: CardDemoProps) {
   return (
-    <Card className="w-full rounded">
+    <Card className="w-full rounded-lg border p-4 shadow-sm">
       <CardContent>
         <CardTitle>
           <div className="flex items-center justify-between">

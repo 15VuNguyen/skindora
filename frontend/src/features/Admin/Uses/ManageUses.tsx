@@ -73,7 +73,7 @@ const ManageUses: React.FC = () => {
                         <Plus />
                       </div>
                       <div>
-                        <span className="text-sm font-semibold">Tạo Công dụng mới</span> 
+                        <span className="text-sm font-semibold">Tạo Công dụng mới</span>
                       </div>
                     </div>
                   </Button>
@@ -85,11 +85,11 @@ const ManageUses: React.FC = () => {
                   <Card className="w-full">
                     <div className="p-3">
                       <DataTable
-                        columns={usesColumn(fetchListUses)} 
+                        columns={usesColumn(fetchListUses)}
                         data={data}
                         onSearchChange={setSearchTerm}
                         searchValue={searchTerm}
-                        filterPlaceholder="Tìm uses theo tên..."
+                        filterPlaceholder="Tìm công dụng theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

@@ -104,7 +104,7 @@ const ManageSize: React.FC = () => {
                         data={data}
                         onSearchChange={setSearchTerm}
                         searchValue={searchTerm}
-                        filterPlaceholder="Tìm size theo tên..."
+                        filterPlaceholder="Tìm kích thước theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

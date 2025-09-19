@@ -266,7 +266,7 @@ const AddVoucherPage: React.FC = () => {
               </CardContent>
             </Card>
             <Button type="submit" disabled={isSubmitting} size="lg" className="w-full">
-              {isSubmitting ? "Đang xử lý..." : "Thêm sản phẩm"}
+              {isSubmitting ? "Đang xử lý..." : "Thêm voucher mới"}
             </Button>
           </form>
         </Form>

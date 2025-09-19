@@ -81,20 +81,18 @@ export const orderColumn = (refechData: () => void): ColumnDef<Order, unknown>[]
       </Button>
     ),
     cell: ({ row }) => {
-      // Có thể cắt ngắn ID nếu quá dài
-      const id = row.getValue("_id") as string;
-      return <div className="pl-2 font-medium text-blue-600">{id.substring(0, 10)}...</div>;
+      const id = row.getValue("_id");
+      const idStr = String(id);
+      const shortenedId = `${idStr.slice(0, 6)}...${idStr.slice(-4)}`;
+      return <div className="pl-2 font-medium text-blue-600">{shortenedId}</div>;
     },
   },
 
-  // Cột Địa chỉ giao hàng
   {
     accessorKey: "ShipAddress",
-
     header: "Địa chỉ giao hàng",
     cell: ({ row }) => {
       const address = row.getValue("ShipAddress") as string;
-
       return (
         <div title={address} className="max-w-[250px] truncate">
           {address}

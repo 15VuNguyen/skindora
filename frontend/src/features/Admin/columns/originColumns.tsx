@@ -110,9 +110,10 @@ export const originColumn = (refetchData: () => void): ColumnDef<Origin>[] => [
       </Button>
     ),
     cell: ({ row }) => {
-      // Có thể cắt ngắn ID nếu quá dài
-      const id = row.getValue("_id") as string;
-      return <div className="pl-2 font-medium text-blue-600">{id.substring(0, 10)}...</div>;
+      const id = row.getValue("_id");
+      const idStr = String(id);
+      const shortenedId = `${idStr.slice(0, 6)}...${idStr.slice(-4)}`;
+      return <div className="pl-2 font-medium text-blue-600">{shortenedId}</div>;
     },
   },
   {

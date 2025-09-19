@@ -111,7 +111,10 @@ export const ingredientColumn = (refetchData: () => void): ColumnDef<Ingredient>
       </Button>
     ),
     cell: ({ row }) => {
-      return <div className="pl-2 font-medium text-blue-600">{row.getValue("_id")}</div>;
+      const id = row.getValue("_id");
+      const idStr = String(id);
+      const shortenedId = `${idStr.slice(0, 6)}...${idStr.slice(-4)}`;
+      return <div className="pl-2 font-medium text-blue-600">{shortenedId}</div>;
     },
   },
   {
