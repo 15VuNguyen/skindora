@@ -93,7 +93,7 @@ export enum DiscountType {
   Fixed = 'FIXED' // giảm giá số tiền ví dụ giảm thẳng 50k
 }
 
-export enum BlogState {
+export enum PostState {
   DRAFT = 'DRAFT',
   PUBLISHED = 'PUBLISHED'
 }

@@ -1,10 +1,10 @@
 import { ObjectId } from 'mongodb'
-import { BlogState } from '~/constants/enums'
+import { PostState } from '~/constants/enums'
 
 export interface CreateNewPostReqBody {
   title: string
   content: string
-  status?: BlogState
+  status?: PostState
   authorId?: string
   filter_brand?: ObjectId[]
   filter_dac_tinh?: ObjectId[]
@@ -19,7 +19,7 @@ export interface CreateNewPostReqBody {
 export interface UpdatePostReqBody {
   title?: string
   content?: string
-  status?: BlogState
+  status?: PostState
   filter_brand?: ObjectId[]
   filter_dac_tinh?: ObjectId[]
   filter_hsk_ingredients?: ObjectId[]
@@ -34,7 +34,7 @@ export interface UpdatePostData {
   title?: string
   slug?: string
   content?: string
-  status?: BlogState
+  status?: PostState
   publishedAt?: Date
   filter_brand?: ObjectId[]
   filter_dac_tinh?: ObjectId[]

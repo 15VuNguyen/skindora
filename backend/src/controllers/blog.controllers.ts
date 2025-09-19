@@ -1,7 +1,6 @@
 import { ParamsDictionary } from 'express-serve-static-core'
 import { NextFunction, Request, Response } from 'express'
 import { Filter, ObjectId } from 'mongodb'
-import { BlogState } from '~/constants/enums'
 import { ADMIN_MESSAGES, BLOG_MESSAGES } from '~/constants/messages'
 import { blogService } from '~/services/blog.services'
 import databaseService from '~/services/database.services'
@@ -12,28 +11,29 @@ import {
   PostBySlugIdParam,
   UpdatePostReqBody
 } from '~/models/requests/Blog.requests'
-import Blog from '~/models/schemas/Blog.schema'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import HTTP_STATUS from '~/constants/httpStatus'
+import { PostState } from '~/constants/enums'
+import Post from '~/models/schemas/Blog.schema'
 
 export const getAllPostsController = async (req: Request, res: Response, next: NextFunction) => {
   const filter = buildPostFilter(req)
-  await sendPaginatedResponse(res, next, databaseService.blogs, req.query, filter)
+  await sendPaginatedResponse(res, next, databaseService.posts, req.query, filter)
 }
 
 export const getAllPublishPostsController = async (req: Request, res: Response, next: NextFunction) => {
-  const filter = buildPostFilter(req, BlogState.PUBLISHED)
-  await sendPaginatedResponse(res, next, databaseService.blogs, req.query, filter)
+  const filter = buildPostFilter(req, PostState.PUBLISHED)
+  await sendPaginatedResponse(res, next, databaseService.posts, req.query, filter)
 }
 
 
-function buildPostFilter(req: Request, forceStatus?: BlogState): Filter<Blog> {
-  const filter: Filter<Blog> = {}
+function buildPostFilter(req: Request, forceStatus?: PostState): Filter<Post> {
+  const filter: Filter<Post> = {}
 
   if (forceStatus) {
     filter.status = forceStatus
   } else if (req.query.status) {
-    filter.status = req.query.status as BlogState
+    filter.status = req.query.status as PostState
   }
 
   const filterFields = [
@@ -49,7 +49,7 @@ function buildPostFilter(req: Request, forceStatus?: BlogState): Filter<Blog> {
 
   filterFields.forEach((field) => {
     if (req.query[field]) {
-      filter[field as keyof Filter<Blog>] = new ObjectId(req.query[field] as string)
+      filter[field as keyof Filter<Post>] = new ObjectId(req.query[field] as string)
     }
   })
 
@@ -78,7 +78,7 @@ export const getPostBySlugIdController = async (
 
   const m = slugAndId.match(/-(?<id>[0-9a-fA-F]{24})$/)
   if (!m || !m.groups?.id) {
-    res.status(400).json({ message: 'URL format invalid, expected ...-<ObjectId>' })
+    res.status(400).json({ message: BLOG_MESSAGES.INVALID_URL  })
     return
   }
   
@@ -98,7 +98,7 @@ export const getPostBySlugIdController = async (
   if (post.slug !== slug) {
     res.redirect(
       301,
-      `/blogs/${post.slug}-${id}` //điều hướng đến URL đúng
+      `/posts/${post.slug}-${id}` //điều hướng đến URL đúng
     )
     return
   }

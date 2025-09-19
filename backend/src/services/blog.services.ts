@@ -1,13 +1,13 @@
 import { ObjectId } from 'mongodb'
 import { CreateNewPostReqBody, UpdatePostData, UpdatePostReqBody } from '~/models/requests/Blog.requests'
 import databaseService from './database.services'
-import { BlogState } from '~/constants/enums'
+import { PostState } from '~/constants/enums'
 import { removeVietnameseTones } from '~/utils/string'
-import Blog from '~/models/schemas/Blog.schema'
 import { ErrorWithStatus } from '~/models/Errors'
 import { BLOG_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import User from '~/models/schemas/User.schema'
+import Post from '~/models/schemas/Blog.schema'
 
 class BlogService {
   async createNewPost(payload: CreateNewPostReqBody, userId: string) {
@@ -17,21 +17,21 @@ class BlogService {
     const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
 
     const slug = this.generateSlug(payload.title)
-    const post = await databaseService.blogs.findOne({ slug })
-    if (payload.status === BlogState.PUBLISHED && post) {
+    const post = await databaseService.posts.findOne({ slug })
+    if (payload.status === PostState.PUBLISHED && post) {
       throw new ErrorWithStatus({
         message: BLOG_MESSAGES.EXISTED_POST_WITH_SLUG,
         status: HTTP_STATUS.BAD_REQUEST
       })
     }
 
-    const newPost = new Blog({
+    const newPost = new Post({
       ...payload,
       _id: postId,
       slug,
       authorId: new ObjectId(payload.authorId || userId),
-      status: payload.status || BlogState.DRAFT,
-      publishedAt: payload.status === BlogState.PUBLISHED ? localTime : undefined,
+      status: payload.status || PostState.DRAFT,
+      publishedAt: payload.status === PostState.PUBLISHED ? localTime : undefined,
       created_at: localTime,
       updated_at: localTime
     })
@@ -52,12 +52,12 @@ class BlogService {
       }
     })
 
-    await databaseService.blogs.insertOne(newPost)
+    await databaseService.posts.insertOne(newPost)
     return newPost
   }
 
   async getPostById(id: string) {
-    const post = await databaseService.blogs.findOne({ _id: new ObjectId(id) })
+    const post = await databaseService.posts.findOne({ _id: new ObjectId(id) })
     if (!post) return null
 
     const user = await databaseService.users.findOne({ _id: post?.authorId })
@@ -67,7 +67,7 @@ class BlogService {
         status: HTTP_STATUS.NOT_FOUND
       })
     }
-    const { authorId, ...rest } = post as Blog
+    const { authorId, ...rest } = post as Post
     const { password, email_verify_token, forgot_password_token, ...restUser } = user as User
 
     const filterCollections = {
@@ -103,7 +103,7 @@ class BlogService {
       ...data,
       updated_at: localTime
     }
-    const post = await databaseService.blogs.findOne({ _id: new ObjectId(postId) })
+    const post = await databaseService.posts.findOne({ _id: new ObjectId(postId) })
 
     if (updatedData.title) {
       updatedData.slug = this.generateSlug(updatedData.title)
@@ -111,12 +111,12 @@ class BlogService {
       updatedData.slug = post?.slug
     }
 
-    if (post!.status !== BlogState.PUBLISHED && updatedData.status === BlogState.PUBLISHED) {
+    if (post!.status !== PostState.PUBLISHED && updatedData.status === PostState.PUBLISHED) {
       //Check slug whenever publish
       if (updatedData.slug) {
-        const existed = await databaseService.blogs.findOne({
+        const existed = await databaseService.posts.findOne({
           slug: updatedData.slug,
-          status: BlogState.PUBLISHED,
+          status: PostState.PUBLISHED,
           _id: { $ne: post!._id } //avoid current post case
         })
         if (existed) {
@@ -128,10 +128,10 @@ class BlogService {
       }
 
       updatedData.publishedAt = localTime
-    } else if (updatedData.status === BlogState.DRAFT) {
+    } else if (updatedData.status === PostState.DRAFT) {
       updatedData.publishedAt = undefined
     }
-    return await databaseService.blogs.findOneAndUpdate(
+    return await databaseService.posts.findOneAndUpdate(
       { _id: new ObjectId(postId) },
       { $set: updatedData },
       { returnDocument: 'after' }
@@ -139,7 +139,7 @@ class BlogService {
   }
 
   async deletePost(postId: string) {
-    const post = await databaseService.blogs.findOne({ _id: new ObjectId(postId) })
+    const post = await databaseService.posts.findOne({ _id: new ObjectId(postId) })
     if (!post) {
       throw new ErrorWithStatus({
         message: BLOG_MESSAGES.POST_NOT_FOUND,
@@ -147,7 +147,7 @@ class BlogService {
       })
     }
 
-    await databaseService.blogs.deleteOne({ _id: new ObjectId(postId) })
+    await databaseService.posts.deleteOne({ _id: new ObjectId(postId) })
   }
 
   private generateSlug(title: string) {
