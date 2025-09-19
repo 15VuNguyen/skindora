@@ -13,6 +13,7 @@ import type { User } from "@/types";
 import { PremiumChatWidget } from "../PremiumChat/PremiumChatWidget";
 import { OrderHistoryTab } from "./components/OrderHistoryTab";
 import { PersonalInfoTab } from "./components/PersonalInfoTab";
+import { RoutineTab } from "./components/RoutineTab";
 import { SecurityTab } from "./components/SecurityTab";
 import { SkinPreferencesTab } from "./components/SkinPreferencesTab";
 import { useProfilePageLogic } from "./hooks/useProfilePageLogic";
@@ -118,10 +119,11 @@ const ProfileTabs: React.FC<Pick<UserCardProps, "user" | "isEditing">> = ({ user
 
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange}>
-      <TabsList className="grid grid-cols-2 sm:grid-cols-4">
+      <TabsList className="grid grid-cols-2 sm:grid-cols-5">
         <TabsTrigger value="personal">Thông tin cá nhân</TabsTrigger>
         <TabsTrigger value="preferences">Thông tin làn da</TabsTrigger>
         <TabsTrigger value="orders">Lịch sử đơn hàng</TabsTrigger>
+        <TabsTrigger value="routine">Routine của tôi</TabsTrigger>
         <TabsTrigger value="security">Bảo mật</TabsTrigger>
       </TabsList>
       <TabsContent value="personal" className="mt-6">
@@ -139,6 +141,9 @@ const ProfileTabs: React.FC<Pick<UserCardProps, "user" | "isEditing">> = ({ user
       </TabsContent>
       <TabsContent value="orders" className="mt-6">
         <OrderHistoryTab />
+      </TabsContent>
+      <TabsContent value="routine" className="mt-6">
+        <RoutineTab />
       </TabsContent>
       <TabsContent value="security" className="mt-6">
         <SecurityTab />

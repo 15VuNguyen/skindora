@@ -63,7 +63,7 @@ export function ConfirmRoutinePage() {
       onSuccess: (result) => {
         if (result.isOk()) {
           toast.success("Routine Saved!", { description: "Your new skincare routine is now active." });
-          navigate("/me/profile?tab=routine", { replace: true });
+          navigate("/profile?tab=routine", { replace: true });
         } else {
           toast.error("Failed to Save Routine", { description: result.error.message });
         }
