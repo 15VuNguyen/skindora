@@ -15,7 +15,7 @@ import { DataTable } from "../components/TableCustom";
 
 const ManageIngredient: React.FC = () => {
   const navigate = useNavigate();
-  const { setHeaderName, headerName } = useHeader();
+  const { setHeaderName } = useHeader();
   const [searchParams, setSearchParams] = useSearchParams();
   const { loading, data, fetchFilterIngredient, params, setParams, searchTerm, setSearchTerm } =
     useFetchFilterIngredient();
@@ -88,7 +88,7 @@ const ManageIngredient: React.FC = () => {
                         data={data}
                         onSearchChange={setSearchTerm}
                         searchValue={searchTerm}
-                        filterPlaceholder="Tìm Ingredient"
+                        filterPlaceholder="Tìm thành phần theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

@@ -87,7 +87,7 @@ const ManageSkinType: React.FC = () => {
                         data={data}
                         onSearchChange={setSearchTerm}
                         searchValue={searchTerm}
-                        filterPlaceholder="Tìm Loại da"
+                        filterPlaceholder="Tìm tên loại da theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

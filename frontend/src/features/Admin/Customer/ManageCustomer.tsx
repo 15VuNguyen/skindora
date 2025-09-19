@@ -16,7 +16,7 @@ import { DataTable } from "../components/TableCustom";
 import { UserChart } from "../components/UserChart";
 
 const ManageCustomer: React.FC = () => {
-  const { setHeaderName, headerName } = useHeader();
+  const { setHeaderName } = useHeader();
 
   const { fetchUser, data, params, setParams, allUser, fetchAllUser, loading } = useFetchUser();
   const { fetchNotVerifiedUser, params: paramsForUserIsNotVerified } = useFetchUserIsNotVerified();

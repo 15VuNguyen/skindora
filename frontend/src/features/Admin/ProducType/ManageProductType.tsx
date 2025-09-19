@@ -92,7 +92,7 @@ const ManageProductType: React.FC = () => {
                         data={data}
                         onSearchChange={setSearchTerm}
                         searchValue={searchTerm}
-                        filterPlaceholder="Tìm product-type theo tên..."
+                        filterPlaceholder="Tìm loại sản phẩm theo tên..."
                       />
                       <div className="mt-4">
                         <PaginationDemo

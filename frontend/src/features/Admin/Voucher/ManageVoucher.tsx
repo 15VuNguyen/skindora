@@ -15,9 +15,9 @@ import { PaginationDemo } from "../components/Pagination";
 import { DataTable } from "../components/TableCustom";
 
 const ManageVoucher: React.FC = () => {
-  const { setHeaderName, headerName } = useHeader();
+  const { setHeaderName } = useHeader();
 
-  const { loading, params, setParams, voucher, fetchAllVoucher } = useFetchVoucher();
+  const { loading, params, setParams, voucher, fetchAllVoucher, searchTerm, setSearchTerm } = useFetchVoucher();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const navigate = useNavigate();
@@ -79,7 +79,13 @@ const ManageVoucher: React.FC = () => {
                 <div className="mt-6 w-5/5">
                   <Card className="w-full">
                     <div className="p-3">
-                      <DataTable columns={vouchersColumns(fetchAllVoucher)} data={voucher} />
+                      <DataTable
+                        columns={vouchersColumns(fetchAllVoucher)}
+                        data={voucher}
+                        onSearchChange={setSearchTerm}
+                        searchValue={searchTerm}
+                        filterPlaceholder="Tìm kiếm mã giảm giá theo tên..."
+                      />
                       <div className="mt-4">
                         <PaginationDemo
                           totalPages={params.totalPages ?? 1}
