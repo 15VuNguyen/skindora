@@ -1,6 +1,7 @@
 import { Loader2, Package, Star } from "lucide-react";
 import React, { useEffect } from "react";
 
+import Typography from "@/components/Typography";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useHeader } from "@/contexts/header.context";
 import { useFetchOrderStatics } from "@/hooks/Orders/useFetchOrderStatis";
@@ -52,6 +53,9 @@ const ManageOrdersStaff: React.FC = () => {
   return (
     <div className="flex flex-col gap-6 p-5">
       <div>
+        <div className="px-2 py-2">
+          <Typography className="text-2xl font-bold">Quản lý đơn hàng</Typography>
+        </div>
         <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-4">
           <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md">
             <CardContent className="p-5">
@@ -64,8 +68,6 @@ const ManageOrdersStaff: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-
-          {/* Card: Đang chờ (Pending) */}
           <Card className="bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
@@ -77,8 +79,6 @@ const ManageOrdersStaff: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-
-          {/* Card: Đang giao (Shipping) */}
           <Card className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
@@ -90,8 +90,6 @@ const ManageOrdersStaff: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-
-          {/* Card: Đã giao (Delivered) */}
           <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
@@ -106,7 +104,6 @@ const ManageOrdersStaff: React.FC = () => {
         </div>
       </div>
 
-      {/* Phần Bảng dữ liệu */}
       <Card className="shadow-md">
         <CardHeader>
           <CardTitle>Danh sách Đơn hàng</CardTitle>
