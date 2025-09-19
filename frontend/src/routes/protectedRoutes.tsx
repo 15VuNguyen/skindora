@@ -5,6 +5,7 @@ import PublicLayout from "@/layouts/publicLayout";
 
 const CheckoutPage = lazy(() => import("@/features/Checkout"));
 const PremiumChatPage = lazy(() => import("@/features/PremiumChat/PremiumChatPage"));
+const ConfirmRoutinePage = lazy(() => import("@/features/Profile/pages/ConfirmRoutinePage"));
 
 const CartPage = lazy(() => import("@/features/Cart"));
 const ProfilePage = lazy(() => import("@/features/Profile"));
@@ -37,6 +38,10 @@ const protectedRoutes: RouteObject[] = [
       {
         path: "orders/tracking/:orderId",
         element: <TrackOrderPage />,
+      },
+      {
+        path: "confirm-routine",
+        element: <ConfirmRoutinePage />,
       },
     ],
   },

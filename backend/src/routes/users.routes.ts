@@ -31,6 +31,8 @@ import {
   addToWishListValidator,
   removeFromWishListValidator
 } from '~/middlewares/users.middlewares'
+import { createOrUpdateUserRoutineController, getUserRoutineController } from '~/controllers/routines.controllers'
+import { createOrUpdateRoutineValidator } from '~/middlewares/routines.middlewares'
 import {
   addToWishListController,
   getWishListController,
@@ -91,6 +93,18 @@ usersRouter.post('/refresh-token', refreshTokenValidator, wrapAsync(refreshContr
 usersRouter.get('/oauth/google', wrapAsync(oAuthController))
 usersRouter.get('/vouchers', wrapAsync(getAllVoucherController))
 usersRouter.get('/vouchers/:voucherId', wrapAsync(getVoucherDetailController))
+usersRouter.get(
+  '/me/routine',
+  accessTokenValidator,
+  wrapAsync(getUserRoutineController)
+)
+usersRouter.post(
+  '/me/routine',
+  accessTokenValidator,
+  createOrUpdateRoutineValidator,
+  wrapAsync(createOrUpdateUserRoutineController)
+)
+
 
 usersRouter.get('/posts', wrapAsync(getAllPublishPostsController))
 export default usersRouter

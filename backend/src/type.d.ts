@@ -20,5 +20,6 @@ declare module 'express' {
     cart?: Cart
     products?: Array<Product>
     redis_order_id?: ObjectId
+    product_ids?: ObjectId[] 
   }
 }

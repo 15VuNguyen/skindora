@@ -16,6 +16,7 @@ import FilterHskUses from '~/models/schemas/FilterHskUses.schema'
 import FilterOrigin from '~/models/schemas/FilterHskOrigin.schema'
 import Voucher from '~/models/schemas/Voucher.schema'
 import Blog from '~/models/schemas/Blog.schema'
+import UserRoutine from '~/models/schemas/UserRoutine.schema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@skindora.rbbhqia.mongodb.net/?retryWrites=true&w=majority&appName=skindora`
@@ -50,7 +51,9 @@ class DatabaseService {
   get products(): Collection<Product> {
     return this.db.collection(process.env.DB_PRODUCTS_COLLECTION as string)
   }
-
+  get userRoutines(): Collection<UserRoutine> {
+    return this.db.collection(process.env.DB_USER_ROUTINES_COLLECTION as string)
+  }
   get filterBrand(): Collection<FilterBrand> {
     return this.db.collection(process.env.DB_FILTER_BRAND_COLLECTION as string)
   }

@@ -44,11 +44,16 @@ export interface RoutineRecommendationData {
   suggestedOrderPM: string[];
   additionalTips: string;
 }
-
+export interface RoutineDetailsForSaving {
+  startDate: string;
+  endDate: string;
+  schedule: Record<string, { AM: string[]; PM: string[] }>;
+}
 export interface SkinRecommendation {
   routineRecommendation?: RoutineRecommendationData;
   error?: string;
   info?: string;
+  routineDetailsForSaving?: RoutineDetailsForSaving; 
 }
 
 export type Message = {

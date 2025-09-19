@@ -353,3 +353,13 @@ export const userSearchProductsController = async (req: Request, res: Response, 
 
   await sendPaginatedResponse(res, next, databaseService.products, req.query, filter)
 }
+export const getProductsByIdsController = async (req: Request, res: Response, next: NextFunction) => {
+  const productIds = req.product_ids as ObjectId[]
+
+  const products = await productService.getProductsByIds(productIds)
+
+  res.json({
+    message: PRODUCTS_MESSAGES.GET_ALL_PRODUCT_SUCCESS,
+    result: products
+  })
+}
