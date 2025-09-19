@@ -64,7 +64,7 @@ const ManageIngredient: React.FC = () => {
           <div className="flex-1">
             <div className="mx-auto bg-white px-8 py-15 pt-4">
               <div className="mt-3 mb-6 flex justify-between">
-                <Typography className="text-2xl font-bold">{headerName}</Typography>
+                <Typography className="text-2xl font-bold">Quản lý Thành Phần</Typography>
                 <div className="bg-primary hover:bg-primary/90 rounded-lg text-white">
                   <Button className="cursor-pointer p-5" onClick={() => navigate("/admin/create-ingredient")}>
                     <div className="flex items-center gap-4">
