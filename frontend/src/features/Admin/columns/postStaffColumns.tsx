@@ -216,7 +216,6 @@ export const postStaffColumns: ColumnDef<Post>[] = [
     },
   },
 
-  // Cột Actions
   {
     id: "actions",
     enableHiding: false,
@@ -247,6 +246,7 @@ export const postStaffColumns: ColumnDef<Post>[] = [
             <DropdownMenuItem
               onClick={() => {
                 console.log("Chỉnh sửa bài viết:", post._id);
+                navigate(`/staff/posts/${post.slug}/${post._id}/update`);
               }}
               className="cursor-pointer"
             >

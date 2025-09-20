@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRole } from "@/contexts/role.context";
 import type { Post } from "@/types/post";
 
-// 'admin' | 'editor' | 'viewer'
+
 const PostDetail: React.FC = () => {
   const { id: postId, slug: postSlug } = useParams<{ id: string; slug: string }>();
   const [postDetail, setPostDetail] = useState<Post | null>(null);
@@ -169,22 +169,22 @@ const PostDetail: React.FC = () => {
               </Card>
             </div>
 
-            {/* Sidebar */}
             <div className="space-y-6">
-              {/* Post Info */}
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-lg">Thông tin bài viết</CardTitle>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => navigate(`/admin/posts/edit/${postDetail._id}`)}
-                      className="flex items-center gap-2"
-                    >
-                      <Edit className="h-4 w-4" />
-                      Chỉnh sửa
-                    </Button>
+                    {role === "staff" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => navigate(`/staff/posts/${postDetail.slug}/${postDetail._id}/update`)}
+                        className="flex items-center gap-2"
+                      >
+                        <Edit className="h-4 w-4" />
+                        Chỉnh sửa
+                      </Button>
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -215,7 +215,6 @@ const PostDetail: React.FC = () => {
                 </CardContent>
               </Card>
 
-              {/* Author Info */}
               {postDetail.author && (
                 <Card>
                   <CardHeader>
@@ -245,7 +244,6 @@ const PostDetail: React.FC = () => {
                 </Card>
               )}
 
-              {/* Filters */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
@@ -267,7 +265,6 @@ const PostDetail: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Loại da */}
                   {postDetail.filter_hsk_skin_type && postDetail.filter_hsk_skin_type.length > 0 && (
                     <div>
                       <h4 className="mb-2 text-sm font-semibold">Loại da</h4>
@@ -281,7 +278,6 @@ const PostDetail: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Thành phần */}
                   {postDetail.filter_hsk_ingredients && postDetail.filter_hsk_ingredients.length > 0 && (
                     <div>
                       <h4 className="mb-2 text-sm font-semibold">Thành phần nổi bật</h4>
@@ -295,7 +291,6 @@ const PostDetail: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Xuất xứ */}
                   {postDetail.filter_origin && postDetail.filter_origin.length > 0 && (
                     <div>
                       <h4 className="mb-2 text-sm font-semibold">Xuất xứ</h4>
@@ -309,7 +304,6 @@ const PostDetail: React.FC = () => {
                     </div>
                   )}
 
-                  {/* Công dụng */}
                   {postDetail.filter_hsk_uses && postDetail.filter_hsk_uses.length > 0 && (
                     <div>
                       <h4 className="mb-2 text-sm font-semibold">Công dụng</h4>

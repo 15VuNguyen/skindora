@@ -3,6 +3,7 @@ import type { RouteObject } from "react-router-dom";
 import CreatePost from "@/features/Admin/Post/CreatePost";
 import ManagePosts from "@/features/Admin/Post/ManagePost";
 import PostDetail from "@/features/Admin/Post/PostDetail";
+import UpdatePost from "@/features/Admin/Post/UpdatePost";
 import ProfilePage from "@/features/Admin/Profile/ProfileAdmin";
 import ProfileStaffPage from "@/features/Admin/Profile/ProfileStaff";
 import ManageStatics from "@/features/Admin/Statics/ManageStatics";
@@ -53,6 +54,10 @@ const staffRoutes: RouteObject[] = [
       {
         path: "posts/:slug/:id",
         element: <PostDetail />,
+      },
+      {
+        path: "posts/:slug/:id/update",
+        element: <UpdatePost />,
       },
     ],
   },
