@@ -1,0 +1,65 @@
+type: object
+description: 'Represents the request body for updating an existing post.'
+properties:
+  title:
+    type: string
+    minLength: 10
+    maxLength: 150
+    example: 'Cập nhật thói quen chăm sóc da buổi sáng'
+  content:
+    type: string
+    minLength: 50
+    maxLength: 20000
+    example: '<p>Nội dung mới được chỉnh sửa cho bài viết...</p>'
+  status:
+    type: string
+    enum: [DRAFT, PUBLISHED]
+    example: 'PUBLISHED'
+  filter_brand:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876d31c76866d9269672']
+  filter_dac_tinh:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876d31c76866d9269670', '6832876d31c76866d9269671']
+  filter_hsk_ingredients:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876d31c76866d9269696', '6832876d31c76866d9269695']
+  filter_hsk_product_type:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876e31c76866d92696d2']
+  filter_hsk_size:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876e31c76866d92696f1']
+  filter_hsk_skin_type:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876e31c76866d92696ba']
+  filter_hsk_uses:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876e31c76866d92696c0']
+  filter_origin:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876d31c76866d926967f']

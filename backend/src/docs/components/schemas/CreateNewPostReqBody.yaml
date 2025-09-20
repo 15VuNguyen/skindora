@@ -1,0 +1,60 @@
+type: object
+description: 'Represents the request body for creating a new post.'
+required:
+  - title
+  - content
+properties:
+  title:
+    type: string
+    minLength: 10
+    maxLength: 150
+    example: '10 Thói Quen Tốt Cho Làn Da Khoẻ Mạnh'
+  content:
+    type: string
+    minLength: 50
+    maxLength: 20000
+    example: '<p>Bài viết chia sẻ các thói quen tốt giúp da khoẻ mạnh...</p>'
+  status:
+    type: string
+    enum: [DRAFT, PUBLISHED]
+    example: 'DRAFT'
+  authorId:
+    type: string
+    format: mongoId
+    example: '68cc5d8cf2871ea02c23eec7'
+  filter_dac_tinh:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876d31c76866d9269670', '6832876d31c76866d9269671']
+  filter_hsk_ingredients:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876d31c76866d9269696', '6832876d31c76866d9269695']
+  filter_hsk_product_type:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876e31c76866d92696d2']
+  filter_hsk_skin_type:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876e31c76866d92696ba']
+  filter_hsk_uses:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876e31c76866d92696c0']
+  filter_origin:
+    type: array
+    items:
+      type: string
+      format: mongoId
+    example: ['6832876d31c76866d926967f']
