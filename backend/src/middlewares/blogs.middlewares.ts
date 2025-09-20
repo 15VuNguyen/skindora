@@ -41,12 +41,21 @@ export const createBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.INVALID_TITLE_LENGTH
         }
       },
-      content: {
+      'content.rawHtml': {
         notEmpty: {
           errorMessage: BLOG_MESSAGES.CONTENT_REQUIRED
         },
         isLength: {
-          options: { min: 50, max: 20000  },
+          options: { min: 50, max: 20000 },
+          errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
+        }
+      },
+      'content.plainText': {
+        notEmpty: {
+          errorMessage: BLOG_MESSAGES.CONTENT_REQUIRED
+        },
+        isLength: {
+          options: { min: 30, max: 20000 },
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
@@ -118,10 +127,17 @@ export const updateBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.INVALID_TITLE_LENGTH
         }
       },
-      content: {
+      'content.rawHtml': {
         optional: true,
         isLength: {
           options: { min: 50, max: 20000 },
+          errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
+        }
+      },
+      'content.plainText': {
+        optional: true,
+        isLength: {
+          options: { min: 30, max: 20000 },
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
