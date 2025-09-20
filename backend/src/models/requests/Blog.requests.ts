@@ -1,9 +1,10 @@
 import { ObjectId } from 'mongodb'
 import { PostState } from '~/constants/enums'
+import { ContentType } from '../schemas/Blog.schema'
 
 export interface CreateNewPostReqBody {
   title: string
-  content: string
+  content: ContentType
   status?: PostState
   authorId?: string
   filter_brand?: ObjectId[]
@@ -18,7 +19,7 @@ export interface CreateNewPostReqBody {
 
 export interface UpdatePostReqBody {
   title?: string
-  content?: string
+  content?: ContentType
   status?: PostState
   filter_brand?: ObjectId[]
   filter_dac_tinh?: ObjectId[]
@@ -33,7 +34,7 @@ export interface UpdatePostReqBody {
 export interface UpdatePostData {
   title?: string
   slug?: string
-  content?: string
+  content?: ContentType
   status?: PostState
   publishedAt?: Date
   filter_brand?: ObjectId[]

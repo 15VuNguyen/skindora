@@ -1,0 +1,68 @@
+BlogDetailResponse:
+  type: object
+  properties:
+    postId:
+      type: string
+      format: mongoId
+    postDetail:
+      type: object
+      properties:
+        title:
+          type: string
+        slug:
+          type: string
+        content:
+          type: string
+        status:
+          type: string
+          enum: [DRAFT, PUBLISHED]
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        author:
+          type: object
+          properties:
+            authorId:
+              type: string
+              format: mongoId
+            first_name:
+              type: string
+            last_name:
+              type: string
+            email:
+              type: string
+              format: email
+            username:
+              type: string
+            roleid:
+              type: integer
+        filters:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+                format: mongoId
+              option_name:
+                type: string
+              category_name:
+                type: string
+              category_param:
+                type: string
+              state:
+                type: string
+                enum: [ACTIVE, INACTIVE]
+              created_at:
+                type: string
+                format: date-time
+              updated_at:
+                type: string
+                format: date-time

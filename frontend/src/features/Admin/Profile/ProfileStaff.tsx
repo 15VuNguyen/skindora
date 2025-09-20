@@ -14,12 +14,12 @@ import { PersonalInfoTab } from "@/features/Profile/components/PersonalInfoTab";
 import { SkinPreferencesTab } from "@/features/Profile/components/SkinPreferencesTab";
 import { useProfilePageLogic } from "@/features/Profile/hooks/useProfilePageLogic";
 
-const ProfilePage = () => {
+const ProfileStaffPage = () => {
   const { setHeaderName } = useHeader();
   const { setRole } = useRole();
   useEffect(() => {
     setHeaderName("Hồ sơ");
-    setRole("admin");
+    setRole("staff");
   }, []);
   const {
     user,
@@ -150,4 +150,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default ProfileStaffPage;

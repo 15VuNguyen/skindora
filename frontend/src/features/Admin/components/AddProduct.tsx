@@ -380,12 +380,7 @@ export default function AddProductPage() {
                         </FormItem>
                       )}
                     />
-                    {/* <ImageUrlInput
-                      control={form.control}
-                      name="hover_image_on_list"
-                      label="URL Ảnh khi hover (danh sách)"
-                      placeholder="Dán URL ảnh khi hover..."
-                    /> */}
+
                     <FormField
                       control={form.control}
                       name="hover_image_on_list"
@@ -410,41 +405,6 @@ export default function AddProductPage() {
                     />
                   </div>
                 </div>
-
-                {/* <div className="md:col-span-2">
-                  <FormField
-                    control={form.control}
-                    name="product_detail_url"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>URL trang chi tiết sản phẩm</FormLabel>
-                        <FormControl>
-                          <div className="flex w-full items-center gap-2">
-                            <div className="relative flex-grow">
-                              <Link2 className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
-                              <Input
-                                {...field}
-                                placeholder="https://your-shop.com/products/my-product"
-                                className="pl-10"
-                              />
-                            </div>
-
-                            <Button
-                              type="button"
-                              variant="outline"
-                              disabled={!field.value}
-                              onClick={() => window.open(field.value, "_blank")}
-                            >
-                              Kiểm tra
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <Typography>Đây là đường dẫn đầy đủ mà khách hàng sẽ truy cập để xem sản phẩm.</Typography>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div> */}
               </CardContent>
             </Card>
 
@@ -455,7 +415,6 @@ export default function AddProductPage() {
               </CardHeader>
               <CardContent className="space-y-8">
                 {" "}
-                {/* Tăng khoảng cách để thoáng hơn */}
                 <EditorWithPreview
                   control={form.control}
                   name="description_detail"

@@ -5,6 +5,7 @@ import {
   getOnSaleProductsController,
   getOutOfStockProductsController
 } from '~/controllers/admin.controllers'
+import { getActiveFilterBrandsController } from '~/controllers/filterBrand.controllers'
 import {
   getAllProductController,
   getProductDetailController,
@@ -60,5 +61,4 @@ staffRouter.get(
 )
 
 staffRouter.get('/manage-products/:_id', accessTokenValidator, isStaffValidator, wrapAsync(getProductDetailController))
-
 export default staffRouter

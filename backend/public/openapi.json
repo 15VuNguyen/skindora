@@ -53,6 +53,10 @@
       "description": "Operations for managing the user's shopping cart."
     },
     {
+      "name": "Posts",
+      "description": "Operations related to creating and managing blog posts."
+    },
+    {
       "name": "Admin",
       "description": "Operations for managing the system."
     },
@@ -6663,6 +6667,284 @@
           }
         }
       }
+    },
+    "/users/posts": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "(Guest) Get All Published Posts",
+        "description": "Retrieve a paginated list of all posts with status **PUBLISHED**. This endpoint is publicly accessible (no authentication required).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of posts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPostResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
+    },
+    "/posts": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "(Staff/Admin) Get All Posts",
+        "description": "Retrieves a paginated list of posts. Available for staff and admin roles.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/PageQuery"
+          },
+          {
+            "$ref": "#/components/parameters/LimitQuery"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter posts by status.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "PUBLISHED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A paginated list of posts.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPostResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "(Staff/Admin) Create a New Post",
+        "description": "Creates a new blog post. Only staff and admin roles are allowed.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateNewPostReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Post created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
+    },
+    "/posts/{id}": {
+      "get": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "(Public) Get Post Detail",
+        "description": "Retrieves the details of a specific post by slug-id format (`{slug}-{postId}`).",
+        "parameters": [
+          {
+            "name": "slugId",
+            "in": "path",
+            "required": true,
+            "description": "Slug combined with postId (e.g., `7-thoi-quen-sinh-hoat-tot-cho-suc-khoe-da-mat-68cd6864f6d119080fea0717`)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post detail.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostWithDetailResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "(Staff/Admin) Update Post",
+        "description": "Updates an existing blog post. Only staff and admin roles are allowed.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePostReqBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Post updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Posts"
+        ],
+        "summary": "(Staff/Admin) Delete Post",
+        "description": "Deletes a blog post by ID. Only staff and admin roles are allowed.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "mongoId"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post deleted successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "403": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "404": {
+            "$ref": "#/components/schemas/ErrorStatusResponse"
+          },
+          "500": {
+            "$ref": "#/components/schemas/ErrorServerResponse"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -9206,6 +9488,590 @@
           },
           "pagination": {
             "$ref": "#/components/schemas/PaginatedUserResponse/properties/pagination"
+          }
+        }
+      },
+      "Post": {
+        "Post": {
+          "type": "object",
+          "description": "Represents a blog post object.",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "format": "mongoId",
+              "example": "68cc5d8cf2871ea02c23eec6"
+            },
+            "title": {
+              "type": "string",
+              "example": "10 Thói Quen Tốt Cho Làn Da Khoẻ Mạnh"
+            },
+            "slug": {
+              "type": "string",
+              "example": "10-thoi-quen-tot-cho-lan-da-khoe-manh"
+            },
+            "content": {
+              "type": "string",
+              "example": "<p>Nội dung bài viết ở dạng HTML...</p>"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "PUBLISHED"
+              ],
+              "example": "PUBLISHED"
+            },
+            "publishedAt": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2025-09-19T10:00:00.000Z"
+            },
+            "authorId": {
+              "type": "string",
+              "format": "mongoId",
+              "example": "68cc5d8cf2871ea02c23eec7"
+            },
+            "filter_brand": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "mongoId"
+              },
+              "example": [
+                "6832876e31c76866d92696f5"
+              ]
+            },
+            "filter_dac_tinh": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "mongoId"
+              },
+              "example": [
+                "6832876d31c76866d926966f"
+              ]
+            },
+            "filter_hsk_ingredients": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "mongoId"
+              },
+              "example": [
+                "6832876d31c76866d9269690"
+              ]
+            },
+            "filter_hsk_product_type": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "mongoId"
+              },
+              "example": [
+                "6832876e31c76866d92696d1"
+              ]
+            },
+            "filter_hsk_size": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "mongoId"
+              },
+              "example": [
+                "6832876e31c76866d92696fa"
+              ]
+            },
+            "filter_hsk_skin_type": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "mongoId"
+              },
+              "example": [
+                "6832876e31c76866d92696ba"
+              ]
+            },
+            "filter_hsk_uses": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "mongoId"
+              },
+              "example": [
+                "6832876e31c76866d92696bf"
+              ]
+            },
+            "filter_origin": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "mongoId"
+              },
+              "example": [
+                "6832876d31c76866d926967e"
+              ]
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2025-09-19T09:30:00.000Z"
+            },
+            "updated_at": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2025-09-19T10:00:00.000Z"
+            }
+          }
+        }
+      },
+      "CreateNewPostReqBody": {
+        "type": "object",
+        "description": "Represents the request body for creating a new post.",
+        "required": [
+          "title",
+          "content"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 150,
+            "example": "10 Thói Quen Tốt Cho Làn Da Khoẻ Mạnh"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 20000,
+            "example": "<p>Bài viết chia sẻ các thói quen tốt giúp da khoẻ mạnh...</p>"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PUBLISHED"
+            ],
+            "example": "DRAFT"
+          },
+          "authorId": {
+            "type": "string",
+            "format": "mongoId",
+            "example": "68cc5d8cf2871ea02c23eec7"
+          },
+          "filter_dac_tinh": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876d31c76866d9269670",
+              "6832876d31c76866d9269671"
+            ]
+          },
+          "filter_hsk_ingredients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876d31c76866d9269696",
+              "6832876d31c76866d9269695"
+            ]
+          },
+          "filter_hsk_product_type": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876e31c76866d92696d2"
+            ]
+          },
+          "filter_hsk_skin_type": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876e31c76866d92696ba"
+            ]
+          },
+          "filter_hsk_uses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876e31c76866d92696c0"
+            ]
+          },
+          "filter_origin": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876d31c76866d926967f"
+            ]
+          }
+        }
+      },
+      "UpdatePostReqBody": {
+        "type": "object",
+        "description": "Represents the request body for updating an existing post.",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 150,
+            "example": "Cập nhật thói quen chăm sóc da buổi sáng"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 20000,
+            "example": "<p>Nội dung mới được chỉnh sửa cho bài viết...</p>"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "PUBLISHED"
+            ],
+            "example": "PUBLISHED"
+          },
+          "filter_brand": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876d31c76866d9269672"
+            ]
+          },
+          "filter_dac_tinh": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876d31c76866d9269670",
+              "6832876d31c76866d9269671"
+            ]
+          },
+          "filter_hsk_ingredients": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876d31c76866d9269696",
+              "6832876d31c76866d9269695"
+            ]
+          },
+          "filter_hsk_product_type": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876e31c76866d92696d2"
+            ]
+          },
+          "filter_hsk_size": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876e31c76866d92696f1"
+            ]
+          },
+          "filter_hsk_skin_type": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876e31c76866d92696ba"
+            ]
+          },
+          "filter_hsk_uses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876e31c76866d92696c0"
+            ]
+          },
+          "filter_origin": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "example": [
+              "6832876d31c76866d926967f"
+            ]
+          }
+        }
+      },
+      "PostResponse": {
+        "BlogResponse": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "result": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "format": "mongoId"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "DRAFT",
+                    "PUBLISHED"
+                  ]
+                },
+                "publishedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                },
+                "authorId": {
+                  "type": "string",
+                  "format": "mongoId"
+                },
+                "filter_brand": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "mongoId"
+                  }
+                },
+                "filter_dac_tinh": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "mongoId"
+                  }
+                },
+                "filter_hsk_ingredients": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "mongoId"
+                  }
+                },
+                "filter_hsk_product_type": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "mongoId"
+                  }
+                },
+                "filter_hsk_size": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "mongoId"
+                  }
+                },
+                "filter_hsk_skin_type": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "mongoId"
+                  }
+                },
+                "filter_hsk_uses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "mongoId"
+                  }
+                },
+                "filter_origin": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "mongoId"
+                  }
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "PaginatedPostResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Post"
+            }
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "example": 10
+              },
+              "currentPage": {
+                "type": "integer",
+                "example": 1
+              },
+              "totalPages": {
+                "type": "integer",
+                "example": 5
+              },
+              "totalRecords": {
+                "type": "integer",
+                "example": 48
+              }
+            }
+          }
+        }
+      },
+      "PostWithDetailResponse": {
+        "BlogDetailResponse": {
+          "type": "object",
+          "properties": {
+            "postId": {
+              "type": "string",
+              "format": "mongoId"
+            },
+            "postDetail": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "slug": {
+                  "type": "string"
+                },
+                "content": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "DRAFT",
+                    "PUBLISHED"
+                  ]
+                },
+                "publishedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "nullable": true
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "author": {
+                  "type": "object",
+                  "properties": {
+                    "authorId": {
+                      "type": "string",
+                      "format": "mongoId"
+                    },
+                    "first_name": {
+                      "type": "string"
+                    },
+                    "last_name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "username": {
+                      "type": "string"
+                    },
+                    "roleid": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "filters": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "_id": {
+                        "type": "string",
+                        "format": "mongoId"
+                      },
+                      "option_name": {
+                        "type": "string"
+                      },
+                      "category_name": {
+                        "type": "string"
+                      },
+                      "category_param": {
+                        "type": "string"
+                      },
+                      "state": {
+                        "type": "string",
+                        "enum": [
+                          "ACTIVE",
+                          "INACTIVE"
+                        ]
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },

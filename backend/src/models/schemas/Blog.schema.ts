@@ -1,11 +1,16 @@
 import { ObjectId } from 'mongodb'
 import { PostState } from '~/constants/enums'
 
+export interface ContentType {
+  rawHtml: string
+  plainText: string
+}
+
 interface PostType {
   _id?: ObjectId
   title: string
   slug: string
-  content: string
+  content: ContentType
   status: PostState
   publishedAt?: Date
   authorId: ObjectId
@@ -25,7 +30,7 @@ export default class Post {
   _id?: ObjectId
   title: string
   slug: string
-  content: string
+  content: ContentType
   status: PostState
   publishedAt?: Date
   authorId: ObjectId
@@ -48,7 +53,10 @@ export default class Post {
     this._id = blog._id || new ObjectId()
     this.title = blog.title
     this.slug = blog.slug
-    this.content = blog.content
+    this.content = {
+      rawHtml: blog.content?.rawHtml || '',
+      plainText: blog.content?.plainText || ''
+    }
     this.status = blog.status || PostState.DRAFT
     this.publishedAt = blog.status === PostState.PUBLISHED ? blog.publishedAt || localTime : undefined
     this.authorId = blog.authorId

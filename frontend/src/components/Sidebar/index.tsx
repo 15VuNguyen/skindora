@@ -1,13 +1,9 @@
 import {
-  // For "Quản lý Product Type"
   Droplet,
-  // For "Quản lý Skin Type" (distinct from 'Leaf' used for 'loại da')
   FileX2,
-  // For "Quản lý đặc tính" (Features/Attributes)
   FlaskConical,
   Globe2,
   Home,
-  // For "Quản lý Ingredient"
   Layers,
   Leaf,
   ListChecks,
@@ -15,8 +11,8 @@ import {
   PoundSterling,
   Shield,
   ShoppingCart,
-  // New icons for the updated items
   SlidersHorizontal,
+  StickyNote,
   TicketPercent,
   User2,
   UsersRound,
@@ -86,6 +82,11 @@ const items = [
     title: "Quản lý loại da",
     url: "/admin/skin-type",
     icon: Droplet,
+  },
+  {
+    title: "Quản lý bài viết",
+    url: "/admin/posts",
+    icon: StickyNote,
   },
 ];
 const AppSidebar: React.FC = () => {

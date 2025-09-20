@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import StaffSidebar from "@/components/StaffSidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { HeaderProvider, useHeader } from "@/contexts/header.context";
+import { RoleProvider } from "@/contexts/role.context";
 import HeaderStaff from "@/features/Admin/components/HeaderStaff";
 
 const LayoutContent = () => {
@@ -23,11 +24,12 @@ const LayoutContent = () => {
     </div>
   );
 };
-
 const StaffLayout: React.FC = () => {
   return (
     <HeaderProvider>
-      <LayoutContent />
+      <RoleProvider>
+        <LayoutContent />
+      </RoleProvider>
     </HeaderProvider>
   );
 };

@@ -22,6 +22,8 @@ import CreateOrigin from "@/features/Admin/Origin/CreateOrigin";
 import ManageOrigin from "@/features/Admin/Origin/ManageOrigin";
 import OriginDetail from "@/features/Admin/Origin/OriginDetail";
 import UpdateOrigin from "@/features/Admin/Origin/UpdateOrigin";
+import ManagePosts from "@/features/Admin/Post/ManagePost";
+import PostDetail from "@/features/Admin/Post/PostDetail";
 import CreateProductType from "@/features/Admin/ProducType/CreateProductType";
 import ManageProductType from "@/features/Admin/ProducType/ManageProductType";
 import ProductTypeDetail from "@/features/Admin/ProducType/ProductTypeDetail";
@@ -259,6 +261,15 @@ const adminRoutes: RouteObject[] = [
       {
         path: ":id/size-detail",
         element: <SizeDetail />,
+      },
+      {
+        path: "posts",
+        element: <ManagePosts userRole="ADMIN" />,
+      },
+
+      {
+        path: "posts/:slug/:id",
+        element: <PostDetail />,
       },
     ],
   },

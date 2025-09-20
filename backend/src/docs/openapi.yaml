@@ -31,6 +31,8 @@ tags:
     description: Operations related to creating and managing customer orders.
   - name: Carts
     description: Operations for managing the user's shopping cart.
+  - name: Posts
+    description: Operations related to creating and managing blog posts.
   - name: Admin
     description: Operations for managing the system.
   - name: Admin - Filter Brand
@@ -238,6 +240,19 @@ components:
       $ref: './components/schemas/DisableFilterHskOriginReqBody.yaml'
     PaginatedFilterHskOriginResponse:
       $ref: './components/schemas/PaginatedFilterHskOriginResponse.yaml'
+    # posts
+    Post:
+      $ref: './components/schemas/Post.yaml'
+    CreateNewPostReqBody:
+      $ref: './components/schemas/CreateNewPostReqBody.yaml'
+    UpdatePostReqBody:
+      $ref: './components/schemas/UpdatePostReqBody.yaml'
+    PostResponse:
+      $ref: './components/schemas/PostResponse.yaml'
+    PaginatedPostResponse:
+      $ref: './components/schemas/PaginatedPostResponse.yaml'
+    PostWithDetailResponse:
+      $ref: './components/schemas/PostWithDetailResponse.yaml'
 
     # --- Response Schemas ---
     ProductStatsResponse:
