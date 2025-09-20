@@ -2,7 +2,6 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { ArrowUpDown, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
-import { use } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";

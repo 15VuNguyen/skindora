@@ -1,5 +1,5 @@
 // src/layouts/PrivateLayout.tsx
-import React, { lazy } from "react";
+import React from "react";
 import { Outlet } from "react-router-dom";
 
 import AppSidebar from "@/components/Sidebar";

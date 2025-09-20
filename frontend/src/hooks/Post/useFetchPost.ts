@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { fetchAllPost } from "@/api/post";
 import type { Post } from "@/types/post";
@@ -25,7 +25,7 @@ export const useFetchPost = () => {
       setData(response.data);
       setParams((prev) => ({
         ...prev,
-        totalPages: response.totalPages,
+        totalPages: response.pagination.totalPages,
         totalRecords: response.pagination.totalRecords,
       }));
     } catch (error) {

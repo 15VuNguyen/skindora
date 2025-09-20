@@ -22,7 +22,6 @@ import CreateOrigin from "@/features/Admin/Origin/CreateOrigin";
 import ManageOrigin from "@/features/Admin/Origin/ManageOrigin";
 import OriginDetail from "@/features/Admin/Origin/OriginDetail";
 import UpdateOrigin from "@/features/Admin/Origin/UpdateOrigin";
-import CreatePost from "@/features/Admin/Post/CreatePost";
 import ManagePosts from "@/features/Admin/Post/ManagePost";
 import PostDetail from "@/features/Admin/Post/PostDetail";
 import CreateProductType from "@/features/Admin/ProducType/CreateProductType";
