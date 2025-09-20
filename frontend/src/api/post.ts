@@ -10,7 +10,7 @@ export interface FetchAllPostProps {
 //get-all-post
 export const fetchAllPost = async (params: FetchAllPostProps) => {
   return await httpClient
-    .get<API.IResponseSearch<Post>>("/admin/manage-posts/get-all-posts", {
+    .get<API.IResponseSearch<Post>>("/posts", {
       limit: params.limit,
       page: params.page,
     })

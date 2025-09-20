@@ -34,7 +34,7 @@ export const useFetchPost = () => {
       setLoading(false);
     }
   }, [params.limit, params.page]);
-  
+
   return {
     loading,
     data,
@@ -42,5 +42,6 @@ export const useFetchPost = () => {
     changePage,
     changeLimit,
     fetchListPost,
+    setParams,
   };
 };

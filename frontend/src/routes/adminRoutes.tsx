@@ -1,7 +1,6 @@
 import type { RouteObject } from "react-router-dom";
 
 import Admin from "@/features/Admin";
-import ManageBlogs from "@/features/Admin/Blog/ManageBlogs";
 import BrandDetail from "@/features/Admin/Brand/BrandDetail";
 import CreateBrand from "@/features/Admin/Brand/CreateBrand";
 import ManageBrand from "@/features/Admin/Brand/ManageBrand";
@@ -23,6 +22,8 @@ import CreateOrigin from "@/features/Admin/Origin/CreateOrigin";
 import ManageOrigin from "@/features/Admin/Origin/ManageOrigin";
 import OriginDetail from "@/features/Admin/Origin/OriginDetail";
 import UpdateOrigin from "@/features/Admin/Origin/UpdateOrigin";
+import CreatePost from "@/features/Admin/Post/CreatePost";
+import ManagePosts from "@/features/Admin/Post/ManagePost";
 import CreateProductType from "@/features/Admin/ProducType/CreateProductType";
 import ManageProductType from "@/features/Admin/ProducType/ManageProductType";
 import ProductTypeDetail from "@/features/Admin/ProducType/ProductTypeDetail";
@@ -263,7 +264,11 @@ const adminRoutes: RouteObject[] = [
       },
       {
         path: "posts",
-        element: <ManageBlogs />,
+        element: <ManagePosts userRole="ADMIN" />,
+      },
+      {
+        path: "posts/create",
+        element: <CreatePost />,
       },
     ],
   },

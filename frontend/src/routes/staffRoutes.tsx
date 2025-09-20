@@ -1,5 +1,6 @@
 import type { RouteObject } from "react-router-dom";
 
+import ManagePosts from "@/features/Admin/Post/ManagePost";
 import ProfilePage from "@/features/Admin/Profile/ProfileAdmin";
 import ManageStatics from "@/features/Admin/Statics/ManageStatics";
 import ManageOrdersStaff from "@/features/Staff/ManageOrdersStaff";
@@ -37,6 +38,10 @@ const staffRoutes: RouteObject[] = [
       {
         path: "statics",
         element: <ManageStatics />,
+      },
+      {
+        path: "posts",
+        element: <ManagePosts userRole="STAFF" />,
       },
     ],
   },
