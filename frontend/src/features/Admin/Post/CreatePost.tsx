@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useRole } from "@/contexts/role.context";
 import { useFetchFilter } from "@/hooks/Filter/useFetchActiveFilter";
 import httpClient from "@/lib/axios";
 import { type PostFormValues, postSchema } from "@/lib/postSchema";
@@ -109,7 +110,7 @@ export default function CreatePost() {
   const [origin, setOrigin] = useState<Origin[]>([]);
   const [brand, setBrand] = useState<Brand[]>([]);
   const { data: filter, fetchFilter } = useFetchFilter();
-
+  const { role } = useRole();
   useEffect(() => {
     fetchFilter();
   }, [fetchFilter]);
@@ -257,7 +258,7 @@ export default function CreatePost() {
           variant="ghost"
           className="hover:bg-transparent hover:text-green-600"
           onClick={() => {
-            navigate("/admin/posts");
+            role === "admin" ? navigate("/admin/posts") : navigate("/staff/posts");
           }}
         >
           <ArrowLeft />

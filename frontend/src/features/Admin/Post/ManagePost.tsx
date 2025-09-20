@@ -272,7 +272,9 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
               <p className="text-muted-foreground mb-4 max-w-md text-sm">
                 Bắt đầu tạo bài viết đầu tiên để chia sẻ nội dung với khách hàng
               </p>
-              <Button onClick={() => navigate("/admin/posts/create")}>
+              <Button
+                onClick={() => (role === "admin" ? navigate("/admin/posts/create") : navigate("/staff/posts/create"))}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 Tạo bài viết đầu tiên
               </Button>
