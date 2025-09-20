@@ -146,3 +146,56 @@ export function createFullRoutineRecommendationJsonPrompt(
     { role: 'user', content: userContent }
   ]
 }
+export function createWeeklyScheduleGenerationPrompt(
+  productsInRoutine: { name: string; id: string; howToUse: string }[],
+  schedulePreference: 'AM' | 'PM' | 'AM/PM',
+  language: 'vi' | 'en'
+): OpenAI.Chat.Completions.ChatCompletionMessageParam[] {
+  const langInstruction = language === 'vi' ? 'Vietnamese' : 'English';
+  const productListString = productsInRoutine
+    .map((p) => `- Product Name: "${p.name}", Product ID: "${p.id}", Instructions: "${p.howToUse}"`)
+    .join('\n');
+
+  const systemContent = `
+You are a skincare routine scheduler. Your task is to create a weekly skincare schedule based on a list of products and a user's preference.
+
+**Instructions:**
+1.  Analyze the products, paying attention to instructions about frequency (e.g., "use 2-3 times a week", "use daily").
+2.  Create a 7-day schedule (Monday to Sunday).
+3.  For each day, specify which products to use in the "AM" and "PM" slots.
+4.  If a product is for daily use, include it every day in the appropriate AM/PM slot(s).
+5.  If a product is for limited use (e.g., an exfoliant like BHA/AHA), distribute it across the week (e.g., Tuesday, Thursday, Saturday). **Do not schedule strong exfoliants on consecutive days.**
+6.  The user's preference is "${schedulePreference}". If they only want "AM", the "PM" slots should be empty arrays. If they only want "PM", the "AM" slots should be empty arrays.
+7.  The keys for the days of the week **MUST be in English**: "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday".
+8.  The keys for the time slots **MUST be**: "AM", "PM".
+9.  The value for each time slot must be an array of **Product IDs**.
+
+**Respond ONLY with a valid JSON object** that strictly follows this format:
+{
+  "schedule": {
+    "Monday": { "AM": ["product_id_1"], "PM": ["product_id_2", "product_id_3"] },
+    "Tuesday": { "AM": ["product_id_1"], "PM": ["product_id_2", "product_id_4"] },
+    ...and so on for all 7 days
+  }
+}
+Example for an AM-only routine:
+{
+  "schedule": {
+    "Monday": { "AM": ["product_id_1", "product_id_5"], "PM": [] },
+    ...
+  }
+}
+`;
+
+  const userContent = `
+Here are the products for the routine. Please generate the weekly schedule JSON based on these.
+
+**Products:**
+${productListString}
+`;
+
+  return [
+    { role: 'system', content: systemContent },
+    { role: 'user', content: userContent }
+  ];
+}
