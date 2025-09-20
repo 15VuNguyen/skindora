@@ -267,10 +267,7 @@ const adminRoutes: RouteObject[] = [
         path: "posts",
         element: <ManagePosts userRole="ADMIN" />,
       },
-      {
-        path: "posts/create",
-        element: <CreatePost />,
-      },
+
       {
         path: "posts/:slug/:id",
         element: <PostDetail />,

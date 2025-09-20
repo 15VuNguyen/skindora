@@ -1,3 +1,4 @@
+import type { ColumnDef } from "@tanstack/react-table";
 import { Download, Eye, FileText, Filter, Loader2, Plus, RefreshCw, Search, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -25,9 +26,11 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useHeader } from "@/contexts/header.context";
+import { useRole } from "@/contexts/role.context";
 import { useFetchPost } from "@/hooks/Post/useFetchPost";
 
 import { postColumns } from "../columns/postColumns";
+import { postStaffColumns } from "../columns/postStaffColumns";
 import { PaginationDemo } from "../components/Pagination";
 import { DataTable } from "../components/TableCustom";
 
@@ -37,17 +40,25 @@ const statusFilterOptions = [
   { value: "DRAFT", label: "Bản nháp" },
   { value: "ARCHIVED", label: "Đã lưu trữ" },
 ];
-
-interface ManagePostsProps {
+interface ManagePostProps {
   userRole: string;
 }
-const ManagePosts: React.FC<ManagePostsProps> = ({ userRole }) => {
+const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
+  const { role } = useRole();
   const navigate = useNavigate();
   const { setHeaderName } = useHeader();
   const { loading, data, fetchListPost, params, setParams } = useFetchPost();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [column, setColumn] = useState<ColumnDef<any, any>[]>();
+  useEffect(() => {
+    if (role === "admin") {
+      setColumn(postColumns);
+    } else {
+      setColumn(postStaffColumns);
+    }
+  }, [role]);
   useEffect(() => {
     fetchListPost();
   }, [params.page]);
@@ -101,7 +112,7 @@ const ManagePosts: React.FC<ManagePostsProps> = ({ userRole }) => {
           <p className="text-muted-foreground mt-2 text-sm">Quản lý tất cả các bài viết blog và nội dung của website</p>
         </div>
 
-        {userRole === "" && (
+        {userRole === "STAFF" && (
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" onClick={handleRefresh} disabled={loading}>
               <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
@@ -120,7 +131,7 @@ const ManagePosts: React.FC<ManagePostsProps> = ({ userRole }) => {
                 <DropdownMenuItem>Xuất CSV</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <Button onClick={() => navigate("/admin/posts/create")} size="sm">
+            <Button onClick={() => navigate("/staff/posts/create")} size="sm">
               <Plus className="mr-2 h-4 w-4" />
               Tạo bài viết mới
             </Button>
@@ -238,7 +249,7 @@ const ManagePosts: React.FC<ManagePostsProps> = ({ userRole }) => {
           ) : (
             <div>
               <DataTable
-                columns={postColumns}
+                columns={column ?? []}
                 data={data}
                 searchValue={searchValue}
                 onSearchChange={handleSearchChange}

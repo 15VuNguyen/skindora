@@ -198,7 +198,7 @@ export default function CreatePost() {
           description: `Bài viết ${statusText}.`,
         });
         form.reset();
-        navigate("/admin/posts"); // Navigate back to posts list
+        navigate("/staff/posts");
       }
     } catch (error: any) {
       const errorResponse = error.response?.data;

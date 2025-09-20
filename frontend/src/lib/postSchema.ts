@@ -19,5 +19,6 @@ export const postSchema = z.object({
   filter_hsk_ingredients: z.array(z.string()).optional(),
   filter_hsk_size: z.array(z.string()).optional(),
   filter_dac_tinh: z.array(z.string()).optional(),
+  
 });
 export type PostFormValues = z.infer<typeof postSchema>;

@@ -23,6 +23,7 @@ import {
 import {
   createNewFilterBrandValidator,
   createNewProductValidator,
+  isAdminAndStaffValidator,
   isAdminValidator,
   isValidToActiveValidator,
   updateProductStateValidator,
@@ -795,49 +796,49 @@ adminRouter.put(
 adminRouter.get(
   '/manage-filters/get-active-filter-brands',
   accessTokenValidator,
-  isAdminValidator,
+  isAdminAndStaffValidator,
   wrapAsync(getActiveFilterBrandsController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-dac-tinhs',
   accessTokenValidator,
-  isAdminValidator,
+  isAdminAndStaffValidator,
   wrapAsync(getActiveFilterDacTinhsController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-ingredients',
   accessTokenValidator,
-  isAdminValidator,
+  isAdminAndStaffValidator,
   wrapAsync(getActiveFilterHskIngredientsController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-product-types',
   accessTokenValidator,
-  isAdminValidator,
+  isAdminAndStaffValidator,
   wrapAsync(getActiveFilterHskProductTypesController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-sizes',
   accessTokenValidator,
-  isAdminValidator,
+  isAdminAndStaffValidator,
   wrapAsync(getActiveFilterHskSizesController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-skin-types',
   accessTokenValidator,
-  isAdminValidator,
+  isAdminAndStaffValidator,
   wrapAsync(getActiveFilterHskSkinTypesController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-uses',
   accessTokenValidator,
-  isAdminValidator,
+  isAdminAndStaffValidator,
   wrapAsync(getActiveFilterHskUsesController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-origins',
   accessTokenValidator,
-  isAdminValidator,
+  isAdminAndStaffValidator,
   wrapAsync(getActiveFilterHskOriginsController)
 )
 export default adminRouter

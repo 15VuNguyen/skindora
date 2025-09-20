@@ -1,4 +1,4 @@
-import { ArrowLeft, Calendar, Eye, Tag, User } from "lucide-react";
+import { ArrowLeft, Calendar, Edit, Eye, Tag, User } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
@@ -8,19 +8,20 @@ import type { detailPostProps } from "@/api/post";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRole } from "@/contexts/role.context";
 import type { Post } from "@/types/post";
 
+// 'admin' | 'editor' | 'viewer'
 const PostDetail: React.FC = () => {
   const { id: postId, slug: postSlug } = useParams<{ id: string; slug: string }>();
   const [postDetail, setPostDetail] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-
+  const { role } = useRole();
   useEffect(() => {
     console.log("PostDetail useEffect triggered");
     console.log({ postId, postSlug });
-
     if (postId && postSlug) {
       console.log("Making API call with:", { id: postId, slug: postSlug });
       setLoading(true);
@@ -71,7 +72,17 @@ const PostDetail: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <div className="border-b bg-white shadow-sm">
         <div className="container mx-auto max-w-6xl px-4 py-4">
-          <Button variant="ghost" onClick={() => navigate("/admin/posts")} className="mb-2">
+          <Button
+            variant="ghost"
+            onClick={() => {
+              if (role === "admin") {
+                navigate("/admin/posts");
+              } else {
+                navigate("/staff/posts");
+              }
+            }}
+            className="mb-2"
+          >
             <ArrowLeft className="mr-2 h-4 w-4" />
             Quay lại danh sách bài viết
           </Button>
@@ -107,9 +118,7 @@ const PostDetail: React.FC = () => {
           </div>
         ) : postDetail ? (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            {/* Main Content */}
             <div className="space-y-6 lg:col-span-2">
-              {/* Post Header */}
               <Card>
                 <CardHeader className="pb-4">
                   <div className="mb-4 flex items-start justify-between">
@@ -165,7 +174,18 @@ const PostDetail: React.FC = () => {
               {/* Post Info */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-lg">Thông tin bài viết</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg">Thông tin bài viết</CardTitle>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => navigate(`/admin/posts/edit/${postDetail._id}`)}
+                      className="flex items-center gap-2"
+                    >
+                      <Edit className="h-4 w-4" />
+                      Chỉnh sửa
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3 text-sm">
