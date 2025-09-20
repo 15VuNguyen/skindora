@@ -2,6 +2,8 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { ArrowUpDown, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { use } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -106,11 +108,11 @@ export const postColumns: ColumnDef<Post>[] = [
     accessorKey: "content",
     header: "Nội dung",
     cell: ({ row }) => {
-      const content = row.getValue("content") as string;
+      const content = row.getValue("content") as { rawHtml: string; plainText: string };
       return (
         <div className="max-w-[200px]">
-          <div className="text-muted-foreground text-sm" title={content}>
-            {truncateContent(content, 30)}
+          <div className="text-muted-foreground text-sm" title={content.plainText}>
+            {truncateContent(content.plainText, 30)}
           </div>
         </div>
       );
@@ -220,7 +222,7 @@ export const postColumns: ColumnDef<Post>[] = [
     enableHiding: false,
     cell: ({ row }) => {
       const post = row.original;
-
+      const navigate = useNavigate();
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -235,6 +237,7 @@ export const postColumns: ColumnDef<Post>[] = [
             <DropdownMenuItem
               onClick={() => {
                 console.log("Xem bài viết:", post._id);
+                navigate(`/admin/posts/${post.slug}/${post._id}`);
               }}
               className="cursor-pointer"
             >

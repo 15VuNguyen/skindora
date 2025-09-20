@@ -25,7 +25,7 @@ export const useFetchPost = () => {
       setData(response.data);
       setParams((prev) => ({
         ...prev,
-        totalPages: response.pagination.totalPages,
+        totalPages: response.totalPages,
         totalRecords: response.pagination.totalRecords,
       }));
     } catch (error) {

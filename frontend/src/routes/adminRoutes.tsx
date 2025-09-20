@@ -24,6 +24,7 @@ import OriginDetail from "@/features/Admin/Origin/OriginDetail";
 import UpdateOrigin from "@/features/Admin/Origin/UpdateOrigin";
 import CreatePost from "@/features/Admin/Post/CreatePost";
 import ManagePosts from "@/features/Admin/Post/ManagePost";
+import PostDetail from "@/features/Admin/Post/PostDetail";
 import CreateProductType from "@/features/Admin/ProducType/CreateProductType";
 import ManageProductType from "@/features/Admin/ProducType/ManageProductType";
 import ProductTypeDetail from "@/features/Admin/ProducType/ProductTypeDetail";
@@ -269,6 +270,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "posts/create",
         element: <CreatePost />,
+      },
+      {
+        path: "posts/:slug/:id",
+        element: <PostDetail />,
       },
     ],
   },

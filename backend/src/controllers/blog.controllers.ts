@@ -40,10 +40,7 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
       $lookup: {
         from: collection,
         let: { ids: `$${collection}` },
-        pipeline: [
-          { $match: { $expr: { $in: ['$_id', '$$ids'] } } },
-          { $project: { _id: 1, option_name: 1 } }
-        ],
+        pipeline: [{ $match: { $expr: { $in: ['$_id', '$$ids'] } } }, { $project: { _id: 1, option_name: 1 } }],
         as: collection
       }
     })
@@ -63,11 +60,7 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
                 input: { $ifNull: [`$${field}`, []] },
                 as: 'id',
                 in: {
-                  $cond: [
-                    { $eq: [{ $type: '$$id' }, 'string'] },
-                    { $toObjectId: '$$id' },
-                    '$$id'
-                  ]
+                  $cond: [{ $eq: [{ $type: '$$id' }, 'string'] }, { $toObjectId: '$$id' }, '$$id']
                 }
               }
             }
@@ -107,16 +100,17 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
 
     res.json({
       data: results,
-      page: Number(page),
-      limit: Number(limit),
-      total,
-      totalPages: Math.ceil(total / Number(limit))
+      pagination: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        totalPages: Math.ceil(total / Number(limit))
+      }
     })
   } catch (error) {
     next(error)
   }
 }
-
 
 export const getAllPublishPostsController = async (req: Request, res: Response, next: NextFunction) => {
   const filter = buildPostFilter(req, PostState.PUBLISHED)

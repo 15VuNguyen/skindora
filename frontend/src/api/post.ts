@@ -16,3 +16,14 @@ export const fetchAllPost = async (params: FetchAllPostProps) => {
     })
     .then((response) => response.data);
 };
+//get-all-post-by-id
+//create-post
+export interface detailPostProps {
+  id: string;
+  slug: string;
+}
+export const fetchPostById = async ({ id, slug }: detailPostProps) => {
+  return await httpClient
+    .get<API.IResponse<Post>>(`/posts/${slug}-${id}`, { id, slug })
+    .then((response) => response.data.result);
+};
