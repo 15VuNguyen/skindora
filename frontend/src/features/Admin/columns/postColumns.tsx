@@ -252,21 +252,6 @@ export const postColumns: ColumnDef<Post>[] = [
               <Edit className="mr-2 h-4 w-4" />
               Chỉnh sửa
             </DropdownMenuItem>
-            {post.status.toUpperCase() !== "ARCHIVED" && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    // TODO: Implement delete post
-                    console.log("Xóa bài viết:", post._id);
-                  }}
-                  className="cursor-pointer text-red-600 focus:text-red-600"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Xóa bài viết
-                </DropdownMenuItem>
-              </>
-            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );

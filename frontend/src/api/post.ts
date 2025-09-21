@@ -30,3 +30,7 @@ export const fetchPostById = async ({ id, slug }: detailPostProps) => {
 export const createPost = async (data: Post) => {
   return await httpClient.post<API.IResponse<Post>>("/posts", data).then((response) => response.data);
 };
+//delete-post
+export const deletePost = async (id: string) => {
+  return await httpClient.delete<API.IResponse<null>>(`/posts/${id}`).then((response) => response.data);
+}

@@ -2,7 +2,9 @@ import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { ArrowUpDown, Edit, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -16,6 +18,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import type { Post } from "@/types/post";
+
+import { DeletePostDialog } from "../components/DeletePostDialog";
 
 // Map trạng thái từ backend sang tiếng Việt
 const getStatusBadge = (status: string) => {
@@ -252,21 +256,19 @@ export const postStaffColumns: ColumnDef<Post>[] = [
               <Edit className="mr-2 h-4 w-4" />
               Chỉnh sửa
             </DropdownMenuItem>
-            {post.status.toUpperCase() !== "ARCHIVED" && (
-              <>
-                <DropdownMenuSeparator />
+
+            <>
+              <DropdownMenuSeparator />
+              <DeletePostDialog post={post}>
                 <DropdownMenuItem
-                  onClick={() => {
-                    // TODO: Implement delete post
-                    console.log("Xóa bài viết:", post._id);
-                  }}
                   className="cursor-pointer text-red-600 focus:text-red-600"
+                  onSelect={(e) => e.preventDefault()}
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Xóa bài viết
                 </DropdownMenuItem>
-              </>
-            )}
+              </DeletePostDialog>
+            </>
           </DropdownMenuContent>
         </DropdownMenu>
       );
