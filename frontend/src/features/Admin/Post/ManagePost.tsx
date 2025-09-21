@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { Download, Eye, FileText, Filter, Loader2, Plus, RefreshCw, Search, Settings } from "lucide-react";
+import { Eye, FileText, Filter, Loader2, Plus, RefreshCw, Search, Settings } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
