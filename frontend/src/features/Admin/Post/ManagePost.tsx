@@ -6,14 +6,6 @@ import { useSearchParams } from "react-router-dom";
 
 import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
-// import {
-//   Breadcrumb,
-//   BreadcrumbItem,
-//   BreadcrumbLink,
-//   BreadcrumbList,
-//   BreadcrumbPage,
-//   BreadcrumbSeparator,
-// } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -38,7 +30,6 @@ const statusFilterOptions = [
   { value: "ALL", label: "Tất cả trạng thái" },
   { value: "PUBLISHED", label: "Đã xuất bản" },
   { value: "DRAFT", label: "Bản nháp" },
-  { value: "ARCHIVED", label: "Đã lưu trữ" },
 ];
 interface ManagePostProps {
   userRole: string;
@@ -47,10 +38,10 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
   const { role } = useRole();
   const navigate = useNavigate();
   const { setHeaderName } = useHeader();
-  const { loading, data, fetchListPost, params, setParams } = useFetchPost();
+  const { loading, data, fetchListPost, params, setParams, changeStatus } = useFetchPost();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL");
+  const [statusFilter, setStatusFilter] = useState("");
   const [column, setColumn] = useState<ColumnDef<any, any>[]>();
   useEffect(() => {
     if (role === "admin") {
@@ -61,7 +52,7 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
   }, [role]);
   useEffect(() => {
     fetchListPost();
-  }, [params.page]);
+  }, [params.page, params.limit, params.status, fetchListPost]);
   const handlePageChange = (page: number) => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
@@ -92,6 +83,8 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
 
   const handleStatusFilter = (status: string) => {
     setStatusFilter(status);
+    console.log(status);
+    changeStatus(status === "ALL" ? "" : status);
   };
 
   const handleRefresh = () => {
@@ -134,7 +127,6 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
         )}
       </div>
 
-      {/* Statistics Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
