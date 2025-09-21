@@ -1,0 +1,73 @@
+BlogResponse:
+  type: object
+  properties:
+    message:
+      type: string
+    result:
+      type: object
+      properties:
+        _id:
+          type: string
+          format: mongoId
+        title:
+          type: string
+        slug:
+          type: string
+        content:
+          type: string
+        status:
+          type: string
+          enum: [DRAFT, PUBLISHED]
+        publishedAt:
+          type: string
+          format: date-time
+          nullable: true
+        authorId:
+          type: string
+          format: mongoId
+        filter_brand:
+          type: array
+          items:
+            type: string
+            format: mongoId
+        filter_dac_tinh:
+          type: array
+          items:
+            type: string
+            format: mongoId
+        filter_hsk_ingredients:
+          type: array
+          items:
+            type: string
+            format: mongoId
+        filter_hsk_product_type:
+          type: array
+          items:
+            type: string
+            format: mongoId
+        filter_hsk_size:
+          type: array
+          items:
+            type: string
+            format: mongoId
+        filter_hsk_skin_type:
+          type: array
+          items:
+            type: string
+            format: mongoId
+        filter_hsk_uses:
+          type: array
+          items:
+            type: string
+            format: mongoId
+        filter_origin:
+          type: array
+          items:
+            type: string
+            format: mongoId
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

@@ -19,6 +19,7 @@ const items = [
   { title: "Hồ sơ", url: "/staff", icon: User2 },
   { title: "Sản phẩm", url: "/staff/products", icon: Package },
   { title: "Đơn hàng", url: "/staff/orders", icon: ShoppingCart },
+  { title: "Bài viết", url: "/staff/posts", icon: ShoppingCart },
 ];
 const AppSidebar: React.FC = () => {
   const location = useLocation();

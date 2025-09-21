@@ -1,10 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 
+import AdminProtectedRoute from "@/components/AdminProtectedRoute";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import StaffProtectedRoute from "@/components/StaffProtectedRoute";
 import NotFoundPage from "@/features/ErrorPage/404";
 import RootLayout from "@/layouts/RootLayout";
 
-import privateRoutes from "./adminRoutes";
 import adminRoutes from "./adminRoutes";
 import protectedRoutes from "./protectedRoutes";
 import publicRoutes from "./publicRoutes";
@@ -16,12 +17,17 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       ...publicRoutes,
-      ...privateRoutes,
-      ...adminRoutes,
-      ...staffRoutes,
       {
         element: <ProtectedRoute />,
         children: [...protectedRoutes],
+      },
+      {
+        element: <AdminProtectedRoute />,
+        children: [...adminRoutes],
+      },
+      {
+        element: <StaffProtectedRoute />,
+        children: [...staffRoutes],
       },
     ],
 

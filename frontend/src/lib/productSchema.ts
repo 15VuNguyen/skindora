@@ -26,17 +26,6 @@ export const productSchema = z.object({
   sub_images_detail: z
     .array(z.object({ value: z.string().url({ message: "Vui lòng nhập URL hợp lệ." }) }))
     .min(1, "Phải có ít nhất một ảnh phụ."),
-  // Các trường Filter
-  // filter_brand: z.string().min(1, "ID Thương hiệu không được để trống."),
-  // filter_hsk_skin_type: z.string().min(1, "ID Loại da không được để trống."),
-  // filter_hsk_uses: z.string().min(1, "ID Công dụng không được để trống."),
-  // filter_hsk_product_type: z.string().min(1, "ID Loại sản phẩm không được để trống."),
-  // filter_origin: z.string().min(1, "Xuất xứ không được để trống."a,
-  // filter_hsk_ingredient: z.string().min(1, "Thành phần không được đẻ trống"),
-  // filter_dac_tinh: z.string().min(1, "Đặc tính không được để trống"),
-  // filter_hsk_size: z.string().min(1, "Size không được trống"),
-
-  //Optional-filter
   filter_brand: z.string().optional(),
   filter_hsk_skin_type: z.string().optional(),
   filter_hsk_uses: z.string().optional(),

@@ -1,0 +1,85 @@
+Post:
+  type: object
+  description: "Represents a blog post object."
+  properties:
+    _id:
+      type: string
+      format: mongoId
+      example: "68cc5d8cf2871ea02c23eec6"
+    title:
+      type: string
+      example: "10 Thói Quen Tốt Cho Làn Da Khoẻ Mạnh"
+    slug:
+      type: string
+      example: "10-thoi-quen-tot-cho-lan-da-khoe-manh"
+    content:
+      type: string
+      example: "<p>Nội dung bài viết ở dạng HTML...</p>"
+    status:
+      type: string
+      enum: [DRAFT, PUBLISHED]
+      example: "PUBLISHED"
+    publishedAt:
+      type: string
+      format: date-time
+      example: "2025-09-19T10:00:00.000Z"
+    authorId:
+      type: string
+      format: mongoId
+      example: "68cc5d8cf2871ea02c23eec7"
+    filter_brand:
+      type: array
+      items:
+        type: string
+        format: mongoId
+      example: ["6832876e31c76866d92696f5"]
+    filter_dac_tinh:
+      type: array
+      items:
+        type: string
+        format: mongoId
+      example: ["6832876d31c76866d926966f"]
+    filter_hsk_ingredients:
+      type: array
+      items:
+        type: string
+        format: mongoId
+      example: ["6832876d31c76866d9269690"]
+    filter_hsk_product_type:
+      type: array
+      items:
+        type: string
+        format: mongoId
+      example: ["6832876e31c76866d92696d1"]
+    filter_hsk_size:
+      type: array
+      items:
+        type: string
+        format: mongoId
+      example: ["6832876e31c76866d92696fa"]
+    filter_hsk_skin_type:
+      type: array
+      items:
+        type: string
+        format: mongoId
+      example: ["6832876e31c76866d92696ba"]
+    filter_hsk_uses:
+      type: array
+      items:
+        type: string
+        format: mongoId
+      example: ["6832876e31c76866d92696bf"]
+    filter_origin:
+      type: array
+      items:
+        type: string
+        format: mongoId
+      example: ["6832876d31c76866d926967e"]
+    created_at:
+      type: string
+      format: date-time
+      example: "2025-09-19T09:30:00.000Z"
+    updated_at:
+      type: string
+      format: date-time
+      example: "2025-09-19T10:00:00.000Z"

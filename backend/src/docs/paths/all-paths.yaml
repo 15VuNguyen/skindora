@@ -305,7 +305,7 @@
           application/json:
             schema:
               $ref: '../components/schemas/GetMeSuccessResponse.yaml'
-      '401':
+      '401': 
         description: Unauthorized (invalid access token).
         content:
           application/json:
@@ -3760,3 +3760,169 @@
                     $ref: '../components/schemas/FilterHskOrigin.yaml'
       '401': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
       '403': { $ref: '../components/schemas/ErrorStatusResponse.yaml' }
+
+/users/posts:
+  get:
+    tags: [Posts]
+    summary: (Guest) Get All Published Posts
+    description: Retrieve a paginated list of all posts with status **PUBLISHED**. This endpoint is publicly accessible (no authentication required).
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+    responses:
+      '200':
+        description: A paginated list of posts.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedPostResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/posts:
+  get:
+    tags: [Posts]
+    summary: (Staff/Admin) Get All Posts
+    description: Retrieves a paginated list of posts. Available for staff and admin roles.
+    security:
+      - BearerAuth: []
+    parameters:
+      - $ref: '../openapi.yaml#/components/parameters/PageQuery'
+      - $ref: '../openapi.yaml#/components/parameters/LimitQuery'
+      - name: status
+        in: query
+        description: Filter posts by status.
+        schema:
+          type: string
+          enum: [DRAFT, PUBLISHED]
+    responses:
+      '200':
+        description: A paginated list of posts.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PaginatedPostResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+  post:
+    tags: [Posts]
+    summary: (Staff/Admin) Create a New Post
+    description: Creates a new blog post. Only staff and admin roles are allowed.
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/CreateNewPostReqBody.yaml'
+    responses:
+      '201':
+        description: Post created successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PostResponse.yaml'
+      '400':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+/posts/{id}:
+  get:
+    tags: [Posts]
+    summary: (Public) Get Post Detail
+    description: Retrieves the details of a specific post by slug-id format (`{slug}-{postId}`).
+    parameters:
+      - name: slugId
+        in: path
+        required: true
+        description: Slug combined with postId (e.g., `7-thoi-quen-sinh-hoat-tot-cho-suc-khoe-da-mat-68cd6864f6d119080fea0717`)
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Post detail.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PostWithDetailResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+        
+  put:
+    tags: [Posts]
+    summary: (Staff/Admin) Update Post
+    description: Updates an existing blog post. Only staff and admin roles are allowed.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/UpdatePostReqBody.yaml'
+    responses:
+      '200':
+        description: Post updated successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/PostResponse.yaml'
+      '400':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
+
+  delete:
+    tags: [Posts]
+    summary: (Staff/Admin) Delete Post
+    description: Deletes a blog post by ID. Only staff and admin roles are allowed.
+    security:
+      - BearerAuth: []
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: mongoId
+    responses:
+      '200':
+        description: Post deleted successfully.
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/MessageResponse.yaml'
+      '401':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '403':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '404':
+        $ref: '../components/schemas/ErrorStatusResponse.yaml'
+      '500':
+        $ref: '../components/schemas/ErrorServerResponse.yaml'
