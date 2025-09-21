@@ -119,12 +119,7 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
               Làm mới
             </Button>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Download className="mr-2 h-4 w-4" />
-                  Xuất dữ liệu
-                </Button>
-              </DropdownMenuTrigger>
+              <DropdownMenuTrigger asChild></DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem>Xuất Excel</DropdownMenuItem>
                 <DropdownMenuItem>Xuất PDF</DropdownMenuItem>
@@ -248,13 +243,7 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
             </div>
           ) : (
             <div>
-              <DataTable
-                columns={column ?? []}
-                data={data}
-                searchValue={searchValue}
-                onSearchChange={handleSearchChange}
-                filterPlaceholder="Tìm kiếm bài viết..."
-              />
+              <DataTable columns={column ?? []} data={data} filterPlaceholder="Tìm kiếm bài viết..." />
               <div className="mt-4">
                 <PaginationDemo
                   totalPages={params.totalPages ?? 1}
