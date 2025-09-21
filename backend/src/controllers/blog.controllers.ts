@@ -19,6 +19,11 @@ import Post from '~/models/schemas/Blog.schema'
 export const getAllPostsController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const filter = buildPostFilter(req)
+
+    if (req.query.keyword) {
+      filter.title = { $regex: req.query.keyword as string, $options: 'i' }
+    }
+
     const { page = 1, limit = 10 } = req.query
 
     const skip = (Number(page) - 1) * Number(limit)
