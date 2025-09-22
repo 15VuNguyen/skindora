@@ -10,11 +10,13 @@ networks:
     name: redis-network
   kafka-network:
     driver: bridge
+
 volumes:
   portainer_data:
   redis_data:
   kafka_data:
   zookeeper_data:
+
 services:
   traefik:
     image: traefik:v3.4.1
@@ -39,16 +41,20 @@ services:
       - ./traefik/logs:/var/log/traefik
     labels:
       - "traefik.enable=true"
+      # This label is ONLY for the dashboard route (still needs scope on the router target)
       - "traefik.http.routers.traefik-dashboard.rule=Host(`${TRAEFIK_DASHBOARD_HOST}`)"
       - "traefik.http.routers.traefik-dashboard.entrypoints=websecure"
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
       - "traefik.http.routers.traefik-dashboard.tls.certresolver=default"
       - "traefik.http.routers.traefik-dashboard.middlewares=dashboard-auth"
       - "traefik.http.middlewares.dashboard-auth.basicauth.users=${TRAEFIK_DASHBOARD_USERS}"
+      # (Optional) not strictly needed on Traefik itself:
+      - "traefik.docker.network=traefik-public"
+
   frontend:
     build:
       context: ./frontend
-      dockerfile: dockerfile 
+      dockerfile: dockerfile
       args:
         - VITE_API_BASE_URL=${VITE_API_BASE_URL}
         - VITE_SENTRY_DSN_FRONTEND=${VITE_SENTRY_DSN_FRONTEND}
@@ -60,38 +66,42 @@ services:
       - traefik-public
     labels:
       - "traefik.enable=true"
+      - "traefik.scope=public"                     
+      - "traefik.docker.network=traefik-public"
       - "traefik.http.routers.frontend.rule=Host(`${FRONTEND_HOST}`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.routers.frontend.tls.certresolver=default"
-      - "traefik.http.routers.frontend.tls.domains[0].main=`${APEX_DOMAIN}`"
-      - "traefik.http.routers.frontend.tls.domains[0].sans=*.`${APEX_DOMAIN}`"
+      - "traefik.http.routers.frontend.tls.domains[0].main=${APEX_DOMAIN}"
+      - "traefik.http.routers.frontend.tls.domains[0].sans=*.${APEX_DOMAIN}"
       - "traefik.http.services.frontend-service.loadbalancer.server.port=80"
+
   backend:
     build:
       context: ./backend
       dockerfile: dockerfile
       args:
-      - APP_PORT=${PORT:-4000}
+        - APP_PORT=${PORT:-4000}
     volumes:
       - ./uploads:/srv/uploads
     networks:
       - redis-network
       - traefik-public
       - kafka-network
-
     depends_on:
       - redis
     env_file:
       - .env
     labels:
       - "traefik.enable=true"
+      - "traefik.scope=public"                      
+      - "traefik.docker.network=traefik-public"
       - "traefik.http.routers.backend.rule=Host(`${BACKEND_HOST}`)"
       - "traefik.http.routers.backend.entrypoints=websecure"
       - "traefik.http.routers.backend.tls=true"
       - "traefik.http.routers.backend.tls.certresolver=default"
       - "traefik.http.services.backend-service.loadbalancer.server.port=${PORT:-4000}"
-      - "traefik.docker.network=traefik-public"
+
   portainer:
     image: portainer/portainer-ce:2.30.1-alpine
     restart: unless-stopped
@@ -103,11 +113,12 @@ services:
       - traefik-public
     labels:
       - "traefik.enable=true"
+      - "traefik.scope=public"                      
+      - "traefik.docker.network=traefik-public"
       - "traefik.http.routers.portainer.rule=Host(`${PORTAINER_HOST}`)"
       - "traefik.http.routers.portainer.entrypoints=websecure"
       - "traefik.http.routers.portainer.tls.certresolver=default"
       - "traefik.http.services.portainer.loadbalancer.server.port=9000"
-      - "traefik.docker.network=traefik-public"
     depends_on:
       - traefik
 
@@ -126,9 +137,12 @@ services:
       - redis-network
     labels:
       - "traefik.enable=true"
+      - "traefik.scope=public"                  
       - "traefik.tcp.routers.redis-tcp.entrypoints=websecure"
+      - "traefik.tcp.services.redis.loadbalancer.server.port=6379"
     depends_on:
       - traefik
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.0
     networks:
@@ -139,13 +153,13 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
       ALLOW_ANONYMOUS_LOGIN: "yes"
+
   kafka:
     image: confluentinc/cp-kafka:7.6.0
     depends_on:
       - zookeeper
     networks:
       - kafka-network
-   
     volumes:
       - kafka_data:/var/lib/kafka
     environment:
