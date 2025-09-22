@@ -11,12 +11,16 @@ export const useFetchPost = () => {
     page: 1,
     totalPages: 1,
     totalRecords: 1,
+    status: "",
   });
   const changePage = useCallback((page: number) => {
     setParams((prev) => ({ ...prev, page }));
   }, []);
   const changeLimit = useCallback((limit: number) => {
     setParams((prev) => ({ ...prev, page: 1, limit }));
+  }, []);
+  const changeStatus = useCallback((status: string) => {
+    setParams((prev) => ({ ...prev, page: 1, status }));
   }, []);
   const fetchListPost = useCallback(async () => {
     setLoading(true);
@@ -33,7 +37,7 @@ export const useFetchPost = () => {
     } finally {
       setLoading(false);
     }
-  }, [params.limit, params.page]);
+  }, [params.limit, params.page, params.status]);
 
   return {
     loading,
@@ -43,5 +47,7 @@ export const useFetchPost = () => {
     changeLimit,
     fetchListPost,
     setParams,
+
+    changeStatus,
   };
 };

@@ -6,6 +6,7 @@ export interface FetchAllPostProps {
   page?: string | number;
   totalPages?: string | number;
   totalRecords?: number;
+  status?: string;
 }
 //get-all-post
 export const fetchAllPost = async (params: FetchAllPostProps) => {
@@ -13,6 +14,7 @@ export const fetchAllPost = async (params: FetchAllPostProps) => {
     .get<API.IResponseSearch<Post>>("/posts", {
       limit: params.limit,
       page: params.page,
+      status: params.status,
     })
     .then((response) => response.data);
 };
@@ -33,4 +35,4 @@ export const createPost = async (data: Post) => {
 //delete-post
 export const deletePost = async (id: string) => {
   return await httpClient.delete<API.IResponse<null>>(`/posts/${id}`).then((response) => response.data);
-}
+};
