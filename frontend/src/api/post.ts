@@ -7,6 +7,7 @@ export interface FetchAllPostProps {
   totalPages?: string | number;
   totalRecords?: number;
   status?: string;
+  keyword?: string;
 }
 //get-all-post
 export const fetchAllPost = async (params: FetchAllPostProps) => {
@@ -15,6 +16,7 @@ export const fetchAllPost = async (params: FetchAllPostProps) => {
       limit: params.limit,
       page: params.page,
       status: params.status,
+      keyword: params.keyword,
     })
     .then((response) => response.data);
 };

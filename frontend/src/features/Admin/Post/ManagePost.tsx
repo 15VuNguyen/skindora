@@ -38,7 +38,7 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
   const { role } = useRole();
   const navigate = useNavigate();
   const { setHeaderName } = useHeader();
-  const { loading, data, fetchListPost, params, setParams, changeStatus } = useFetchPost();
+  const { loading, data, fetchListPost, params, setParams, changeStatus, changeKeyword } = useFetchPost();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -52,7 +52,7 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
   }, [role]);
   useEffect(() => {
     fetchListPost();
-  }, [params.page, params.limit, params.status, fetchListPost]);
+  }, [params.page, params.limit, params.status, fetchListPost, params.keyword]);
   const handlePageChange = (page: number) => {
     setSearchParams((prev) => {
       const newParams = new URLSearchParams(prev);
@@ -79,6 +79,7 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
 
   const handleSearchChange = (value: string) => {
     setSearchValue(value);
+    changeKeyword(value);
   };
 
   const handleStatusFilter = (status: string) => {

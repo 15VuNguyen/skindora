@@ -12,6 +12,7 @@ export const useFetchPost = () => {
     totalPages: 1,
     totalRecords: 1,
     status: "",
+    keyword: "",
   });
   const changePage = useCallback((page: number) => {
     setParams((prev) => ({ ...prev, page }));
@@ -21,6 +22,9 @@ export const useFetchPost = () => {
   }, []);
   const changeStatus = useCallback((status: string) => {
     setParams((prev) => ({ ...prev, page: 1, status }));
+  }, []);
+  const changeKeyword = useCallback((keyword: string) => {
+    setParams((prev) => ({ ...prev, page: 1, keyword }));
   }, []);
   const fetchListPost = useCallback(async () => {
     setLoading(true);
@@ -37,7 +41,7 @@ export const useFetchPost = () => {
     } finally {
       setLoading(false);
     }
-  }, [params.limit, params.page, params.status]);
+  }, [params.limit, params.page, params.status, params.keyword]);
 
   return {
     loading,
@@ -47,7 +51,7 @@ export const useFetchPost = () => {
     changeLimit,
     fetchListPost,
     setParams,
-
     changeStatus,
+    changeKeyword,
   };
 };
