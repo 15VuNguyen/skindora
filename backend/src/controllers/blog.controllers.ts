@@ -18,15 +18,28 @@ import Post from '~/models/schemas/Blog.schema'
 
 export const getAllPostsController = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const filter = buildPostFilter(req)
+    const { keyword, page = 1, limit = 10 } = req.query
 
-    if (req.query.keyword) {
-      filter.title = { $regex: req.query.keyword as string, $options: 'i' }
+    const { filters = {} }: { filters?: Record<string, string[]> } = req.body
+
+    const filter: any = {}
+    
+    if (keyword) {
+      filter.$or = [
+        { title: { $regex: keyword as string, $options: 'i' } },
+        { title_no_accents: { $regex: keyword as string, $options: 'i' } }
+      ]
     }
 
-    const { page = 1, limit = 10 } = req.query
+    Object.entries(filters).forEach(([field, values]) => {
+      if (Array.isArray(values) && values.length > 0) {
+        filter[field] = { $all: values.map((id) => new ObjectId(id)) }
+      }
+    })
 
-    const skip = (Number(page) - 1) * Number(limit)
+    const pageNum = Math.max(Number(req.query.page) || 1, 1)
+    const limitNum = Math.max(Number(req.query.limit) || 10, 1)
+    const skip = (pageNum - 1) * limitNum
 
     // Các field filter
     const filterFields = [
@@ -119,6 +132,13 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
 
 export const getAllPublishPostsController = async (req: Request, res: Response, next: NextFunction) => {
   const filter = buildPostFilter(req, PostState.PUBLISHED)
+  const { keyword } = req.query
+  if (keyword) {
+    filter.$or = [
+      { title: { $regex: keyword as string, $options: 'i' } },
+      { title_no_accents: { $regex: keyword as string, $options: 'i' } }
+    ]
+  }
   await sendPaginatedResponse(res, next, databaseService.posts, req.query, filter)
 }
 

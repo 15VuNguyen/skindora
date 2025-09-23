@@ -9,8 +9,10 @@ export interface ContentType {
 interface PostType {
   _id?: ObjectId
   title: string
+  title_no_accents: string
   slug: string
   content: ContentType
+  image_on_list: string
   status: PostState
   publishedAt?: Date
   authorId: ObjectId
@@ -29,8 +31,10 @@ interface PostType {
 export default class Post {
   _id?: ObjectId
   title: string
+  title_no_accents: string
   slug: string
   content: ContentType
+  image_on_list: string
   status: PostState
   publishedAt?: Date
   authorId: ObjectId
@@ -52,11 +56,13 @@ export default class Post {
 
     this._id = blog._id || new ObjectId()
     this.title = blog.title
+    this.title_no_accents = blog.title_no_accents || ''
     this.slug = blog.slug
     this.content = {
       rawHtml: blog.content?.rawHtml || '',
       plainText: blog.content?.plainText || ''
     }
+    this.image_on_list = blog.image_on_list || ''
     this.status = blog.status || PostState.DRAFT
     this.publishedAt = blog.status === PostState.PUBLISHED ? blog.publishedAt || localTime : undefined
     this.authorId = blog.authorId

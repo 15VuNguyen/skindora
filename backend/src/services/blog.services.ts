@@ -17,6 +17,8 @@ class BlogService {
     const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
 
     const slug = this.generateSlug(payload.title)
+    const title_no_accents = removeVietnameseTones(payload.title)
+
     const post = await databaseService.posts.findOne({ slug })
     if (payload.status === PostState.PUBLISHED && post) {
       throw new ErrorWithStatus({
@@ -28,6 +30,7 @@ class BlogService {
     const newPost = new Post({
       ...payload,
       _id: postId,
+      title_no_accents,
       slug,
       authorId: new ObjectId(payload.authorId || userId),
       status: payload.status || PostState.DRAFT,
@@ -107,6 +110,7 @@ class BlogService {
 
     if (updatedData.title) {
       updatedData.slug = this.generateSlug(updatedData.title)
+      updatedData.title_no_accents = removeVietnameseTones(updatedData.title)
     } else {
       updatedData.slug = post?.slug
     }
