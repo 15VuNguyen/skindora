@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb'
 import { CreateNewPostReqBody, UpdatePostData, UpdatePostReqBody } from '~/models/requests/Blog.requests'
 import databaseService from './database.services'
-import { PostState } from '~/constants/enums'
+import { filterFields, PostState } from '~/constants/enums'
 import { removeVietnameseTones } from '~/utils/string'
 import { ErrorWithStatus } from '~/models/Errors'
 import { BLOG_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
@@ -28,7 +28,7 @@ class BlogService {
     }
 
     const newPost = new Post({
-      ...payload,
+      ...this.normalizeFilters(payload),
       _id: postId,
       title_no_accents,
       slug,
@@ -37,22 +37,6 @@ class BlogService {
       publishedAt: payload.status === PostState.PUBLISHED ? localTime : undefined,
       created_at: localTime,
       updated_at: localTime
-    })
-    const filterFields = [
-      'filter_brand',
-      'filter_dac_tinh',
-      'filter_hsk_ingredients',
-      'filter_hsk_product_type',
-      'filter_hsk_size',
-      'filter_hsk_skin_type',
-      'filter_hsk_uses',
-      'filter_origin'
-    ] as const
-
-    filterFields.forEach((field) => {
-      if (payload[field] && payload[field]!.length > 0) {
-        newPost[field] = payload[field]!.map((id) => new ObjectId(id))
-      }
     })
 
     await databaseService.posts.insertOne(newPost)
@@ -103,9 +87,10 @@ class BlogService {
     const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
 
     let updatedData: UpdatePostData = {
-      ...data,
+      ...this.normalizeFilters(data),
       updated_at: localTime
     }
+
     const post = await databaseService.posts.findOne({ _id: new ObjectId(postId) })
 
     if (updatedData.title) {
@@ -116,12 +101,11 @@ class BlogService {
     }
 
     if (post!.status !== PostState.PUBLISHED && updatedData.status === PostState.PUBLISHED) {
-      //Check slug whenever publish
       if (updatedData.slug) {
         const existed = await databaseService.posts.findOne({
           slug: updatedData.slug,
           status: PostState.PUBLISHED,
-          _id: { $ne: post!._id } //avoid current post case
+          _id: { $ne: post!._id }
         })
         if (existed) {
           throw new ErrorWithStatus({
@@ -130,11 +114,11 @@ class BlogService {
           })
         }
       }
-
       updatedData.publishedAt = localTime
     } else if (updatedData.status === PostState.DRAFT) {
       updatedData.publishedAt = undefined
     }
+
     return await databaseService.posts.findOneAndUpdate(
       { _id: new ObjectId(postId) },
       { $set: updatedData },
@@ -158,6 +142,16 @@ class BlogService {
     return removeVietnameseTones(title)
       .replace(/[^a-z0-9]+/g, '-') //replace space & special chars with -
       .replace(/(^-|-$)+/g, '') //(^-): match - at beginning, (-$): match - at the end, +: match one or more => trim all '-' at the beginning or end
+  }
+
+  normalizeFilters<T extends Record<string, any>>(data: T): T {
+    filterFields.forEach((field) => {
+      const key = field as keyof T
+      if (data[key] && data[key]!.length > 0) {
+        data[key] = data[key]!.map((id: string | ObjectId) => (typeof id === 'string' ? new ObjectId(id) : id))
+      }
+    })
+    return data
   }
 }
 

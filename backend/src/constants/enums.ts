@@ -97,3 +97,16 @@ export enum PostState {
   DRAFT = 'DRAFT',
   PUBLISHED = 'PUBLISHED'
 }
+
+export enum PostFilterField {
+  BRAND = 'filter_brand',
+  DAC_TINH = 'filter_dac_tinh',
+  HSK_INGREDIENTS = 'filter_hsk_ingredients',
+  HSK_PRODUCT_TYPE = 'filter_hsk_product_type',
+  HSK_SIZE = 'filter_hsk_size',
+  HSK_SKIN_TYPE = 'filter_hsk_skin_type',
+  HSK_USES = 'filter_hsk_uses',
+  ORIGIN = 'filter_origin'
+}
+
+export const filterFields = Object.values(PostFilterField)

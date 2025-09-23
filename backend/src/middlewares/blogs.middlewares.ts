@@ -59,6 +59,15 @@ export const createBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
+      image_on_list: {
+        notEmpty: {
+          errorMessage: BLOG_MESSAGES.IMAGE_ON_LIST_REQUIRED
+        },
+        trim: true,
+        isURL: {
+          errorMessage: BLOG_MESSAGES.INVALID_URL_IMAGE_ON_LIST
+        }
+      },
       status: {
         optional: true,
         isIn: {
@@ -148,9 +157,7 @@ export const updateBlogValidator = validate(
         }
       },
       image_on_list: {
-        notEmpty: {
-          errorMessage: BLOG_MESSAGES.IMAGE_ON_LIST_REQUIRED
-        },
+        optional: true,
         trim: true,
         isURL: {
           errorMessage: BLOG_MESSAGES.INVALID_URL_IMAGE_ON_LIST

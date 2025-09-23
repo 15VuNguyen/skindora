@@ -13,17 +13,14 @@ import {
 } from '~/models/requests/Blog.requests'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { PostState } from '~/constants/enums'
+import { filterFields, PostState } from '~/constants/enums'
 import Post from '~/models/schemas/Blog.schema'
 
 export const getAllPostsController = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { keyword, page = 1, limit = 10 } = req.query
+    const filter = buildPostFilter(req)
 
-    const { filters = {} }: { filters?: Record<string, string[]> } = req.body
-
-    const filter: any = {}
-    
     if (keyword) {
       filter.$or = [
         { title: { $regex: keyword as string, $options: 'i' } },
@@ -31,29 +28,10 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
       ]
     }
 
-    Object.entries(filters).forEach(([field, values]) => {
-      if (Array.isArray(values) && values.length > 0) {
-        filter[field] = { $all: values.map((id) => new ObjectId(id)) }
-      }
-    })
-
-    const pageNum = Math.max(Number(req.query.page) || 1, 1)
-    const limitNum = Math.max(Number(req.query.limit) || 10, 1)
+    const pageNum = Math.max(Number(page) || 1, 1)
+    const limitNum = Math.max(Number(limit) || 10, 1)
     const skip = (pageNum - 1) * limitNum
 
-    // Các field filter
-    const filterFields = [
-      'filter_brand',
-      'filter_dac_tinh',
-      'filter_hsk_ingredients',
-      'filter_hsk_product_type',
-      'filter_hsk_size',
-      'filter_hsk_skin_type',
-      'filter_hsk_uses',
-      'filter_origin'
-    ] as const
-
-    //Hàm để build $lookup cho filter
     const buildFilterLookup = (collection: string) => ({
       $lookup: {
         from: collection,
@@ -67,9 +45,8 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
       { $match: filter },
       { $sort: { created_at: -1 } },
       { $skip: skip },
-      { $limit: Number(limit) },
+      { $limit: limitNum },
 
-      //ép kiểu filter_* từ string -> ObjectId
       {
         $addFields: filterFields.reduce(
           (acc, field) => {
@@ -98,7 +75,6 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
       },
       { $unwind: '$author' },
 
-      //Lookups cho filter (chỉ lấy _id + option_name)
       ...filterFields.map(buildFilterLookup),
 
       {
@@ -119,10 +95,10 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
     res.json({
       data: results,
       pagination: {
-        page: Number(page),
-        limit: Number(limit),
+        page: pageNum,
+        limit: limitNum,
         total,
-        totalPages: Math.ceil(total / Number(limit))
+        totalPages: Math.ceil(total / limitNum)
       }
     })
   } catch (error) {
@@ -133,12 +109,14 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
 export const getAllPublishPostsController = async (req: Request, res: Response, next: NextFunction) => {
   const filter = buildPostFilter(req, PostState.PUBLISHED)
   const { keyword } = req.query
+
   if (keyword) {
     filter.$or = [
       { title: { $regex: keyword as string, $options: 'i' } },
       { title_no_accents: { $regex: keyword as string, $options: 'i' } }
     ]
   }
+
   await sendPaginatedResponse(res, next, databaseService.posts, req.query, filter)
 }
 
@@ -151,20 +129,11 @@ function buildPostFilter(req: Request, forceStatus?: PostState): Filter<Post> {
     filter.status = req.query.status as PostState
   }
 
-  const filterFields = [
-    'filter_brand',
-    'filter_dac_tinh',
-    'filter_hsk_ingredients',
-    'filter_hsk_product_type',
-    'filter_hsk_size',
-    'filter_hsk_skin_type',
-    'filter_hsk_uses',
-    'filter_origin'
-  ]
+  const { filters = {} }: { filters?: Record<string, string[]> } = req.body
 
-  filterFields.forEach((field) => {
-    if (req.query[field]) {
-      filter[field as keyof Filter<Post>] = new ObjectId(req.query[field] as string)
+  Object.entries(filters).forEach(([field, values]) => {
+    if (Array.isArray(values) && values.length > 0) {
+      filter[field as keyof Filter<Post>] = { $all: values.map((id) => new ObjectId(id)) }
     }
   })
 

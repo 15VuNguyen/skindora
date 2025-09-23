@@ -42,6 +42,7 @@ import { UpdateMeReqBody } from '~/models/requests/Users.requests'
 import { wrapAsync } from '~/utils/handler'
 import { getAllVoucherController, getVoucherDetailController } from '~/controllers/voucher.controllers'
 import { getAllPostsController, getAllPublishPostsController } from '~/controllers/blog.controllers'
+import { getAllPostsValidator } from '~/middlewares/blogs.middlewares'
 
 const usersRouter = Router()
 // usersRouter.route('/').get(loginController)
@@ -106,6 +107,6 @@ usersRouter.post(
 )
 
 
-usersRouter.get('/posts', wrapAsync(getAllPublishPostsController))
+usersRouter.post('/posts', getAllPostsValidator, wrapAsync(getAllPublishPostsController))
 export default usersRouter
 
