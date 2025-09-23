@@ -17,6 +17,7 @@ import FilterOrigin from '~/models/schemas/FilterHskOrigin.schema'
 import Voucher from '~/models/schemas/Voucher.schema'
 import Blog from '~/models/schemas/Blog.schema'
 import UserRoutine from '~/models/schemas/UserRoutine.schema'
+import AIUsage from '~/models/schemas/AIUsage.schema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@skindora.rbbhqia.mongodb.net/?retryWrites=true&w=majority&appName=skindora`
@@ -132,6 +133,9 @@ class DatabaseService {
     return this.db.collection(process.env.DB_POST_COLLECTION as string)
   }
 
+  get aiUsages(): Collection<AIUsage> {
+    return this.db.collection(process.env.DB_AI_USAGE_COLLECTION as string)
+  }
 }
 
 const databaseService = new DatabaseService()
