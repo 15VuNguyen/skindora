@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { skincareAdviceController } from '~/controllers/ai.controllers'
+import { skincareAdviceController, chatStreamController } from '~/controllers/ai.controllers'
 import { skincareAdviceValidator } from '~/middlewares/skincare.middlewares'
 import aiUsageService from '~/services/aiUsage.services'
 
@@ -16,5 +16,6 @@ aiRouter.use(async (req, res, next) => {
 })
 
 aiRouter.post('/skincare-advice', skincareAdviceValidator, skincareAdviceController)
+aiRouter.post('/chat/stream', chatStreamController)
 
 export { aiRouter }

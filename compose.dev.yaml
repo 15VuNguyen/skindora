@@ -36,24 +36,24 @@ services:
       - REDIS_PASSWORD=${DEV_REDIS_PASSWORD}
     env_file:
       - ./backend/.env
-  backend:
-    build:
-      context: ./backend
-      dockerfile: dockerfile
-      args:
-        - APP_PORT=${PORT:-4000}
-    volumes:
-      - ./uploads:/srv/uploads
-    networks:
-      - backend_network
-      - redis_network
-      - kafka_network
-    depends_on:
-      - redis
-    env_file:
-      - ./backend/.env
-    ports:
-      - ${PORT:-4000}:4000
+  # backend:
+  #   build:
+  #     context: ./backend
+  #     dockerfile: dockerfile
+  #     args:
+  #       - APP_PORT=${PORT:-4000}
+  #   volumes:
+  #     - ./uploads:/srv/uploads
+  #   networks:
+  #     - backend_network
+  #     - redis_network
+  #     - kafka_network
+  #   depends_on:
+  #     - redis
+  #   env_file:
+  #     - ./backend/.env
+  #   ports:
+  #     - ${PORT:-4000}:4000
   zookeeper:
     image: confluentinc/cp-zookeeper:7.6.0
     networks:
