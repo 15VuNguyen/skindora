@@ -34,7 +34,6 @@ export const chatStreamController = async (req: Request, res: Response, next: Ne
     logger.debug('📝 Processing message:', message)
     logger.debug('📚 History length:', history.length)
 
-    // Set headers for SSE
     res.setHeader('Content-Type', 'text/event-stream')
     res.setHeader('Cache-Control', 'no-cache')
     res.setHeader('Connection', 'keep-alive')
@@ -43,7 +42,6 @@ export const chatStreamController = async (req: Request, res: Response, next: Ne
 
     logger.debug('🔧 SSE headers set')
 
-    // Prepare messages for OpenAI
     const messages = [
       {
         role: 'system',
@@ -55,8 +53,6 @@ export const chatStreamController = async (req: Request, res: Response, next: Ne
     ]
 
     logger.debug('📨 Prepared messages for AI:', messages.length, 'messages')
-
-    // Define tools
     const tools = [
       {
         type: 'function',
@@ -88,77 +84,125 @@ export const chatStreamController = async (req: Request, res: Response, next: Ne
 
     logger.info('✅ Stream created successfully')
 
-    let toolCalls: any[] = []
-    let currentToolCall: any = null
+    const toolCallMap = new Map<number, any>()
     let chunkCount = 0
 
     for await (const chunk of stream) {
       chunkCount++
       const delta = chunk.choices[0]?.delta
 
-      logger.debug(`📦 Chunk ${chunkCount}:`, {
-        hasContent: !!delta?.content,
-        contentLength: delta?.content?.length,
-        hasToolCalls: !!delta?.tool_calls,
-        finishReason: chunk.choices[0]?.finish_reason
-      })
+      logger.debug(
+        {
+          hasContent: !!delta?.content,
+          contentLength: delta?.content?.length,
+          hasToolCalls: !!delta?.tool_calls,
+          finishReason: chunk.choices[0]?.finish_reason
+        },
+        `📦 Chunk ${chunkCount}`
+      )
 
       if (delta?.content) {
         logger.debug('📝 Sending text content:', delta.content)
-        // Send text content
         res.write(`data: ${JSON.stringify({ type: 'text', content: delta.content })}\n\n`)
       }
 
       if (delta?.tool_calls) {
-        logger.debug('🔧 Processing tool calls:', delta.tool_calls.length)
-        for (const toolCall of delta.tool_calls) {
-          if (toolCall.index !== undefined) {
-            if (currentToolCall) {
-              toolCalls.push(currentToolCall)
-            }
-            currentToolCall = {
-              id: toolCall.id,
-              function: {
-                name: toolCall.function?.name,
-                arguments: toolCall.function?.arguments || ''
-              },
-              type: toolCall.type
-            }
-          } else {
-            if (currentToolCall && toolCall.function?.arguments) {
-              currentToolCall.function.arguments += toolCall.function.arguments
+        logger.debug({ count: delta.tool_calls.length }, '🔧 Processing tool calls')
+        for (const toolCallDelta of delta.tool_calls) {
+          const index = toolCallDelta.index ?? 0
+          const existing = toolCallMap.get(index) || {
+            id: toolCallDelta.id,
+            type: toolCallDelta.type,
+            function: {
+              name: toolCallDelta.function?.name,
+              arguments: ''
             }
           }
+
+          if (toolCallDelta.id) {
+            existing.id = toolCallDelta.id
+          }
+
+          if (toolCallDelta.type) {
+            existing.type = toolCallDelta.type
+          }
+
+          if (toolCallDelta.function?.name) {
+            existing.function.name = toolCallDelta.function.name
+          }
+
+          if (toolCallDelta.function?.arguments) {
+            existing.function.arguments = (existing.function.arguments || '') + toolCallDelta.function.arguments
+          }
+
+          toolCallMap.set(index, existing)
+          logger.debug(
+            {
+              index,
+              raw: toolCallDelta,
+              accumulatedName: existing.function.name,
+              argumentLength: existing.function.arguments?.length || 0
+            },
+            '🧰 Accumulating tool call chunk'
+          )
         }
       }
 
       if (chunk.choices[0]?.finish_reason === 'tool_calls') {
         logger.info('🛑 Finish reason: tool_calls, breaking stream')
-        if (currentToolCall) {
-          toolCalls.push(currentToolCall)
-        }
         break
       }
     }
 
-    logger.info('🔄 Stream processing complete, tool calls found:', toolCalls.length)
+    logger.info({ chunkCount }, '📦 Total chunks processed')
+    const toolCalls = Array.from(toolCallMap.values())
+    logger.info({ toolCallsCount: toolCalls.length }, '🔄 Stream processing complete, tool calls found')
+    toolCalls.forEach((call, idx) => {
+      logger.debug(
+        {
+          index: idx,
+          id: call.id,
+          name: call.function?.name,
+          rawArguments: call.function?.arguments
+        },
+        '🗂️ Tool call summary'
+      )
+    })
 
-    // Execute tool calls
     for (const toolCall of toolCalls) {
-      logger.info('⚡ Executing tool call:', toolCall.function.name)
+      logger.info({ toolName: toolCall.function.name }, '⚡ Executing tool call')
       if (toolCall.function.name === 'search_products') {
-        const args = JSON.parse(toolCall.function.arguments)
+        if (!toolCall.function.arguments) {
+          logger.warn({ toolCall }, '⚠️ No arguments provided for tool call, skipping execution')
+          continue
+        }
+
+        let args: { keyword?: string }
+        try {
+          logger.debug({ rawArguments: toolCall.function.arguments }, '🧾 Raw tool arguments')
+          args = JSON.parse(toolCall.function.arguments)
+        } catch (parseError) {
+          logger.error({ arguments: toolCall.function.arguments, parseError }, '❌ Failed to parse tool call arguments')
+          continue
+        }
         const keyword = args.keyword
 
-        logger.debug('🔍 Searching products with keyword:', keyword)
+        logger.debug({ keyword }, '🔍 Searching products with keyword')
 
         const filter: Filter<Product> = { state: ProductState.ACTIVE }
         if (keyword) {
           filter.name_on_list = { $regex: keyword, $options: 'i' }
         }
 
+        logger.debug({ filter }, '🧮 Mongo filter')
+
         const products = await databaseService.products.find(filter).limit(5).toArray()
-        logger.info('📊 Found products:', products.length)
+        logger.info({ count: products.length }, '📊 Found products')
+        if (products.length === 0) {
+          logger.warn({ keyword }, '⚠️ No products matched search keyword')
+        } else {
+          logger.debug({ sampleProducts: products.slice(0, 3).map((p) => p.name_on_list) }, '🛍️ Sample product names')
+        }
 
         const toolResult = {
           type: 'tool_call',
@@ -175,7 +219,6 @@ export const chatStreamController = async (req: Request, res: Response, next: Ne
         logger.debug('📤 Sending tool result')
         res.write(`data: ${JSON.stringify(toolResult)}\n\n`)
 
-        // Continue conversation with tool result
         messages.push({
           role: 'assistant',
           content: null,
@@ -206,9 +249,16 @@ export const chatStreamController = async (req: Request, res: Response, next: Ne
         for await (const chunk of continueStream) {
           continueChunkCount++
           const delta = chunk.choices[0]?.delta
-          logger.debug(`📦 Continue chunk ${continueChunkCount}:`, { hasContent: !!delta?.content })
+          logger.debug(
+            {
+              hasContent: !!delta?.content,
+              contentLength: delta?.content?.length || 0,
+              finishReason: chunk.choices[0]?.finish_reason
+            },
+            `📦 Continue chunk ${continueChunkCount}`
+          )
           if (delta?.content) {
-            logger.debug('📝 Sending continuation text:', delta.content)
+            logger.debug({ content: delta.content }, '📝 Sending continuation text')
             res.write(`data: ${JSON.stringify({ type: 'text', content: delta.content })}\n\n`)
           }
         }

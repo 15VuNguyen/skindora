@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { logger } from "@/utils/logger";
+import { aiService } from "@/services/aiServicce";
 
 import { ChatInput } from "./components/ChatInput";
 import { ChatMessage } from "./components/ChatMessage";
@@ -39,6 +40,7 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
   const [isTyping, setIsTyping] = useState(false);
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const viewportRef = useRef<HTMLDivElement>(null);
+  const pendingAssistantMessageRef = useRef<string>("");
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -52,6 +54,7 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
     setInput("");
     setIsTyping(true);
     setCurrentMessage("");
+    pendingAssistantMessageRef.current = "";
 
     const history = updatedMessages.slice(0, -1).map((msg) => ({
       role: msg.isUser ? "user" : "assistant",
@@ -65,16 +68,10 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
     });
 
     try {
-      logger.info("🌐 Making fetch request to /ai/chat/stream");
-      const response = await fetch("/ai/chat/stream", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: userMessage.text,
-          history,
-        }),
+      logger.info("🌐 Requesting chat stream via aiService");
+      const response = await aiService.startChatStream({
+        message: userMessage.text ?? "",
+        history,
       });
 
       logger.info("📡 Response received:", {
@@ -83,10 +80,6 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
         statusText: response.statusText,
         headers: Object.fromEntries(response.headers.entries()),
       });
-
-      if (!response.ok) {
-        throw new Error(`Network response was not ok: ${response.status} ${response.statusText}`);
-      }
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
@@ -126,11 +119,20 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
 
                 if (event.type === "text") {
                   logger.debug("✍️ Adding text content:", event.content);
-                  setCurrentMessage((prev) => prev + event.content);
+                  setCurrentMessage((prev) => {
+                    const next = prev + event.content;
+                    pendingAssistantMessageRef.current = next;
+                    return next;
+                  });
                 } else if (event.type === "end") {
                   logger.info("🏁 Stream ended, finalizing message");
-                  setMessages((prev) => [...prev, { id: Date.now().toString(), text: currentMessage, isUser: false }]);
+                  const finalMessage = pendingAssistantMessageRef.current;
+                  setMessages((prev) => [
+                    ...prev,
+                    { id: Date.now().toString(), text: finalMessage, isUser: false },
+                  ]);
                   setCurrentMessage("");
+                  pendingAssistantMessageRef.current = "";
                   setIsTyping(false);
                 } else if (event.type === "tool_call") {
                   logger.info("🔧 Tool call received:", event);
