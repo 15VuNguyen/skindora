@@ -59,6 +59,15 @@ export const createBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
+      image_on_list: {
+        notEmpty: {
+          errorMessage: BLOG_MESSAGES.IMAGE_ON_LIST_REQUIRED
+        },
+        trim: true,
+        isURL: {
+          errorMessage: BLOG_MESSAGES.INVALID_URL_IMAGE_ON_LIST
+        }
+      },
       status: {
         optional: true,
         isIn: {
@@ -87,8 +96,14 @@ export const createBlogValidator = validate(
       },
       filter_brand: createArrayObjectIdValidator('filterBrand', ADMIN_MESSAGES.BRAND_ID_NOT_FOUND),
       filter_dac_tinh: createArrayObjectIdValidator('filterDacTinh', ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND),
-      filter_hsk_ingredients: createArrayObjectIdValidator('filterHskIngredient', ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND),
-      filter_hsk_product_type: createArrayObjectIdValidator('filterHskProductType', ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND),
+      filter_hsk_ingredients: createArrayObjectIdValidator(
+        'filterHskIngredient',
+        ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND
+      ),
+      filter_hsk_product_type: createArrayObjectIdValidator(
+        'filterHskProductType',
+        ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND
+      ),
       filter_hsk_size: createArrayObjectIdValidator('filterHskSize', ADMIN_MESSAGES.SIZE_ID_NOT_FOUND),
       filter_hsk_skin_type: createArrayObjectIdValidator('filterHskSkinType', ADMIN_MESSAGES.SKIN_TYPE_ID_NOT_FOUND),
       filter_hsk_uses: createArrayObjectIdValidator('filterHskUses', ADMIN_MESSAGES.USES_ID_NOT_FOUND),
@@ -107,9 +122,9 @@ export const updateBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.INVALID_OBJECT_ID
         },
         custom: {
-          options: async(value) => {
-            const post = await databaseService.posts.findOne({_id: new ObjectId(value)})
-            if(!post){
+          options: async (value) => {
+            const post = await databaseService.posts.findOne({ _id: new ObjectId(value) })
+            if (!post) {
               throw new ErrorWithStatus({
                 message: BLOG_MESSAGES.POST_NOT_FOUND,
                 status: HTTP_STATUS.NOT_FOUND
@@ -141,6 +156,13 @@ export const updateBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
+      image_on_list: {
+        optional: true,
+        trim: true,
+        isURL: {
+          errorMessage: BLOG_MESSAGES.INVALID_URL_IMAGE_ON_LIST
+        }
+      },
       status: {
         optional: true,
         isIn: {
@@ -169,12 +191,52 @@ export const updateBlogValidator = validate(
       },
       filter_brand: createArrayObjectIdValidator('filterBrand', ADMIN_MESSAGES.BRAND_ID_NOT_FOUND),
       filter_dac_tinh: createArrayObjectIdValidator('filterDacTinh', ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND),
-      filter_hsk_ingredients: createArrayObjectIdValidator('filterHskIngredient', ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND),
-      filter_hsk_product_type: createArrayObjectIdValidator('filterHskProductType', ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND),
+      filter_hsk_ingredients: createArrayObjectIdValidator(
+        'filterHskIngredient',
+        ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND
+      ),
+      filter_hsk_product_type: createArrayObjectIdValidator(
+        'filterHskProductType',
+        ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND
+      ),
       filter_hsk_size: createArrayObjectIdValidator('filterHskSize', ADMIN_MESSAGES.SIZE_ID_NOT_FOUND),
       filter_hsk_skin_type: createArrayObjectIdValidator('filterHskSkinType', ADMIN_MESSAGES.SKIN_TYPE_ID_NOT_FOUND),
       filter_hsk_uses: createArrayObjectIdValidator('filterHskUses', ADMIN_MESSAGES.USES_ID_NOT_FOUND),
       filter_origin: createArrayObjectIdValidator('filterOrigin', ADMIN_MESSAGES.ORIGIN_ID_NOT_FOUND)
+    },
+    ['body']
+  )
+)
+
+export const getAllPostsValidator = validate(
+  checkSchema(
+    {
+      filters: {
+        in: ['body'],
+        exists: {
+          errorMessage: BLOG_MESSAGES.FILTERS_OBJECT_REQUIRED
+        },
+        isObject: {
+          errorMessage: BLOG_MESSAGES.INVALID_FILTERS_OBJECT
+        }
+      },
+      'filters.filter_brand': createArrayObjectIdValidator('filterBrand', ADMIN_MESSAGES.BRAND_ID_NOT_FOUND),
+      'filters.filter_dac_tinh': createArrayObjectIdValidator('filterDacTinh', ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND),
+      'filters.filter_hsk_ingredients': createArrayObjectIdValidator(
+        'filterHskIngredient',
+        ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND
+      ),
+      'filters.filter_hsk_product_type': createArrayObjectIdValidator(
+        'filterHskProductType',
+        ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND
+      ),
+      'filters.filter_hsk_size': createArrayObjectIdValidator('filterHskSize', ADMIN_MESSAGES.SIZE_ID_NOT_FOUND),
+      'filters.filter_hsk_skin_type': createArrayObjectIdValidator(
+        'filterHskSkinType',
+        ADMIN_MESSAGES.SKIN_TYPE_ID_NOT_FOUND
+      ),
+      'filters.filter_hsk_uses': createArrayObjectIdValidator('filterHskUses', ADMIN_MESSAGES.USES_ID_NOT_FOUND),
+      'filters.filter_origin': createArrayObjectIdValidator('filterOrigin', ADMIN_MESSAGES.ORIGIN_ID_NOT_FOUND)
     },
     ['body']
   )
