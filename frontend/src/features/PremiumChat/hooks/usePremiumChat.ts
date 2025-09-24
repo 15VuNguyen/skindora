@@ -14,7 +14,7 @@ interface UsePremiumChatReturn {
   input: string;
   isTyping: boolean;
   currentMessage: string;
-  viewportRef: React.RefObject<HTMLDivElement>;
+  viewportRef: React.RefObject<HTMLDivElement | null>;
   setInput: (value: string) => void;
   handleSend: () => Promise<void>;
 }

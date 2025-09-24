@@ -12,20 +12,19 @@ interface ChatMessageProps {
 
 const renderBoldSegments = (segment: string) =>
   segment.split(/(\*\*[^*]+\*\*)/g).map((part, index) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return (
-        <strong key={`bold-${index}`}>
-          {part.slice(2, -2)}
-        </strong>
-      );
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return <strong key={`bold-${index}`}>{part.slice(2, -2)}</strong>;
     }
 
     return <span key={`text-${index}`}>{part}</span>;
   });
 
 const renderMessageText = (content: string) => {
-  const normalized = content.replace(/([^\n])\* \*\*/g, '$1\n* **');
-  const lines = normalized.split(/\n+/).map((line) => line.trim()).filter(Boolean);
+  const normalized = content.replace(/([^\n])\* \*\*/g, "$1\n* **");
+  const lines = normalized
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
 
   const blocks: React.ReactNode[] = [];
   let listBuffer: string[] = [];
@@ -43,7 +42,7 @@ const renderMessageText = (content: string) => {
   };
 
   lines.forEach((line) => {
-    if (line.startsWith('* ')) {
+    if (line.startsWith("* ")) {
       listBuffer.push(line.slice(2));
     } else {
       flushList();
