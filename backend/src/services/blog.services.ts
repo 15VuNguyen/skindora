@@ -8,6 +8,7 @@ import { BLOG_MESSAGES, USERS_MESSAGES } from '~/constants/messages'
 import HTTP_STATUS from '~/constants/httpStatus'
 import User from '~/models/schemas/User.schema'
 import Post from '~/models/schemas/Blog.schema'
+import redisClient from './redis.services'
 
 class BlogService {
   async createNewPost(payload: CreateNewPostReqBody, userId: string) {
@@ -54,7 +55,10 @@ class BlogService {
         status: HTTP_STATUS.NOT_FOUND
       })
     }
-    const { authorId, ...rest } = post as Post
+
+    const currentViews = await this.getCurrentViews(id)
+
+    const { authorId, view_count, ...rest } = post as Post
     const { password, email_verify_token, forgot_password_token, ...restUser } = user as User
 
     const filterCollections = {
@@ -74,8 +78,12 @@ class BlogService {
         populatedFilters[field] = await collection.find({ _id: { $in: (post as any)[field] } }).toArray()
       }
     }
+
+    await this.increasePostView(id)
+
     return {
       ...rest,
+      view_count: currentViews,
       author: restUser,
       ...populatedFilters
     }
@@ -152,6 +160,61 @@ class BlogService {
       }
     })
     return data
+  }
+
+  private getPostViewKeyById(postId: string) {
+    return `${process.env.POST_KEY}${postId}:views`
+  }
+
+  private async increasePostView(postId: string) {
+    //key: post:postId:views
+    const key = this.getPostViewKeyById(postId)
+    return await redisClient.incr(key)
+  }
+
+  private async parseIntPostView(key: string) {
+    return redisClient.get(key).then((val) => parseInt(val || '0', 10))
+  }
+
+  async syncPostViews(batchSize = 100) {
+    let cursor = '0'
+
+    do {
+      const { cursor: nextCursor, keys } = await redisClient.scan(cursor, {
+        MATCH: `${process.env.POST_KEY}*:views`,
+        COUNT: batchSize
+      })
+      cursor = nextCursor
+
+      if (keys.length > 0) {
+        const pipeline = redisClient.multi()
+        keys.forEach((key) => pipeline.get(key))
+        const results = await pipeline.exec()
+
+        await Promise.all(
+          (keys as string[]).map(async (key, i) => {
+            const result = results[i]
+            const count = parseInt(Array.isArray(result) && result[1] ? result[1] : '0', 10)
+            if (count > 0) {
+              const postId = key.split(':')[1]
+              await databaseService.posts.updateOne({ _id: new ObjectId(postId) }, { $inc: { view_count: count } })
+            }
+          })
+        )
+
+        await redisClient.del(keys)
+      }
+    } while (cursor !== '0')
+  }
+
+  async getCurrentViews(postId: string) {
+    const post = await databaseService.posts.findOne({ _id: new ObjectId(postId) })
+    const dbViews = post?.view_count || 0
+
+    const key = this.getPostViewKeyById(postId)
+    const redisViews = await this.parseIntPostView(key)
+
+    return dbViews + redisViews
   }
 }
 

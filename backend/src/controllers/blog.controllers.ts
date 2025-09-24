@@ -204,3 +204,14 @@ export const deletePostController = async (req: Request<PostByIdParam>, res: Res
     result
   })
 }
+
+export const getCurrentPostViewController = async (req: Request<PostByIdParam>, res: Response) => {
+  const { id } = req.params
+  const result = await blogService.getCurrentViews(id)
+  res.json({
+    message: BLOG_MESSAGES.GET_POST_VIEWS_SUCCESS,
+    result: {
+      view_count: result
+    }
+  })
+}

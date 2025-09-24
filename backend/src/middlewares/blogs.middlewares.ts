@@ -1,3 +1,4 @@
+import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
 import { ObjectId } from 'mongodb'
 import { PostState } from '~/constants/enums'
@@ -241,3 +242,19 @@ export const getAllPostsValidator = validate(
     ['body']
   )
 )
+
+export const checkPostExist = async(req: Request, res: Response, next: NextFunction) => {
+  try {
+    const {id} = req.params
+    const post = await databaseService.posts.findOne({_id: new ObjectId(id)})
+    if(!post){
+      throw new ErrorWithStatus({
+        message: BLOG_MESSAGES.POST_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    next()
+  } catch (error) {
+    next(error)
+  }
+}

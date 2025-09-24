@@ -458,6 +458,7 @@ export const BLOG_MESSAGES = {
   GET_POST_DETAIL_SUCCESS: 'Xem chi tiết bài viết thành công',
   UPDATE_POST_SUCCESS: 'Cập nhật bài viết thành công',
   DELETE_POST_SUCCESS: 'Xoá bài viết thành công',
+  GET_POST_VIEWS_SUCCESS: 'Xem lượt truy cập của bài viết hiện tại thành công',
   TITLE_REQUIRED: 'Vui lòng nhập tiêu đề',
   CONTENT_REQUIRED: 'Vui lòng nhập nội dung',
   STATUS_REQUIRED: 'Vui lòng chọn trạng thái',
