@@ -14,6 +14,7 @@ import filterBrandService from '~/services/filterBrand.services'
 import productService from '~/services/product.services'
 import usersService from '~/services/users.services'
 import { sendPaginatedResponse } from '~/utils/pagination.helper'
+import aiUsageService from '~/services/aiUsage.services'
 
 export const getAllUserController = async (req: Request, res: Response, next: NextFunction) => {
   sendPaginatedResponse(res, next, databaseService.users, req.query)
@@ -191,4 +192,16 @@ export const adminSearchProductsByNameController = async (req: Request, res: Res
   } catch (error) {
     next(error)
   }
+}
+
+export const getAIUsageStatsController = async (req: Request, res: Response) => {
+  const totalUsage = await aiUsageService.getTotalUsage()
+  const dailyUsage = await aiUsageService.getDailyUsage()
+  res.json({
+    message: 'AI usage stats retrieved successfully',
+    result: {
+      totalUsage,
+      dailyUsage
+    }
+  })
 }
