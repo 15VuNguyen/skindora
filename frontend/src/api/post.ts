@@ -8,16 +8,47 @@ export interface FetchAllPostProps {
   totalRecords?: number;
   status?: string;
   keyword?: string;
+  filters?: filterProps;
+}
+export interface FilterOption {
+  _id: string;
+  option_name: string;
+}
+
+export interface filterProps {
+  filter_brand?: string[];
+  filter_hsk_skin_type?: string[];
+  filter_hsk_uses?: string[];
+  filter_dac_tinh?: string[];
+  filter_hsk_ingredients?: string[];
+  filter_hsk_size?: string[];
+  filter_hsk_product_type?: string[];
+  filter_origin?: string[];
 }
 //get-all-post
 export const fetchAllPost = async (params: FetchAllPostProps) => {
+  const { limit, page, status, keyword, filters } = params;
+  const queryParams = new URLSearchParams();
+  if (limit) queryParams.append("limit", limit.toString());
+  if (page) queryParams.append("page", page.toString());
+  if (status) queryParams.append("status", status);
+  if (keyword) queryParams.append("keyword", keyword);
+  const convertedFilters: filterProps = {};
+  if (filters) {
+    Object.keys(filters).forEach((key) => {
+      const filterKey = key as keyof filterProps;
+      const filterValue = filters[filterKey];
+      console.log(`📨 Processing API filter ${key}:`, filterValue);
+      if (Array.isArray(filterValue) && filterValue.length > 0) {
+        convertedFilters[filterKey] = filterValue.map((item: any) => (typeof item === "string" ? item : item._id));
+      }
+    });
+  }
+  const requestBody = {
+    filters: convertedFilters,
+  };
   return await httpClient
-    .get<API.IResponseSearch<Post>>("/posts", {
-      limit: params.limit,
-      page: params.page,
-      status: params.status,
-      keyword: params.keyword,
-    })
+    .post<API.IResponseSearch<Post>>(`/posts/get-all?${queryParams.toString()}`, requestBody)
     .then((response) => response.data);
 };
 //get-all-post-by-id
