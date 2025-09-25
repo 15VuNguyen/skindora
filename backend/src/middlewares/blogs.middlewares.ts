@@ -46,7 +46,7 @@ export const createBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.CONTENT_REQUIRED
         },
         isLength: {
-          options: { min: 50, max: 20000 },
+          options: { min: 50, max: 1000000 },
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
@@ -55,7 +55,7 @@ export const createBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.CONTENT_REQUIRED
         },
         isLength: {
-          options: { min: 30, max: 20000 },
+          options: { min: 30, max: 1000000 },
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },

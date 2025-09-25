@@ -12,6 +12,7 @@ const PublicLayout = () => {
           { displayText: "Sản phẩm", path: "products" },
           { displayText: "Giới thiệu", path: "about" },
           { displayText: "Liên hệ", path: "contact" },
+          { displayText: "Blog", path: "blog" },
         ]}
       />
       <Outlet />

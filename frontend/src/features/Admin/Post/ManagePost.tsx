@@ -448,7 +448,7 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
                     </button>
                   </Badge>
                 )}
-                {/* Display active filter badges */}
+               
                 {params.filters &&
                   Object.entries(params.filters).map(([filterKey, filterValues]) =>
                     filterValues?.map((value: string) => (

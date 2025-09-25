@@ -94,12 +94,15 @@ export const postStaffColumns: ColumnDef<Post>[] = [
     ),
     cell: ({ row }) => {
       const title = row.getValue("title") as string;
+      const truncatedTitle = title.length > 40 ? `${title.substring(0, 40)}...` : title;
+      const slug = row.original.slug as string;
+      const truncatedSlug = slug.length > 30 ? `${slug.substring(0, 30)}...` : slug;
       return (
         <div className="max-w-[300px]">
           <div className="truncate font-medium" title={title}>
-            {title}
+            {truncatedTitle}
           </div>
-          <div className="text-muted-foreground mt-1 text-sm">Slug: {row.original.slug}</div>
+          <div className="text-muted-foreground mt-1 text-sm">Slug: {truncatedSlug}</div>
         </div>
       );
     },
@@ -111,7 +114,7 @@ export const postStaffColumns: ColumnDef<Post>[] = [
     cell: ({ row }) => {
       const content = row.getValue("content") as { rawHtml: string; plainText: string };
       return (
-        <div className="max-w-[200px]">
+        <div className="">
           <div className="text-muted-foreground text-sm" title={content.plainText}>
             {truncateContent(content.plainText, 30)}
           </div>
@@ -119,7 +122,27 @@ export const postStaffColumns: ColumnDef<Post>[] = [
       );
     },
   },
-
+  {
+    accessorKey: "image_on_list",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="h-auto p-0 font-semibold"
+      >
+        Hình ảnh
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      const image = row.getValue("image_on_list") as string;
+      return (
+        <div className="max-w-[300px] p-6">
+          <img src={image} alt="Post Image" className="h-auto w-full" />
+        </div>
+      );
+    },
+  },
   // Cột Trạng thái
   {
     accessorKey: "status",

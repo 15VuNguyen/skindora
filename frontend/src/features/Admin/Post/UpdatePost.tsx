@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Eye, Save } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -125,6 +125,7 @@ export default function UpdatePost() {
       slug: "",
       content: { rawHtml: "", plainText: "" },
       status: "DRAFT",
+      image_on_list: [],
       filter_brand: [],
       filter_hsk_skin_type: [],
       filter_hsk_uses: [],
@@ -134,6 +135,15 @@ export default function UpdatePost() {
       filter_hsk_size: [],
       filter_dac_tinh: [],
     },
+  });
+
+  const {
+    fields: image_on_list,
+    append: appendMainImage,
+    remove: removeMainImage,
+  } = useFieldArray({
+    control: form.control,
+    name: "image_on_list",
   });
 
   // Fetch existing post data
@@ -156,6 +166,7 @@ export default function UpdatePost() {
           slug: postData.slug || "",
           content: postData.content || { rawHtml: "", plainText: "" },
           status: (postData.status as "DRAFT" | "PUBLISHED") || "DRAFT",
+          image_on_list: postData.image_on_list?.map((img) => ({ value: img })) || [],
           filter_brand: postData.filter_brand?.map((item) => item._id) || [],
           filter_hsk_skin_type: postData.filter_hsk_skin_type?.map((item) => item._id) || [],
           filter_hsk_uses: postData.filter_hsk_uses?.map((item) => item._id) || [],
@@ -219,10 +230,13 @@ export default function UpdatePost() {
     const payload = {
       ...values,
       status,
+      // Transform image_on_list from array of objects to array of strings
+      image_on_list: values.image_on_list?.map((img) => img.value) || [],
     };
 
     // Remove empty filter arrays to avoid sending unnecessary data
     const optionalFilters = [
+      "image_on_list",
       "filter_brand",
       "filter_hsk_skin_type",
       "filter_hsk_uses",
@@ -485,6 +499,80 @@ export default function UpdatePost() {
                       </FormItem>
                     )}
                   />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Image List */}
+            <Card className="shadow-sm">
+              <CardHeader className="bg-gradient-to-r from-orange-50 to-yellow-50">
+                <CardTitle className="flex items-center text-xl font-semibold text-orange-900">
+                  <svg className="mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                  Danh sách hình ảnh
+                </CardTitle>
+                <Typography className="text-orange-700">Thêm các hình ảnh minh họa cho bài viết của bạn.</Typography>
+              </CardHeader>
+              <CardContent className="pt-6">
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="mb-4 font-semibold text-gray-900">Hình ảnh chính</h3>
+                    <div className="space-y-3">
+                      {image_on_list.map((field, index) => (
+                        <FormField
+                          key={field.id}
+                          control={form.control}
+                          name={`image_on_list.${index}.value`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <div className="flex items-center gap-3">
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    placeholder="https://example.com/image.jpg"
+                                    className="flex-1 rounded-lg border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                                  />
+                                </FormControl>
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => removeMainImage(index)}
+                                  className="shrink-0"
+                                >
+                                  Xóa
+                                </Button>
+                              </div>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      ))}
+                    </div>
+                    {form.formState.errors.image_on_list && (
+                      <p className="mt-2 text-sm font-medium text-red-500">
+                        {form.formState.errors.image_on_list.message}
+                      </p>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => appendMainImage({ value: "" })}
+                      className="mt-3"
+                    >
+                      <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                      Thêm ảnh chính
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

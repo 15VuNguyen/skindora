@@ -117,7 +117,27 @@ export const postColumns: ColumnDef<Post>[] = [
       );
     },
   },
-
+  {
+    accessorKey: "image_on_list",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="h-auto p-0 font-semibold"
+      >
+        Hình ảnh
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => {
+      const image = row.getValue("image_on_list") as string;
+      return (
+        <div className="max-w-[300px]">
+          <img src={image} alt="Post Image" className="h-auto w-full" />
+        </div>
+      );
+    },
+  },
   // Cột Trạng thái
   {
     accessorKey: "status",

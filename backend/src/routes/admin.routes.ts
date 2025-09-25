@@ -796,49 +796,49 @@ adminRouter.put(
 adminRouter.get(
   '/manage-filters/get-active-filter-brands',
   accessTokenValidator,
-  isAdminAndStaffValidator,
+
   wrapAsync(getActiveFilterBrandsController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-dac-tinhs',
   accessTokenValidator,
-  isAdminAndStaffValidator,
+
   wrapAsync(getActiveFilterDacTinhsController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-ingredients',
   accessTokenValidator,
-  isAdminAndStaffValidator,
+
   wrapAsync(getActiveFilterHskIngredientsController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-product-types',
   accessTokenValidator,
-  isAdminAndStaffValidator,
+
   wrapAsync(getActiveFilterHskProductTypesController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-sizes',
   accessTokenValidator,
-  isAdminAndStaffValidator,
+
   wrapAsync(getActiveFilterHskSizesController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-skin-types',
   accessTokenValidator,
-  isAdminAndStaffValidator,
+
   wrapAsync(getActiveFilterHskSkinTypesController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-uses',
   accessTokenValidator,
-  isAdminAndStaffValidator,
+
   wrapAsync(getActiveFilterHskUsesController)
 )
 adminRouter.get(
   '/manage-filters/get-active-filter-hsk-origins',
   accessTokenValidator,
-  isAdminAndStaffValidator,
+
   wrapAsync(getActiveFilterHskOriginsController)
 )
 export default adminRouter

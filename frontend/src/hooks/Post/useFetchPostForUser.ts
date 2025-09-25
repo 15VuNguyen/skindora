@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
-import { fetchAllPostForStaffAdmin, fetchAllPostForUser } from "@/api/post";
-import type { Post } from "@/types/post";
+import { fetchAllPostForUser } from "@/api/post";
+import type { PostUser } from "@/types/post";
 
 export interface filterProps {
   filter_brand?: string[];
@@ -13,9 +13,9 @@ export interface filterProps {
   filter_hsk_product_type?: string[];
   filter_origin?: string[];
 }
-export const useFetchPost = () => {
+export const useFetchPostForUser = () => {
   const [loading, setLoading] = useState<boolean>(true);
-  const [data, setData] = useState<Post[]>([]);
+  const [data, setData] = useState<PostUser[]>([]);
   const [params, setParams] = useState({
     limit: 10,
     page: 1,
@@ -78,10 +78,14 @@ export const useFetchPost = () => {
   }, []);
   const fetchListPost = useCallback(async () => {
     setLoading(true);
-    console.log("🚀 Fetching posts with params:", params);
-    console.log("📁 Filters being sent:", params.filters);
     try {
-      const response = await fetchAllPostForStaffAdmin(params);
+      const response = await fetchAllPostForUser({
+        limit: params.limit,
+        page: params.page,
+        status: params.status,
+        keyword: params.keyword,
+        filters: params.filters,
+      });
       setData(response.data);
       setParams((prev) => ({
         ...prev,
