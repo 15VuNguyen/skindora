@@ -64,4 +64,5 @@ export interface PostUser {
   created_at: string;
   updated_at: string;
   image_on_list: string[];
+  views: string;
 }

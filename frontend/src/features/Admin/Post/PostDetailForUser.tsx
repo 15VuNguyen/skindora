@@ -206,6 +206,10 @@ const PostDetailForUser: React.FC = () => {
                       <span className="text-muted-foreground">Cập nhật:</span>
                       <span className="text-xs">{formatDate(postDetail.updated_at)}</span>
                     </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Lượt xem:</span>
+                      <span className="text-xs">{postDetail.views}</span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
