@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useFetchAllFilter } from "@/hooks/Filter/useFetchAllFilter";
-import { type filterProps, useFetchPostForUser } from "@/hooks/Post/useFetchPostForUser";
+import { useFetchPostForUser } from "@/hooks/Post/useFetchPostForUser";
 import type { PostUser } from "@/types/post";
 
 import { PostCard } from "./PostCard";
@@ -22,7 +22,6 @@ export function Post() {
     loading,
     fetchListPost,
     changeKeyword,
-    changeFilter,
     addFilterValue,
     removeFilterValue,
     params,
