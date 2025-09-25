@@ -223,7 +223,7 @@ export const getCurrentPostViewController = async (req: Request<PostByIdParam>, 
 export const getPostViewsStatisticController = async (req: Request, res: Response) => {
   const result = await blogService.getPostViewsStatistic()
   res.json({
-    message: BLOG_MESSAGES.GET_POST_VIEWS_SUCCESS,
+    message: BLOG_MESSAGES.GET_POST_VIEWS_STATS_SUCCESS,
     result
   })
 }
@@ -232,6 +232,55 @@ export const syncPostViewsController = async (req: Request, res: Response) => {
   const result = await blogService.syncPostViews()
   res.json({
     message: BLOG_MESSAGES.SYNC_POST_VIEWS_SUCCESS,
+    result
+  })
+}
+
+export const getPostViewsByDateController = async (req: Request, res: Response) => {
+  const startDate = req.query.startDate as string
+  const endDate = req.query.endDate as string
+  const groupBy = (req.query.groupBy as string) || 'day'
+  const result = await blogService.getPostViewsByDate({ startDate, endDate, groupBy })
+  res.json({
+    message: BLOG_MESSAGES.GET_POST_VIEWS_BY_DATE_SUCCESS,
+    result
+  })
+}
+
+
+export const getTopViewedPostsController = async (req: Request, res: Response) => {
+  const startDate = req.query.startDate as string | undefined
+  const endDate = req.query.endDate as string | undefined
+  const limit = parseInt(req.query.limit as string) || 5
+
+  const result = await blogService.getTopViewedPosts({ startDate, endDate, limit })
+
+  res.json({
+    message: BLOG_MESSAGES.GET_TOP_VIEWED_POSTS_SUCCESS,
+    result
+  })
+}
+
+export const getViewsByPostController = async (req: Request, res: Response) => {
+  const postId = req.params.postId as string
+  const startDate = req.query.startDate as string | undefined
+  const endDate = req.query.endDate as string | undefined
+
+  const result = await blogService.getViewsByPost({ postId, startDate, endDate })
+
+  res.json({
+    message: BLOG_MESSAGES.GET_VIEWS_BY_POST_SUCCESS,
+    result
+  })
+}
+
+export const getPostViewsGrowthController = async (req: Request, res: Response) => {
+  const days = parseInt(req.query.days as string) || 7
+
+  const result = await blogService.getPostViewsGrowth({ days })
+
+  res.json({
+    message: BLOG_MESSAGES.GET_POST_VIEWS_GROWTH_SUCCESS,
     result
   })
 }

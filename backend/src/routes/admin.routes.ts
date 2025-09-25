@@ -186,8 +186,8 @@ import {
   getFilterHskOriginByIdValidator,
   updateFilterHskOriginValidator
 } from '~/middlewares/filterHskOrigin.middlewares'
-import { getPostViewsStatisticController, syncPostViewsController } from '~/controllers/blog.controllers'
-import { syncPostViewsValidator } from '~/middlewares/blogs.middlewares'
+import { getPostViewsByDateController, getPostViewsGrowthController, getPostViewsStatisticController, getTopViewedPostsController, getViewsByPostController, syncPostViewsController } from '~/controllers/blog.controllers'
+import { getPostViewsByDateValidator, getTopViewedPostsValidator, getViewsByPostValidator, syncPostViewsValidator } from '~/middlewares/blogs.middlewares'
 
 const adminRouter = Router()
 //user management
@@ -845,17 +845,48 @@ adminRouter.get(
 )
 
 adminRouter.get(
-  '/posts/views/stats',
+  '/post-views/stats',
   accessTokenValidator,
   isAdminValidator,
   wrapAsync(getPostViewsStatisticController)
 )
 
+adminRouter.get(
+  '/post-views',
+  accessTokenValidator,
+  isAdminValidator,
+  getPostViewsByDateValidator,
+  wrapAsync(getPostViewsByDateController)
+)
+
+adminRouter.get(
+  '/post-views/top',
+  accessTokenValidator,
+  isAdminValidator,
+  getTopViewedPostsValidator,
+  wrapAsync(getTopViewedPostsController)
+)
+
+adminRouter.get(
+  '/post-views/growth',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getPostViewsGrowthController)
+)
+
 adminRouter.post(
-  '/posts/views/sync',
+  '/post-views/sync',
   accessTokenValidator,
   isAdminValidator,
   syncPostViewsValidator,
   wrapAsync(syncPostViewsController)
+)
+
+adminRouter.get(
+  '/post-views/:postId',
+  accessTokenValidator,
+  isAdminValidator,
+  getViewsByPostValidator,
+  wrapAsync(getViewsByPostController)
 )
 export default adminRouter

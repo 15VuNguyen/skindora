@@ -459,7 +459,12 @@ export const BLOG_MESSAGES = {
   UPDATE_POST_SUCCESS: 'Cập nhật bài viết thành công',
   DELETE_POST_SUCCESS: 'Xoá bài viết thành công',
   GET_POST_VIEWS_SUCCESS: 'Xem lượt truy cập của bài viết hiện tại thành công',
+  GET_POST_VIEWS_STATS_SUCCESS: 'Xem thống kê lượt xem thành công',
   SYNC_POST_VIEWS_SUCCESS: 'Đồng bộ lượt xem thành công',
+  GET_TOP_VIEWED_POSTS_SUCCESS: 'Xem những bài viết có nhiều lượt xem nhất thành công',
+  GET_POST_VIEWS_BY_DATE_SUCCESS: 'Xem lượt xem của bài viết theo ngày thành công',
+  GET_VIEWS_BY_POST_SUCCESS: 'Xem lượt xem của 1 bài viết thành công',
+  GET_POST_VIEWS_GROWTH_SUCCESS: 'Xem sự tăng trưởng lượt xem thành công',
   TITLE_REQUIRED: 'Vui lòng nhập tiêu đề',
   CONTENT_REQUIRED: 'Vui lòng nhập nội dung',
   STATUS_REQUIRED: 'Vui lòng chọn trạng thái',
@@ -488,6 +493,14 @@ export const BLOG_MESSAGES = {
   POST_ALREADY_ARCHIVED: 'Bài viết đã ở kho lưu trữ',
   CANNOT_UPDATE_ARCHIVED_POST: 'Không thể cập nhật bài viết đang ở kho lưu trữ',
   SLUG_NOT_MATCH: 'Đường dẫn không khớp',
-  ADMIN_STAFF_ONLY: 'Tài nguyên này chỉ dành cho staff và admin, bạn không có quyền truy cập'
-
+  ADMIN_STAFF_ONLY: 'Tài nguyên này chỉ dành cho staff và admin, bạn không có quyền truy cập',
+  START_DATE_REQUIRED: 'Vui lòng nhập ngày bắt đầu',
+  END_DATE_REQUIRED: 'Vui lòng nhập ngày kết thúc',
+  START_DATE_INVALID: 'Ngày bắt đầu phải theo định dạng YYYY-MM-DD',
+  END_DATE_INVALID: 'Ngày kết thúc phải theo định dạng YYYY-MM-DD',
+  START_END_DATE_INVALID: 'Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc',
+  GROUP_BY_INVALID: "groupBy chỉ nhận 'day' hoặc 'month'",
+  LIMIT_INVALID: 'Giới hạn phải là số nguyên từ 1 đến 100',
+  POST_ID_REQUIRED: 'Id bài viết là bắt buộc',
+  
 }

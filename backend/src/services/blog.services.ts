@@ -55,7 +55,6 @@ class BlogService {
       })
     }
 
-
     const { authorId, ...rest } = post as Post
     const { password, email_verify_token, forgot_password_token, ...restUser } = user as User
 
@@ -77,7 +76,7 @@ class BlogService {
       }
     }
 
-    if(rest.status === PostState.PUBLISHED){
+    if (rest.status === PostState.PUBLISHED) {
       await this.increasePostView(id)
     }
     const currentViews = await this.getCurrentViews(id)
@@ -193,7 +192,7 @@ class BlogService {
         await Promise.all(
           (keys as string[]).map(async (key, i) => {
             const result = results[i]
-            const count = parseInt((result !== null && result !== undefined) ? String(result) : '0', 10)
+            const count = parseInt(result !== null && result !== undefined ? String(result) : '0', 10)
             if (count > 0) {
               const postId = new ObjectId(key.split(':')[1])
               const today = getVnMidnight()
@@ -211,15 +210,17 @@ class BlogService {
         )
 
         await redisClient.del(keys)
-      }''
+      }
+      ;('')
     } while (cursor !== '0')
   }
 
   async getCurrentViews(postId: string) {
-    const dbViews = (await databaseService.postViews.find({ postId: new ObjectId(postId) }).toArray()).reduce(
-      (viewSum, pv) => viewSum + pv.views,
-      0
-    ) || 0
+    const dbViews =
+      (await databaseService.postViews.find({ postId: new ObjectId(postId) }).toArray()).reduce(
+        (viewSum, pv) => viewSum + pv.views,
+        0
+      ) || 0
 
     const key = this.getPostViewKeyById(postId)
     const redisViews = await this.parseIntPostView(key)
@@ -227,9 +228,141 @@ class BlogService {
     return dbViews + redisViews
   }
   async getPostViewsStatistic() {
-    //get total views
+    const startDateOfToday = getVnMidnight()
+
+    const [totalViewsResult] = await databaseService.postViews
+      .aggregate([{ $group: { _id: null, totalViews: { $sum: '$views' } } }])
+      .toArray()
+    const totalViews = totalViewsResult?.totalViews || 0
+
+    const [todayViewsResult] = await databaseService.postViews
+      .aggregate([{ $match: { date: startDateOfToday } }, { $group: { _id: null, viewsToday: { $sum: '$views' } } }])
+      .toArray()
+    const viewsToday = todayViewsResult?.viewsToday || 0
+
+    //Views this month
+    const firstDayOfMonth = new Date(startDateOfToday)
+    firstDayOfMonth.setDate(1) //0h ngày 1 của tháng theo VN
+    const [monthViewsResult] = await databaseService.postViews
+      .aggregate([
+        { $match: { date: { $gte: firstDayOfMonth, $lte: startDateOfToday } } },
+        { $group: { _id: null, viewsThisMonth: { $sum: '$views' } } }
+      ])
+      .toArray()
+    const viewsThisMonth = monthViewsResult?.viewsThisMonth || 0
+
+    //Most viewed post
+    const [mostViewedPost] = await databaseService.postViews
+      .aggregate([
+        { $group: { _id: '$postId', total: { $sum: '$views' } } },
+        { $sort: { total: -1 } },
+        { $limit: 1 },
+        {
+          $lookup: {
+            from: 'posts',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'postInfo'
+          }
+        },
+        { $unwind: '$postInfo' }
+      ])
+      .toArray()
+
+    return {
+      totalViews,
+      viewsToday,
+      viewsThisMonth,
+      mostViewedPost: mostViewedPost?.postInfo || null,
+      mostViewedPostViews: mostViewedPost?.total || 0
+    }
+  }
+
+  async getPostViewsByDate({ startDate, endDate, groupBy }: { startDate: string; endDate: string; groupBy: string }) {
+    // GET /admin/post-views?startDate=YYYY-MM-DD&endDate=YYYY-MM-DD&groupBy=day|month
+
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    end.setHours(23, 59, 59, 999)
+
+    const groupFormat = groupBy === 'month' ? '%Y-%m' : '%Y-%m-%d'
+
+    const views = await databaseService.postViews
+      .aggregate([
+        { $match: { date: { $gte: start, $lte: end } } },
+        {
+          $group: {
+            _id: { $dateToString: { format: groupFormat, date: '$date' } },
+            views: { $sum: '$views' }
+          }
+        },
+        { $sort: { _id: 1 } }
+      ])
+      .toArray()
+
+    return views.map((v) => ({ date: v._id, views: v.views }))
+  }
+
+  async getTopViewedPosts({ startDate, endDate, limit }: { startDate?: string; endDate?: string; limit?: number }) {
+    const match: any = {}
+    if (startDate && endDate) {
+      match.date = { $gte: new Date(startDate), $lte: new Date(endDate) }
+    }
+
+    const topPosts = await databaseService.postViews
+      .aggregate([
+        { $match: match },
+        { $group: { _id: '$postId', totalViews: { $sum: '$views' } } },
+        { $sort: { totalViews: -1 } },
+        { $limit: limit },
+        { $lookup: { from: 'posts', localField: '_id', foreignField: '_id', as: 'postInfo' } },
+        { $unwind: '$postInfo' }
+      ])
+      .toArray()
+
+    return topPosts.map((p) => ({
+      postId: p._id,
+      title: p.postInfo.title,
+      slug: p.postInfo.slug,
+      totalViews: p.totalViews
+    }))
+  }
+
+  async getViewsByPost({ postId, startDate, endDate }: { postId: string; startDate?: string; endDate?: string }) {
+    const match: any = { postId: new ObjectId(postId) }
+
+    if (startDate && endDate) {
+      match.date = { $gte: new Date(startDate), $lte: new Date(endDate) }
+    }
+
+    return databaseService.postViews.find(match).sort({ date: 1 }).toArray()
+  }
+
+  async getPostViewsGrowth({ days }: { days: number }) {
+    const today = getVnMidnight()
+
+    const start = new Date(today)
+    start.setDate(today.getDate() - days + 1)
     
-    //get most views post
+    const views = await databaseService.postViews
+      .aggregate([
+        { $match: { date: { $gte: start, $lte: today } } },
+        {
+          $group: {
+            _id: { $dateToString: { format: '%Y-%m-%d', date: '$date' } },
+            views: { $sum: '$views' }
+          }
+        },
+        { $sort: { _id: 1 } }
+      ])
+      .toArray()
+
+    //Tính growth % so với ngày trước
+    return views.map((v, i) => ({
+      date: v._id,
+      views: v.views,
+      growth: i === 0 ? 0 : Math.round(((v.views - views[i - 1].views) / views[i - 1].views) * 100)
+    }))
   }
 }
 
