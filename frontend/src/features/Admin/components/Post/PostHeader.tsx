@@ -1,7 +1,4 @@
 import blogHero from "@assets/post-hero.jpg";
-import { Search } from "lucide-react";
-
-import { Input } from "@/components/ui/input";
 
 export function PostHeader() {
   return (

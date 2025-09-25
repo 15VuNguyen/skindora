@@ -1,4 +1,4 @@
-import { ArrowLeft, Filter, Search, X } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -31,18 +31,15 @@ export function Post() {
 
   const { data: filterData, fetchFilter } = useFetchAllFilter();
 
-  // Fetch posts and filters when component mounts
   useEffect(() => {
     fetchListPost();
     fetchFilter();
   }, [fetchListPost, fetchFilter]);
 
-  // Fetch posts when params change
   useEffect(() => {
     fetchListPost();
   }, [fetchListPost, params.page, params.keyword, params.filters]);
 
-  // Handle search input
   const handleSearch = useCallback(
     (query: string) => {
       setSearchValue(query);
@@ -51,7 +48,6 @@ export function Post() {
     [changeKeyword]
   );
 
-  // Handle post selection
   const handlePostClick = useCallback(
     (post: PostUser) => {
       navigate(`/posts/${post.slug}/${post._id}`);
@@ -59,7 +55,6 @@ export function Post() {
     [navigate]
   );
 
-  // Handle filter changes for dropdown selects
   const handleFilterChange = useCallback(
     (filterKey: keyof typeof params.filters, value: string) => {
       addFilterValue(filterKey, value);
@@ -67,7 +62,6 @@ export function Post() {
     [addFilterValue, params.filters]
   );
 
-  // Handle removing individual filter
   const handleRemoveFilter = useCallback(
     (filterKey: keyof typeof params.filters, value: string) => {
       removeFilterValue(filterKey, value);
@@ -75,26 +69,6 @@ export function Post() {
     [removeFilterValue]
   );
 
-  // Handle filter changes from BlogFilters component
-  const handleFiltersChange = useCallback(
-    (newFilters: Record<string, string[]>) => {
-      const convertedFilters: filterProps = {
-        filter_brand: newFilters.brand || [],
-        filter_hsk_skin_type: newFilters.skin_type || [],
-        filter_hsk_uses: newFilters.uses || [],
-        filter_dac_tinh: newFilters.dac_tinh || [],
-        filter_hsk_ingredients: newFilters.ingredients || [],
-        filter_hsk_size: newFilters.size || [],
-        filter_hsk_product_type: newFilters.product_type || [],
-        filter_origin: newFilters.origin || [],
-      };
-
-      changeFilter(convertedFilters);
-    },
-    [changeFilter]
-  );
-
-  // Clear all filters
   const handleClearAllFilters = useCallback(() => {
     setSearchValue("");
     changeKeyword("");
@@ -105,7 +79,6 @@ export function Post() {
     }));
   }, [changeKeyword, setParams]);
 
-  // Helper function to get filter name by ID
   const getFilterName = (filterKey: keyof typeof params.filters, filterId: string): string => {
     if (!filterData) return filterId;
 

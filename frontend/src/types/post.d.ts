@@ -41,6 +41,7 @@ export interface Post {
   created_at: string;
   updated_at: string;
   image_on_list: string[];
+  views: string;
 }
 
 export interface PostUser {

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-import { fetchAllPostForStaffAdmin, fetchAllPostForUser } from "@/api/post";
+import { fetchAllPostForStaffAdminr } from "@/api/post";
 import type { Post } from "@/types/post";
 
 export interface filterProps {
