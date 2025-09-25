@@ -22,12 +22,15 @@ import staffRouter from './routes/staffs.routes'
 import { connectProducer, waitForKafkaReady } from './services/Kafka/kafka.services'
 import { startVoucherConsumer } from './services/Kafka/consumer'
 import blogRouter from './routes/blogs.routes'
+import { checkPostViewsJob } from './utils/cron/post.services'
 
 config()
 // const swaggerDocument = YAML.load(path.join(__dirname, './openapi.yml'))
 // const swaggerDocument = require(path.join(__dirname, '../public/openapi.json'));
 dailyReport.start()
 checkVoucherJob.start()
+checkPostViewsJob.start()
+
 const port = process.env.PORT
 ;(app.use(
   cors({

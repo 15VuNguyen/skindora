@@ -17,6 +17,7 @@ import FilterOrigin from '~/models/schemas/FilterHskOrigin.schema'
 import Voucher from '~/models/schemas/Voucher.schema'
 import Blog from '~/models/schemas/Blog.schema'
 import UserRoutine from '~/models/schemas/UserRoutine.schema'
+import PostView from '~/models/schemas/PostView.schema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@skindora.rbbhqia.mongodb.net/?retryWrites=true&w=majority&appName=skindora`
@@ -130,6 +131,10 @@ class DatabaseService {
 
   get posts(): Collection<Blog> {
     return this.db.collection(process.env.DB_POST_COLLECTION as string)
+  }
+
+  get postViews(): Collection<PostView> {
+    return this.db.collection(process.env.DB_POST_VIEWS_COLLECTION as string)
   }
 
 }

@@ -1,3 +1,4 @@
+import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
 import { ObjectId } from 'mongodb'
 import { PostState } from '~/constants/enums'
@@ -241,3 +242,148 @@ export const getAllPostsValidator = validate(
     ['body']
   )
 )
+
+export const checkPostExist = async(req: Request, res: Response, next: NextFunction) => {
+  try {
+    const {id} = req.params
+    const post = await databaseService.posts.findOne({_id: new ObjectId(id)})
+    if(!post){
+      throw new ErrorWithStatus({
+        message: BLOG_MESSAGES.POST_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const syncPostViewsValidator = validate(
+  checkSchema(
+    {
+      batchSize: {
+        optional: true,
+        isInt: {
+          options: {
+            min: 1,
+            max: 1000,
+          },
+          errorMessage: BLOG_MESSAGES.INVALID_BATCH_SIZE
+        },
+        toInt: true
+      }
+    },['body']
+  )
+)
+
+export const getPostViewsByDateValidator = validate(
+  checkSchema(
+    {
+      startDate: {
+        in: ["query"],
+        exists: {
+          errorMessage: BLOG_MESSAGES.START_DATE_REQUIRED
+        },
+        isDate: {
+          options: { format: "YYYY-MM-DD" },
+          errorMessage: BLOG_MESSAGES.START_DATE_INVALID
+        }
+      },
+      endDate: {
+        in: ["query"],
+        exists: {
+          errorMessage: BLOG_MESSAGES.END_DATE_REQUIRED
+        },
+        isDate: {
+          options: { format: "YYYY-MM-DD" },
+          errorMessage: BLOG_MESSAGES.END_DATE_INVALID
+        },
+        custom: {
+          options: (value, { req }) => {
+            const start = new Date(req?.query?.startDate as string);
+            const end = new Date(value);
+            if (start > end) {
+              throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID);
+            }
+            return true;
+          }
+        }
+      },
+      groupBy: {
+        in: ["query"],
+        optional: true,
+        isIn: {
+          options: [["day", "month"]],
+          errorMessage: BLOG_MESSAGES.GROUP_BY_INVALID
+        }
+      }
+    },
+    ["query"]
+  )
+);
+
+export const getTopViewedPostsValidator = validate(
+  checkSchema(
+    {
+      startDate: {
+        in: ["query"],
+        optional: true,
+        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.START_DATE_INVALID }
+      },
+      endDate: {
+        in: ["query"],
+        optional: true,
+        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.END_DATE_INVALID },
+        custom: {
+          options: (value, { req }) => {
+            if (!req?.query?.startDate) return true;
+            const start = new Date(req.query.startDate as string);
+            const end = new Date(value);
+            if (start > end) throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID);
+            return true;
+          }
+        }
+      },
+      limit: {
+        in: ["query"],
+        optional: true,
+        isInt: { options: { min: 1, max: 100 }, errorMessage: BLOG_MESSAGES.LIMIT_INVALID },
+        toInt: true
+      }
+    },
+    ["query"]
+  )
+);
+
+export const getViewsByPostValidator = validate(
+  checkSchema(
+    {
+      postId: {
+        in: ["params"],
+        exists: { errorMessage: BLOG_MESSAGES.POST_ID_REQUIRED },
+        isMongoId: { errorMessage: BLOG_MESSAGES.INVALID_OBJECT_ID }
+      },
+      startDate: {
+        in: ["query"],
+        optional: true,
+        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.START_DATE_INVALID }
+      },
+      endDate: {
+        in: ["query"],
+        optional: true,
+        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.END_DATE_INVALID },
+        custom: {
+          options: (value, { req }) => {
+            if (!req?.query?.startDate) return true;
+            const start = new Date(req.query.startDate as string);
+            const end = new Date(value);
+            if (start > end) throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID);
+            return true;
+          }
+        }
+      }
+    },
+  )
+);
+
