@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   adminSearchProductsByNameController,
   createNewFilterBrandController,
+  getAIUsageStatsController,
   getAllUserController,
   getBannedUsersController,
   getLowStockProductsController,
@@ -843,6 +844,7 @@ adminRouter.get(
 
   wrapAsync(getActiveFilterHskOriginsController)
 )
+adminRouter.get('/ai-usage-stats', accessTokenValidator, isAdminValidator, wrapAsync(getAIUsageStatsController))
 
 adminRouter.get(
   '/post-views/stats',

@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, Calendar, Moon, PackageOpen, RefreshCw, Sparkles, Sun } from "lucide-react";
 
@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useUserRoutineQuery } from "@/hooks/queries/useUserRoutineQuery";
 import { productService } from "@/services/productService";
 import type { Product } from "@/types";
+import { PremiumChatWidget } from "@/features/PremiumChat/PremiumChatWidget";
 
 const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] as const;
 type NormalizedSchedule = Record<string, { AM: string[]; PM: string[] }>;
@@ -118,9 +119,9 @@ const RoutineProductBadge = ({ productId, product, layout = "compact" }: Routine
             <Button asChild variant="outline" size="sm">
               <Link to={href}>Chi tiết</Link>
             </Button>
-            <Button asChild size="sm">
-              <Link to={`/skincare-ai?product=${productId}`}>Trao đổi với AI</Link>
-            </Button>
+            <PremiumChatWidget>
+              <Button size="sm">Trao đổi với AI</Button>
+            </PremiumChatWidget>
           </div>
         </div>
       </div>
@@ -155,7 +156,6 @@ const RoutineProductBadge = ({ productId, product, layout = "compact" }: Routine
 };
 
 export const RoutineTab = () => {
-  const navigate = useNavigate();
   const {
     data: routine,
     isLoading,
@@ -311,7 +311,9 @@ export const RoutineTab = () => {
           </p>
         </CardHeader>
         <CardContent className="flex justify-center">
-          <Button onClick={() => navigate("/skincare-ai")}>Bắt đầu với Skincare AI</Button>
+          <PremiumChatWidget>
+            <Button>Bắt đầu với Skincare AI</Button>
+          </PremiumChatWidget>
         </CardContent>
       </Card>
     );
@@ -437,7 +439,9 @@ export const RoutineTab = () => {
           <div className="text-sm text-muted-foreground">
             Muốn điều chỉnh routine? Hãy trò chuyện lại với Skincare AI để nhận gợi ý mới.
           </div>
-          <Button variant="outline" onClick={() => navigate("/")}>Tư vấn lại với AI</Button>
+          <PremiumChatWidget>
+            <Button variant="outline">Tư vấn lại với AI</Button>
+          </PremiumChatWidget>
         </CardContent>
       </Card>
     </div>
