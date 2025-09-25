@@ -1,5 +1,5 @@
 import { ObjectId } from 'mongodb'
-import { getLocalDay, getLocalTime } from '~/utils/date'
+import { getVnMidnight , getLocalTime } from '~/utils/date'
 
 export interface PostViewType {
   _id?: ObjectId
@@ -23,7 +23,7 @@ export default class PostView {
 
     this._id = data._id ?? new ObjectId()
     this.postId = data.postId
-    this.date = data.date || getLocalDay()   
+    this.date = data.date || getVnMidnight()   
     this.views = data.views ?? 0
     this.created_at = data.created_at ?? now
     this.updated_at = data.updated_at ?? now
