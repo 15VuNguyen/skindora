@@ -330,12 +330,56 @@ class BlogService {
 
   async getViewsByPost({ postId, startDate, endDate }: { postId: string; startDate?: string; endDate?: string }) {
     const match: any = { postId: new ObjectId(postId) }
-
     if (startDate && endDate) {
       match.date = { $gte: new Date(startDate), $lte: new Date(endDate) }
     }
 
-    return databaseService.postViews.find(match).sort({ date: 1 }).toArray()
+    const viewsData = await databaseService.postViews.find(match).sort({ date: 1 }).toArray()
+
+    const post = await databaseService.posts
+      .aggregate([
+        { $match: { _id: new ObjectId(postId) } },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'authorId',
+            foreignField: '_id',
+            as: 'authorInfo'
+          }
+        },
+        { $unwind: '$authorInfo' },
+        {
+          $project: {
+            _id: 1,
+            title: 1,
+            slug: 1,
+            publishedAt: 1,
+            author: {
+              first_name: '$authorInfo.first_name',
+              last_name: '$authorInfo.last_name'
+            }
+          }
+        }
+      ])
+      .toArray()
+
+    if (!post || post.length === 0) return null
+
+    const resultPost = post[0]
+
+    const views = viewsData.map((v) => ({
+      date: v.date,
+      views: v.views
+    }))
+
+    return {
+      postId: resultPost._id,
+      title: resultPost.title,
+      slug: resultPost.slug,
+      author: resultPost.author,
+      publishedAt: resultPost.publishedAt,
+      postViews: views
+    }
   }
 
   async getPostViewsGrowth({ days }: { days: number }) {
@@ -343,7 +387,7 @@ class BlogService {
 
     const start = new Date(today)
     start.setDate(today.getDate() - days + 1)
-    
+
     const views = await databaseService.postViews
       .aggregate([
         { $match: { date: { $gte: start, $lte: today } } },
