@@ -1,6 +1,7 @@
 import type { RouteObject } from "react-router-dom";
 
 import Admin from "@/features/Admin";
+import AIUsageIndex from "@/features/Admin/AI-Usage";
 import BrandDetail from "@/features/Admin/Brand/BrandDetail";
 import CreateBrand from "@/features/Admin/Brand/CreateBrand";
 import ManageBrand from "@/features/Admin/Brand/ManageBrand";
@@ -270,6 +271,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "posts/:slug/:id",
         element: <PostDetail />,
+      },
+      {
+        path: "ai-statistics",
+        element: <AIUsageIndex />,
       },
     ],
   },

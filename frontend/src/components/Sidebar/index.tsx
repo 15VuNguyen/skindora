@@ -1,4 +1,5 @@
 import {
+  BotIcon,
   Droplet,
   FileX2,
   FlaskConical,
@@ -87,6 +88,11 @@ const items = [
     title: "Quản lý bài viết",
     url: "/admin/posts",
     icon: StickyNote,
+  },
+  {
+    title: "Thống kê AI",
+    url: "/admin/ai-statistics",
+    icon: BotIcon,
   },
 ];
 const AppSidebar: React.FC = () => {
