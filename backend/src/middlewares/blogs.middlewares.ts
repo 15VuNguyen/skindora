@@ -258,3 +258,21 @@ export const checkPostExist = async(req: Request, res: Response, next: NextFunct
     next(error)
   }
 }
+
+export const syncPostViewsValidator = validate(
+  checkSchema(
+    {
+      batchSize: {
+        optional: true,
+        isInt: {
+          options: {
+            min: 1,
+            max: 1000,
+          },
+          errorMessage: BLOG_MESSAGES.INVALID_BATCH_SIZE
+        },
+        toInt: true
+      }
+    },['body']
+  )
+)

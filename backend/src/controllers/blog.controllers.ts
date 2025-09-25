@@ -164,7 +164,8 @@ export const getPostBySlugIdController = async (req: Request<PostBySlugIdParam>,
   const id = m.groups.id
   const slug = slugAndId.slice(0, slugAndId.length - id.length - 1)
 
-  const post = await blogService.getPostById(id)
+  let post
+  post = await databaseService.posts.findOne({ _id: new ObjectId(id) })
 
   if (!post) {
     res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -181,6 +182,9 @@ export const getPostBySlugIdController = async (req: Request<PostBySlugIdParam>,
     )
     return
   }
+
+  post = await blogService.getPostById(id)
+
   res.json({
     message: BLOG_MESSAGES.GET_POST_DETAIL_SUCCESS,
     result: post
@@ -213,5 +217,21 @@ export const getCurrentPostViewController = async (req: Request<PostByIdParam>, 
     result: {
       view_count: result
     }
+  })
+}
+
+export const getPostViewsStatisticController = async (req: Request, res: Response) => {
+  const result = await blogService.getPostViewsStatistic()
+  res.json({
+    message: BLOG_MESSAGES.GET_POST_VIEWS_SUCCESS,
+    result
+  })
+}
+
+export const syncPostViewsController = async (req: Request, res: Response) => {
+  const result = await blogService.syncPostViews()
+  res.json({
+    message: BLOG_MESSAGES.SYNC_POST_VIEWS_SUCCESS,
+    result
   })
 }

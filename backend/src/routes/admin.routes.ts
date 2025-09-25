@@ -186,6 +186,8 @@ import {
   getFilterHskOriginByIdValidator,
   updateFilterHskOriginValidator
 } from '~/middlewares/filterHskOrigin.middlewares'
+import { getPostViewsStatisticController, syncPostViewsController } from '~/controllers/blog.controllers'
+import { syncPostViewsValidator } from '~/middlewares/blogs.middlewares'
 
 const adminRouter = Router()
 //user management
@@ -840,5 +842,20 @@ adminRouter.get(
   accessTokenValidator,
   isAdminAndStaffValidator,
   wrapAsync(getActiveFilterHskOriginsController)
+)
+
+adminRouter.get(
+  '/posts/views/stats',
+  accessTokenValidator,
+  isAdminValidator,
+  wrapAsync(getPostViewsStatisticController)
+)
+
+adminRouter.post(
+  '/posts/views/sync',
+  accessTokenValidator,
+  isAdminValidator,
+  syncPostViewsValidator,
+  wrapAsync(syncPostViewsController)
 )
 export default adminRouter

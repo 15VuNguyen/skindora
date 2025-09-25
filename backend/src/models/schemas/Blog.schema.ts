@@ -24,7 +24,6 @@ interface PostType {
   filter_hsk_skin_type?: ObjectId[]
   filter_hsk_uses?: ObjectId[]
   filter_origin?: ObjectId[]
-  view_count?: number
   created_at?: Date
   updated_at?: Date
 }
@@ -47,7 +46,6 @@ export default class Post {
   filter_hsk_skin_type: ObjectId[]
   filter_hsk_uses: ObjectId[]
   filter_origin: ObjectId[]
-  view_count: number
   created_at: Date
   updated_at: Date
 
@@ -78,7 +76,6 @@ export default class Post {
     this.filter_hsk_skin_type = blog.filter_hsk_skin_type ?? []
     this.filter_hsk_uses = blog.filter_hsk_uses ?? []
     this.filter_origin = blog.filter_origin ?? []
-    this.view_count = blog.view_count ?? 0
     this.created_at = blog.created_at || localTime
     this.updated_at = blog.updated_at || localTime
   }

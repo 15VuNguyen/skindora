@@ -9,13 +9,12 @@ import HTTP_STATUS from '~/constants/httpStatus'
 import User from '~/models/schemas/User.schema'
 import Post from '~/models/schemas/Blog.schema'
 import redisClient from './redis.services'
+import { getLocalTime, getVnMidnight } from '~/utils/date'
 
 class BlogService {
   async createNewPost(payload: CreateNewPostReqBody, userId: string) {
     const postId = new ObjectId()
-    const currentDate = new Date()
-    const vietnamTimezoneOffset = 7 * 60
-    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+    const localTime = getLocalTime()
 
     const slug = this.generateSlug(payload.title)
     const title_no_accents = removeVietnameseTones(payload.title)
@@ -56,9 +55,8 @@ class BlogService {
       })
     }
 
-    const currentViews = await this.getCurrentViews(id)
 
-    const { authorId, view_count, ...rest } = post as Post
+    const { authorId, ...rest } = post as Post
     const { password, email_verify_token, forgot_password_token, ...restUser } = user as User
 
     const filterCollections = {
@@ -79,20 +77,21 @@ class BlogService {
       }
     }
 
-    await this.increasePostView(id)
+    if(rest.status === PostState.PUBLISHED){
+      await this.increasePostView(id)
+    }
+    const currentViews = await this.getCurrentViews(id)
 
     return {
       ...rest,
-      view_count: currentViews,
+      views: currentViews,
       author: restUser,
       ...populatedFilters
     }
   }
 
   async updatePost(postId: string, data: UpdatePostReqBody) {
-    const currentDate = new Date()
-    const vietnamTimezoneOffset = 7 * 60
-    const localTime = new Date(currentDate.getTime() + vietnamTimezoneOffset * 60 * 1000)
+    const localTime = getLocalTime()
 
     let updatedData: UpdatePostData = {
       ...this.normalizeFilters(data),
@@ -194,27 +193,43 @@ class BlogService {
         await Promise.all(
           (keys as string[]).map(async (key, i) => {
             const result = results[i]
-            const count = parseInt(Array.isArray(result) && result[1] ? result[1] : '0', 10)
+            const count = parseInt((result !== null && result !== undefined) ? String(result) : '0', 10)
             if (count > 0) {
-              const postId = key.split(':')[1]
-              await databaseService.posts.updateOne({ _id: new ObjectId(postId) }, { $inc: { view_count: count } })
+              const postId = new ObjectId(key.split(':')[1])
+              const today = getVnMidnight()
+
+              await databaseService.postViews.updateOne(
+                { postId, date: today },
+                {
+                  $inc: { views: count },
+                  $setOnInsert: { created_at: today, updated_at: today }
+                },
+                { upsert: true }
+              )
             }
           })
         )
 
         await redisClient.del(keys)
-      }
+      }''
     } while (cursor !== '0')
   }
 
   async getCurrentViews(postId: string) {
-    const post = await databaseService.posts.findOne({ _id: new ObjectId(postId) })
-    const dbViews = post?.view_count || 0
+    const dbViews = (await databaseService.postViews.find({ postId: new ObjectId(postId) }).toArray()).reduce(
+      (viewSum, pv) => viewSum + pv.views,
+      0
+    ) || 0
 
     const key = this.getPostViewKeyById(postId)
     const redisViews = await this.parseIntPostView(key)
 
     return dbViews + redisViews
+  }
+  async getPostViewsStatistic() {
+    //get total views
+    
+    //get most views post
   }
 }
 
