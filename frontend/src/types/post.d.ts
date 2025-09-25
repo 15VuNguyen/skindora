@@ -29,7 +29,6 @@ export interface Post {
   };
   status: string;
   publishedAt: string | null;
-  authorId: string;
   author?: Author;
   filter_brand: FilterOption[];
   filter_dac_tinh: FilterOption[];
@@ -41,4 +40,30 @@ export interface Post {
   filter_origin: FilterOption[];
   created_at: string;
   updated_at: string;
+  image_on_list: string[];
+  views: string;
+}
+
+export interface PostUser {
+  _id: string;
+  title: string;
+  slug: string;
+  content: {
+    rawHtml: string;
+    plainText: string;
+  };
+  status: string;
+  publishedAt: string | null;
+  filter_brand: FilterOption[];
+  filter_dac_tinh: FilterOption[];
+  filter_hsk_ingredients: FilterOption[];
+  filter_hsk_product_type: FilterOption[];
+  filter_hsk_size: FilterOption[];
+  filter_hsk_skin_type: FilterOption[];
+  filter_hsk_uses: FilterOption[];
+  filter_origin: FilterOption[];
+  created_at: string;
+  updated_at: string;
+  image_on_list: string[];
+  views: string;
 }

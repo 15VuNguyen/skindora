@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const detailObjectSchema = z.object({
-  rawHtml: z.string().min(50, "Nội dung HTML không được trống").max(20000, "Nội dung quá dài"),
+  rawHtml: z.string().min(50, "Nội dung HTML không được trống").max(1000000, "Nội dung quá dài"),
   plainText: z.string(),
 });
 export const postSchema = z.object({
@@ -11,6 +11,11 @@ export const postSchema = z.object({
   status: z.enum(["DRAFT", "PUBLISHED"], {
     errorMap: () => ({ message: "Trạng thái không hợp lệ" }),
   }),
+  image_on_list: z.array(
+    z.object({
+      value: z.string().url("URL không hợp lệ").min(1, "URL không được để trống"),
+    })
+  ),
   filter_brand: z.array(z.string()).optional(),
   filter_hsk_skin_type: z.array(z.string()).optional(),
   filter_hsk_uses: z.array(z.string()).optional(),

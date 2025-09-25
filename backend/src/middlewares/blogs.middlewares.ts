@@ -1,3 +1,4 @@
+import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
 import { ObjectId } from 'mongodb'
 import { PostState } from '~/constants/enums'
@@ -46,7 +47,7 @@ export const createBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.CONTENT_REQUIRED
         },
         isLength: {
-          options: { min: 50, max: 20000 },
+          options: { min: 50, max: 1000000 },
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
@@ -55,8 +56,17 @@ export const createBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.CONTENT_REQUIRED
         },
         isLength: {
-          options: { min: 30, max: 20000 },
+          options: { min: 30, max: 1000000 },
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
+        }
+      },
+      image_on_list: {
+        notEmpty: {
+          errorMessage: BLOG_MESSAGES.IMAGE_ON_LIST_REQUIRED
+        },
+        trim: true,
+        isURL: {
+          errorMessage: BLOG_MESSAGES.INVALID_URL_IMAGE_ON_LIST
         }
       },
       status: {
@@ -87,8 +97,14 @@ export const createBlogValidator = validate(
       },
       filter_brand: createArrayObjectIdValidator('filterBrand', ADMIN_MESSAGES.BRAND_ID_NOT_FOUND),
       filter_dac_tinh: createArrayObjectIdValidator('filterDacTinh', ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND),
-      filter_hsk_ingredients: createArrayObjectIdValidator('filterHskIngredient', ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND),
-      filter_hsk_product_type: createArrayObjectIdValidator('filterHskProductType', ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND),
+      filter_hsk_ingredients: createArrayObjectIdValidator(
+        'filterHskIngredient',
+        ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND
+      ),
+      filter_hsk_product_type: createArrayObjectIdValidator(
+        'filterHskProductType',
+        ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND
+      ),
       filter_hsk_size: createArrayObjectIdValidator('filterHskSize', ADMIN_MESSAGES.SIZE_ID_NOT_FOUND),
       filter_hsk_skin_type: createArrayObjectIdValidator('filterHskSkinType', ADMIN_MESSAGES.SKIN_TYPE_ID_NOT_FOUND),
       filter_hsk_uses: createArrayObjectIdValidator('filterHskUses', ADMIN_MESSAGES.USES_ID_NOT_FOUND),
@@ -107,9 +123,9 @@ export const updateBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.INVALID_OBJECT_ID
         },
         custom: {
-          options: async(value) => {
-            const post = await databaseService.posts.findOne({_id: new ObjectId(value)})
-            if(!post){
+          options: async (value) => {
+            const post = await databaseService.posts.findOne({ _id: new ObjectId(value) })
+            if (!post) {
               throw new ErrorWithStatus({
                 message: BLOG_MESSAGES.POST_NOT_FOUND,
                 status: HTTP_STATUS.NOT_FOUND
@@ -141,6 +157,13 @@ export const updateBlogValidator = validate(
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
+      image_on_list: {
+        optional: true,
+        trim: true,
+        isURL: {
+          errorMessage: BLOG_MESSAGES.INVALID_URL_IMAGE_ON_LIST
+        }
+      },
       status: {
         optional: true,
         isIn: {
@@ -169,8 +192,14 @@ export const updateBlogValidator = validate(
       },
       filter_brand: createArrayObjectIdValidator('filterBrand', ADMIN_MESSAGES.BRAND_ID_NOT_FOUND),
       filter_dac_tinh: createArrayObjectIdValidator('filterDacTinh', ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND),
-      filter_hsk_ingredients: createArrayObjectIdValidator('filterHskIngredient', ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND),
-      filter_hsk_product_type: createArrayObjectIdValidator('filterHskProductType', ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND),
+      filter_hsk_ingredients: createArrayObjectIdValidator(
+        'filterHskIngredient',
+        ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND
+      ),
+      filter_hsk_product_type: createArrayObjectIdValidator(
+        'filterHskProductType',
+        ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND
+      ),
       filter_hsk_size: createArrayObjectIdValidator('filterHskSize', ADMIN_MESSAGES.SIZE_ID_NOT_FOUND),
       filter_hsk_skin_type: createArrayObjectIdValidator('filterHskSkinType', ADMIN_MESSAGES.SKIN_TYPE_ID_NOT_FOUND),
       filter_hsk_uses: createArrayObjectIdValidator('filterHskUses', ADMIN_MESSAGES.USES_ID_NOT_FOUND),
@@ -179,3 +208,182 @@ export const updateBlogValidator = validate(
     ['body']
   )
 )
+
+export const getAllPostsValidator = validate(
+  checkSchema(
+    {
+      filters: {
+        in: ['body'],
+        exists: {
+          errorMessage: BLOG_MESSAGES.FILTERS_OBJECT_REQUIRED
+        },
+        isObject: {
+          errorMessage: BLOG_MESSAGES.INVALID_FILTERS_OBJECT
+        }
+      },
+      'filters.filter_brand': createArrayObjectIdValidator('filterBrand', ADMIN_MESSAGES.BRAND_ID_NOT_FOUND),
+      'filters.filter_dac_tinh': createArrayObjectIdValidator('filterDacTinh', ADMIN_MESSAGES.DAC_TINH_ID_NOT_FOUND),
+      'filters.filter_hsk_ingredients': createArrayObjectIdValidator(
+        'filterHskIngredient',
+        ADMIN_MESSAGES.INGREDIENT_ID_NOT_FOUND
+      ),
+      'filters.filter_hsk_product_type': createArrayObjectIdValidator(
+        'filterHskProductType',
+        ADMIN_MESSAGES.PRODUCT_TYPE_ID_NOT_FOUND
+      ),
+      'filters.filter_hsk_size': createArrayObjectIdValidator('filterHskSize', ADMIN_MESSAGES.SIZE_ID_NOT_FOUND),
+      'filters.filter_hsk_skin_type': createArrayObjectIdValidator(
+        'filterHskSkinType',
+        ADMIN_MESSAGES.SKIN_TYPE_ID_NOT_FOUND
+      ),
+      'filters.filter_hsk_uses': createArrayObjectIdValidator('filterHskUses', ADMIN_MESSAGES.USES_ID_NOT_FOUND),
+      'filters.filter_origin': createArrayObjectIdValidator('filterOrigin', ADMIN_MESSAGES.ORIGIN_ID_NOT_FOUND)
+    },
+    ['body']
+  )
+)
+
+export const checkPostExist = async(req: Request, res: Response, next: NextFunction) => {
+  try {
+    const {id} = req.params
+    const post = await databaseService.posts.findOne({_id: new ObjectId(id)})
+    if(!post){
+      throw new ErrorWithStatus({
+        message: BLOG_MESSAGES.POST_NOT_FOUND,
+        status: HTTP_STATUS.NOT_FOUND
+      })
+    }
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const syncPostViewsValidator = validate(
+  checkSchema(
+    {
+      batchSize: {
+        optional: true,
+        isInt: {
+          options: {
+            min: 1,
+            max: 1000,
+          },
+          errorMessage: BLOG_MESSAGES.INVALID_BATCH_SIZE
+        },
+        toInt: true
+      }
+    },['body']
+  )
+)
+
+export const getPostViewsByDateValidator = validate(
+  checkSchema(
+    {
+      startDate: {
+        in: ["query"],
+        exists: {
+          errorMessage: BLOG_MESSAGES.START_DATE_REQUIRED
+        },
+        isDate: {
+          options: { format: "YYYY-MM-DD" },
+          errorMessage: BLOG_MESSAGES.START_DATE_INVALID
+        }
+      },
+      endDate: {
+        in: ["query"],
+        exists: {
+          errorMessage: BLOG_MESSAGES.END_DATE_REQUIRED
+        },
+        isDate: {
+          options: { format: "YYYY-MM-DD" },
+          errorMessage: BLOG_MESSAGES.END_DATE_INVALID
+        },
+        custom: {
+          options: (value, { req }) => {
+            const start = new Date(req?.query?.startDate as string);
+            const end = new Date(value);
+            if (start > end) {
+              throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID);
+            }
+            return true;
+          }
+        }
+      },
+      groupBy: {
+        in: ["query"],
+        optional: true,
+        isIn: {
+          options: [["day", "month"]],
+          errorMessage: BLOG_MESSAGES.GROUP_BY_INVALID
+        }
+      }
+    },
+    ["query"]
+  )
+);
+
+export const getTopViewedPostsValidator = validate(
+  checkSchema(
+    {
+      startDate: {
+        in: ["query"],
+        optional: true,
+        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.START_DATE_INVALID }
+      },
+      endDate: {
+        in: ["query"],
+        optional: true,
+        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.END_DATE_INVALID },
+        custom: {
+          options: (value, { req }) => {
+            if (!req?.query?.startDate) return true;
+            const start = new Date(req.query.startDate as string);
+            const end = new Date(value);
+            if (start > end) throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID);
+            return true;
+          }
+        }
+      },
+      limit: {
+        in: ["query"],
+        optional: true,
+        isInt: { options: { min: 1, max: 100 }, errorMessage: BLOG_MESSAGES.LIMIT_INVALID },
+        toInt: true
+      }
+    },
+    ["query"]
+  )
+);
+
+export const getViewsByPostValidator = validate(
+  checkSchema(
+    {
+      postId: {
+        in: ["params"],
+        exists: { errorMessage: BLOG_MESSAGES.POST_ID_REQUIRED },
+        isMongoId: { errorMessage: BLOG_MESSAGES.INVALID_OBJECT_ID }
+      },
+      startDate: {
+        in: ["query"],
+        optional: true,
+        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.START_DATE_INVALID }
+      },
+      endDate: {
+        in: ["query"],
+        optional: true,
+        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.END_DATE_INVALID },
+        custom: {
+          options: (value, { req }) => {
+            if (!req?.query?.startDate) return true;
+            const start = new Date(req.query.startDate as string);
+            const end = new Date(value);
+            if (start > end) throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID);
+            return true;
+          }
+        }
+      }
+    },
+  )
+);
+

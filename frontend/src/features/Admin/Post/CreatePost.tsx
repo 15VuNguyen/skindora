@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Eye, Save } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -157,6 +157,7 @@ export default function CreatePost() {
       slug: "",
       content: { rawHtml: "", plainText: "" },
       status: "DRAFT",
+      image_on_list: [],
       filter_brand: [],
       filter_hsk_skin_type: [],
       filter_hsk_uses: [],
@@ -168,13 +169,25 @@ export default function CreatePost() {
     },
   });
 
+  const {
+    fields: image_on_list,
+    append: appendMainImage,
+    remove: removeMainImage,
+  } = useFieldArray({
+    control: form.control,
+    name: "image_on_list",
+  });
+
   async function handleSubmit(values: PostFormValues, status: "DRAFT" | "PUBLISHED") {
     setIsSubmitting(true);
     const payload = {
       ...values,
       status,
+      // Transform image_on_list from array of objects to array of strings
+      image_on_list: values.image_on_list?.map((img) => img.value) || [],
     };
     const optionalFilters = [
+      "image_on_list",
       "filter_brand",
       "filter_hsk_skin_type",
       "filter_hsk_uses",
@@ -308,7 +321,42 @@ export default function CreatePost() {
                 </div>
               </CardContent>
             </Card>
-
+            <Card>
+              <CardHeader>
+                <CardTitle>Danh sách hình ảnh chi tiết</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h3 className="mb-2 font-semibold">Hình ảnh chính (main_images_detail):</h3>
+                  {image_on_list.map((field, index) => (
+                    <FormField
+                      key={field.id}
+                      control={form.control}
+                      name={`image_on_list.${index}.value`}
+                      render={({ field }) => (
+                        <FormItem className="mb-2 flex items-center gap-4">
+                          <FormControl>
+                            <Input {...field} placeholder="https://example.com/image.jpg" />
+                          </FormControl>
+                          <Button type="button" variant="destructive" onClick={() => removeMainImage(index)}>
+                            Xóa
+                          </Button>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ))}
+                  {form.formState.errors.image_on_list && (
+                    <p className="text-destructive mt-2 text-sm font-medium">
+                      {form.formState.errors.image_on_list.message}
+                    </p>
+                  )}
+                  <Button type="button" variant="outline" size="sm" onClick={() => appendMainImage({ value: "" })}>
+                    Thêm ảnh chính
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
             <Card>
               <CardHeader>
                 <CardTitle>Nội dung chi tiết (HTML)</CardTitle>

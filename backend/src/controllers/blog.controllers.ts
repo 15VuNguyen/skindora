@@ -13,34 +13,25 @@ import {
 } from '~/models/requests/Blog.requests'
 import { TokenPayLoad } from '~/models/requests/Users.requests'
 import HTTP_STATUS from '~/constants/httpStatus'
-import { PostState } from '~/constants/enums'
+import { filterFields, PostState } from '~/constants/enums'
 import Post from '~/models/schemas/Blog.schema'
 
 export const getAllPostsController = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const { keyword, page = 1, limit = 10 } = req.query
     const filter = buildPostFilter(req)
 
-    if (req.query.keyword) {
-      filter.title = { $regex: req.query.keyword as string, $options: 'i' }
+    if (keyword) {
+      filter.$or = [
+        { title: { $regex: keyword as string, $options: 'i' } },
+        { title_no_accents: { $regex: keyword as string, $options: 'i' } }
+      ]
     }
 
-    const { page = 1, limit = 10 } = req.query
+    const pageNum = Math.max(Number(page) || 1, 1)
+    const limitNum = Math.max(Number(limit) || 10, 1)
+    const skip = (pageNum - 1) * limitNum
 
-    const skip = (Number(page) - 1) * Number(limit)
-
-    // Các field filter
-    const filterFields = [
-      'filter_brand',
-      'filter_dac_tinh',
-      'filter_hsk_ingredients',
-      'filter_hsk_product_type',
-      'filter_hsk_size',
-      'filter_hsk_skin_type',
-      'filter_hsk_uses',
-      'filter_origin'
-    ] as const
-
-    //Hàm để build $lookup cho filter
     const buildFilterLookup = (collection: string) => ({
       $lookup: {
         from: collection,
@@ -54,9 +45,8 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
       { $match: filter },
       { $sort: { created_at: -1 } },
       { $skip: skip },
-      { $limit: Number(limit) },
+      { $limit: limitNum },
 
-      //ép kiểu filter_* từ string -> ObjectId
       {
         $addFields: filterFields.reduce(
           (acc, field) => {
@@ -85,7 +75,6 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
       },
       { $unwind: '$author' },
 
-      //Lookups cho filter (chỉ lấy _id + option_name)
       ...filterFields.map(buildFilterLookup),
 
       {
@@ -106,10 +95,10 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
     res.json({
       data: results,
       pagination: {
-        page: Number(page),
-        limit: Number(limit),
+        page: pageNum,
+        limit: limitNum,
         total,
-        totalPages: Math.ceil(total / Number(limit))
+        totalPages: Math.ceil(total / limitNum)
       }
     })
   } catch (error) {
@@ -119,6 +108,15 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
 
 export const getAllPublishPostsController = async (req: Request, res: Response, next: NextFunction) => {
   const filter = buildPostFilter(req, PostState.PUBLISHED)
+  const { keyword } = req.query
+
+  if (keyword) {
+    filter.$or = [
+      { title: { $regex: keyword as string, $options: 'i' } },
+      { title_no_accents: { $regex: keyword as string, $options: 'i' } }
+    ]
+  }
+
   await sendPaginatedResponse(res, next, databaseService.posts, req.query, filter)
 }
 
@@ -131,20 +129,11 @@ function buildPostFilter(req: Request, forceStatus?: PostState): Filter<Post> {
     filter.status = req.query.status as PostState
   }
 
-  const filterFields = [
-    'filter_brand',
-    'filter_dac_tinh',
-    'filter_hsk_ingredients',
-    'filter_hsk_product_type',
-    'filter_hsk_size',
-    'filter_hsk_skin_type',
-    'filter_hsk_uses',
-    'filter_origin'
-  ]
+  const { filters = {} }: { filters?: Record<string, string[]> } = req.body
 
-  filterFields.forEach((field) => {
-    if (req.query[field]) {
-      filter[field as keyof Filter<Post>] = new ObjectId(req.query[field] as string)
+  Object.entries(filters).forEach(([field, values]) => {
+    if (Array.isArray(values) && values.length > 0) {
+      filter[field as keyof Filter<Post>] = { $all: values.map((id) => new ObjectId(id)) }
     }
   })
 
@@ -175,7 +164,8 @@ export const getPostBySlugIdController = async (req: Request<PostBySlugIdParam>,
   const id = m.groups.id
   const slug = slugAndId.slice(0, slugAndId.length - id.length - 1)
 
-  const post = await blogService.getPostById(id)
+  let post
+  post = await databaseService.posts.findOne({ _id: new ObjectId(id) })
 
   if (!post) {
     res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -192,6 +182,9 @@ export const getPostBySlugIdController = async (req: Request<PostBySlugIdParam>,
     )
     return
   }
+
+  post = await blogService.getPostById(id)
+
   res.json({
     message: BLOG_MESSAGES.GET_POST_DETAIL_SUCCESS,
     result: post
@@ -212,6 +205,82 @@ export const deletePostController = async (req: Request<PostByIdParam>, res: Res
   const result = await blogService.deletePost(id)
   res.json({
     message: BLOG_MESSAGES.DELETE_POST_SUCCESS,
+    result
+  })
+}
+
+export const getCurrentPostViewController = async (req: Request<PostByIdParam>, res: Response) => {
+  const { id } = req.params
+  const result = await blogService.getCurrentViews(id)
+  res.json({
+    message: BLOG_MESSAGES.GET_POST_VIEWS_SUCCESS,
+    result: {
+      view_count: result
+    }
+  })
+}
+
+export const getPostViewsStatisticController = async (req: Request, res: Response) => {
+  const result = await blogService.getPostViewsStatistic()
+  res.json({
+    message: BLOG_MESSAGES.GET_POST_VIEWS_STATS_SUCCESS,
+    result
+  })
+}
+
+export const syncPostViewsController = async (req: Request, res: Response) => {
+  const result = await blogService.syncPostViews()
+  res.json({
+    message: BLOG_MESSAGES.SYNC_POST_VIEWS_SUCCESS,
+    result
+  })
+}
+
+export const getPostViewsByDateController = async (req: Request, res: Response) => {
+  const startDate = req.query.startDate as string
+  const endDate = req.query.endDate as string
+  const groupBy = (req.query.groupBy as string) || 'day'
+  const result = await blogService.getPostViewsByDate({ startDate, endDate, groupBy })
+  res.json({
+    message: BLOG_MESSAGES.GET_POST_VIEWS_BY_DATE_SUCCESS,
+    result
+  })
+}
+
+
+export const getTopViewedPostsController = async (req: Request, res: Response) => {
+  const startDate = req.query.startDate as string | undefined
+  const endDate = req.query.endDate as string | undefined
+  const limit = parseInt(req.query.limit as string) || 5
+
+  const result = await blogService.getTopViewedPosts({ startDate, endDate, limit })
+
+  res.json({
+    message: BLOG_MESSAGES.GET_TOP_VIEWED_POSTS_SUCCESS,
+    result
+  })
+}
+
+export const getViewsByPostController = async (req: Request, res: Response) => {
+  const postId = req.params.postId as string
+  const startDate = req.query.startDate as string | undefined
+  const endDate = req.query.endDate as string | undefined
+
+  const result = await blogService.getViewsByPost({ postId, startDate, endDate })
+
+  res.json({
+    message: BLOG_MESSAGES.GET_VIEWS_BY_POST_SUCCESS,
+    result
+  })
+}
+
+export const getPostViewsGrowthController = async (req: Request, res: Response) => {
+  const days = parseInt(req.query.days as string) || 7
+
+  const result = await blogService.getPostViewsGrowth({ days })
+
+  res.json({
+    message: BLOG_MESSAGES.GET_POST_VIEWS_GROWTH_SUCCESS,
     result
   })
 }

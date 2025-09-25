@@ -711,7 +711,7 @@ export const updateProductValidator = validate(
         }
       },
       hover_image_on_list: {
-        optional: true,
+        optional: true, 
         isString: {
           errorMessage: ADMIN_MESSAGES.HOVER_IMAGE_ON_LIST_MUST_BE_A_STRING
         },
