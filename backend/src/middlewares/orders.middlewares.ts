@@ -42,11 +42,14 @@ export const checkOutValidator = validate(
         trim: true
       },
       PhoneNumber: {
-        optional: true,
+        notEmpty: {
+          errorMessage: ORDER_MESSAGES.REQUIRE_PHONE_NUMBER
+        },
         isMobilePhone: {
           options: ['vi-VN'],
           errorMessage: ORDER_MESSAGES.INVALID_PHONE_NUMBER
-        }
+        },
+        trim: true
       },
       ShipAddress: {
         notEmpty: {

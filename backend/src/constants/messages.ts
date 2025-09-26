@@ -423,7 +423,8 @@ export const ORDER_MESSAGES = {
   CANCEL_REQUESTING: 'Đơn hàng này đang được yêu cầu hủy, không thể cập nhật sang trạng thái tiếp theo',
   COUNT_SUCCESS: 'Lấy số lượng đơn hàng thành công',
   COUNT_FAIL: 'Lấy số lượng đơn hàng thất bại',
-  INVALID_PHONE_NUMBER: 'Số điện thoại không hợp lệ'
+  INVALID_PHONE_NUMBER: 'Số điện thoại không hợp lệ',
+  REQUIRE_PHONE_NUMBER: 'Vui lòng nhập số điện thoại'
 } as const
 
 export const VOUCHER_MESSAGES = {
@@ -501,6 +502,5 @@ export const BLOG_MESSAGES = {
   START_END_DATE_INVALID: 'Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc',
   GROUP_BY_INVALID: "groupBy chỉ nhận 'day' hoặc 'month'",
   LIMIT_INVALID: 'Giới hạn phải là số nguyên từ 1 đến 100',
-  POST_ID_REQUIRED: 'Id bài viết là bắt buộc',
-  
+  POST_ID_REQUIRED: 'Id bài viết là bắt buộc'
 }
