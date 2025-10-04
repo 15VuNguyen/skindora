@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { fetchListUser } from "@/api/user";
 import type { User } from "@/types/user";
@@ -13,11 +13,19 @@ export const useFetchUser = () => {
   });
   const [data, setData] = useState<User[]>([]);
   const [allUser, setAllUser] = useState<User[]>([]);
+  const changePage = useCallback((page: number) => {
+    setParams((prev) => ({ ...prev, page }));
+  }, []);
   const fetchAllUser = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchListUser({ limit: 1000, page: params.page });
+      const response = await fetchListUser(params);
       setAllUser(response.data);
+      setParams((prevParams) => ({
+        ...prevParams,
+        totalPages: response.pagination.totalPages,
+        totalRecords: response.pagination.totalRecords,
+      }));
     } catch (error) {
       console.error("Failed to fetch all users:", error);
       setAllUser([]);
@@ -28,7 +36,7 @@ export const useFetchUser = () => {
   const fetchUser = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchListUser({ limit: params.limit, page: params.page });
+      const response = await fetchListUser(params);
       setData(response.data);
       setParams((prevParams) => ({
         ...prevParams,
@@ -42,7 +50,9 @@ export const useFetchUser = () => {
       setLoading(false);
     }
   }, [params.page, params.limit]);
-
+  useEffect(() => {
+    fetchAllUser();
+  }, [params.page, params.limit]);
   return {
     loading,
     fetchUser,
@@ -51,5 +61,6 @@ export const useFetchUser = () => {
     setParams,
     allUser,
     fetchAllUser,
+    changePage,
   };
 };
