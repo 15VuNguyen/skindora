@@ -18,7 +18,7 @@ import { UserChart } from "../components/UserChart";
 const ManageCustomer: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
 
-  const { fetchUser, data, params, setParams, allUser, fetchAllUser, loading, changePage } = useFetchUser();
+  const { fetchUser, data, params, allUser, fetchAllUser, loading, changePage } = useFetchUser();
   const { fetchNotVerifiedUser, params: paramsForUserIsNotVerified } = useFetchUserIsNotVerified();
   const { fetchVerifiedUser, params: paramsForUserIsVerified } = useFetchUserIsVerified();
   useEffect(() => {
