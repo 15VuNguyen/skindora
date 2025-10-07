@@ -18,7 +18,7 @@ import { UserChart } from "../components/UserChart";
 const ManageCustomer: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
 
-  const { fetchUser, data, params, setParams, allUser, fetchAllUser, loading } = useFetchUser();
+  const { fetchUser, data, params, allUser, fetchAllUser, loading, changePage } = useFetchUser();
   const { fetchNotVerifiedUser, params: paramsForUserIsNotVerified } = useFetchUserIsNotVerified();
   const { fetchVerifiedUser, params: paramsForUserIsVerified } = useFetchUserIsVerified();
   useEffect(() => {
@@ -28,7 +28,6 @@ const ManageCustomer: React.FC = () => {
   useEffect(() => {
     fetchUser();
     fetchAllUser();
-
     console.log(data);
     console.log(params.page);
   }, [params.page]);
@@ -38,10 +37,7 @@ const ManageCustomer: React.FC = () => {
     fetchVerifiedUser();
   }, []);
   const handlePageChange = (page: number) => {
-    setParams((prevParams) => ({
-      ...prevParams,
-      page: page,
-    }));
+    changePage(page);
   };
 
   const monthlyUserData = useMemo(() => {
@@ -129,7 +125,7 @@ const ManageCustomer: React.FC = () => {
                 <div className="mt-3 w-5/5">
                   <Card className="w-5/5">
                     <div className="p-3">
-                      <DataTable columns={userColumn} data={allUser} filterPlaceholder="Tìm khách hàng" />
+                      <DataTable columns={userColumn} data={data} filterPlaceholder="Tìm khách hàng" />
                       <div className="mt-4">
                         <PaginationDemo
                           totalPages={params.totalPages ?? 1}

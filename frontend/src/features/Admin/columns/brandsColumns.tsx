@@ -22,7 +22,6 @@ const formatDate = (dateString: string) => {
 
 export const ActionsCell = ({ row, refetchData }: { row: { original: Brand }; refetchData: () => void }) => {
   const { _id, state } = row.original;
-
   const navigate = useNavigate();
   const payload = {
     state: state === "ACTIVE" ? "INACTIVE" : "ACTIVE",

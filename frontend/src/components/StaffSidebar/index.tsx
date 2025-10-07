@@ -1,4 +1,4 @@
-import { Package, ShoppingCart, User2 } from "lucide-react";
+import { Package, ShoppingCart, StickyNote, User2 } from "lucide-react";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -19,7 +19,7 @@ const items = [
   { title: "Hồ sơ", url: "/staff", icon: User2 },
   { title: "Sản phẩm", url: "/staff/products", icon: Package },
   { title: "Đơn hàng", url: "/staff/orders", icon: ShoppingCart },
-  { title: "Bài viết", url: "/staff/posts", icon: ShoppingCart },
+  { title: "Bài viết", url: "/staff/posts", icon: StickyNote },
 ];
 const AppSidebar: React.FC = () => {
   const location = useLocation();
