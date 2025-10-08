@@ -25,18 +25,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
   const [hasToken, setHasToken] = useState<boolean>(!!getAccessToken());
   const queryClient = useQueryClient();
-
   const { data: apiUser, isLoading: isUserLoading, isSuccess, isError } = useUserProfileQuery(hasToken);
 
   const handleOAuthLogin = useCallback(
     (params: { accessToken: string; refreshToken: string; newUserParam: string | null }) => {
       const { accessToken, refreshToken, newUserParam } = params;
-
       setTokens(accessToken, refreshToken);
       setHasToken(true);
-
       queryClient.invalidateQueries({ queryKey: ["user", "me"] });
-
       if (newUserParam === "1") {
         toast.success("Google account linked successfully!", { description: "Welcome to Skindora!" });
       } else {
@@ -61,7 +57,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const handleAuthFailure = () => setHasToken(false);
     window.addEventListener("auth:session_expired", handleAuthFailure);
     window.addEventListener("auth:token_refreshed", handleTokenRefreshed);
-
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("auth:session_expired", handleAuthFailure);

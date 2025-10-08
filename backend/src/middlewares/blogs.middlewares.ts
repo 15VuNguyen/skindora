@@ -146,14 +146,14 @@ export const updateBlogValidator = validate(
       'content.rawHtml': {
         optional: true,
         isLength: {
-          options: { min: 50, max: 20000 },
+          options: { min: 50, max: 100000 },
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
       'content.plainText': {
         optional: true,
         isLength: {
-          options: { min: 30, max: 20000 },
+          options: { min: 30, max: 100000 },
           errorMessage: BLOG_MESSAGES.INVALID_CONTENT_LENGTH
         }
       },
@@ -243,11 +243,11 @@ export const getAllPostsValidator = validate(
   )
 )
 
-export const checkPostExist = async(req: Request, res: Response, next: NextFunction) => {
+export const checkPostExist = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const {id} = req.params
-    const post = await databaseService.posts.findOne({_id: new ObjectId(id)})
-    if(!post){
+    const { id } = req.params
+    const post = await databaseService.posts.findOne({ _id: new ObjectId(id) })
+    if (!post) {
       throw new ErrorWithStatus({
         message: BLOG_MESSAGES.POST_NOT_FOUND,
         status: HTTP_STATUS.NOT_FOUND
@@ -267,13 +267,14 @@ export const syncPostViewsValidator = validate(
         isInt: {
           options: {
             min: 1,
-            max: 1000,
+            max: 1000
           },
           errorMessage: BLOG_MESSAGES.INVALID_BATCH_SIZE
         },
         toInt: true
       }
-    },['body']
+    },
+    ['body']
   )
 )
 
@@ -281,109 +282,106 @@ export const getPostViewsByDateValidator = validate(
   checkSchema(
     {
       startDate: {
-        in: ["query"],
+        in: ['query'],
         exists: {
           errorMessage: BLOG_MESSAGES.START_DATE_REQUIRED
         },
         isDate: {
-          options: { format: "YYYY-MM-DD" },
+          options: { format: 'YYYY-MM-DD' },
           errorMessage: BLOG_MESSAGES.START_DATE_INVALID
         }
       },
       endDate: {
-        in: ["query"],
+        in: ['query'],
         exists: {
           errorMessage: BLOG_MESSAGES.END_DATE_REQUIRED
         },
         isDate: {
-          options: { format: "YYYY-MM-DD" },
+          options: { format: 'YYYY-MM-DD' },
           errorMessage: BLOG_MESSAGES.END_DATE_INVALID
         },
         custom: {
           options: (value, { req }) => {
-            const start = new Date(req?.query?.startDate as string);
-            const end = new Date(value);
+            const start = new Date(req?.query?.startDate as string)
+            const end = new Date(value)
             if (start > end) {
-              throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID);
+              throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID)
             }
-            return true;
+            return true
           }
         }
       },
       groupBy: {
-        in: ["query"],
+        in: ['query'],
         optional: true,
         isIn: {
-          options: [["day", "month"]],
+          options: [['day', 'month']],
           errorMessage: BLOG_MESSAGES.GROUP_BY_INVALID
         }
       }
     },
-    ["query"]
+    ['query']
   )
-);
+)
 
 export const getTopViewedPostsValidator = validate(
   checkSchema(
     {
       startDate: {
-        in: ["query"],
+        in: ['query'],
         optional: true,
-        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.START_DATE_INVALID }
+        isDate: { options: { format: 'YYYY-MM-DD' }, errorMessage: BLOG_MESSAGES.START_DATE_INVALID }
       },
       endDate: {
-        in: ["query"],
+        in: ['query'],
         optional: true,
-        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.END_DATE_INVALID },
+        isDate: { options: { format: 'YYYY-MM-DD' }, errorMessage: BLOG_MESSAGES.END_DATE_INVALID },
         custom: {
           options: (value, { req }) => {
-            if (!req?.query?.startDate) return true;
-            const start = new Date(req.query.startDate as string);
-            const end = new Date(value);
-            if (start > end) throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID);
-            return true;
+            if (!req?.query?.startDate) return true
+            const start = new Date(req.query.startDate as string)
+            const end = new Date(value)
+            if (start > end) throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID)
+            return true
           }
         }
       },
       limit: {
-        in: ["query"],
+        in: ['query'],
         optional: true,
         isInt: { options: { min: 1, max: 100 }, errorMessage: BLOG_MESSAGES.LIMIT_INVALID },
         toInt: true
       }
     },
-    ["query"]
+    ['query']
   )
-);
+)
 
 export const getViewsByPostValidator = validate(
-  checkSchema(
-    {
-      postId: {
-        in: ["params"],
-        exists: { errorMessage: BLOG_MESSAGES.POST_ID_REQUIRED },
-        isMongoId: { errorMessage: BLOG_MESSAGES.INVALID_OBJECT_ID }
-      },
-      startDate: {
-        in: ["query"],
-        optional: true,
-        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.START_DATE_INVALID }
-      },
-      endDate: {
-        in: ["query"],
-        optional: true,
-        isDate: { options: { format: "YYYY-MM-DD" }, errorMessage: BLOG_MESSAGES.END_DATE_INVALID },
-        custom: {
-          options: (value, { req }) => {
-            if (!req?.query?.startDate) return true;
-            const start = new Date(req.query.startDate as string);
-            const end = new Date(value);
-            if (start > end) throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID);
-            return true;
-          }
+  checkSchema({
+    postId: {
+      in: ['params'],
+      exists: { errorMessage: BLOG_MESSAGES.POST_ID_REQUIRED },
+      isMongoId: { errorMessage: BLOG_MESSAGES.INVALID_OBJECT_ID }
+    },
+    startDate: {
+      in: ['query'],
+      optional: true,
+      isDate: { options: { format: 'YYYY-MM-DD' }, errorMessage: BLOG_MESSAGES.START_DATE_INVALID }
+    },
+    endDate: {
+      in: ['query'],
+      optional: true,
+      isDate: { options: { format: 'YYYY-MM-DD' }, errorMessage: BLOG_MESSAGES.END_DATE_INVALID },
+      custom: {
+        options: (value, { req }) => {
+          if (!req?.query?.startDate) return true
+          const start = new Date(req.query.startDate as string)
+          const end = new Date(value)
+          if (start > end) throw new Error(BLOG_MESSAGES.START_END_DATE_INVALID)
+          return true
         }
       }
-    },
-  )
-);
-
+    }
+  })
+)

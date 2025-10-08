@@ -263,15 +263,6 @@ export const postColumns: ColumnDef<Post>[] = [
               <Eye className="mr-2 h-4 w-4" />
               Xem chi tiết
             </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                console.log("Chỉnh sửa bài viết:", post._id);
-              }}
-              className="cursor-pointer"
-            >
-              <Edit className="mr-2 h-4 w-4" />
-              Chỉnh sửa
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

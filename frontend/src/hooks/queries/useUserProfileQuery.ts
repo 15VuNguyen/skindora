@@ -11,7 +11,7 @@ const fetcher = async (): Promise<DetailedUserFromApi | null> => {
   if (result.isOk()) {
     return result.value.data.result;
   }
-  throw result.error;
+  throw result.error; 
 };
 
 export function useUserProfileQuery(isAuthenticated: boolean) {
