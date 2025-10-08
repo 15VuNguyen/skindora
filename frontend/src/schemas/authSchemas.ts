@@ -1,4 +1,5 @@
 import * as z from "zod";
+
 const vietnamesePhoneNumberRegex = /^(0[3|5|7|8|9])+([0-9]{8})\b/;
 
 export const loginSchema = z.object({
@@ -52,7 +53,7 @@ export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 export const profileUpdateSchema = z.object({
   first_name: z.string().max(50, "First name cannot exceed 50 characters.").optional().or(z.literal("")),
   last_name: z.string().max(50, "Last name cannot exceed 50 characters.").optional().or(z.literal("")),
-   phone: z
+  phone: z
     .string()
     .regex(vietnamesePhoneNumberRegex, "Vui lòng nhập số điện thoại Việt Nam hợp lệ.")
     .optional()

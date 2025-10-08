@@ -1,7 +1,7 @@
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
-import { ArrowUpDown, Edit, Eye, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Eye, MoreHorizontal } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import { Badge } from "@/components/ui/badge";
@@ -262,15 +262,6 @@ export const postColumns: ColumnDef<Post>[] = [
             >
               <Eye className="mr-2 h-4 w-4" />
               Xem chi tiết
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => {
-                console.log("Chỉnh sửa bài viết:", post._id);
-              }}
-              className="cursor-pointer"
-            >
-              <Edit className="mr-2 h-4 w-4" />
-              Chỉnh sửa
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

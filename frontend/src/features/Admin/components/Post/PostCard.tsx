@@ -1,4 +1,4 @@
-import { Calendar, Clock, Eye, User } from "lucide-react";
+import { Calendar, Clock, User } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -47,12 +47,10 @@ export function PostCard({ post, onClick }: PostCardProps) {
         console.log("✅ Using post image:", imageUrl);
       }
 
-      
       if (imageUrl.startsWith("http") || imageUrl.startsWith("/")) {
         return imageUrl;
       }
 
-     
       const cleanImageUrl = imageUrl.startsWith("/") ? imageUrl.slice(1) : imageUrl;
       const cleanBaseUrl = config.apiBaseUrl.endsWith("/") ? config.apiBaseUrl.slice(0, -1) : config.apiBaseUrl;
       const fullImageUrl = `${cleanBaseUrl}/${cleanImageUrl}`;
@@ -121,18 +119,18 @@ export function PostCard({ post, onClick }: PostCardProps) {
             </div>
           </div>
 
-          <div className="flex items-center space-x-1">
+          {/* <div className="flex items-center space-x-1">
             <Eye className="h-3 w-3" />
-            <span>{Math.floor(Math.random() * 1000) + 100}</span>
-          </div>
+            <span>{post.views}</span>
+          </div> */}
         </div>
 
         {/* Author */}
         <div className="border-border/50 mt-4 flex items-center space-x-2 border-t pt-4">
           <div className="bg-gradient-primary flex h-6 w-6 items-center justify-center rounded-full">
-            <User className="h-3 w-3 text-white" />
+            <User className="h-3 w-3 text-black" />
           </div>
-          <span className="text-muted-foreground text-xs">Beauty Expert</span>
+          <span className="text-muted-foreground text-xs">SkinDora Staff</span>
         </div>
       </CardContent>
     </Card>

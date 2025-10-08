@@ -114,7 +114,7 @@ const PostDetailForUser: React.FC = () => {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div className="space-y-6 lg:col-span-2">
               <Card>
-                <div>
+                <div className="container mx-auto max-w-6xl px-4 py-4">
                   <Button
                     variant="ghost"
                     onClick={() => {
