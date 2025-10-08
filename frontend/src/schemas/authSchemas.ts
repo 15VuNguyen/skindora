@@ -53,7 +53,7 @@ export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>;
 export const profileUpdateSchema = z.object({
   first_name: z.string().max(50, "First name cannot exceed 50 characters.").optional().or(z.literal("")),
   last_name: z.string().max(50, "Last name cannot exceed 50 characters.").optional().or(z.literal("")),
-  phone_number: z
+  phone: z
     .string()
     .regex(vietnamesePhoneNumberRegex, "Vui lòng nhập số điện thoại Việt Nam hợp lệ.")
     .optional()

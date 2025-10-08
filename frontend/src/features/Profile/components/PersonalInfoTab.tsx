@@ -89,7 +89,7 @@ export const PersonalInfoTab = React.memo(
                 </div>
                 <FormField
                   control={form.control}
-                  name="phone_number"
+                  name="phone"
                   render={({ field }) => (
                     <FormItem className="space-y-1.5 sm:col-span-2">
                       <FormLabel>Số điện thoại</FormLabel>
