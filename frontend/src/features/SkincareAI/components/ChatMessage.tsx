@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
+import { AIFeedbackPrompt } from "@/components/ai/AIFeedbackPrompt";
 
 import type { Message, RoutineDetailsForSaving } from "../types";
 import RecommendationDisplay from "./RecommendationDisplay";
@@ -8,11 +9,19 @@ interface ChatMessageProps {
   message: Message;
   onApplyRoutine: (routineData: RoutineDetailsForSaving) => void;
   isAuthenticated: boolean;
+  onRateFeedback: (messageId: string, rating: number, comment?: string) => void | Promise<void>;
 }
 
-const ChatMessage = ({ message, onApplyRoutine, isAuthenticated }: ChatMessageProps) => {
+const ChatMessage = ({ message, onApplyRoutine, isAuthenticated, onRateFeedback }: ChatMessageProps) => {
   const { text, recommendation, isUser } = message;
   const navigate = useNavigate(); 
+
+  const handleFeedbackSubmit = (value: number, comment?: string) => {
+    if (!message.id) return;
+    onRateFeedback(message.id, value, comment);
+  };
+
+  const shouldRenderFeedbackPrompt = !isUser && message.id && (!message.hasSubmittedFeedback || message.rating);
 
   return (
     <div className={`flex flex-col ${isUser ? "items-end" : "items-start"}`}>
@@ -56,6 +65,15 @@ const ChatMessage = ({ message, onApplyRoutine, isAuthenticated }: ChatMessagePr
             </Button>
           )}
         </div>
+      )}
+      {shouldRenderFeedbackPrompt && (
+        <AIFeedbackPrompt
+          hasSubmitted={Boolean(message.hasSubmittedFeedback)}
+          currentRating={message.rating}
+          currentComment={message.feedbackComment}
+          isSubmitting={Boolean(message.isFeedbackSubmitting)}
+          onSubmit={handleFeedbackSubmit}
+        />
       )}
     </div>
   );

@@ -12,6 +12,7 @@ export const useSkincareAI = () => {
   const [preference, setPreference] = useState<Preference>("AM/PM");
   const [budget, setBudget] = useState(50);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [hasProvidedFeedback, setHasProvidedFeedback] = useState(false);
 
   const [selectedUserSkinType, setSelectedUserSkinType] = useState<string | undefined>(undefined);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -45,6 +46,7 @@ export const useSkincareAI = () => {
             id: Date.now().toString(),
             recommendation: recommendationData,
             isUser: false,
+            hasSubmittedFeedback: hasProvidedFeedback,
           },
         ]);
       } else {
@@ -114,6 +116,47 @@ export const useSkincareAI = () => {
     toast.info("Đã xóa tất cả bộ lọc!");
   };
 
+  const handleFeedbackSubmit = useCallback(
+    async (messageId: string, rating: number, comment?: string) => {
+      if (hasProvidedFeedback) {
+        toast.success("Cảm ơn bạn! Bạn đã hoàn tất đánh giá cho phiên này.");
+        return;
+      }
+
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === messageId ? { ...msg, isFeedbackSubmitting: true } : msg))
+      );
+
+      try {
+        await aiService.submitFeedback({
+          feature: "skincare_analysis",
+          rating,
+          comment,
+          interactionId: messageId,
+        });
+
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === messageId
+              ? { ...msg, isFeedbackSubmitting: false, hasSubmittedFeedback: true, rating, feedbackComment: comment }
+              : msg
+          )
+        );
+        setHasProvidedFeedback(true);
+
+        toast.success("Cảm ơn bạn đã đánh giá gợi ý của chúng tôi!");
+      } catch (error) {
+        setMessages((prev) =>
+          prev.map((msg) => (msg.id === messageId ? { ...msg, isFeedbackSubmitting: false } : msg))
+        );
+        const errorMessage =
+          error instanceof Error ? error.message : "Không thể gửi đánh giá ngay lúc này. Vui lòng thử lại.";
+        toast.error(errorMessage);
+      }
+    },
+    [hasProvidedFeedback]
+  );
+
   return {
     uploadedImageBase64,
     preference,
@@ -143,5 +186,6 @@ export const useSkincareAI = () => {
     handleImageRemove,
     handleSubmit,
     handleClearAllFilters,
+    handleFeedbackSubmit,
   };
 };

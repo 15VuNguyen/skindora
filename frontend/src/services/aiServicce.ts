@@ -2,6 +2,7 @@ import type { AllFilterOptions, SkinRecommendation, SkincareAdvisorRequestBody }
 import { apiClient } from "@/lib/apiClient";
 import { config } from "@/config/config";
 import { getAccessToken } from "@/utils/tokenManager";
+import type { AIFeedbackPayload, AIFeedbackSummary, AIExperienceFeature } from "@/types/ai";
 
 export const aiService = {
   getFilterOptions: async () => {
@@ -58,5 +59,22 @@ export const aiService = {
     }
 
     return response;
+  },
+
+  submitFeedback: async (payload: AIFeedbackPayload) => {
+    const result = await apiClient.post<{ message: string }, AIFeedbackPayload>("/ai/feedback", payload);
+    if (result.isErr()) {
+      throw result.error;
+    }
+    return result.value.data;
+  },
+
+  getFeedbackSummary: async (feature?: AIExperienceFeature) => {
+    const query = feature ? `?feature=${feature}` : "";
+    const result = await apiClient.get<AIFeedbackSummary | AIFeedbackSummary[]>(`/ai/feedback${query}`);
+    if (result.isErr()) {
+      throw result.error;
+    }
+    return result.value.data;
   },
 };

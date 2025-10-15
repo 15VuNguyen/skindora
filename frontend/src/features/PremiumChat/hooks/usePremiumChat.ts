@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Message } from "../types";
 import { aiService } from "@/services/aiServicce";
 import { logger } from "@/utils/logger";
+import { toast } from "sonner";
 
 interface ChatHistoryItem {
   role: string;
@@ -17,6 +18,7 @@ interface UsePremiumChatReturn {
   viewportRef: React.RefObject<HTMLDivElement | null>;
   setInput: (value: string) => void;
   handleSend: () => Promise<void>;
+  handleRateFeedback: (messageId: string, rating: number, comment?: string) => Promise<void>;
 }
 
 export const usePremiumChat = (): UsePremiumChatReturn => {
@@ -26,6 +28,7 @@ export const usePremiumChat = (): UsePremiumChatReturn => {
   const [currentMessage, setCurrentMessage] = useState<string>("");
   const viewportRef = useRef<HTMLDivElement>(null);
   const pendingAssistantMessageRef = useRef<string>("");
+  const [hasProvidedFeedback, setHasProvidedFeedback] = useState(false);
 
   const handleSend = useCallback(async () => {
     if (!input.trim()) return;
@@ -114,7 +117,12 @@ export const usePremiumChat = (): UsePremiumChatReturn => {
                   const finalMessage = pendingAssistantMessageRef.current;
                   setMessages((prev) => [
                     ...prev,
-                    { id: Date.now().toString(), text: finalMessage, isUser: false },
+                    {
+                      id: Date.now().toString(),
+                      text: finalMessage,
+                      isUser: false,
+                      hasSubmittedFeedback: hasProvidedFeedback,
+                    },
                   ]);
                   setCurrentMessage("");
                   pendingAssistantMessageRef.current = "";
@@ -138,7 +146,44 @@ export const usePremiumChat = (): UsePremiumChatReturn => {
       logger.error("❌ Error sending message:", error);
       setIsTyping(false);
     }
-  }, [input, messages]);
+  }, [input, messages, hasProvidedFeedback]);
+
+  const handleRateFeedback = useCallback(async (messageId: string, rating: number, comment?: string) => {
+    if (hasProvidedFeedback) {
+      toast.success("Bạn đã gửi đánh giá cho phiên tư vấn này rồi.");
+      return;
+    }
+
+    setMessages((prev) =>
+      prev.map((msg) => (msg.id === messageId ? { ...msg, isFeedbackSubmitting: true } : msg))
+    );
+
+    try {
+      await aiService.submitFeedback({
+        feature: "expert_chat",
+        rating,
+        comment,
+        interactionId: messageId,
+      });
+
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === messageId
+            ? { ...msg, isFeedbackSubmitting: false, hasSubmittedFeedback: true, rating, feedbackComment: comment }
+            : msg
+        )
+      );
+      setHasProvidedFeedback(true);
+      toast.success("Cảm ơn bạn đã đánh giá tư vấn của chuyên gia ảo!");
+    } catch (error) {
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === messageId ? { ...msg, isFeedbackSubmitting: false } : msg))
+      );
+      const errorMessage =
+        error instanceof Error ? error.message : "Không thể gửi đánh giá lúc này. Vui lòng thử lại.";
+      toast.error(errorMessage);
+    }
+  }, [hasProvidedFeedback]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -155,5 +200,6 @@ export const usePremiumChat = (): UsePremiumChatReturn => {
     viewportRef,
     setInput,
     handleSend,
+    handleRateFeedback,
   };
 };

@@ -47,6 +47,7 @@ const SkincareAI = () => {
     handleImageRemove,
     handleSubmit,
     handleClearAllFilters,
+    handleFeedbackSubmit,
   } = useSkincareAI();
   
   const navigate = useNavigate();
@@ -245,7 +246,13 @@ const handleApplyRoutine = (routineData: RoutineDetailsForSaving) => {
 
             {}
             <div className="lg:col-span-6 xl:col-span-8">
-              <ChatContainer messages={messages} isAnalyzing={isAnalyzing} onApplyRoutine={handleApplyRoutine} isAuthenticated={isAuthenticated}  />
+              <ChatContainer
+                messages={messages}
+                isAnalyzing={isAnalyzing}
+                onApplyRoutine={handleApplyRoutine}
+                isAuthenticated={isAuthenticated}
+                onRateFeedback={handleFeedbackSubmit}
+              />
             </div>
           </div>
         </div>

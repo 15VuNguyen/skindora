@@ -16,7 +16,8 @@ interface PremiumChatWidgetProps {
 }
 
 export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }) => {
-  const { messages, input, isTyping, currentMessage, viewportRef, setInput, handleSend } = usePremiumChat();
+  const { messages, input, isTyping, currentMessage, viewportRef, setInput, handleSend, handleRateFeedback } =
+    usePremiumChat();
 
   const handleSuggestionClick = useCallback(
     (suggestion: string) => {
@@ -28,7 +29,7 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="flex h-[92vh] flex-col overflow-hidden rounded-3xl border-0 bg-gradient-to-br from-white to-slate-50 p-0 shadow-2xl sm:max-w-3xl">
+      <DialogContent className="flex h-[92vh] max-h-[1440px] flex-col overflow-auto rounded-3xl border-0 bg-gradient-to-br from-white to-slate-50 p-0 shadow-2xl sm:max-w-3xl">
         <DialogHeader className="relative flex-shrink-0 border-b border-slate-200/80 bg-white/90 px-6 py-5">
           <div className="flex items-center gap-4">
             <Avatar className="border-primary/40 h-12 w-12 border-2 shadow-sm">
@@ -69,7 +70,7 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
         </DialogHeader>
 
         <div className="flex flex-1 flex-col overflow-hidden">
-          <ScrollArea className="flex-1 max-h-[60vh]" ref={viewportRef}>
+          <ScrollArea className="flex-1  overflow-auto" ref={viewportRef}>
             <div className="space-y-6 px-6 py-8">
               {messages.length === 0 && !isTyping && (
                 <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50/80 px-6 py-10 text-center text-slate-500">
@@ -93,7 +94,7 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
               )}
 
               {messages.map((msg) => (
-                <ChatMessage key={msg.id} message={msg} />
+                <ChatMessage key={msg.id} message={msg} onRateFeedback={handleRateFeedback} />
               ))}
               {isTyping && (
                 <div className="flex items-end justify-start gap-2">
@@ -105,7 +106,7 @@ export const PremiumChatWidget: React.FC<PremiumChatWidgetProps> = ({ children }
             </div>
           </ScrollArea>
 
-          <div className="border-t border-slate-200 bg-white/80 px-6 py-4 backdrop-blur">
+          <div className="border-t border-slate-200 bg-white px-6 py-4 shadow-inner">
             <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
               <span className="font-medium text-slate-600">Gợi ý nhanh:</span>
               {[

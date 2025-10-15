@@ -18,6 +18,10 @@ export type Message = {
   text?: string;
   product?: MockProductRecommendation;
   routine?: MockRoutine;
+  hasSubmittedFeedback?: boolean;
+  isFeedbackSubmitting?: boolean;
+  rating?: number;
+  feedbackComment?: string;
 };
 
 const conversationScript = {

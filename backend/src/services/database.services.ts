@@ -19,6 +19,7 @@ import Blog from '~/models/schemas/Blog.schema'
 import UserRoutine from '~/models/schemas/UserRoutine.schema'
 import AIUsage from '~/models/schemas/AIUsage.schema'
 import PostView from '~/models/schemas/PostView.schema'
+import AIFeedback from '~/models/schemas/AIFeedback.schema'
 
 config()
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@skindora.rbbhqia.mongodb.net/?retryWrites=true&w=majority&appName=skindora`
@@ -136,6 +137,9 @@ class DatabaseService {
 
   get aiUsages(): Collection<AIUsage> {
     return this.db.collection(process.env.DB_AI_USAGE_COLLECTION as string)
+  }
+  get aiFeedbacks(): Collection<AIFeedback> {
+    return this.db.collection(process.env.DB_AI_FEEDBACK_COLLECTION || 'ai_feedbacks')
   }
   get postViews(): Collection<PostView> {
     return this.db.collection(process.env.DB_POST_VIEWS_COLLECTION as string)

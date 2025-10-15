@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { SkincareAdvisorRequestBody } from '~/models/requests/Ai.requests'
+import { AIFeedbackFeature, CreateAIFeedbackBody, SkincareAdvisorRequestBody } from '~/models/requests/Ai.requests'
 import skincareAdvisorService from '~/services/ai.services'
 import { wrapAsync } from '~/utils/handler'
 import { geminiClient } from '~/constants/config'
@@ -8,6 +8,8 @@ import { Filter } from 'mongodb'
 import Product from '~/models/schemas/Product.schema'
 import { ProductState } from '~/constants/enums'
 import logger from '~/utils/logger'
+import aiFeedbackService from '~/services/aiFeedback.services'
+import { verifyToken } from '~/utils/jwt'
 
 export const skincareAdviceController = wrapAsync(
   async (req: Request<unknown, unknown, SkincareAdvisorRequestBody>, res: Response, next: NextFunction) => {
@@ -275,3 +277,53 @@ export const chatStreamController = async (req: Request, res: Response, next: Ne
     res.end()
   }
 }
+
+export const aiFeedbackController = wrapAsync(
+  async (req: Request<unknown, unknown, CreateAIFeedbackBody>, res: Response) => {
+    const { feature, rating, comment, interactionId } = req.body
+    let userId: string | undefined
+
+    const authHeader = req.headers.authorization
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1]
+      if (token && process.env.JWT_SECRET_ACCESS_TOKEN) {
+        try {
+          const decoded = await verifyToken({
+            token,
+            secretOrPublicKey: process.env.JWT_SECRET_ACCESS_TOKEN
+          })
+          userId = decoded.user_id
+        } catch (error) {
+          logger.warn({ error }, 'Failed to decode access token for AI feedback submission')
+        }
+      }
+    }
+
+    await aiFeedbackService.createFeedback({
+      feature,
+      rating,
+      comment,
+      interactionId,
+      userId
+    })
+
+    res.status(201).json({ message: 'Feedback submitted successfully' })
+  }
+)
+
+export const aiFeedbackSummaryController = wrapAsync(async (req: Request, res: Response) => {
+  const featureParam = (req.query.feature as string | undefined)?.trim()
+  let feature: AIFeedbackFeature | undefined
+
+  if (featureParam) {
+    if (featureParam === 'skincare_analysis' || featureParam === 'expert_chat') {
+      feature = featureParam
+    } else {
+      res.status(400).json({ message: 'feature must be either skincare_analysis or expert_chat' })
+      return
+    }
+  }
+
+  const summary = await aiFeedbackService.getFeedbackSummary(feature)
+  res.status(200).json(summary)
+})
