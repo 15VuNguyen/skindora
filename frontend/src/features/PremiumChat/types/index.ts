@@ -14,4 +14,8 @@ export interface Message {
     am: string[];
     pm: string[];
   };
+  hasSubmittedFeedback?: boolean;
+  isFeedbackSubmitting?: boolean;
+  rating?: number;
+  feedbackComment?: string;
 }

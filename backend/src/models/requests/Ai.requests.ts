@@ -15,3 +15,12 @@ export interface SkincareAdvisorRequestBody {
   userPreferredSkinType?: string;
   language?: LanguageOption;
 }
+
+export type AIFeedbackFeature = 'skincare_analysis' | 'expert_chat';
+
+export interface CreateAIFeedbackBody {
+  feature: AIFeedbackFeature;
+  rating: number;
+  comment?: string;
+  interactionId?: string;
+}

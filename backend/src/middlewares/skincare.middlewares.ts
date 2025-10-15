@@ -1,5 +1,6 @@
 import { checkSchema } from 'express-validator';
 import { validate } from '../utils/validation';
+import { AIFeedbackFeature } from '~/models/requests/Ai.requests';
 export const skincareAdviceValidator = validate(
     checkSchema({
         base64Image: {
@@ -69,6 +70,47 @@ export const skincareAdviceValidator = validate(
             in: ['body'],
             optional: true,
             isString: { errorMessage: 'language must be a string' }
+        }
+    })
+);
+
+const allowedFeatures: AIFeedbackFeature[] = ['skincare_analysis', 'expert_chat'];
+
+export const aiFeedbackValidator = validate(
+    checkSchema({
+        feature: {
+            in: ['body'],
+            notEmpty: { errorMessage: 'feature is required' },
+            isIn: {
+                options: [allowedFeatures],
+                errorMessage: 'feature must be one of skincare_analysis or expert_chat'
+            }
+        },
+        rating: {
+            in: ['body'],
+            notEmpty: { errorMessage: 'rating is required' },
+            isInt: {
+                options: { min: 1, max: 5 },
+                errorMessage: 'rating must be an integer between 1 and 5'
+            }
+        },
+        comment: {
+            in: ['body'],
+            optional: true,
+            isString: { errorMessage: 'comment must be a string' },
+            isLength: {
+                options: { max: 500 },
+                errorMessage: 'comment must be at most 500 characters long'
+            }
+        },
+        interactionId: {
+            in: ['body'],
+            optional: true,
+            isString: { errorMessage: 'interactionId must be a string' },
+            isLength: {
+                options: { max: 100 },
+                errorMessage: 'interactionId must be at most 100 characters long'
+            }
         }
     })
 );

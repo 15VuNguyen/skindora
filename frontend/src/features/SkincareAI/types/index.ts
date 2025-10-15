@@ -62,6 +62,10 @@ export type Message = {
   recommendation?: SkinRecommendation;
   isUser: boolean;
   imageUrl?: string;
+  hasSubmittedFeedback?: boolean;
+  isFeedbackSubmitting?: boolean;
+  rating?: number;
+  feedbackComment?: string;
 };
 
 export type Preference = "AM" | "PM" | "AM/PM";

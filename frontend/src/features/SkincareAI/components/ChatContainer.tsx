@@ -8,11 +8,12 @@ import ChatMessage from "./ChatMessage";
 interface ChatContainerProps {
   messages: Message[];
   isAnalyzing: boolean;
-  onApplyRoutine: (routineData: RoutineDetailsForSaving) => void; 
-    isAuthenticated: boolean; 
+  onApplyRoutine: (routineData: RoutineDetailsForSaving) => void;
+  isAuthenticated: boolean;
+  onRateFeedback: (messageId: string, rating: number, comment?: string) => void | Promise<void>;
 }
 
-const ChatContainer = ({ messages, isAnalyzing, onApplyRoutine, isAuthenticated }: ChatContainerProps) => {
+const ChatContainer = ({ messages, isAnalyzing, onApplyRoutine, isAuthenticated, onRateFeedback }: ChatContainerProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContentRef = useRef<HTMLDivElement>(null);
 
@@ -62,7 +63,13 @@ const ChatContainer = ({ messages, isAnalyzing, onApplyRoutine, isAuthenticated 
             {messages.length > 0 ? (
               <>
                 {messages.map((msg, index) => (
-                  <ChatMessage key={msg.id || index} message={msg}  onApplyRoutine={onApplyRoutine}  isAuthenticated={isAuthenticated}  />
+                  <ChatMessage
+                    key={msg.id || index}
+                    message={msg}
+                    onApplyRoutine={onApplyRoutine}
+                    isAuthenticated={isAuthenticated}
+                    onRateFeedback={onRateFeedback}
+                  />
                 ))}
                 <div ref={messagesEndRef} />
               </>
