@@ -729,6 +729,35 @@ class OrdersService {
       await session.endSession()
     }
   }
+
+  async moveToNextStatus({ order, nextStatus }: { order: Order; nextStatus: OrderStatus }) {
+    const now = getLocalTime()
+    const updatedData: any = {
+      Status: nextStatus
+    }
+
+    if (nextStatus === OrderStatus.DELIVERED && order.PaymentStatus === PaymentStatus.UNPAID) {
+      updatedData.PaymentStatus = PaymentStatus.PAID
+    }
+    const result = await databaseService.orders.findOneAndUpdate(
+      { _id: order?._id },
+      { $set: { ...updatedData, updatedAt: now } },
+      { returnDocument: 'after' }
+    )
+    if (!result) {
+      throw new ErrorWithStatus({
+        message: ORDER_MESSAGES.UPDATE_TO_NEXT_STATUS_FAIL,
+        status: HTTP_STATUS.BAD_REQUEST
+      })
+    }
+    const { _id, ...rest } = result
+    return {
+      orderId: _id,
+      previousStatus: order?.Status,
+      updatedStatus: nextStatus,
+      ...rest
+    }
+  }
 }
 
 const ordersService = new OrdersService()
