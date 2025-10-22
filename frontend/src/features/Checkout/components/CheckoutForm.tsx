@@ -6,6 +6,7 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -43,6 +44,23 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
                       placeholder="Nhập địa chỉ đầy đủ (số nhà, đường, thành phố)"
                       {...field}
                       className="min-h-[80px]"
+                    />
+                    {fieldState.error && <p className="text-destructive mt-1 text-sm">{fieldState.error.message}</p>}
+                  </>
+                )}
+              />
+            </div>
+            <div className="space-y-5">
+              <Label htmlFor="phoneNumber">Số điện thoại</Label>
+              <Controller
+                name="PhoneNumber"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <>
+                    <Input
+                      id="phoneNumber"
+                      placeholder="Nhập số điện thoại (không bắt buộc)"
+                      {...field}
                     />
                     {fieldState.error && <p className="text-destructive mt-1 text-sm">{fieldState.error.message}</p>}
                   </>
