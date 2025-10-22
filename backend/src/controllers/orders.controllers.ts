@@ -236,21 +236,14 @@ export const getAllOrdersByUserIdController = async (
 
 export const moveToNextStatusController = async (req: Request<OrderParams>, res: Response) => {
   try {
-    const order = req.order
-    const nextStatus = getNextOrderStatus(order?.Status!)
+    const order = req.order as Order
+    const nextStatus = getNextOrderStatus(order?.Status!) as OrderStatus
 
-    await databaseService.orders.updateOne(
-      { _id: order?._id },
-      { $set: { Status: nextStatus!, updatedAt: new Date() } }
-    )
+    const result = await ordersService.moveToNextStatus({order, nextStatus})
 
     res.status(200).json({
       message: ORDER_MESSAGES.UPDATE_TO_NEXT_STATUS_SUCCESS,
-      result: {
-        orderId: order?._id,
-        previousStatus: order?.Status,
-        updatedStatus: nextStatus
-      }
+      result
     })
   } catch (error) {
     const statusCode = error instanceof ErrorWithStatus ? error.status : 500
