@@ -194,7 +194,12 @@ class BlogService {
             const result = results[i]
             const count = parseInt(result !== null && result !== undefined ? String(result) : '0', 10)
             if (count > 0) {
-              const postId = new ObjectId(key.split(':')[1])
+              const postIdStr = key.split(':')[1]
+              if (!ObjectId.isValid(postIdStr)) {
+                console.warn(`[CronJob] Skipping invalid postId: ${postIdStr} from key: ${key}`)
+                return
+              }
+              const postId = new ObjectId(postIdStr)
               const today = getVnMidnight()
 
               await databaseService.postViews.updateOne(

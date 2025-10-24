@@ -48,6 +48,8 @@ class SkincareAdvisorService {
   }
 
   private async _fetchAndPopulateProductsNative(conditions: any): Promise<MongoProduct[]> {
+    logger.info(`[AI Service] Executing MongoDB aggregation pipeline...`)
+    const aggregationStart = Date.now()
     const pipeline = [
       { $match: conditions },
       { $limit: 200 },
@@ -126,7 +128,10 @@ class SkincareAdvisorService {
         }
       }
     ]
-    return (await databaseService.products.aggregate(pipeline).toArray()) as MongoProduct[]
+    const result = (await databaseService.products.aggregate(pipeline).toArray()) as MongoProduct[]
+    const aggregationEnd = Date.now()
+    logger.info(`[AI Service] Aggregation completed in ${aggregationEnd - aggregationStart}ms. Fetched ${result.length} products.`)
+    return result
   }
 
   public async generateRoutine(request: SkincareAdvisorRequestBody) {
@@ -158,6 +163,8 @@ class SkincareAdvisorService {
     const { diagnosedSkinConcerns: diagnosedSkinConcernsList = [], generalObservations = [] } = diagnosisResult
 
     const filterSuggestionPrompt = createFilterSuggestionPrompt(diagnosedSkinConcernsList, generalObservations)
+    logger.info(`[AI Service] Filter suggestion completed. Proceeding to product fetch.`)
+    const startFetch = Date.now()
     const aiFilterCriteria: AiSuggestedFilterCriteria = await getAICompletion(filterSuggestionPrompt, MODEL_NAME, true)
 
     const toObjectIds = (ids: (string | null)[]) => ids.filter(Boolean).map((id) => new ObjectId(id!))
@@ -176,7 +183,10 @@ class SkincareAdvisorService {
     if (ingredientIds.length > 0) conditions.filter_hsk_ingredient = { $in: toObjectIds(ingredientIds) }
     if (request.preferredOrigins?.length) conditions.filter_origin = { $in: request.preferredOrigins }
 
+    logger.info(`[AI Service] Starting product fetch with conditions: ${JSON.stringify(conditions)}`)
     const fetchedMongoProducts = await this._fetchAndPopulateProductsNative(conditions)
+    const fetchEnd = Date.now()
+    logger.info(`[AI Service] Product fetch completed in ${fetchEnd - startFetch}ms. Total products: ${fetchedMongoProducts.length}`)
 
     let priceFilteredProducts = fetchedMongoProducts.filter(
       (p) => parseInt(p.price_on_list.replace(/\D/g, '')) <= userBudgetVND
@@ -186,6 +196,7 @@ class SkincareAdvisorService {
 
     const productsFromDB = priceFilteredProducts.map((p) => transformMongoToAISchema(p, primaryConcern))
 
+    logger.info(`[AI Service] Applying client-side filters to ${priceFilteredProducts.length} products...`)
     let candidateProducts = applyClientSideFilters(
       productsFromDB,
       { preferredIngredients: request.preferredIngredients },
@@ -193,7 +204,7 @@ class SkincareAdvisorService {
     )
     if (candidateProducts.length === 0)
       return { info: 'No products remained after applying complementary filters.', status: 200 }
-    candidateProducts = candidateProducts.slice(0, 50)
+    candidateProducts = candidateProducts.slice(0, 20)
 
     const productSummaries = candidateProducts.map((p) => ({
       name: p.name,
