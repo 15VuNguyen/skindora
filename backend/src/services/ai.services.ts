@@ -50,7 +50,7 @@ class SkincareAdvisorService {
   private async _fetchAndPopulateProductsNative(conditions: any): Promise<MongoProduct[]> {
     const pipeline = [
       { $match: conditions },
-      { $limit: 1500 },
+      { $limit: 200 },
       { $lookup: { from: 'filter_brand', localField: 'filter_brand', foreignField: '_id', as: 'populated_brand' } },
       {
         $lookup: {
