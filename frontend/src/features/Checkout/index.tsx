@@ -18,7 +18,7 @@ import { CheckoutOrderSummary } from "./components/CheckoutOrderSummary";
 
 const checkoutFormSchema = z.object({
   ShipAddress: z.string().min(10, { message: "Shipping address must be at least 10 characters." }),
-  PhoneNumber: z.string().optional(),
+  PhoneNumber: z.string().min(1, { message: "Phone number is required." }),
   Description: z.string().optional(),
   RequireDate: z.date({ required_error: "A delivery date is required." }),
   PaymentMethod: z.enum(["COD", "ZALOPAY", "VNPAY"], { required_error: "Please select a payment method." }),

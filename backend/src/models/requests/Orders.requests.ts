@@ -6,7 +6,7 @@ import { VoucherSnapshot } from '../schemas/Orders/Order.schema';
 
 export interface OrderReqBody {
   RecipientName?: string
-  PhoneNumber?: string
+  PhoneNumber: string
   ShipAddress: string
   Description?: string
   RequireDate?: string

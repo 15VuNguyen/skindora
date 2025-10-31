@@ -51,7 +51,7 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
               />
             </div>
             <div className="space-y-5">
-              <Label htmlFor="phoneNumber">Số điện thoại</Label>
+              <Label htmlFor="phoneNumber">Số điện thoại *</Label>
               <Controller
                 name="PhoneNumber"
                 control={form.control}
@@ -59,7 +59,7 @@ export function CheckoutForm({ form, onSubmit, isSubmitting }: CheckoutFormProps
                   <>
                     <Input
                       id="phoneNumber"
-                      placeholder="Nhập số điện thoại (không bắt buộc)"
+                      placeholder="Nhập số điện thoại"
                       {...field}
                     />
                     {fieldState.error && <p className="text-destructive mt-1 text-sm">{fieldState.error.message}</p>}

@@ -1,4 +1,3 @@
-import { ArrowRight } from "lucide-react";
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.svg";
@@ -42,10 +41,6 @@ export default function Footer() {
     { text: "Facebook", href: "https://facebook.com" },
   ];
 
-  const handleSubscribe = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Subscribed with email:", e.currentTarget.email.value);
-  };
 
   return (
     <footer className="bg-[#F0F8FF] text-sm">
@@ -63,26 +58,6 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="md:col-span-6 lg:col-span-4 lg:ml-auto">
-            <h3 className="text-lg font-semibold text-blue-600">Unlock Your Welcome Offer</h3>
-            <p className="mt-1 mb-4 text-gray-600">Sign up for email and save 10% on your first buy</p>
-            <form onSubmit={handleSubscribe} className="relative max-w-sm">
-              <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                required
-                className="h-12 w-full rounded-full border border-blue-300 bg-white px-6 pr-14 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500"
-              />
-              <button
-                type="submit"
-                aria-label="Subscribe"
-                className="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-blue-50 p-2 text-blue-600 transition-colors hover:bg-blue-100"
-              >
-                <ArrowRight className="h-5 w-5" />
-              </button>
-            </form>
-          </div>
         </div>
       </div>
 
