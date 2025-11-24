@@ -16,7 +16,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 export interface FilterOptionsProps {
   value: string;
-  status?: "SHIPPING" | "CANCELLED" | "DELIVERED" | "PROCESSING" | "ALL" | "CONFIRMED" | "PENDING";
+  status?:
+    | "SHIPPING"
+    | "CANCELLED"
+    | "DELIVERED"
+    | "PROCESSING"
+    | "ALL"
+    | "CONFIRMED"
+    | "PENDING"
+    | "RETURNED"
+    | "FAILED";
   label?:
     | "Đang giao"
     | "Đã hủy"
@@ -28,7 +37,9 @@ export interface FilterOptionsProps {
     | "Chờ xử lý"
     | "Đã xác nhận"
     | "Đang vận chuyển"
-    | "Đã giao hàng";
+    | "Đã giao hàng"
+    | "Trả hàng"
+    | "Thất bại";
 }
 
 interface DataTableProps<TData, TValue> {
@@ -82,6 +93,10 @@ export function DataTable<TData, TValue>({
     switch (status) {
       case "CANCELLED":
         return "destructive";
+      case "RETURNED":
+        return "return";
+      case "FAILED":
+        return "failed";
       case "DELIVERED":
         return "complete";
       case "SHIPPING":
@@ -120,7 +135,7 @@ export function DataTable<TData, TValue>({
           {filterOptions?.map((option) => {
             const handleClick = () => {
               if (callBackFunction) {
-                callBackFunction(option.status as any);
+                callBackFunction(option.status as unknown as FilterOptionsProps["status"]);
               }
             };
             return (

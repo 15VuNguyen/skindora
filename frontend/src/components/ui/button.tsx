@@ -2,7 +2,13 @@ import { Slot } from "@radix-ui/react-slot";
 import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
 
+
+
 import { cn } from "@/lib/utils";
+
+
+
+
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap  rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
@@ -18,11 +24,13 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/90 cursor-pointer",
         link: "text-primary underline-offset-4 hover:underline",
         complete: "bg-emerald-500 text-white hover:bg-emerald-600 cursor-pointer",
+        failed: "bg-gray-500 text-white hover:bg-gray-600 cursor-pointer",
 
         pending: "bg-amber-500 text-white hover:bg-amber-600 cursor-pointer",
         confirmed: "bg-green-600 text-white hover:bg-green-700",
         processing: "bg-blue-600 text-white hover:bg-blue-700 cursor-pointer",
         shipping: "bg-cyan-500 text-white hover:bg-cyan-600 cursor-pointer",
+        return: "bg-red-500 text-white hover:bg-red-600 cursor-pointer",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",
