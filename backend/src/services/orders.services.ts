@@ -641,11 +641,16 @@ class OrdersService {
       return acc
     }, {})
 
+    const fullStatusCounts = Object.keys(OrderStatus).reduce((acc, status) => {
+    acc[status] = countsByStatus[status] ?? 0
+    return acc
+  }, {} as Record<string, number>)
+
     const total = orders.reduce((sum, cur) => sum + cur.count, 0)
 
     return {
       total,
-      statusCounts: countsByStatus
+      statusCounts: fullStatusCounts
     }
   }
 

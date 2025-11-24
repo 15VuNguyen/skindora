@@ -17,7 +17,7 @@ export const sendPaginatedResponse = async <T extends Document>(
   collection: Collection<T>,
   query: Request['query'],
   filter: Filter<T> = {},
-  projection: Projection = {}
+  projection: Projection = {},
 ) => {
   try {
     const page = parseInt(query.page as string) || 1
@@ -75,3 +75,53 @@ export const sendPaginatedResponseFromRedis = <T>(
     next(error)
   }
 }
+
+export const sendPaginatedWithExtraPinelineResponse = async <T extends Document>(
+  res: Response,
+  next: NextFunction,
+  collection: Collection<T>,
+  query: Request['query'],
+  filter: Filter<T> = {},
+  projection: Projection = {},
+  extraPipeline: any[] = []
+) => {
+  try {
+    const page = parseInt(query.page as string) || 1
+    const limit = parseInt(query.limit as string) || 10
+    const skip = (page - 1) * limit
+
+    const pipeline: any[] = [
+      { $match: filter },
+      { $sort: { created_at: -1 } },
+      { $skip: skip },
+      { $limit: limit },
+      ...extraPipeline
+    ]
+
+    if (projection && Object.keys(projection).length > 0) {
+      pipeline.push({ $project: projection })
+    }
+
+    const [totalRecords, data] = await Promise.all([
+      collection.countDocuments(filter),
+      collection.aggregate(pipeline).toArray()
+    ])
+
+    const totalPages = Math.ceil(totalRecords / limit)
+
+    const responseBody: IResponseSearch<any> = {
+      data,
+      pagination: {
+        limit,
+        currentPage: page,
+        totalPages,
+        totalRecords
+      }
+    }
+
+    return res.status(200).json(responseBody)
+  } catch (error) {
+    next(error)
+  }
+}
+
