@@ -4,7 +4,7 @@ import { Filter, ObjectId } from 'mongodb'
 import { ADMIN_MESSAGES, BLOG_MESSAGES } from '~/constants/messages'
 import { blogService } from '~/services/blog.services'
 import databaseService from '~/services/database.services'
-import { sendPaginatedResponse } from '~/utils/pagination.helper'
+import { sendPaginatedResponse, sendPaginatedWithExtraPinelineResponse } from '~/utils/pagination.helper'
 import {
   CreateNewPostReqBody,
   PostByIdParam,
@@ -78,6 +78,24 @@ export const getAllPostsController = async (req: Request, res: Response, next: N
       ...filterFields.map(buildFilterLookup),
 
       {
+        $lookup: {
+          from: 'post_views',
+          localField: '_id',
+          foreignField: 'postId',
+          as: 'viewsData'
+        }
+      },
+      {
+        $addFields: {
+          totalViews: { $sum: '$viewsData.views' }
+        }
+      },
+      {
+        $project: {
+          viewsData: 0
+        }
+      },
+      {
         $project: {
           authorId: 0,
           'author.password': 0,
@@ -117,7 +135,24 @@ export const getAllPublishPostsController = async (req: Request, res: Response, 
     ]
   }
 
-  await sendPaginatedResponse(res, next, databaseService.posts, req.query, filter)
+  const viewPipeline = [
+    {
+      $lookup: {
+        from: 'post_views',
+        localField: '_id',
+        foreignField: 'postId',
+        as: 'viewsData'
+      }
+    },
+    {
+      $addFields: {
+        totalViews: { $sum: '$viewsData.views' }
+      }
+    },
+    { $project: { viewsData: 0 } }
+  ]
+
+  await sendPaginatedWithExtraPinelineResponse(res, next, databaseService.posts, req.query, filter, {}, viewPipeline)
 }
 
 function buildPostFilter(req: Request, forceStatus?: PostState): Filter<Post> {
@@ -246,7 +281,6 @@ export const getPostViewsByDateController = async (req: Request, res: Response) 
     result
   })
 }
-
 
 export const getTopViewedPostsController = async (req: Request, res: Response) => {
   const startDate = req.query.startDate as string | undefined
