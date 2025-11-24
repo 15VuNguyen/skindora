@@ -11,6 +11,8 @@ export interface OrderStatics {
     CANCELLED: number | string;
     SHIPPING: number | string;
     CONFIRMED: number | string;
+    PROCESSING: number | string;
+    FAILED: number | string;
   };
 }
 export const useFetchOrderStatics = () => {

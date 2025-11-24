@@ -164,18 +164,6 @@ export const postStaffColumns: ColumnDef<Post>[] = [
       return value.includes(row.getValue(id));
     },
   },
-
-  // Cột Tác giả
-  {
-    accessorKey: "authorId",
-    header: "Tác giả",
-    cell: ({ row }) => {
-      const authorId = row.getValue("authorId") as string;
-      return <div className="font-medium">{authorId ? `ID: ${authorId.substring(0, 8)}...` : "N/A"}</div>;
-    },
-  },
-
-  // Cột Ngày xuất bản
   {
     accessorKey: "publishedAt",
     header: ({ column }) => (
