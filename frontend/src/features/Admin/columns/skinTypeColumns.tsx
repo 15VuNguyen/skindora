@@ -108,7 +108,7 @@ export const skinTypeColumn = (refetchData: () => void): ColumnDef<SkinType>[] =
     accessorKey: "_id",
     header: ({ column }) => (
       <ShadcnButton variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        ID
+        Mã loại da
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),
@@ -124,7 +124,7 @@ export const skinTypeColumn = (refetchData: () => void): ColumnDef<SkinType>[] =
     accessorKey: "option_name",
     header: ({ column }) => (
       <ShadcnButton variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Tên Loại da
+        Tên loại da
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),

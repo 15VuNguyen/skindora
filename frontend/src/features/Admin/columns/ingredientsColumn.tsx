@@ -106,7 +106,7 @@ export const ingredientColumn = (refetchData: () => void): ColumnDef<Ingredient>
     accessorKey: "_id",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        ID
+        Mã thành phần
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -121,7 +121,7 @@ export const ingredientColumn = (refetchData: () => void): ColumnDef<Ingredient>
     accessorKey: "option_name",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Tên Ingredient
+        Tên thành phần
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),

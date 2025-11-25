@@ -110,7 +110,7 @@ export const productTypeColumn = (refetchData: () => void): ColumnDef<ProductTyp
     accessorKey: "_id",
     header: ({ column }) => (
       <ShadcnButton variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        ID
+        Mã loại sản phẩm
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),
@@ -125,7 +125,7 @@ export const productTypeColumn = (refetchData: () => void): ColumnDef<ProductTyp
     accessorKey: "option_name",
     header: ({ column }) => (
       <ShadcnButton variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Tên Loại sản phẩm
+        Tên loại sản phẩm
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),

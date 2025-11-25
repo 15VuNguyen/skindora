@@ -110,7 +110,7 @@ export const vouchersColumns = (refetchData: () => void): ColumnDef<Voucher>[] =
     accessorKey: "code",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Mã Voucher <ArrowUpDown className="ml-2 h-4 w-4" />
+        Ký hiệu Voucher <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
