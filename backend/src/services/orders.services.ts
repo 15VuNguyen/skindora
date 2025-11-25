@@ -746,7 +746,7 @@ class OrdersService {
     }
     const result = await databaseService.orders.findOneAndUpdate(
       { _id: order?._id },
-      { $set: { ...updatedData, updatedAt: now } },
+      { $set: { ...updatedData, updated_at: now } },
       { returnDocument: 'after' }
     )
     if (!result) {
