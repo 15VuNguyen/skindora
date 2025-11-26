@@ -106,7 +106,7 @@ export const originColumn = (refetchData: () => void): ColumnDef<Origin>[] => [
     accessorKey: "_id",
     header: ({ column }) => (
       <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Mã Đơn Hàng <ArrowUpDown className="ml-2 h-4 w-4" />
+        Mã xuất xứ <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
@@ -120,7 +120,7 @@ export const originColumn = (refetchData: () => void): ColumnDef<Origin>[] => [
     accessorKey: "option_name",
     header: ({ column }) => (
       <ShadcnButton variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Tên Xuất xứ
+        Tên xuất xứ
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),

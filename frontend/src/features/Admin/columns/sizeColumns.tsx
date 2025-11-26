@@ -114,7 +114,7 @@ export const sizeColumn = (refetchData: () => void): ColumnDef<Size>[] => [
     accessorKey: "_id",
     header: ({ column }) => (
       <ShadcnButton variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        ID
+        Mã kích thước
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),
@@ -129,7 +129,7 @@ export const sizeColumn = (refetchData: () => void): ColumnDef<Size>[] => [
     accessorKey: "option_name",
     header: ({ column }) => (
       <ShadcnButton variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Tên Kích thước
+        Tên kích thước
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </ShadcnButton>
     ),
