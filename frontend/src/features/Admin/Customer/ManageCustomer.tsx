@@ -108,7 +108,7 @@ const ManageCustomer: React.FC = () => {
                     footerDescription="Dữ liệu cập nhật hàng ngày"
                   />
                 </div>
-                <div className="w-5/5">
+                <div className="w-full">
                   <ChartRadialText
                     title="Tài khoản đã verified"
                     description=""
@@ -118,12 +118,12 @@ const ManageCustomer: React.FC = () => {
                   />
                 </div>
               </div>{" "}
-              <div className="w-5/5">
+              {/* <div className="w-full">
                 <UserChart data={monthlyUserData} />
-              </div>
+              </div> */}
               <div className="mb-8 gap-2">
-                <div className="mt-3 w-5/5">
-                  <Card className="w-5/5">
+                <div className="mt-3 w-full">
+                  <Card className="w-full">
                     <div className="p-3">
                       <DataTable columns={userColumn} data={data} filterPlaceholder="Tìm khách hàng" />
                       <div className="mt-4">

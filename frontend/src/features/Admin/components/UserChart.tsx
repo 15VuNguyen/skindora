@@ -1,5 +1,3 @@
-
-
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,7 +30,7 @@ export const UserChart: React.FC<UserChartProps> = ({ data }) => {
               axisLine={false}
               tickFormatter={(value) => `${value}`}
             />
-            <Bar dataKey="total" fill="currentColor" radius={[4, 4, 0, 0]} className="fill-primary" />
+            <Bar dataKey="total" fill="currentColor" radius={[4, 4, 0, 0]} className="fill-primary" maxBarSize={80} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
