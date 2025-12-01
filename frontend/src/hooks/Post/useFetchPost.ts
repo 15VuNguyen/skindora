@@ -1,7 +1,16 @@
 import { useCallback, useState } from "react";
 
-import { fetchAllPostForStaffAdmin } from "@/api/post";
+import {
+  fetchAllPostForStaffAdmin,
+  fetchOverview,
+  fetchPostStats,
+  fetchPostViewGrowth,
+  fetchPostViewTop,
+} from "@/api/post";
+import type { PostStats, PostViewGrowth, PostViewTop } from "@/api/post";
 import type { Post } from "@/types/post";
+
+import type { OverviewPosts } from "./useFetchPostForUser";
 
 export interface filterProps {
   filter_brand?: string[];
@@ -15,6 +24,10 @@ export interface filterProps {
 }
 export const useFetchPost = () => {
   const [loading, setLoading] = useState<boolean>(true);
+  const [overview, setOverview] = useState<OverviewPosts>({} as OverviewPosts);
+  const [stats, setStats] = useState<PostStats | null>(null);
+  const [topViews, setTopViews] = useState<PostViewTop[]>([]);
+  const [growth, setGrowth] = useState<PostViewGrowth[]>([]);
   const [data, setData] = useState<Post[]>([]);
   const [params, setParams] = useState({
     limit: 10,
@@ -94,7 +107,44 @@ export const useFetchPost = () => {
       setLoading(false);
     }
   }, [params.limit, params.page, params.status, params.keyword, params.filters]);
+  const fetchOverviewPost = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchOverview();
+      setOverview(response);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
+  const fetchStatsData = useCallback(async () => {
+    try {
+      const response = await fetchPostStats();
+      setStats(response);
+    } catch (error) {
+      console.error("Error fetching post stats:", error);
+    }
+  }, []);
+
+  const fetchTopViewsData = useCallback(async () => {
+    try {
+      const response = await fetchPostViewTop();
+      setTopViews(response);
+    } catch (error) {
+      console.error("Error fetching top views:", error);
+    }
+  }, []);
+
+  const fetchGrowthData = useCallback(async () => {
+    try {
+      const response = await fetchPostViewGrowth();
+      setGrowth(response);
+    } catch (error) {
+      console.error("Error fetching growth data:", error);
+    }
+  }, []);
   return {
     loading,
     data,
@@ -108,5 +158,13 @@ export const useFetchPost = () => {
     addFilterValue,
     changeFilter,
     removeFilterValue,
+    fetchOverviewPost,
+    overview,
+    stats,
+    topViews,
+    growth,
+    fetchStatsData,
+    fetchTopViewsData,
+    fetchGrowthData,
   };
 };
