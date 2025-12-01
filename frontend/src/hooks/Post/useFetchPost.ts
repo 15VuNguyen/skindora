@@ -1,7 +1,9 @@
 import { useCallback, useState } from "react";
 
-import { fetchAllPostForStaffAdmin } from "@/api/post";
+import { fetchAllPostForStaffAdmin, fetchOverview } from "@/api/post";
 import type { Post } from "@/types/post";
+
+import type { OverviewPosts } from "./useFetchPostForUser";
 
 export interface filterProps {
   filter_brand?: string[];
@@ -15,6 +17,7 @@ export interface filterProps {
 }
 export const useFetchPost = () => {
   const [loading, setLoading] = useState<boolean>(true);
+  const [overview, setOverview] = useState<OverviewPosts>({} as OverviewPosts);
   const [data, setData] = useState<Post[]>([]);
   const [params, setParams] = useState({
     limit: 10,
@@ -94,7 +97,17 @@ export const useFetchPost = () => {
       setLoading(false);
     }
   }, [params.limit, params.page, params.status, params.keyword, params.filters]);
-
+  const fetchOverviewPost = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetchOverview();
+      setOverview(response);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
   return {
     loading,
     data,
@@ -108,5 +121,7 @@ export const useFetchPost = () => {
     addFilterValue,
     changeFilter,
     removeFilterValue,
+    fetchOverviewPost,
+    overview,
   };
 };

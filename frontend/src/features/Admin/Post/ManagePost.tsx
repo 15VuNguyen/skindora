@@ -49,6 +49,8 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
     changeKeyword,
     addFilterValue,
     removeFilterValue,
+    fetchOverviewPost,
+    overview,
   } = useFetchPost();
   const { data: filterData, fetchFilter } = useFetchAllFilter();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -65,7 +67,9 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
   useEffect(() => {
     fetchListPost();
   }, [params.page, params.limit, params.status, fetchListPost, params.keyword, params.filters]);
-
+  useEffect(() => {
+    fetchOverviewPost();
+  }, [fetchOverviewPost]);
   useEffect(() => {
     fetchFilter();
   }, [fetchFilter]);
@@ -178,10 +182,6 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
     }
   };
 
-  const totalPosts = data.length;
-  const publishedPosts = data.filter((post) => post.status.toUpperCase() === "PUBLISHED").length;
-  const draftPosts = data.filter((post) => post.status.toUpperCase() === "DRAFT").length;
-
   return (
     <div className="flex-1 space-y-6 p-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -221,7 +221,7 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
             <FileText className="text-muted-foreground h-4 w-4" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalPosts}</div>
+            <div className="text-2xl font-bold">{overview.totalPosts}</div>
             <p className="text-muted-foreground text-xs">Tất cả bài viết trong hệ thống</p>
           </CardContent>
         </Card>
@@ -232,7 +232,7 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
             <Eye className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">{publishedPosts}</div>
+            <div className="text-2xl font-bold text-green-600">{overview.publishedPosts}</div>
             <p className="text-muted-foreground text-xs">Bài viết đang hiển thị công khai</p>
           </CardContent>
         </Card>
@@ -243,7 +243,7 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
             <Settings className="h-4 w-4 text-yellow-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">{draftPosts}</div>
+            <div className="text-2xl font-bold text-yellow-600">{overview.draftPosts}</div>
             <p className="text-muted-foreground text-xs">Bài viết chưa hoàn thành</p>
           </CardContent>
         </Card>

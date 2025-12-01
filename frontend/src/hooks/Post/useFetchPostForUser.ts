@@ -13,6 +13,11 @@ export interface filterProps {
   filter_hsk_product_type?: string[];
   filter_origin?: string[];
 }
+export interface OverviewPosts {
+  totalPosts: number;
+  publishedPosts: number;
+  draftPosts: number;
+}
 export const useFetchPostForUser = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [data, setData] = useState<PostUser[]>([]);
@@ -98,7 +103,6 @@ export const useFetchPostForUser = () => {
       setLoading(false);
     }
   }, [params.limit, params.page, params.status, params.keyword, params.filters]);
-
   return {
     loading,
     data,

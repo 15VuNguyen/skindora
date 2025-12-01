@@ -1,3 +1,4 @@
+import type { OverviewPosts } from "@/hooks/Post/useFetchPostForUser";
 import httpClient from "@/lib/axios";
 import type { Post, PostUser } from "@/types/post";
 
@@ -91,4 +92,7 @@ export const fetchAllPostForUser = async (params: FetchAllPostProps) => {
   return await httpClient
     .post<API.IResponseSearch<PostUser>>(`/users/posts?${queryParams.toString()}`, requestBody)
     .then((response) => response.data);
+};
+export const fetchOverview = async () => {
+  return await httpClient.get<API.IResponse<OverviewPosts>>(`/posts/overview`).then((response) => response.data.result);
 };
