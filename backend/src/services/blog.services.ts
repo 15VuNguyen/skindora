@@ -296,7 +296,7 @@ class BlogService {
             views: { $sum: '$views' }
           }
         },
-        { $sort: { _id: 1 } }
+        { $sort: { _id: -1 } }
       ])
       .toArray()
 
