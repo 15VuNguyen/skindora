@@ -37,7 +37,6 @@ const ManageOrdersPage: React.FC = () => {
     { value: "shipping", status: "SHIPPING" as const, label: "Đang vận chuyển" },
     { value: "delivered", status: "DELIVERED" as const, label: "Đã giao hàng" },
     { value: "cancelled", status: "CANCELLED" as const, label: "Đã hủy" },
-    { value: "returned", status: "RETURNED" as const, label: "Trả hàng" },
     { value: "failed", status: "FAILED" as const, label: "Thất bại" },
   ];
 
@@ -131,17 +130,6 @@ const ManageOrdersPage: React.FC = () => {
                 <div>
                   <p className="text-sm font-medium text-green-100">Đang chuẩn bị</p>
                   <p className="text-3xl font-bold">{orderStatics?.statusCounts.PROCESSING || 0}</p>
-                </div>
-                <Package className="h-8 w-8 text-green-200" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-red-500 from-green-500 to-green-600 text-white shadow-md">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-green-100">Trả hàng</p>
-                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.RETURNED || 0}</p>
                 </div>
                 <Package className="h-8 w-8 text-green-200" />
               </div>

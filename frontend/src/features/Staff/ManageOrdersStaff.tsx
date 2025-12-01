@@ -32,11 +32,13 @@ const ManageOrdersStaff: React.FC = () => {
 
   const filterOptions: FilterOptionsProps[] = [
     { value: "", status: "ALL" as const, label: "Tất cả" },
-    { value: "pending", status: "PENDING" as const, label: "Đang chờ" },
-    { value: "confirmed", status: "CONFIRMED" as const, label: "Đã đồng ý" },
-    { value: "shipping", status: "SHIPPING" as const, label: "Đang giao" },
-    { value: "delivered", status: "DELIVERED" as const, label: "Đã giao" },
+    { value: "pending", status: "PENDING" as const, label: "Chờ xử lý" },
+    { value: "confirmed", status: "CONFIRMED" as const, label: "Đã xác nhận" },
+    { value: "processing", status: "PROCESSING" as const, label: "Đang xử lý" },
+    { value: "shipping", status: "SHIPPING" as const, label: "Đang vận chuyển" },
+    { value: "delivered", status: "DELIVERED" as const, label: "Đã giao hàng" },
     { value: "cancelled", status: "CANCELLED" as const, label: "Đã hủy" },
+    { value: "failed", status: "FAILED" as const, label: "Thất bại" },
   ];
 
   if (loading) {
@@ -57,12 +59,12 @@ const ManageOrdersStaff: React.FC = () => {
           <Typography className="text-2xl font-bold">{headerName}</Typography>
         </div>
         <div className="grid grid-cols-1 gap-6 p-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg">
-            <CardContent className="p-6">
+          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md">
+            <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-blue-100">Tổng đơn hàng</p>
-                  <p className="text-3xl font-bold">{orderStatics?.total}</p>
+                  <p className="text-sm font-medium text-blue-100">Tổng Đơn Hàng</p>
+                  <p className="text-3xl font-bold">{orderStatics?.total || 0}</p>
                 </div>
                 <Package className="h-8 w-8 text-blue-200" />
               </div>
@@ -79,7 +81,6 @@ const ManageOrdersStaff: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-
           <Card className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
@@ -91,13 +92,56 @@ const ManageOrdersStaff: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-
           <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-green-100">Đã Giao</p>
                   <p className="text-3xl font-bold">{orderStatics?.statusCounts.DELIVERED || 0}</p>
+                </div>
+                <Package className="h-8 w-8 text-green-200" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-amber-500 from-green-500 to-green-600 text-white shadow-md">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-green-100">Chờ xử lý</p>
+                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.PENDING || 0}</p>
+                </div>
+                <Package className="h-8 w-8 text-green-200" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-green-600 from-green-500 to-green-600 text-white shadow-md">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-green-100">Đã xác nhận</p>
+                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.CONFIRMED || 0}</p>
+                </div>
+                <Package className="h-8 w-8 text-green-200" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-blue-600 from-green-500 to-green-600 text-white shadow-md">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-green-100">Đang chuẩn bị</p>
+                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.PROCESSING || 0}</p>
+                </div>
+                <Package className="h-8 w-8 text-green-200" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gray-500 from-green-500 to-green-600 text-white shadow-md">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-green-100">Thất bại</p>
+                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.FAILED || 0}</p>
                 </div>
                 <Package className="h-8 w-8 text-green-200" />
               </div>

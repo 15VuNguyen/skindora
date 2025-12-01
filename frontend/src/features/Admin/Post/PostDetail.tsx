@@ -11,7 +11,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRole } from "@/contexts/role.context";
 import type { Post } from "@/types/post";
 
-
 const PostDetail: React.FC = () => {
   const { id: postId, slug: postSlug } = useParams<{ id: string; slug: string }>();
   const [postDetail, setPostDetail] = useState<Post | null>(null);
@@ -69,9 +68,9 @@ const PostDetail: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="border-b bg-white shadow-sm">
-        <div className="container mx-auto max-w-6xl px-4 py-4">
+    <div className="bg-gray-50">
+      <div className="">
+        <div className="container px-4 py-4">
           <Button
             variant="ghost"
             onClick={() => {
@@ -204,6 +203,10 @@ const PostDetail: React.FC = () => {
                       </Badge>
                     </div>
                     <div className="flex justify-between">
+                      <span className="text-muted-foreground">Lượt xem:</span>
+                      <span className="font-mono text-xs break-all">{postDetail.views}</span>
+                    </div>
+                    <div className="flex justify-between">
                       <span className="text-muted-foreground">Tạo lúc:</span>
                       <span className="text-xs">{formatDate(postDetail.created_at)}</span>
                     </div>
@@ -252,6 +255,14 @@ const PostDetail: React.FC = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {!postDetail.filter_brand?.length &&
+                    !postDetail.filter_hsk_skin_type?.length &&
+                    !postDetail.filter_hsk_ingredients?.length &&
+                    !postDetail.filter_origin?.length &&
+                    !postDetail.filter_hsk_uses?.length && (
+                      <p className="text-muted-foreground text-sm italic">Không có bộ lọc</p>
+                    )}
+
                   {postDetail.filter_brand && postDetail.filter_brand.length > 0 && (
                     <div>
                       <h4 className="mb-2 text-sm font-semibold">Thương hiệu</h4>
