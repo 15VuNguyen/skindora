@@ -12,8 +12,6 @@ import { CardDemo } from "../components/Card";
 import { PaginationDemo } from "../components/Pagination";
 import { ChartRadialText } from "../components/RadialChart";
 import { DataTable } from "../components/TableCustom";
-// Component đã được cập nhật
-import { UserChart } from "../components/UserChart";
 
 const ManageCustomer: React.FC = () => {
   const { setHeaderName, headerName } = useHeader();
