@@ -1,8 +1,9 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { Eye, FileText, Filter, Loader2, Plus, RefreshCw, Search, Settings } from "lucide-react";
+import { Eye, FileText, Filter, Loader2, Plus, RefreshCw, Search, Settings, TrendingUp } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import Typography from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
@@ -51,6 +52,12 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
     removeFilterValue,
     fetchOverviewPost,
     overview,
+    stats,
+    topViews,
+    growth,
+    fetchStatsData,
+    fetchTopViewsData,
+    fetchGrowthData,
   } = useFetchPost();
   const { data: filterData, fetchFilter } = useFetchAllFilter();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -69,7 +76,12 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
   }, [params.page, params.limit, params.status, fetchListPost, params.keyword, params.filters]);
   useEffect(() => {
     fetchOverviewPost();
-  }, [fetchOverviewPost]);
+    if (role === "admin") {
+      fetchStatsData();
+      fetchTopViewsData();
+      fetchGrowthData();
+    }
+  }, [fetchOverviewPost, fetchStatsData, fetchTopViewsData, fetchGrowthData, role]);
   useEffect(() => {
     fetchFilter();
   }, [fetchFilter]);
@@ -248,6 +260,107 @@ const ManagePosts: React.FC<ManagePostProps> = ({ userRole }) => {
           </CardContent>
         </Card>
       </div>
+
+      {userRole === "ADMIN" && stats && (
+        <div className="space-y-6">
+          <Typography variant="h2" className="text-xl font-bold tracking-tight">
+            Thống kê lượt xem
+          </Typography>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Tổng lượt xem</CardTitle>
+                <Eye className="text-muted-foreground h-4 w-4" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.totalViews.toLocaleString()}</div>
+                <p className="text-muted-foreground text-xs">Tổng số lượt xem tất cả bài viết</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Hôm nay</CardTitle>
+                <TrendingUp className="h-4 w-4 text-green-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.viewsToday.toLocaleString()}</div>
+                <p className="text-muted-foreground text-xs">Lượt xem trong ngày</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Tháng này</CardTitle>
+                <TrendingUp className="h-4 w-4 text-blue-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.viewsThisMonth.toLocaleString()}</div>
+                <p className="text-muted-foreground text-xs">Lượt xem trong tháng hiện tại</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Bài viết xem nhiều nhất</CardTitle>
+                <FileText className="h-4 w-4 text-purple-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="truncate text-lg font-bold" title={stats.mostViewedPost?.title}>
+                  {stats.mostViewedPost?.title || "Chưa có dữ liệu"}
+                </div>
+                <p className="text-muted-foreground text-xs">{stats.mostViewedPostViews.toLocaleString()} lượt xem</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-7">
+            <Card className="col-span-4">
+              <CardHeader>
+                <CardTitle>Biểu đồ tăng trưởng lượt xem</CardTitle>
+              </CardHeader>
+              <CardContent className="pl-2">
+                <ResponsiveContainer width="100%" height={350}>
+                  <BarChart data={growth}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis
+                      stroke="#888888"
+                      fontSize={12}
+                      tickLine={false}
+                      axisLine={false}
+                      tickFormatter={(value) => `${value}`}
+                    />
+                    <Tooltip cursor={{ fill: "transparent" }} contentStyle={{ borderRadius: "8px" }} />
+                    <Bar dataKey="views" fill="currentColor" radius={[4, 4, 0, 0]} className="fill-primary" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+            <Card className="col-span-3">
+              <CardHeader>
+                <CardTitle>Top bài viết xem nhiều</CardTitle>
+                <CardDescription>Các bài viết thu hút nhiều lượt xem nhất</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-8">
+                  {topViews.map((post, index) => (
+                    <div key={post.postId} className="flex items-center">
+                      <div className="bg-primary/10 text-primary flex h-9 w-9 items-center justify-center rounded-full font-bold">
+                        {index + 1}
+                      </div>
+                      <div className="ml-4 space-y-1">
+                        <p className="line-clamp-1 text-sm leading-none font-medium" title={post.title}>
+                          {post.title}
+                        </p>
+                        <p className="text-muted-foreground text-sm">{post.slug}</p>
+                      </div>
+                      <div className="ml-auto font-medium">{post.totalViews.toLocaleString()}</div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )}
 
       <Card>
         <CardHeader>

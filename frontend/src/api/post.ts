@@ -56,6 +56,24 @@ export interface detailPostProps {
   id: string;
   slug: string;
 }
+export interface PostStats {
+  totalViews: number;
+  viewsToday: number;
+  viewsThisMonth: number;
+  mostViewedPost: Post;
+  mostViewedPostViews: number;
+}
+export interface PostViewTop {
+  postId: string;
+  title: string;
+  slug: string;
+  totalViews: number;
+}
+export interface PostViewGrowth {
+  date: string;
+  views: string;
+  growth: string;
+}
 export const fetchPostById = async ({ id, slug }: detailPostProps) => {
   return await httpClient
     .get<API.IResponse<Post>>(`/posts/${slug}-${id}`, { id, slug })
@@ -95,4 +113,19 @@ export const fetchAllPostForUser = async (params: FetchAllPostProps) => {
 };
 export const fetchOverview = async () => {
   return await httpClient.get<API.IResponse<OverviewPosts>>(`/posts/overview`).then((response) => response.data.result);
+};
+export const fetchPostStats = async () => {
+  return await httpClient
+    .get<API.IResponse<PostStats>>(`admin/post-views/stats`)
+    .then((response) => response.data.result);
+};
+export const fetchPostViewTop = async () => {
+  return await httpClient
+    .get<API.IResponse<PostViewTop[]>>(`admin/post-views/top`)
+    .then((response) => response.data.result);
+};
+export const fetchPostViewGrowth = async () => {
+  return await httpClient
+    .get<API.IResponse<PostViewGrowth[]>>(`admin/post-views/growth`)
+    .then((response) => response.data.result);
 };
