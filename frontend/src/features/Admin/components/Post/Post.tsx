@@ -5,6 +5,15 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { useFetchAllFilter } from "@/hooks/Filter/useFetchAllFilter";
@@ -26,6 +35,7 @@ export function Post() {
     removeFilterValue,
     params,
     setParams,
+    changePage,
   } = useFetchPostForUser();
 
   const { data: filterData, fetchFilter } = useFetchAllFilter();
@@ -385,6 +395,72 @@ export function Post() {
             )}
           </div>
         </div>
+
+        {/* Pagination */}
+        {!loading && posts.length > 0 && params.totalPages > 1 && (
+          <div className="mt-8">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (params.page > 1) changePage(params.page - 1);
+                    }}
+                    className={params.page <= 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+
+                {Array.from({ length: params.totalPages }, (_, i) => i + 1).map((page) => {
+                  // Show first page, last page, current page, and pages around current page
+                  if (
+                    page === 1 ||
+                    page === params.totalPages ||
+                    (page >= params.page - 1 && page <= params.page + 1)
+                  ) {
+                    return (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          href="#"
+                          isActive={page === params.page}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            changePage(page);
+                          }}
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    );
+                  }
+
+                  // Show ellipsis
+                  if (page === params.page - 2 || page === params.page + 2) {
+                    return (
+                      <PaginationItem key={page}>
+                        <PaginationEllipsis />
+                      </PaginationItem>
+                    );
+                  }
+
+                  return null;
+                })}
+
+                <PaginationItem>
+                  <PaginationNext
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (params.page < params.totalPages) changePage(params.page + 1);
+                    }}
+                    className={params.page >= params.totalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
       </div>
     </div>
   );
