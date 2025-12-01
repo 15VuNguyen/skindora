@@ -397,16 +397,61 @@ class BlogService {
             views: { $sum: '$views' }
           }
         },
-        { $sort: { _id: 1 } }
+        { $sort: { _id: -1 } }
       ])
       .toArray()
 
     //Tính growth % so với ngày trước
-    return views.map((v, i) => ({
-      date: v._id,
-      views: v.views,
-      growth: i === 0 ? 0 : Math.round(((v.views - views[i - 1].views) / views[i - 1].views) * 100)
-    }))
+    const viewsMap = new Map(views.map((v) => [v._id, v.views]))
+    const result = []
+
+    for (let i = 0; i < days; i++) {
+      const currentDate = new Date(today)
+      currentDate.setDate(currentDate.getDate() - i)
+      const dateString = currentDate.toISOString().split('T')[0]
+
+      const yesterday = new Date(currentDate)
+      yesterday.setDate(yesterday.getDate() - 1)
+      const yesterdayString = yesterday.toISOString().split('T')[0]
+
+      const currentViews = viewsMap.get(dateString) || 0
+      const previousDayViews = viewsMap.get(yesterdayString) || 0
+
+      let growth = 0
+      if (previousDayViews === 0 && currentViews > 0) {
+        growth = 100
+      } else if (previousDayViews !== 0) {
+        growth = Math.round(((currentViews - previousDayViews) / previousDayViews) * 100)
+      }
+
+      result.push({
+        date: dateString,
+        views: currentViews,
+        growth
+      })
+    }
+
+    return result
+  }
+
+  async getOverview() {
+    //Đếm total posts, PUBLISHED posts, DRAFT posts,
+    const counts = await databaseService.posts
+      .aggregate([
+        { $group: { _id: '$status', count: { $sum: 1 } } },
+        { $project: { _id: 0, status: '$_id', count: 1 } }
+      ])
+      .toArray()
+
+    const totalPosts = counts.reduce((sum, count) => sum + count.count, 0)
+    const publishedPosts = counts.find((count) => count.status === 'PUBLISHED')?.count || 0
+    const draftPosts = counts.find((count) => count.status === 'DRAFT')?.count || 0
+
+    return {
+      totalPosts,
+      publishedPosts,
+      draftPosts
+    }
   }
 }
 

@@ -4,16 +4,19 @@ import {
   deletePostController,
   getAllPostsController,
   getCurrentPostViewController,
+  getOverviewController,
   getPostBySlugIdController,
   updatePostController
 } from '~/controllers/blog.controllers'
-import { isAdminOrStaffValidator } from '~/middlewares/admin.middlewares'
+import { isAdminOrStaffValidator, isAdminValidator } from '~/middlewares/admin.middlewares'
 import { checkPostExist, createBlogValidator, getAllPostsValidator, updateBlogValidator } from '~/middlewares/blogs.middlewares'
 import { isStaffValidator } from '~/middlewares/staff.middlewares'
 import { accessTokenValidator } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handler'
 
 const blogRouter = Router()
+
+blogRouter.route('/overview').get(accessTokenValidator, isAdminValidator, wrapAsync(getOverviewController))
 
 blogRouter
   .route('/')

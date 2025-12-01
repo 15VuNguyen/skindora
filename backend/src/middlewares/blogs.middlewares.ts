@@ -362,7 +362,19 @@ export const getViewsByPostValidator = validate(
     postId: {
       in: ['params'],
       exists: { errorMessage: BLOG_MESSAGES.POST_ID_REQUIRED },
-      isMongoId: { errorMessage: BLOG_MESSAGES.INVALID_OBJECT_ID }
+      isMongoId: { errorMessage: BLOG_MESSAGES.INVALID_OBJECT_ID },
+      custom: {
+        options: async (value) => {
+          const post = await databaseService.posts.findOne({ _id: new ObjectId(value) })
+          if (!post) {
+            throw new ErrorWithStatus({
+              message: BLOG_MESSAGES.POST_NOT_FOUND,
+              status: HTTP_STATUS.NOT_FOUND
+            })
+          }
+          return true
+        }
+      }
     },
     startDate: {
       in: ['query'],
