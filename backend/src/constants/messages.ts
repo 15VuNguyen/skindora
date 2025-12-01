@@ -465,6 +465,7 @@ export const BLOG_MESSAGES = {
   GET_POST_VIEWS_BY_DATE_SUCCESS: 'Xem lượt xem của bài viết theo ngày thành công',
   GET_VIEWS_BY_POST_SUCCESS: 'Xem lượt xem của 1 bài viết thành công',
   GET_POST_VIEWS_GROWTH_SUCCESS: 'Xem sự tăng trưởng lượt xem thành công',
+  GET_OVERVIEW_SUCCESS: 'Xem thông tin tổng quan thành công',
   TITLE_REQUIRED: 'Vui lòng nhập tiêu đề',
   CONTENT_REQUIRED: 'Vui lòng nhập nội dung',
   STATUS_REQUIRED: 'Vui lòng chọn trạng thái',

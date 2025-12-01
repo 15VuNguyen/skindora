@@ -318,3 +318,12 @@ export const getPostViewsGrowthController = async (req: Request, res: Response) 
     result
   })
 }
+
+export const getOverviewController = async (req: Request, res: Response) => {
+  const result = await blogService.getOverview()
+
+  res.json({
+    message: BLOG_MESSAGES.GET_OVERVIEW_SUCCESS,
+    result
+  })
+}
