@@ -1,4 +1,5 @@
 import {
+  Banknote,
   BotIcon,
   Droplet,
   FileX2,
@@ -38,6 +39,7 @@ const items = [
   { title: "Hồ sơ", url: "/admin", icon: User2 },
   { title: "Tổng quan", url: "/admin/dashboard", icon: Home },
   { title: "Quản lý khách hàng", url: "/admin/customers", icon: UsersRound },
+  { title: "DT: 8.6tr - LN: 184k", url: "/admin/revenue-profit", icon: Banknote },
   { title: "Quản lý doanh thu", url: "/admin/money", icon: PoundSterling },
   {
     title: "Quản lý mã giảm giá",
