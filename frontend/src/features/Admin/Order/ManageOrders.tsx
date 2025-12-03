@@ -136,6 +136,17 @@ const ManageOrdersStaff: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+          <Card className="bg-red-500 from-green-500 to-green-600 text-white shadow-md">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-green-100">Đơn hủy</p>
+                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.CANCELLED || 0}</p>
+                </div>
+                <Package className="h-8 w-8 text-green-200" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
 
