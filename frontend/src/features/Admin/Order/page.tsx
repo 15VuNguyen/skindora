@@ -31,7 +31,7 @@ const ManageOrdersPage: React.FC = () => {
   };
   const filterOptions: FilterOptionsProps[] = [
     { value: "", status: "ALL" as const, label: "Tất cả" },
-    { value: "pending", status: "PENDING" as const, label: "Chờ xử lý" },
+    { value: "pending", status: "PENDING" as const, label: "Đang chờ xử lý" },
     { value: "confirmed", status: "CONFIRMED" as const, label: "Đã xác nhận" },
     { value: "processing", status: "PROCESSING" as const, label: "Đang xử lý" },
     { value: "shipping", status: "SHIPPING" as const, label: "Đang vận chuyển" },
