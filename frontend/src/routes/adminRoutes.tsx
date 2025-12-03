@@ -33,6 +33,7 @@ import ManageProducts from "@/features/Admin/Product/ManageProduct";
 import ProductDetail from "@/features/Admin/Product/ProductDetail";
 import UpdateDetailProduct from "@/features/Admin/Product/UpdateDetail";
 import ProfileAdmin from "@/features/Admin/Profile/ProfileAdmin";
+import RevenueProfitPage from "@/features/Admin/RevenueProfit/RevenueProfitPage";
 import CreateSize from "@/features/Admin/Size/CreateSize";
 import ManageSize from "@/features/Admin/Size/ManageSize";
 import SizeDetail from "@/features/Admin/Size/SizeDetail";
@@ -66,6 +67,10 @@ const adminRoutes: RouteObject[] = [
       {
         path: "money",
         element: <RevenueDashboard />,
+      },
+      {
+        path: "revenue-profit",
+        element: <RevenueProfitPage />,
       },
       {
         path: "customers",
