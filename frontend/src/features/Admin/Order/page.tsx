@@ -31,7 +31,7 @@ const ManageOrdersPage: React.FC = () => {
   };
   const filterOptions: FilterOptionsProps[] = [
     { value: "", status: "ALL" as const, label: "Tất cả" },
-    { value: "pending", status: "PENDING" as const, label: "Chờ xử lý" },
+    { value: "pending", status: "PENDING" as const, label: "Đang chờ xử lý" },
     { value: "confirmed", status: "CONFIRMED" as const, label: "Đã xác nhận" },
     { value: "processing", status: "PROCESSING" as const, label: "Đang xử lý" },
     { value: "shipping", status: "SHIPPING" as const, label: "Đang vận chuyển" },
@@ -58,7 +58,7 @@ const ManageOrdersPage: React.FC = () => {
           <Typography className="text-2xl font-bold">{headerName}</Typography>
         </div>
         <div className="grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 lg:grid-cols-4">
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-md">
+          <Card className="bg-primary text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
@@ -69,47 +69,14 @@ const ManageOrdersPage: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-gradient-to-r from-gray-400 to-gray-500 text-white shadow-md">
+          <Card className="bg-amber-500 from-gray-400 to-gray-500 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-100">Đang Chờ</p>
+                  <p className="text-sm font-medium text-gray-100">Đang Chờ Xử Lý</p>
                   <p className="text-3xl font-bold">{orderStatics?.statusCounts.PENDING || 0}</p>
                 </div>
                 <Package className="h-8 w-8 text-gray-200" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-md">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-cyan-100">Đang Giao</p>
-                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.SHIPPING || 0}</p>
-                </div>
-                <Star className="h-8 w-8 text-cyan-200" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-green-100">Đã Giao</p>
-                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.DELIVERED || 0}</p>
-                </div>
-                <Package className="h-8 w-8 text-green-200" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="bg-amber-500 from-green-500 to-green-600 text-white shadow-md">
-            <CardContent className="p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-green-100">Chờ xử lý</p>
-                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.PENDING || 0}</p>
-                </div>
-                <Package className="h-8 w-8 text-green-200" />
               </div>
             </CardContent>
           </Card>
@@ -117,7 +84,7 @@ const ManageOrdersPage: React.FC = () => {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-100">Đã xác nhận</p>
+                  <p className="text-sm font-medium text-green-100">Đã Xác Nhận</p>
                   <p className="text-3xl font-bold">{orderStatics?.statusCounts.CONFIRMED || 0}</p>
                 </div>
                 <Package className="h-8 w-8 text-green-200" />
@@ -128,19 +95,30 @@ const ManageOrdersPage: React.FC = () => {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-100">Đang chuẩn bị</p>
+                  <p className="text-sm font-medium text-green-100">Đang Xử Lý</p>
                   <p className="text-3xl font-bold">{orderStatics?.statusCounts.PROCESSING || 0}</p>
                 </div>
                 <Package className="h-8 w-8 text-green-200" />
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-gray-500 from-green-500 to-green-600 text-white shadow-md">
+          <Card className="bg-gradient-to-r from-cyan-500 to-cyan-600 text-white shadow-md">
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-100">Thất bại</p>
-                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.FAILED || 0}</p>
+                  <p className="text-sm font-medium text-cyan-100">Đang Vận Chuyển</p>
+                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.SHIPPING || 0}</p>
+                </div>
+                <Star className="h-8 w-8 text-cyan-200" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white shadow-md">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-green-100">Đã Giao Hàng</p>
+                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.DELIVERED || 0}</p>
                 </div>
                 <Package className="h-8 w-8 text-green-200" />
               </div>
@@ -152,6 +130,17 @@ const ManageOrdersPage: React.FC = () => {
                 <div>
                   <p className="text-sm font-medium text-green-100">Đơn hủy</p>
                   <p className="text-3xl font-bold">{orderStatics?.statusCounts.CANCELLED || 0}</p>
+                </div>
+                <Package className="h-8 w-8 text-green-200" />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gray-500 from-green-500 to-green-600 text-white shadow-md">
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-green-100">Thất bại</p>
+                  <p className="text-3xl font-bold">{orderStatics?.statusCounts.FAILED || 0}</p>
                 </div>
                 <Package className="h-8 w-8 text-green-200" />
               </div>

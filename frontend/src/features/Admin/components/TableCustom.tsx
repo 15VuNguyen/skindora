@@ -34,7 +34,7 @@ export interface FilterOptionsProps {
     | "Tất cả"
     | "Đã đồng ý"
     | "Đang chờ"
-    | "Chờ xử lý"
+    | "Đang chờ xử lý"
     | "Đã xác nhận"
     | "Đang vận chuyển"
     | "Đã giao hàng"
