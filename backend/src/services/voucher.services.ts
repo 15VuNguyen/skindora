@@ -10,7 +10,6 @@ dotenv.config()
 class VouchersService {
   async createNewVoucher(reqBody: CreateNewVoucherReqBody) {
     const voucherId = new ObjectId()
-
     const topic = process.env.VOUCHER_CREATED ?? ''
     const voucher: Voucher = new Voucher({
       _id: voucherId,
