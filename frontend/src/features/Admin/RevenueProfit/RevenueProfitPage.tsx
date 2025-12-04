@@ -82,7 +82,9 @@ const RevenueProfitPage: React.FC = () => {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="bg-background sticky left-0 z-10 w-[200px]">Hạng mục</TableHead>
+                  <TableHead className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    Hạng mục
+                  </TableHead>
                   {weeks.map((week, index) => (
                     <TableHead key={index} className="min-w-[150px]">
                       {week}
@@ -92,82 +94,133 @@ const RevenueProfitPage: React.FC = () => {
               </TableHeader>
               <TableBody>
                 <TableRow className="bg-muted/50">
-                  <TableCell className="bg-muted/50 sticky left-0 z-10 font-bold">KPI KINH DOANH</TableCell>
+                  <TableCell className="bg-muted/50 sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] font-bold border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    KPI KINH DOANH
+                  </TableCell>
                   {weeks.map((_, i) => (
                     <TableCell key={i}></TableCell>
                   ))}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="bg-background sticky left-0 z-10">1. Số người dùng đăng ký mới</TableCell>
+                  <TableCell className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    1. Số người dùng đăng ký mới
+                  </TableCell>
                   {data.newUsers.map((val, i) => (
                     <TableCell key={i}>{val}</TableCell>
                   ))}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="bg-background sticky left-0 z-10">2. Tổng số người dùng (lũy kế)</TableCell>
+                  <TableCell className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    2. Tổng số người dùng (lũy kế)
+                  </TableCell>
                   {data.totalUsers.map((val, i) => (
                     <TableCell key={i}>{val}</TableCell>
                   ))}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="bg-background sticky left-0 z-10">3. Số lượt quét AI</TableCell>
+                  <TableCell className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    3. Số lượt quét AI
+                  </TableCell>
                   {data.aiScans.map((val, i) => (
                     <TableCell key={i}>{val}</TableCell>
                   ))}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="bg-background sticky left-0 z-10">4. Số đơn hàng thành công</TableCell>
+                  <TableCell className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    4. Số đơn hàng thành công
+                  </TableCell>
                   {data.successfulOrders.map((val, i) => (
                     <TableCell key={i}>{val}</TableCell>
                   ))}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="bg-background sticky left-0 z-10">5. Giá trị đơn hàng TB (AOV)</TableCell>
+                  <TableCell className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    5. Giá trị đơn hàng TB (AOV)
+                  </TableCell>
                   {data.aov.map((val, i) => (
                     <TableCell key={i}>{formatCurrency(val)}</TableCell>
                   ))}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="bg-background sticky left-0 z-10">6. Tỷ lệ chuyển đổi (%)</TableCell>
+                  <TableCell className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    6. Tỷ lệ chuyển đổi (%)
+                  </TableCell>
                   {data.conversionRate.map((val, i) => (
                     <TableCell key={i}>{val}%</TableCell>
                   ))}
                 </TableRow>
 
                 <TableRow className="bg-muted/50">
-                  <TableCell className="bg-muted/50 sticky left-0 z-10 font-bold">TÀI CHÍNH</TableCell>
+                  <TableCell className="bg-muted/50 sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] font-bold border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    TÀI CHÍNH
+                  </TableCell>
                   {weeks.map((_, i) => (
                     <TableCell key={i}></TableCell>
                   ))}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="bg-background sticky left-0 z-10 font-semibold">A. Tổng Doanh Thu</TableCell>
+                  <TableCell className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] font-semibold border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    A. Tổng Doanh Thu
+                  </TableCell>
                   {data.revenue.map((val, i) => (
                     <TableCell key={i}>{formatCurrency(val)}</TableCell>
                   ))}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="bg-background sticky left-0 z-10 font-semibold">B. Tổng Chi Phí</TableCell>
+                  <TableCell className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] font-semibold border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    B. Tổng Chi Phí
+                  </TableCell>
                   {weeks.map((_, i) => (
                     <TableCell key={i}>{formatCurrency(data.variableCosts[i] + data.fixedCosts[i])}</TableCell>
                   ))}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="bg-background sticky left-0 z-10 pl-8">- Chi phí biến đổi</TableCell>
+                  <TableCell className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] pl-8 border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    - Chi phí biến đổi
+                  </TableCell>
                   {data.variableCosts.map((val, i) => (
                     <TableCell key={i}>{formatCurrency(val)}</TableCell>
                   ))}
                 </TableRow>
                 <TableRow>
-                  <TableCell className="bg-background sticky left-0 z-10 pl-8">- Chi phí cố định</TableCell>
+                  <TableCell className="bg-background sticky left-0 z-20 min-w-[220px] w-[220px] max-w-[220px] pl-8 border-r-2 border-border shadow-[2px_0_4px_rgba(0,0,0,0.1)]">
+                    - Chi phí cố định
+                  </TableCell>
                   {data.fixedCosts.map((val, i) => (
                     <TableCell key={i}>{formatCurrency(val)}</TableCell>
                   ))}
                 </TableRow>
                 <TableRow className="bg-primary/10">
-                  <TableCell className="bg-primary/10 sticky left-0 z-10 font-bold">C. LỢI NHUẬN (A - B)</TableCell>
+                  <TableCell 
+                    className="sticky left-0 font-bold pr-4 border-r-2 border-primary/30 shadow-[4px_0_8px_rgba(0,0,0,0.3)]" 
+                    style={{ 
+                      position: 'sticky',
+                      left: 0,
+                      zIndex: 9999,
+                      minWidth: '260px',
+                      width: '260px',
+                      maxWidth: '260px',
+                      backgroundColor: '#ffffff',
+                      transform: 'translateZ(0)',
+                      isolation: 'isolate'
+                    }}
+                  >
+                    <span style={{ 
+                      display: 'inline-block',
+                      backgroundColor: 'hsl(var(--primary) / 0.1)',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      width: '100%'
+                    }}>
+                      C. LỢI NHUẬN (A - B)
+                    </span>
+                  </TableCell>
                   {data.profit.map((val, i) => (
-                    <TableCell key={i} className={val < 0 ? "font-bold text-red-500" : "font-bold text-green-600"}>
+                    <TableCell
+                      key={i}
+                      className={`${val < 0 ? "font-bold text-red-500" : "font-bold text-green-600"}`}
+                      style={{ zIndex: 1 }}
+                    >
                       {formatCurrency(val)}
                     </TableCell>
                   ))}
